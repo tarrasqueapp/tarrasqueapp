@@ -2,6 +2,7 @@ import React from "react";
 import * as PIXI from "pixi.js";
 import { PixiComponent, useApp } from "@inlet/react-pixi";
 import { Viewport as PixiViewport } from "pixi-viewport";
+import { store } from "../store";
 
 export interface ViewportProps {
   width: number;
@@ -23,6 +24,7 @@ const PixiComponentViewport = PixiComponent("Viewport", {
       ticker: props.app.ticker,
       passiveWheel: false,
       interaction: props.app.renderer.plugins.interaction,
+      disableOnContextMenu: true,
     });
     viewport.drag().decelerate().pinch().wheel().clampZoom({ minScale: 0.1 });
 
@@ -30,6 +32,8 @@ const PixiComponentViewport = PixiComponent("Viewport", {
       viewport.fit();
       viewport.moveCenter(props.width / 2, props.height / 2);
     });
+
+    store.app.setViewport(viewport);
 
     return viewport;
   },

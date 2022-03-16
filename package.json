@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@inlet/react-pixi": "^6.6.5",
-    "next": "12.1.0",
+    "mobx": "^6.4.2",
+    "mobx-react-lite": "^3.3.0",
+    "next": "^12.1.0",
     "pixi-graphpaper": "^2.0.0",
     "pixi-viewport": "^4.34.4",
     "pixi.js": "^6.2.2",
