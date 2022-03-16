@@ -27,7 +27,7 @@ const PixiComponentViewport = PixiComponent('Viewport', {
       interaction: props.app.renderer.plugins.interaction,
       disableOnContextMenu: true,
     });
-    viewport.drag().decelerate().pinch().wheel().clampZoom({ minScale: 0.1 });
+    viewport.drag().pinch().wheel().clampZoom({ minScale: 0.1 });
 
     requestAnimationFrame(() => {
       viewport.fit();
