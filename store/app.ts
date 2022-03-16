@@ -1,5 +1,5 @@
-import { makeAutoObservable } from "mobx";
-import { Viewport } from "pixi-viewport";
+import { makeAutoObservable } from 'mobx';
+import { Viewport } from 'pixi-viewport';
 
 class AppStore {
   viewport = null as unknown as Viewport;
