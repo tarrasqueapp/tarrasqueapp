@@ -1,8 +1,9 @@
-import React from "react";
-import * as PIXI from "pixi.js";
-import { PixiComponent, useApp } from "@inlet/react-pixi";
-import { Viewport as PixiViewport } from "pixi-viewport";
-import { store } from "../store";
+import { PixiComponent, useApp } from '@inlet/react-pixi';
+import { Viewport as PixiViewport } from 'pixi-viewport';
+import * as PIXI from 'pixi.js';
+import React from 'react';
+
+import { store } from '../store';
 
 export interface ViewportProps {
   width: number;
@@ -14,7 +15,7 @@ export interface PixiComponentViewportProps extends ViewportProps {
   app: PIXI.Application;
 }
 
-const PixiComponentViewport = PixiComponent("Viewport", {
+const PixiComponentViewport = PixiComponent('Viewport', {
   create: (props: PixiComponentViewportProps) => {
     const viewport = new PixiViewport({
       screenWidth: window.innerWidth,

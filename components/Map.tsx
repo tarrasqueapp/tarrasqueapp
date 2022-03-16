@@ -1,5 +1,6 @@
-import { Sprite } from "@inlet/react-pixi";
-import { Viewport } from "./Viewport";
+import { Sprite } from '@inlet/react-pixi';
+
+import { Viewport } from './Viewport';
 
 export interface IMapProps {
   src: string;

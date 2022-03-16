@@ -1,5 +1,5 @@
-import { Sprite } from "@inlet/react-pixi";
-import { useState } from "react";
+import { Sprite } from '@inlet/react-pixi';
+import { useState } from 'react';
 
 export interface ITokenProps {
   src: string;
