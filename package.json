@@ -1,5 +1,5 @@
 {
-  "name": "klauth",
+  "name": "sleeper",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
     "@mui/icons-material": "^5.5.1",
     "@mui/lab": "^5.0.0-alpha.73",
     "@mui/material": "^5.5.1",
-    "mobx": "^6.4.2",
+    "mobx": "^6.5.0",
     "mobx-react-lite": "^3.3.0",
     "next": "^12.1.0",
     "pixi-graphpaper": "^2.0.1",
