@@ -4,6 +4,7 @@ import { Color } from './enums';
 
 export const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       main: Color.Brown,
     },

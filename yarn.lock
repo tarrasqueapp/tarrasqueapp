@@ -2361,10 +2361,10 @@ picomatch@^2.2.3:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-pixi-graphpaper@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/pixi-graphpaper/-/pixi-graphpaper-2.0.0.tgz#0df2a4f0c94ddaf207bbaa12d6290cd0c6955e2b"
-  integrity sha512-qUpau6qsUWTr0HmyNzhhfUDvit/lBH9ht/keTRhCd/L3xQOBbWdcmzHZDyq+kqOZ8u2eZVOUPYPNXKLknIgqGA==
+pixi-graphpaper@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/pixi-graphpaper/-/pixi-graphpaper-2.0.1.tgz#8ae9aee14578a706b04aee8c9c4a60d61dbe4e7d"
+  integrity sha512-jg5cqifwJ5sChbnIQ86+uXFSAnOZJwHZkoeJYvl3Vi88MVe3QhEfW9ZoMNvnwf5BOlfmhBFmUaDnV6IeP+j/vg==
   dependencies:
     pixi.js "^6.2.2"
 

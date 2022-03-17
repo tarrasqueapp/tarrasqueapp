@@ -6,8 +6,8 @@ import React from 'react';
 import { store } from '../store';
 
 export interface ViewportProps {
-  width: number;
-  height: number;
+  worldWidth: number;
+  worldHeight: number;
   children?: React.ReactNode;
 }
 
@@ -20,8 +20,6 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     const viewport = new PixiViewport({
       screenWidth: window.innerWidth,
       screenHeight: window.innerHeight,
-      worldWidth: props.width,
-      worldHeight: props.height,
       ticker: props.app.ticker,
       passiveWheel: false,
       interaction: props.app.renderer.plugins.interaction,
@@ -29,9 +27,69 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     });
     viewport.drag().pinch().wheel().clampZoom({ minScale: 0.1 });
 
+    let clicks = 0;
+    let pressed = false;
+    let clickTimer: ReturnType<typeof setTimeout>;
+    let longPressTimer: ReturnType<typeof setTimeout>;
+    const doubleClickTimespan = 500;
+    const longPressTimespan = 500;
+
+    function handleSingleClick() {
+      console.log('Single Click.');
+    }
+    function handleDoubleClick() {
+      console.log('Double Click.');
+    }
+    function handleRightClick(event: PIXI.InteractionEvent) {
+      console.log('Right Click.', event.data.global);
+      store.map.setContextMenuVisible(false);
+      store.map.setContextMenuAnchorPoint(event.data.global.y, event.data.global.x);
+      store.map.setContextMenuVisible(true);
+    }
+
+    viewport.on('pointerdown', (event) => {
+      if (event.data.originalEvent.button === 2) {
+        handleRightClick(event);
+        return;
+      }
+      pressed = true;
+      clicks++;
+      if (clicks === 1) {
+        store.map.setContextMenuVisible(false);
+        clickTimer = setTimeout(() => {
+          clicks = 0;
+          if (!pressed) {
+            handleSingleClick();
+          }
+        }, doubleClickTimespan);
+      } else if (clicks === 2) {
+        clicks = 0;
+        clearTimeout(clickTimer);
+        handleDoubleClick();
+      }
+      longPressTimer = setTimeout(() => {
+        handleRightClick(event);
+      }, longPressTimespan);
+    });
+
+    viewport.on('drag-start', () => {
+      clicks = 0;
+      clearTimeout(clickTimer);
+    });
+
+    viewport.on('pointermove', () => {
+      clicks = 0;
+      clearTimeout(longPressTimer);
+    });
+
+    viewport.on('pointerup', () => {
+      pressed = false;
+      clearTimeout(longPressTimer);
+    });
+
     requestAnimationFrame(() => {
       viewport.fit();
-      viewport.moveCenter(props.width / 2, props.height / 2);
+      viewport.moveCenter(props.worldWidth / 2, props.worldHeight / 2);
     });
 
     store.app.setViewport(viewport);

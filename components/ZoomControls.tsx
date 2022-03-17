@@ -1,11 +1,11 @@
 import { Add, FitScreen, Remove } from '@mui/icons-material';
-import { Box, Button, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
 import { Color } from '../lib/enums';
 import { store } from '../store';
 
-export const HUD: React.FC = observer(() => {
+export const ZoomControls: React.FC = observer(() => {
   function handleZoomIn() {
     store.app.viewport.animate({ scale: store.app.viewport.scaled + 0.2, time: 100 });
   }
@@ -23,23 +23,21 @@ export const HUD: React.FC = observer(() => {
   }
 
   return (
-    <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
-      <ButtonGroup
-        orientation="vertical"
-        aria-label="vertical contained button group"
-        variant="outlined"
-        sx={{ position: 'fixed', top: 4, right: 4, background: Color.Black }}
-      >
-        <Button size="small" onClick={handleZoomIn}>
-          <Add />
-        </Button>
-        <Button size="small" onClick={handleZoomOut}>
-          <Remove />
-        </Button>
-        <Button size="small" onClick={handleFitScreen}>
-          <FitScreen />
-        </Button>
-      </ButtonGroup>
-    </Box>
+    <ButtonGroup
+      orientation="vertical"
+      aria-label="vertical contained button group"
+      variant="outlined"
+      sx={{ position: 'fixed', top: 4, right: 4, background: Color.Black }}
+    >
+      <Button size="small" onClick={handleZoomIn}>
+        <Add />
+      </Button>
+      <Button size="small" onClick={handleZoomOut}>
+        <Remove />
+      </Button>
+      <Button size="small" onClick={handleFitScreen}>
+        <FitScreen />
+      </Button>
+    </ButtonGroup>
   );
 });

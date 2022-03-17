@@ -10,7 +10,7 @@ export interface IMapProps {
 
 export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
   return (
-    <Viewport width={width} height={height}>
+    <Viewport worldWidth={width} worldHeight={height}>
       <Sprite image={src} x={0} y={0} anchor={0} />
       {children}
     </Viewport>
