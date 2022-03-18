@@ -3,7 +3,6 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react', '@typescript-eslint', 'prettier'],
   extends: [
-    'next/core-web-vitals',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
