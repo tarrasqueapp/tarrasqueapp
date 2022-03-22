@@ -1,1 +1,1 @@
-declare module "pixi-graphpaper";
+declare module 'pixi-graphpaper';
