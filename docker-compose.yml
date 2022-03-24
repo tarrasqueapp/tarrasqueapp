@@ -1,0 +1,105 @@
+version: '3'
+services:
+  #################
+  ### Front-end ###
+  #################
+
+  client:
+    container_name: client
+    networks:
+      - caddy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    build:
+      context: ./apps/client
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./apps/client:/app
+      - /app/.next
+      - /app/node_modules
+
+  ################
+  ### Back-end ###
+  ################
+
+  server:
+    container_name: server
+    networks:
+      - caddy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    build:
+      context: ./apps/server
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./apps/server:/app
+      - /app/dist
+      - /app/node_modules
+
+  ################
+  ### Database ###
+  ################
+
+  postgres:
+    container_name: postgres
+    networks:
+      - postgres
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/postgres:/data/postgres
+    env_file:
+      - .env
+
+  pgadmin:
+    container_name: pgadmin
+    networks:
+      - postgres
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    image: dpage/pgadmin4
+    ports:
+      - '8080:80'
+    volumes:
+      - ./data/pgadmin:/root/.pgadmin
+    env_file:
+      - .env
+    links:
+      - postgres:postgres
+
+  ######################
+  ### Infrastructure ###
+  ######################
+
+  caddy:
+    container_name: caddy
+    networks:
+      - caddy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    image: caddy:2-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./apps/caddy:/srv
+      - ./apps/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_config:/config
+      - caddy_data:/data
+
+networks:
+  postgres:
+    driver: bridge
+  caddy:
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,16 @@
+localhost {
+  handle {
+    reverse_proxy client:3000
+  }
+
+  handle /images/* {
+    header Cross-Origin-Resource-Policy "cross-origin"
+    reverse_proxy client:3000
+  }
+
+  @api path /api /api/*
+  handle @api {
+    reverse_proxy server:3001
+  }
+
+}
