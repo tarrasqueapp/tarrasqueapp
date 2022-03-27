@@ -43,6 +43,7 @@ elif [[ $1 = 'help' ]]; then
   echo "  terry lint                                Run ESLint and tsc --noEmit on all services"
   echo "  terry ncu                                 Check upgradable yarn dependencies"
   echo "  terry prune                               Prune stopped docker containers"
+  echo "              --all                         Prune all docker data"
   echo "  terry upgrade                             Upgrade all packages"
   echo ""
   echo "  terry workspace [workspace] [command]     Run yarn command on workspace"

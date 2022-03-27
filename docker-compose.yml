@@ -92,14 +92,16 @@ services:
     volumes:
       - ./apps/caddy:/srv
       - ./apps/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./data/caddy:/data/caddy
       - caddy_config:/config
       - caddy_data:/data
+    env_file:
+      - .env
 
 networks:
-  postgres:
-    driver: bridge
   caddy:
+  postgres:
 
 volumes:
-  caddy_data:
   caddy_config:
+  caddy_data:

@@ -1,4 +1,6 @@
-localhost {
+{$HOSTNAME:localhost} {
+  tls internal
+
   handle {
     reverse_proxy client:3000
   }
