@@ -8,7 +8,9 @@ import { store } from '../store';
 export interface ViewportProps {
   worldWidth: number;
   worldHeight: number;
-  children?: React.ReactNode;
+  screenWidth: number;
+  screenHeight: number;
+  children: React.ReactNode;
 }
 
 export interface PixiComponentViewportProps extends ViewportProps {
@@ -18,8 +20,6 @@ export interface PixiComponentViewportProps extends ViewportProps {
 const PixiComponentViewport = PixiComponent('Viewport', {
   create: (props: PixiComponentViewportProps) => {
     const viewport = new PixiViewport({
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
       ticker: props.app.ticker,
       passiveWheel: false,
       interaction: props.app.renderer.plugins.interaction,
