@@ -19,16 +19,21 @@ export const MapContextMenu: React.FC = observer(() => {
 
   function getBoundingClientRect() {
     return {
-      x: store.map.contextMenuAnchorPoint.left,
-      y: store.map.contextMenuAnchorPoint.top,
+      x: store.map.contextMenuAnchorPoint.x,
+      y: store.map.contextMenuAnchorPoint.y,
       width,
       height: 0,
-      top: store.map.contextMenuAnchorPoint.top,
+      top: store.map.contextMenuAnchorPoint.y,
       right: 0,
       bottom: 0,
-      left: store.map.contextMenuAnchorPoint.left,
+      left: store.map.contextMenuAnchorPoint.x,
       toJSON: () => null,
     };
+  }
+
+  function handlePingLocation() {
+    store.app.socket.emit('pingLocation', { mapId: store.map.id, ...store.map.contextMenuAnchorPoint });
+    store.map.setContextMenuVisible(false);
   }
 
   return (
@@ -37,7 +42,7 @@ export const MapContextMenu: React.FC = observer(() => {
         <Fade {...TransitionProps} timeout={350}>
           <Paper>
             <MenuList>
-              <MenuItem sx={{ width }}>
+              <MenuItem onClick={handlePingLocation} sx={{ width }}>
                 <ListItemIcon>
                   <GpsFixed fontSize="small" />
                 </ListItemIcon>

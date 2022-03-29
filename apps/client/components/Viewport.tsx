@@ -10,6 +10,9 @@ export interface ViewportProps {
   worldHeight: number;
   screenWidth: number;
   screenHeight: number;
+  onSingleClick: (event: PIXI.InteractionEvent) => void;
+  onDoubleClick: (event: PIXI.InteractionEvent) => void;
+  onRightClick: (event: PIXI.InteractionEvent) => void;
   children: React.ReactNode;
 }
 
@@ -34,22 +37,9 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     const doubleClickTimespan = 500;
     const longPressTimespan = 500;
 
-    function handleSingleClick() {
-      console.log('Single Click.');
-    }
-    function handleDoubleClick() {
-      console.log('Double Click.');
-    }
-    function handleRightClick(event: PIXI.InteractionEvent) {
-      console.log('Right Click.', event.data.global);
-      store.map.setContextMenuVisible(false);
-      store.map.setContextMenuAnchorPoint(event.data.global.y, event.data.global.x);
-      store.map.setContextMenuVisible(true);
-    }
-
     viewport.on('pointerdown', (event) => {
       if (event.data.originalEvent.button === 2) {
-        handleRightClick(event);
+        props.onRightClick(event);
         return;
       }
       pressed = true;
@@ -59,16 +49,16 @@ const PixiComponentViewport = PixiComponent('Viewport', {
         clickTimer = setTimeout(() => {
           clicks = 0;
           if (!pressed) {
-            handleSingleClick();
+            props.onSingleClick(event);
           }
         }, doubleClickTimespan);
       } else if (clicks === 2) {
         clicks = 0;
         clearTimeout(clickTimer);
-        handleDoubleClick();
+        props.onDoubleClick(event);
       }
       longPressTimer = setTimeout(() => {
-        handleRightClick(event);
+        props.onRightClick(event);
       }, longPressTimespan);
     });
 

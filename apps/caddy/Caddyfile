@@ -15,4 +15,9 @@
     reverse_proxy server:3001
   }
 
+  @socket path /socket.io /socket.io/*
+  handle @socket {
+    reverse_proxy server:3001
+  }
+
 }

@@ -1,12 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
 class MapStore {
+  id = '';
   dimensions = { width: 0, height: 0 };
   contextMenuVisible = false;
-  contextMenuAnchorPoint = { top: 0, left: 0 };
+  contextMenuAnchorPoint = { x: 0, y: 0 };
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setId(id: string) {
+    this.id = id;
   }
 
   setDimensions(width: number, height: number) {
@@ -18,9 +23,9 @@ class MapStore {
     this.contextMenuVisible = contextMenuVisible;
   }
 
-  setContextMenuAnchorPoint(top: number, left: number) {
-    this.contextMenuAnchorPoint.top = top;
-    this.contextMenuAnchorPoint.left = left;
+  setContextMenuAnchorPoint(x: number, y: number) {
+    this.contextMenuAnchorPoint.x = x;
+    this.contextMenuAnchorPoint.y = y;
   }
 }
 

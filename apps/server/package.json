@@ -16,16 +16,17 @@
     "lint": "../../node_modules/.bin/eslint \"{src,apps,libs}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@nestjs/common": "^8.4.2",
-    "@nestjs/core": "^8.4.2",
-    "@nestjs/platform-express": "^8.4.2",
-    "@nestjs/platform-socket.io": "^8.4.2",
-    "@nestjs/websockets": "^8.4.2",
-    "@prisma/client": "^3.11.0",
-    "prisma": "^3.11.0",
+    "@nestjs/common": "^8.4.3",
+    "@nestjs/core": "^8.4.3",
+    "@nestjs/platform-express": "^8.4.3",
+    "@nestjs/platform-socket.io": "^8.4.3",
+    "@nestjs/websockets": "^8.4.3",
+    "@prisma/client": "^3.11.1",
+    "prisma": "^3.11.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.5"
+    "rxjs": "^7.5.5",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.4",
@@ -36,6 +37,6 @@
     "ts-loader": "^9.2.8",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^3.14.1",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.3"
   }
 }

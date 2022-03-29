@@ -25,8 +25,8 @@ elif [[ $@ = 'upgrade' ]]; then
   . ./bin/commands/upgrade.sh
 elif [[ $1 = 'prune' ]]; then
   . ./bin/commands/prune.sh
-elif [[ $1 = 'workspace' ]]; then
-  . ./bin/commands/workspace.sh
+elif [[ $1 = 'ws' ]]; then
+  . ./bin/commands/ws.sh
 elif [[ $1 = 'help' ]]; then
   echo "Usage: terry [command]"
   echo "Commands:"
@@ -46,10 +46,10 @@ elif [[ $1 = 'help' ]]; then
   echo "              --all                         Prune all docker data"
   echo "  terry upgrade                             Upgrade all packages"
   echo ""
-  echo "  terry workspace [workspace] [command]     Run yarn command on workspace"
+  echo "  terry ws [workspace] [command]     Run yarn command on workspace"
   echo "    Examples:"
-  echo "      terry workspace client add axios"
-  echo "      terry workspace server lint"
+  echo "      terry ws client add axios"
+  echo "      terry ws server lint"
   echo ""
   exit
 

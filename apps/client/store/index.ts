@@ -11,6 +11,6 @@ export const store = {
   map: mapStore,
 };
 
-if (!isServer && process.env.NODE_ENV !== 'production') {
-  (window as any).store = store;
+if (!isServer) {
+  window.store = store;
 }

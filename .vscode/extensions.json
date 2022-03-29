@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "zamerick.vscode-caddyfile-syntax",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "prisma.prisma"
+  ]
+}
