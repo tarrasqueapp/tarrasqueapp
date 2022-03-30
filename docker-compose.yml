@@ -6,6 +6,7 @@ services:
 
   client:
     container_name: client
+    platform: linux/amd64
     networks:
       - caddy
     restart: unless-stopped
@@ -18,6 +19,8 @@ services:
       - ./apps/client:/app
       - /app/.next
       - /app/node_modules
+    env_file:
+      - ./apps/client/.env
 
   ################
   ### Back-end ###
@@ -25,8 +28,10 @@ services:
 
   server:
     container_name: server
+    platform: linux/amd64
     networks:
       - caddy
+      - postgres
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -37,6 +42,8 @@ services:
       - ./apps/server:/app
       - /app/dist
       - /app/node_modules
+    env_file:
+      - ./apps/server/.env
 
   ################
   ### Database ###
@@ -49,11 +56,11 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    image: postgres:latest
+    image: postgres:14-alpine
     ports:
       - '5432:5432'
     volumes:
-      - ./data/postgres:/data/postgres
+      - ./data/postgres:/var/lib/postgresql/data
     env_file:
       - .env
 
@@ -68,7 +75,7 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - ./data/pgadmin:/root/.pgadmin
+      - ./data/pgadmin:/var/lib/pgadmin
     env_file:
       - .env
     links:

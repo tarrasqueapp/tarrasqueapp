@@ -6,3 +6,210 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id              String       @id @default(cuid())
+  name            String
+  email           String       @unique
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @default(now())
+  maps            Map[]
+  ownedCampaigns  Campaign[]   @relation("ownedCampaigns")
+  playerCampaigns Campaign[]   @relation("playerCampaigns")
+  adventurers     Adventurer[]
+  monsters        Monster[]
+  tokens          Token[]
+  Media           Media[]
+}
+
+model Campaign {
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  maps        Map[]
+  user        User         @relation("ownedCampaigns", fields: [userId], references: [id])
+  userId      String
+  players     User[]       @relation("playerCampaigns", references: [id])
+  playerIds   String[]
+  adventurers Adventurer[]
+  monsters    Monster[]
+}
+
+model Map {
+  id         String   @id @default(cuid())
+  name       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  media      Media?   @relation(fields: [mediaId], references: [id])
+  mediaId    String?
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  campaignId String
+  tokens     Token[]
+}
+
+model Movement {
+  id          String       @id @default(cuid())
+  burrow      Int
+  climb       Int
+  fly         Int
+  hover       Boolean
+  swim        Int
+  walk        Int
+  adventurers Adventurer[]
+  monsters    Monster[]
+}
+
+model HitPoints {
+  id          String       @id @default(cuid())
+  current     Int
+  maximum     Int
+  temporary   Int
+  formula     String
+  adventurers Adventurer[]
+  monsters    Monster[]
+}
+
+model ArmorClass {
+  id          String       @id @default(cuid())
+  value       Int
+  description String
+  adventurers Adventurer[]
+  monsters    Monster[]
+}
+
+model Senses {
+  id          String       @id @default(cuid())
+  blindsight  Int
+  darkvision  Int
+  tremorsense Int
+  truesight   Int
+  adventurers Adventurer[]
+  monsters    Monster[]
+}
+
+model Ability {
+  id           String      @id @default(cuid())
+  name         String
+  shortName    String
+  score        Int
+  modifier     Int
+  save         Int
+  skills       Skill[]
+  adventurer   Adventurer? @relation(fields: [adventurerId], references: [id])
+  adventurerId String?
+  monster      Monster?    @relation(fields: [monsterId], references: [id])
+  monsterId    String?
+}
+
+model Skill {
+  id           String      @id @default(cuid())
+  name         String
+  ability      Ability     @relation(fields: [abilityId], references: [id])
+  abilityId    String
+  level        String
+  bonus        Int
+  adventurer   Adventurer? @relation(fields: [adventurerId], references: [id])
+  adventurerId String?
+  monster      Monster?    @relation(fields: [monsterId], references: [id])
+  monsterId    String?
+}
+
+model Currencies {
+  id         String       @id @default(cuid())
+  copper     Int
+  silver     Int
+  gold       Int
+  electrum   Int
+  platinum   Int
+  adventurer Adventurer[]
+}
+
+model Adventurer {
+  id           String     @id @default(cuid())
+  name         String
+  size         String     @default("Medium")
+  alignment    String     @default("Neutral")
+  armorClass   ArmorClass @relation(fields: [armorClassId], references: [id])
+  armorClassId String
+  hitPoints    HitPoints  @relation(fields: [hitPointsId], references: [id])
+  hitPointsId  String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+  media        Media?     @relation(fields: [mediaId], references: [id])
+  mediaId      String?
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  campaign     Campaign?  @relation(fields: [campaignId], references: [id])
+  campaignId   String?
+  movement     Movement   @relation(fields: [movementId], references: [id])
+  movementId   String
+  senses       Senses     @relation(fields: [sensesId], references: [id])
+  sensesId     String
+  abilities    Ability[]
+  skills       Skill[]
+  currencies   Currencies @relation(fields: [currenciesId], references: [id])
+  currenciesId String     @unique
+  tokens       Token[]
+}
+
+model Monster {
+  id           String     @id @default(cuid())
+  name         String
+  size         String     @default("Medium")
+  alignment    String     @default("Neutral")
+  armorClass   ArmorClass @relation(fields: [armorClassId], references: [id])
+  armorClassId String
+  hitPoints    HitPoints  @relation(fields: [hitPointsId], references: [id])
+  hitPointsId  String
+  updatedAt    DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+  media        Media?     @relation(fields: [mediaId], references: [id])
+  mediaId      String?
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  campaign     Campaign?  @relation(fields: [campaignId], references: [id])
+  campaignId   String?
+  movement     Movement   @relation(fields: [movementId], references: [id])
+  movementId   String
+  senses       Senses     @relation(fields: [sensesId], references: [id])
+  sensesId     String
+  abilities    Ability[]
+  skills       Skill[]
+  tokens       Token[]
+}
+
+model Media {
+  id          String       @id @default(cuid())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  url         String
+  thumbnail   String
+  width       Int
+  height      Int
+  size        Int
+  format      String
+  maps        Map[]
+  adventurers Adventurer[]
+  monsters    Monster[]
+}
+
+model Token {
+  id           String      @id @default(cuid())
+  width        Int
+  height       Int
+  x            Int
+  y            Int
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String
+  map          Map         @relation(fields: [mapId], references: [id])
+  mapId        String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @default(now())
+  adventurer   Adventurer? @relation(fields: [adventurerId], references: [id])
+  adventurerId String?
+  monster      Monster?    @relation(fields: [monsterId], references: [id])
+  monsterId    String?
+}
