@@ -1,10 +1,10 @@
-# canary
+# vtt
 
 ## Setup
 
 ### Install Terry
 
-Terry is the CLI helper for running Tarrasque.io Canary commands. You alias it on your local system by running:
+Terry is the CLI helper for running Tarrasque App commands. You can alias it on your local system by running:
 
 ```
 alias terry=$PWD/bin/terry.sh

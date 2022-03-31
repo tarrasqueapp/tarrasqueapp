@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // Setup swagger
   const config = new DocumentBuilder()
-    .setTitle('Tarrasque.io Canary API')
+    .setTitle('Tarrasque API')
     .setDescription('Mobile-friendly virtual tabletop for Dungeons & Dragons')
     .setVersion('1.0')
     .addBearerAuth()
