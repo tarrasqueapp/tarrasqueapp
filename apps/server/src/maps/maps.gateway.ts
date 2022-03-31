@@ -10,9 +10,9 @@ import {
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: { origin: '*' } })
-export class MapGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class MapsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private logger: Logger = new Logger('MapGateway');
+  private logger: Logger = new Logger('MapsGateway');
 
   @SubscribeMessage('joinMap')
   handleJoinMap(client: Socket, mapId: string) {

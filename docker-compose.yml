@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   #################
   ### Front-end ###
@@ -104,6 +104,8 @@ services:
       - caddy_data:/data
     env_file:
       - .env
+    stdin_open: true
+    tty: true
 
 networks:
   caddy:

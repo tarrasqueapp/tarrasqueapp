@@ -1,5 +1,30 @@
 {$HOSTNAME:localhost} {
   tls internal
+  encode zstd gzip
+  request_header -Referer
+
+  header {
+    -Server
+    -X-Powered-By
+  }
+
+  handle_errors {
+    rewrite * /maintenance.html
+    file_server
+  }
+
+  log {
+    output file /var/log/access.log
+    format filter {
+      wrap console {
+        time_format iso8601
+      }
+      fields {
+        request>headers>Authorization delete
+        request>headers>Cookie delete
+      }
+    }
+  }
 
   handle {
     reverse_proxy client:3000
@@ -19,5 +44,4 @@
   handle @socket {
     reverse_proxy server:3001
   }
-
 }

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { MapModule } from './map/map.module';
+import { MapsModule } from './maps/maps.module';
 import { PointerModule } from './pointer/pointer.module';
 import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [MapModule, PointerModule, UserModule],
+  imports: [MapsModule, PointerModule, UserModule],
 })
 export class AppModule {}
