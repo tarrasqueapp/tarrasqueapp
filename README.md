@@ -6,7 +6,7 @@
 
 Terry is the CLI helper for running Tarrasque App commands. You can install it on your local system by running:
 
-    ./install-terry.sh
+    ./bin/install-terry.sh
 
 You can run `terry help` to see the list of available commands.
 
