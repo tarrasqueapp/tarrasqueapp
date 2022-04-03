@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  #################
+  ### Front-end ###
+  #################
+
+  client:
+    build:
+      context: ./apps/client
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./apps/client/.env
+
+  ################
+  ### Back-end ###
+  ################
+
+  server:
+    build:
+      context: ./apps/server
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./apps/server/.env
+
+  ######################
+  ### Infrastructure ###
+  ######################
+
+  caddy:
+    volumes:
+      - ./apps/caddy/Caddyfile.prod:/etc/caddy/Caddyfile:ro
