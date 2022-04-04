@@ -1,5 +1,5 @@
 encode zstd gzip
-request_header -Referer
+request_header -Referer -Server
 
 header {
   -Server
