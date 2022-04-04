@@ -1,7 +1,7 @@
 {
   "name": "vtt",
   "version": "1.0.0",
-  "repository": "https://github.com/tarrasqueapp/vtt.git",
+  "repository": "https://github.com/tarrasqueapp/vtt",
   "author": "Richard Solomou <richard@solomou.io>",
   "license": "AGPL-3.0-or-later",
   "private": true,

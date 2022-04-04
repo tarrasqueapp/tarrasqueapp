@@ -59,14 +59,14 @@ do_install() {
     PROFILE_FILE="$HOME/.zshrc"
   else
     echo "🚨 Unable to find a profile file. Please add the following to your profile:"
-    echo "  alias terry=$HOME/.terry/index.mjs"
+    echo "  alias terry=$HOME/.terry/src/index.mjs"
     exit 1
   fi
 
   # Check that the profile file exists
   if [ ! -f "$PROFILE_FILE" ]; then
     echo "🚨 Unable to find a profile file. Please add the following to your profile:"
-    echo "  alias terry=$HOME/.terry/index.mjs"
+    echo "  alias terry=$HOME/.terry/src/index.mjs"
     exit 1
   fi
 
@@ -80,7 +80,7 @@ do_install() {
 
   # Alias terry
   echo "📂 Aliasing terry..."
-  echo "alias terry=\"\$HOME/.terry/index.mjs\"" >> $PROFILE_FILE
+  echo "alias terry=\"\$HOME/.terry/src/index.mjs\"" >> $PROFILE_FILE
 
   # Install completion
   echo "✅ Terry has been installed. Please reload your profile."
