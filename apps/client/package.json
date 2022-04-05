@@ -22,7 +22,7 @@
     "next": "^12.1.4",
     "pixi-graphpaper": "^2.0.1",
     "pixi-viewport": "^4.34.4",
-    "pixi.js": "6.2.2",
+    "pixi.js": "^6.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "socket.io-client": "^4.4.1"

@@ -16,6 +16,10 @@ This will run `yarn` on each workspace.
 
     terry install
 
+### Set environment variables
+
+There's a `.env.example` file in the root folder and each of the `apps` subfolders. Copy each `.env.example` to `.env` and set the variables as needed.
+
 ## Usage
 
 ### Run development server
@@ -24,4 +28,12 @@ To start the Docker development server, run:
 
     terry dev
 
-Once started, you will need to trust the certificate available at `./data/caddy/certificates/local/localhost/localhost.crt`. This is because the development server is running on [Caddy](https://caddyserver.com) which requires an SSL certificate.
+The development server is running on [Caddy](https://caddyserver.com) which requires an SSL certificate. Caddy will automatically generate a self-signed certificate for you, but you may need to add and trust the certificate available at `./data/caddy/certificates/local/localhost/localhost.crt`.
+
+### Run production server
+
+To start the Docker production server, run:
+
+    terry prod
+
+The production server is running on [Caddy](https://caddyserver.com) which requires an SSL certificate. Currently, Caddy is configured to use Cloudflare's SSL certificate generator in production. You can create a Cloudflare API token for use with `apps/caddy` at https://dash.cloudflare.com/profile/api-tokens and add it to the `CLOUDFLARE_API_TOKEN` environment variable before running `terry prod`.

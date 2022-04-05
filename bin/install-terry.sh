@@ -8,6 +8,11 @@ command_exists() {
   command -v "$@" > /dev/null 2>&1
 }
 
+# Function to check if global npm package exists
+package_exists() {
+  npm list -g --depth=0 | grep -q "$1"
+}
+
 do_install() {
   # Check that Git is installed
   if ! command_exists git; then
@@ -30,9 +35,10 @@ do_install() {
   fi
 
   # Check that zx is installed
-  if ! command_exists zx; then
+  if ! package_exists zx; then
     echo "🚨 zx is not installed. Please install zx and try again."
     echo "npm install --global zx"
+    exit 1
   fi
 
   # Check that Terry is not already installed

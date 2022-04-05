@@ -78,6 +78,7 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     });
 
     requestAnimationFrame(() => {
+      if (!viewport.transform) return;
       viewport.fit();
       viewport.moveCenter(props.worldWidth / 2, props.worldHeight / 2);
     });
