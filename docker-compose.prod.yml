@@ -8,8 +8,6 @@ services:
     build:
       context: ./apps/client
       dockerfile: Dockerfile.prod
-    env_file:
-      - ./apps/client/.env
 
   ################
   ### Back-end ###
@@ -19,8 +17,6 @@ services:
     build:
       context: ./apps/server
       dockerfile: Dockerfile.prod
-    env_file:
-      - ./apps/server/.env
 
   ######################
   ### Infrastructure ###

@@ -12,6 +12,8 @@ services:
       - no-new-privileges:true
     networks:
       - caddy
+    env_file:
+      - ./apps/client/.env
 
   ################
   ### Back-end ###
@@ -26,6 +28,8 @@ services:
     networks:
       - caddy
       - postgres
+    env_file:
+      - ./apps/server/.env
 
   ################
   ### Database ###
@@ -44,7 +48,7 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     env_file:
-      - .env
+      - ./apps/server/.env
 
   pgadmin:
     container_name: pgadmin
@@ -59,7 +63,7 @@ services:
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
     env_file:
-      - .env
+      - ./apps/server/.env
     links:
       - postgres:postgres
 
