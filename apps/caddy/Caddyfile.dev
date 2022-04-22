@@ -1,5 +1,0 @@
-{$HOSTNAME:localhost} {
-  tls internal
-
-  import /srv/common
-}
