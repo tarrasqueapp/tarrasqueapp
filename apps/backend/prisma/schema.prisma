@@ -285,3 +285,12 @@ model Token {
   nonPlayerCharacter   NonPlayerCharacter @relation("NonPlayerCharacterTokens", fields: [nonPlayerCharacterId], references: [id])
   nonPlayerCharacterId String
 }
+
+model Plugin {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  // DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
