@@ -1,3 +1,6 @@
+### Custom ###
+apps/frontend/public/plugins
+
 ### Node ###
 # Logs
 logs
