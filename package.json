@@ -6,14 +6,17 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "lint": "eslint ."
+    "client": "cd client && yarn",
+    "server": "cd server && yarn",
+    "lint": "eslint .",
+    "ncu": "ncu"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/node": "^17.0.25",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",

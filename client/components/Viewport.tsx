@@ -28,7 +28,7 @@ const PixiComponentViewport = PixiComponent('Viewport', {
       interaction: props.app.renderer.plugins.interaction,
       disableOnContextMenu: true,
     });
-    viewport.drag().pinch().wheel().clampZoom({ minScale: 0.1 });
+    viewport.drag().pinch().wheel({ trackpadPinch: true, wheelZoom: false }).clampZoom({ minScale: 0.1 });
 
     let clicks = 0;
     let pressed = false;

@@ -1,0 +1,118 @@
+version: '3.7'
+services:
+  #################
+  ### Front-end ###
+  #################
+
+  client:
+    container_name: client
+    platform: linux/amd64
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - caddy
+    env_file:
+      - ./.env
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./client:/app
+      - /app/.next
+      - /app/node_modules
+
+  ################
+  ### Back-end ###
+  ################
+
+  server:
+    container_name: server
+    platform: linux/amd64
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - caddy
+      - postgres
+    env_file:
+      - ./.env
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./server:/app
+      - /app/dist
+      - /app/node_modules
+
+  ################
+  ### Database ###
+  ################
+
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/postgres:/var/lib/postgresql
+    env_file:
+      - ./.env
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - postgres
+    ports:
+      - '8080:80'
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    env_file:
+      - ./.env
+    links:
+      - postgres:postgres
+
+  ######################
+  ### Infrastructure ###
+  ######################
+
+  caddy:
+    container_name: caddy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - caddy
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/common:/srv/common
+      - ./plugins:/srv/plugins
+      - ./data/caddy:/data/caddy
+      - caddy_config:/config
+      - caddy_data:/data
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    # stdin_open: true
+    # tty: true
+
+networks:
+  caddy:
+  postgres:
+
+volumes:
+  caddy_config:
+  caddy_data:

@@ -9,6 +9,7 @@ export interface IMapProps {
   src: string;
   width: number;
   height: number;
+  children: React.ReactElement;
 }
 
 export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {

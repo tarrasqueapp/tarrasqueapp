@@ -35,14 +35,16 @@ const Canvas: React.FC = observer(() => {
 
   return (
     <Stage width={windowSize.width} height={windowSize.height} options={{ backgroundColor: 0x171717 }}>
-      <Map src="/map/map.webp" width={store.map.dimensions.width} height={store.map.dimensions.height}>
-        <Grid
-          graphWidth={store.map.dimensions.width}
-          graphHeight={store.map.dimensions.height}
-          minorGridSize={70}
-          minorStrokeWidth={1}
-        />
-        <Token src="/map/token.webp" x={70} y={70} width={70} height={70} />
+      <Map src="/map.webp" width={store.map.dimensions.width} height={store.map.dimensions.height}>
+        <>
+          <Grid
+            graphWidth={store.map.dimensions.width}
+            graphHeight={store.map.dimensions.height}
+            minorGridSize={70}
+            minorStrokeWidth={1}
+          />
+          <Token src="/token.webp" x={70} y={70} width={70} height={70} />
+        </>
       </Map>
     </Stage>
   );
