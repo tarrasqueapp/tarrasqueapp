@@ -18,7 +18,7 @@ const MapId: NextPage = () => {
   }, [router.query]);
 
   return (
-    <Box>
+    <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
       <Canvas />
       <HUD />
     </Box>

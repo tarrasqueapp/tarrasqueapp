@@ -1,5 +1,6 @@
 import { Sprite } from '@inlet/react-pixi';
 import * as PIXI from 'pixi.js';
+import { useEffect } from 'react';
 
 import { useWindowSize } from '../hooks/useWindowSize';
 import { store } from '../store';
@@ -14,6 +15,21 @@ export interface IMapProps {
 
 export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
   const windowSize = useWindowSize();
+
+  useEffect(() => {
+    function detectTrackPad(event: Event) {
+      if ((event as any).wheelDeltaY) {
+        if ((event as any).wheelDeltaY === (event as any).deltaY * -3) {
+          store.app.setIsTrackpad(true);
+        }
+      } else if ((event as any).deltaMode === 0) {
+        store.app.setIsTrackpad(true);
+      }
+    }
+
+    document.addEventListener('mousewheel', detectTrackPad);
+    document.addEventListener('DOMMouseScroll', detectTrackPad);
+  }, []);
 
   function handleSingleClick() {
     console.log('Single Click.');

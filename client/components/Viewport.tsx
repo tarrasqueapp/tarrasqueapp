@@ -1,4 +1,5 @@
 import { PixiComponent, useApp } from '@inlet/react-pixi';
+import { observer } from 'mobx-react-lite';
 import { Viewport as PixiViewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 import React from 'react';
@@ -18,9 +19,22 @@ export interface ViewportProps {
 
 export interface PixiComponentViewportProps extends ViewportProps {
   app: PIXI.Application;
+  isTrackpad: boolean;
 }
 
 const PixiComponentViewport = PixiComponent('Viewport', {
+  applyProps: (viewport: PixiViewport, oldProps: PixiComponentViewportProps, newProps: PixiComponentViewportProps) => {
+    if (oldProps.isTrackpad !== newProps.isTrackpad) {
+      viewport.wheel({ trackpadPinch: true, wheelZoom: !newProps.isTrackpad });
+    }
+  },
+  didMount: (viewport: PixiViewport) => {
+    setTimeout(() => {
+      if (!viewport.transform) return;
+      viewport.fit();
+      viewport.moveCenter(viewport.worldWidth / 2, viewport.worldHeight / 2);
+    }, 10);
+  },
   create: (props: PixiComponentViewportProps) => {
     const viewport = new PixiViewport({
       ticker: props.app.ticker,
@@ -77,19 +91,13 @@ const PixiComponentViewport = PixiComponent('Viewport', {
       clearTimeout(longPressTimer);
     });
 
-    requestAnimationFrame(() => {
-      if (!viewport.transform) return;
-      viewport.fit();
-      viewport.moveCenter(props.worldWidth / 2, props.worldHeight / 2);
-    });
-
     store.app.setViewport(viewport);
 
     return viewport;
   },
 });
 
-export const Viewport = (props: ViewportProps) => {
+export const Viewport = observer((props: ViewportProps) => {
   const app = useApp();
-  return <PixiComponentViewport app={app} {...props} />;
-};
+  return <PixiComponentViewport app={app} isTrackpad={store.app.isTrackpad} {...props} />;
+});

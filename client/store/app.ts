@@ -5,6 +5,7 @@ import { Socket } from 'socket.io-client';
 class AppStore {
   socket = null as unknown as Socket;
   viewport = null as unknown as Viewport;
+  isTrackpad = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -16,6 +17,11 @@ class AppStore {
 
   setViewport(viewport: Viewport) {
     this.viewport = viewport;
+  }
+
+  setIsTrackpad(isTrackpad: boolean) {
+    if (this.isTrackpad === isTrackpad) return;
+    this.isTrackpad = isTrackpad;
   }
 }
 
