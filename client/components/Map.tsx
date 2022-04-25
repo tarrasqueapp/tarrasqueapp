@@ -24,6 +24,8 @@ export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
         }
       } else if ((event as any).deltaMode === 0) {
         store.app.setIsTrackpad(true);
+      } else {
+        store.app.setIsTrackpad(false);
       }
     }
 

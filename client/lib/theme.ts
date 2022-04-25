@@ -15,4 +15,13 @@ export const theme = createTheme({
       main: Color.Red,
     },
   },
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: Color.Black,
+        },
+      },
+    },
+  },
 });

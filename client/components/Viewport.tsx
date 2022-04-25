@@ -5,6 +5,7 @@ import * as PIXI from 'pixi.js';
 import React from 'react';
 
 import { store } from '../store';
+import { SelectTool, Tool } from '../store/toolbar';
 
 export interface ViewportProps {
   worldWidth: number;
@@ -20,6 +21,7 @@ export interface ViewportProps {
 export interface PixiComponentViewportProps extends ViewportProps {
   app: PIXI.Application;
   isTrackpad: boolean;
+  isMultiSelect: boolean;
 }
 
 const PixiComponentViewport = PixiComponent('Viewport', {
@@ -27,13 +29,19 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     if (oldProps.isTrackpad !== newProps.isTrackpad) {
       viewport.wheel({ trackpadPinch: true, wheelZoom: !newProps.isTrackpad });
     }
+    if (oldProps.screenWidth !== newProps.screenWidth || oldProps.screenHeight !== newProps.screenHeight) {
+      viewport.resize(newProps.screenWidth, newProps.screenHeight);
+    }
+    if (oldProps.isMultiSelect !== newProps.isMultiSelect) {
+      viewport.drag({ pressDrag: !newProps.isMultiSelect });
+    }
   },
-  didMount: (viewport: PixiViewport) => {
-    setTimeout(() => {
-      if (!viewport.transform) return;
-      viewport.fit();
-      viewport.moveCenter(viewport.worldWidth / 2, viewport.worldHeight / 2);
-    }, 10);
+  didMount: () => {
+    store.pixi.viewport.animate({
+      position: { x: store.map.dimensions.width / 2, y: store.map.dimensions.height / 2 },
+      scale: Math.min(window.innerWidth / store.map.dimensions.width, window.innerHeight / store.map.dimensions.height),
+      time: 0,
+    });
   },
   create: (props: PixiComponentViewportProps) => {
     const viewport = new PixiViewport({
@@ -91,7 +99,7 @@ const PixiComponentViewport = PixiComponent('Viewport', {
       clearTimeout(longPressTimer);
     });
 
-    store.app.setViewport(viewport);
+    store.pixi.setViewport(viewport);
 
     return viewport;
   },
@@ -99,5 +107,12 @@ const PixiComponentViewport = PixiComponent('Viewport', {
 
 export const Viewport = observer((props: ViewportProps) => {
   const app = useApp();
-  return <PixiComponentViewport app={app} isTrackpad={store.app.isTrackpad} {...props} />;
+  return (
+    <PixiComponentViewport
+      app={app}
+      isTrackpad={store.app.isTrackpad}
+      isMultiSelect={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Multi}
+      {...props}
+    />
+  );
 });
