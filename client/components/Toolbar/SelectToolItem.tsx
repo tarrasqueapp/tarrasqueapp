@@ -67,8 +67,12 @@ export const SelectToolItem: React.FC = observer(() => {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <ToggleButtonGroup size="small" sx={{ background: Color.Black, ml: 0.5 }}>
-                <SingleSelectTool selected={store.toolbar.selectTool === SelectTool.Single} />
-                <MultiSelectTool selected={store.toolbar.selectTool === SelectTool.Multi} />
+                <SingleSelectTool
+                  selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
+                />
+                <MultiSelectTool
+                  selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Multi}
+                />
               </ToggleButtonGroup>
             </Fade>
           )}

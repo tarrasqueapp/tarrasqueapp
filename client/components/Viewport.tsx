@@ -21,7 +21,7 @@ export interface ViewportProps {
 export interface PixiComponentViewportProps extends ViewportProps {
   app: PIXI.Application;
   isTrackpad: boolean;
-  isMultiSelect: boolean;
+  pressToDrag: boolean;
 }
 
 const PixiComponentViewport = PixiComponent('Viewport', {
@@ -32,8 +32,8 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     if (oldProps.screenWidth !== newProps.screenWidth || oldProps.screenHeight !== newProps.screenHeight) {
       viewport.resize(newProps.screenWidth, newProps.screenHeight);
     }
-    if (oldProps.isMultiSelect !== newProps.isMultiSelect) {
-      viewport.drag({ pressDrag: !newProps.isMultiSelect });
+    if (oldProps.pressToDrag !== newProps.pressToDrag) {
+      viewport.drag({ pressDrag: newProps.pressToDrag });
     }
   },
   didMount: () => {
@@ -111,7 +111,7 @@ export const Viewport = observer((props: ViewportProps) => {
     <PixiComponentViewport
       app={app}
       isTrackpad={store.app.isTrackpad}
-      isMultiSelect={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Multi}
+      pressToDrag={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
       {...props}
     />
   );

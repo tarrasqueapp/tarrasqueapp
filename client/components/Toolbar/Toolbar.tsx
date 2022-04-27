@@ -1,8 +1,9 @@
-import { Brush, Category, PushPin, SquareFoot, VisibilityOff } from '@mui/icons-material';
+import { Brush, Category, PushPin, SquareFoot } from '@mui/icons-material';
 import { Box, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 
 import { Color } from '../../lib/enums';
 import { Tool } from '../../store/toolbar';
+import { FogToolItem } from './FogToolItem';
 import { SelectToolItem } from './SelectToolItem';
 
 export const Toolbar: React.FC = () => {
@@ -12,12 +13,7 @@ export const Toolbar: React.FC = () => {
     <Box sx={{ position: 'fixed', top: 4, left: 4, display: 'flex', flexDirection: 'column' }}>
       <ToggleButtonGroup orientation="vertical" sx={{ background: Color.Black }}>
         <SelectToolItem />
-
-        <Tooltip title="Fog" followCursor>
-          <ToggleButton value={Tool.Fog} size="small" onClick={handlePanMode}>
-            <VisibilityOff />
-          </ToggleButton>
-        </Tooltip>
+        <FogToolItem />
 
         <Tooltip title="Draw" followCursor>
           <ToggleButton value={Tool.Draw} size="small" onClick={handlePanMode}>

@@ -19,7 +19,7 @@ export class MapsService {
     orderBy?: Prisma.MapOrderByWithRelationInput;
   }): Promise<Map[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.map.findMany({ skip, take, cursor, where, orderBy });
+    return this.prisma.map.findMany({ skip, take, cursor, where, orderBy, include: { campaign: true, media: true } });
   }
 
   async createMap(data: Prisma.MapCreateInput) {
