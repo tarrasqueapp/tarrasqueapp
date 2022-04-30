@@ -14,13 +14,6 @@ services:
       - caddy
     env_file:
       - ./.env
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./client:/app
-      - /app/.next
-      - /app/node_modules
 
   ################
   ### Back-end ###
@@ -37,13 +30,6 @@ services:
       - postgres
     env_file:
       - ./.env
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./server:/app
-      - /app/dist
-      - /app/node_modules
 
   ################
   ### Database ###
@@ -95,14 +81,13 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./caddy/common:/srv/common
-      - ./plugins:/srv/plugins
       - ./data/caddy:/data/caddy
+      - ./packages/caddy/common:/srv/common
+      - ./plugins:/srv/plugins
       - caddy_config:/config
       - caddy_data:/data
     build:
-      context: ./caddy
+      context: ./packages/caddy
       dockerfile: Dockerfile
     env_file:
       - ./.env

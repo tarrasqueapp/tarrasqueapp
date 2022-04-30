@@ -1,0 +1,48 @@
+encode zstd gzip
+request_header -Referer -Server
+
+header {
+  -Server
+  -X-Powered-By
+}
+
+handle_errors {
+  rewrite * /maintenance.html
+  file_server
+}
+
+log {
+  output file /var/log/access.log
+  format filter {
+    wrap console {
+      time_format iso8601
+    }
+    fields {
+      request>headers>Authorization delete
+      request>headers>Cookie delete
+    }
+  }
+}
+
+# Client
+handle {
+  reverse_proxy client:3000
+}
+
+# Server
+@server path /api /api/*
+handle @server {
+  reverse_proxy server:3001
+}
+
+# Socket.IO
+@socket.io path /socket.io /socket.io/*
+handle @socket.io {
+  reverse_proxy server:3001
+}
+
+# Plugins
+@plugins path /plugins /plugins/*
+handle @plugins {
+  file_server browse
+}

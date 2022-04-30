@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+  #################
+  ### Front-end ###
+  #################
+
+  client:
+    build:
+      context: ./packages/client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./packages/client:/app
+      - /app/.next
+      - /app/node_modules
+
+  ################
+  ### Back-end ###
+  ################
+
+  server:
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./packages/server:/app
+      - /app/dist
+      - /app/node_modules
+
+
+  ######################
+  ### Infrastructure ###
+  ######################
+
+  caddy:
+    volumes:
+      - ./packages/caddy/Caddyfile.dev:/etc/caddy/Caddyfile:ro

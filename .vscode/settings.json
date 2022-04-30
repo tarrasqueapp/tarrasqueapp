@@ -3,5 +3,10 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "files.associations": {
+    "**/packages/caddy/Caddyfile.dev": "caddyfile",
+    "**/packages/caddy/Caddyfile.prod": "caddyfile",
+    "**/packages/caddy/common": "caddyfile"
   }
 }
