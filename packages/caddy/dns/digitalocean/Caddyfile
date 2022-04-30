@@ -1,0 +1,7 @@
+{$HOSTNAME:localhost} {
+  tls {
+    dns digitalocean {$CADDY_DIGITALOCEAN_API_TOKEN}
+  }
+
+  import /srv/common
+}

@@ -23,5 +23,8 @@ services:
   ######################
 
   caddy:
+    build:
+      context: ./packages/caddy/dns/${CADDY_DNS_METHOD}
+      dockerfile: Dockerfile
     volumes:
-      - ./packages/caddy/Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - ./packages/caddy/dns/${CADDY_DNS_METHOD}/Caddyfile:/etc/caddy/Caddyfile:ro

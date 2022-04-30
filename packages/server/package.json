@@ -8,12 +8,10 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "../../node_modules/.bin/prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest build --webpack --webpackPath webpack-hmr.config.js --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "../../node_modules/.bin/eslint \"{src,apps,libs}/**/*.ts\" --fix",
     "ncu": "ncu"
   },
   "dependencies": {

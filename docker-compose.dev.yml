@@ -26,11 +26,13 @@ services:
       - /app/dist
       - /app/node_modules
 
-
   ######################
   ### Infrastructure ###
   ######################
 
   caddy:
+    build:
+      context: ./packages/caddy/dns/local
+      dockerfile: Dockerfile
     volumes:
-      - ./packages/caddy/Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - ./packages/caddy/dns/local/Caddyfile:/etc/caddy/Caddyfile:ro

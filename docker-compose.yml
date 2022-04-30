@@ -50,23 +50,6 @@ services:
     env_file:
       - ./.env
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - postgres
-    ports:
-      - '8080:80'
-    volumes:
-      - ./data/pgadmin:/var/lib/pgadmin
-    env_file:
-      - ./.env
-    links:
-      - postgres:postgres
-
   ######################
   ### Infrastructure ###
   ######################
@@ -82,13 +65,10 @@ services:
       - '3000:3000'
     volumes:
       - ./data/caddy:/data/caddy
-      - ./packages/caddy/common:/srv/common
+      - ./packages/caddy/srv:/srv
       - ./plugins:/srv/plugins
       - caddy_config:/config
       - caddy_data:/data
-    build:
-      context: ./packages/caddy
-      dockerfile: Dockerfile
     env_file:
       - ./.env
     # stdin_open: true

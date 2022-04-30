@@ -5,8 +5,7 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "files.associations": {
-    "**/packages/caddy/Caddyfile.dev": "caddyfile",
-    "**/packages/caddy/Caddyfile.prod": "caddyfile",
-    "**/packages/caddy/common": "caddyfile"
+    "*Caddyfile*": "caddyfile",
+    "**/packages/caddy/srv/common": "caddyfile"
   }
 }
