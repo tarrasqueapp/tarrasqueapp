@@ -32,7 +32,7 @@ services:
 
   caddy:
     build:
-      context: ./packages/caddy/dns/local
+      context: ./caddy/dns/local
       dockerfile: Dockerfile
     volumes:
-      - ./packages/caddy/dns/local/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/dns/local/Caddyfile:/etc/caddy/Caddyfile:ro

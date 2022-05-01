@@ -6,6 +6,6 @@
   },
   "files.associations": {
     "*Caddyfile*": "caddyfile",
-    "**/packages/caddy/srv/common": "caddyfile"
+    "**/caddy/srv/common": "caddyfile"
   }
 }

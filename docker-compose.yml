@@ -65,7 +65,7 @@ services:
       - '3000:3000'
     volumes:
       - ./data/caddy:/data/caddy
-      - ./packages/caddy/srv:/srv
+      - ./caddy/srv:/srv
       - ./plugins:/srv/plugins
       - caddy_config:/config
       - caddy_data:/data
