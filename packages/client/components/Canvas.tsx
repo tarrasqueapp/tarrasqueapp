@@ -1,5 +1,6 @@
 import { Stage } from '@inlet/react-pixi';
 import { observer } from 'mobx-react-lite';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { io } from 'socket.io-client';
 
@@ -10,6 +11,7 @@ import { Map } from './Map';
 import { Token } from './Token';
 
 const Canvas: React.FC = observer(() => {
+  const router = useRouter();
   const windowSize = useWindowSize();
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const Canvas: React.FC = observer(() => {
             minorGridSize={70}
             minorStrokeWidth={1}
           />
-          <Token src="/token.webp" x={70} y={70} width={70} height={70} />
+          <Token src={`${router.basePath}/token.webp`} x={70} y={70} width={70} height={70} />
         </>
       </Map>
     </Stage>

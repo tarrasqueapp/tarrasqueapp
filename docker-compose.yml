@@ -14,6 +14,9 @@ services:
       - caddy
     env_file:
       - ./.env
+    build:
+      args:
+        - BASE_PATH=$BASE_PATH
 
   ################
   ### Back-end ###

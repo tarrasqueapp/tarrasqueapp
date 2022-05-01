@@ -85,8 +85,8 @@ async function main() {
         currencies: { create: { gold: 30, silver: 10 } },
         media: {
           create: {
-            url: '/token.webp',
-            thumbnailUrl: '/token.webp',
+            url: `${process.env.BASE_PATH}/token.webp`,
+            thumbnailUrl: `${process.env.BASE_PATH}/token.webp`,
             width: 280,
             height: 280,
             format: 'image/webp',
