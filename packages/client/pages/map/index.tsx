@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-const Index: NextPage = () => {
+const MapIndex: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -17,4 +17,4 @@ const Index: NextPage = () => {
   );
 };
 
-export default Index;
+export default MapIndex;

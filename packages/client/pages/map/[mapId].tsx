@@ -3,11 +3,11 @@ import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
-import { HUD } from '../components/HUD';
-import { useEffectAsync } from '../hooks/useEffectAsync';
-import { store } from '../store';
+import { HUD } from '../../components/HUD';
+import { useEffectAsync } from '../../hooks/useEffectAsync';
+import { store } from '../../store';
 
-const Canvas = dynamic(() => import('../components/Canvas'), { ssr: false });
+const Canvas = dynamic(() => import('../../components/Canvas'), { ssr: false });
 
 const MapId: NextPage = () => {
   const router = useRouter();
