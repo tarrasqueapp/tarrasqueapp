@@ -2,11 +2,9 @@
 
 ## Setup
 
-Run the following commands to install Tarrasque App on your local machine:
+Run the following commands to install the dependencies for Tarrasque App, as well as Terry, the CLI helper for running Tarrasque App commands:
 
     ./bin/setup.sh
-
-This will install the dependencies for Tarrasque App, as well as Terry, the CLI helper for running Tarrasque App commands.
 
 ### Install dependencies
 
@@ -35,3 +33,15 @@ To start the Docker production server, run:
     terry prod
 
 You can then access the production server at `http://localhost:3000`.
+
+## Database
+
+### Create database
+
+Push the state from Prisma schema to the database during prototyping.
+
+    yarn server prisma db push
+
+Seed the database with sample data.
+
+    yarn server prisma db seed

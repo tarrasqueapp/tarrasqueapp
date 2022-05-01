@@ -1,34 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
-import { PrismaService } from '../prisma/prisma.service';
+const prisma = new PrismaClient();
 
-@Injectable()
-export class SeedService {
-  constructor(private prisma: PrismaService) {}
+async function main() {
+  try {
+    console.debug('📂 Deleting all media...');
+    await prisma.media.deleteMany({});
+    console.debug('📂 Deleting all tokens...');
+    await prisma.token.deleteMany({});
+    console.debug('📂 Deleting all maps...');
+    await prisma.map.deleteMany({});
+    console.debug('📂 Deleting all movement types...');
+    await prisma.movement.deleteMany({});
+    console.debug('📂 Deleting all hit points...');
+    await prisma.hitPoints.deleteMany({});
+    console.debug('📂 Deleting all armor classes...');
+    await prisma.armorClass.deleteMany({});
+    console.debug('📂 Deleting all senses...');
+    await prisma.senses.deleteMany({});
+    console.debug('📂 Deleting all skills...');
+    await prisma.skill.deleteMany({});
+    console.debug('📂 Deleting all abilities...');
+    await prisma.ability.deleteMany({});
+    console.debug('📂 Deleting all currencies...');
+    await prisma.currencies.deleteMany({});
+    console.debug('📂 Deleting all player characters...');
+    await prisma.playerCharacter.deleteMany({});
+    console.debug('📂 Deleting all non-player characters...');
+    await prisma.nonPlayerCharacter.deleteMany({});
+    console.debug('📂 Deleting all campaigns...');
+    await prisma.campaign.deleteMany({});
+    console.debug('📂 Deleting all plugins...');
+    await prisma.plugin.deleteMany({});
+    console.debug('📂 Deleting all users...');
+    await prisma.user.deleteMany({});
+    console.debug('✅ All data deleted.');
 
-  async createNewData() {
-    console.debug('Creating new user...');
-    await this.prisma.user.create({
+    console.debug('📂 Creating new user...');
+    await prisma.user.create({
       data: {
         id: '1',
-        name: 'Richard',
-        email: 'rsolomou@gmail.com',
+        name: 'Example User',
+        email: 'example@example.com',
         password: 'password',
       },
     });
-    console.debug('Creating new campaign...');
-    await this.prisma.campaign.create({
+    console.debug('📂 Creating new campaign...');
+    await prisma.campaign.create({
       data: {
         id: '1',
-        name: 'Test Campaign',
+        name: 'Example Campaign',
         createdBy: { connect: { id: '1' } },
       },
     });
-    console.debug('Creating new map...');
-    await this.prisma.map.create({
+    console.debug('📂 Creating new map...');
+    await prisma.map.create({
       data: {
         id: '1',
-        name: 'Test Map',
+        name: 'Example Map',
         media: {
           create: {
             url: '/map.webp',
@@ -44,11 +73,11 @@ export class SeedService {
         createdBy: { connect: { id: '1' } },
       },
     });
-    console.debug('Creating new player character...');
-    await this.prisma.playerCharacter.create({
+    console.debug('📂 Creating new player character...');
+    await prisma.playerCharacter.create({
       data: {
         id: '1',
-        name: 'Test Player Character',
+        name: 'Example Player Character',
         armorClass: { create: { description: 'Natural armor' } },
         hitPoints: { create: {} },
         movement: { create: {} },
@@ -120,8 +149,8 @@ export class SeedService {
         campaign: { connect: { id: '1' } },
       },
     });
-    console.debug('Creating new token...');
-    await this.prisma.token.create({
+    console.debug('📂 Creating new token...');
+    await prisma.token.create({
       data: {
         width: 40,
         height: 40,
@@ -132,49 +161,19 @@ export class SeedService {
         playerCharacter: { connect: { id: '1' } },
       },
     });
-    console.debug('Creating new plugin...');
-    await this.prisma.plugin.create({
+    console.debug('📂 Creating new plugin...');
+    await prisma.plugin.create({
       data: {
-        name: 'D&D Beyond Integration',
-        url: 'https://www.dndbeyond.com/',
+        name: 'Example Plugin',
+        url: 'https://github.com/tarrasqueapp/tarrasque-example-plugin',
       },
     });
-    console.debug('New data created.');
-    return { success: true };
-  }
-
-  async deleteAllData() {
-    console.debug('Deleting all media...');
-    await this.prisma.media.deleteMany({});
-    console.debug('Deleting all tokens...');
-    await this.prisma.token.deleteMany({});
-    console.debug('Deleting all maps...');
-    await this.prisma.map.deleteMany({});
-    console.debug('Deleting all movement types...');
-    await this.prisma.movement.deleteMany({});
-    console.debug('Deleting all hit points...');
-    await this.prisma.hitPoints.deleteMany({});
-    console.debug('Deleting all armor classes...');
-    await this.prisma.armorClass.deleteMany({});
-    console.debug('Deleting all senses...');
-    await this.prisma.senses.deleteMany({});
-    console.debug('Deleting all skills...');
-    await this.prisma.skill.deleteMany({});
-    console.debug('Deleting all abilities...');
-    await this.prisma.ability.deleteMany({});
-    console.debug('Deleting all currencies...');
-    await this.prisma.currencies.deleteMany({});
-    console.debug('Deleting all player characters...');
-    await this.prisma.playerCharacter.deleteMany({});
-    console.debug('Deleting all non-player characters...');
-    await this.prisma.nonPlayerCharacter.deleteMany({});
-    console.debug('Deleting all campaigns...');
-    await this.prisma.campaign.deleteMany({});
-    console.debug('Deleting all plugins...');
-    await this.prisma.plugin.deleteMany({});
-    console.debug('Deleting all users...');
-    await this.prisma.user.deleteMany({});
-    console.debug('All data deleted.');
-    return { success: true };
+    console.debug('✅ New data created.');
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
   }
 }
+main();

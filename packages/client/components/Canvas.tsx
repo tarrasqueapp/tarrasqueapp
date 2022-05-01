@@ -36,8 +36,7 @@ const Canvas: React.FC = observer(() => {
     });
   }, [store.app.socket, store.maps.currentMap]);
 
-  if (!store.maps.currentMap?.id || !store.maps.currentMap.media.width || !store.maps.currentMap.media.height)
-    return null;
+  if (!store.maps.currentMap) return null;
 
   return (
     <Stage width={windowSize.width} height={windowSize.height} options={{ backgroundColor: 0x171717 }}>
