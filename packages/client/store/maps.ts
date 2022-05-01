@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
+import Router from 'next/router';
 
 import { CampaignInterface, MapInterface, MediaInterface, UserInterface } from '../lib/types';
 
@@ -49,13 +50,13 @@ class MapStore {
   }
 
   async getMaps() {
-    const response = await axios.get<MapInterface[]>('/api/maps');
+    const response = await axios.get<MapInterface[]>(`${Router.basePath}/api/maps`);
     this.entities = response.data.map((map) => new MapEntity(map));
     return this.entities;
   }
 
   async getMap(id: string) {
-    const response = await axios.get<MapInterface>(`/api/maps/${id}`);
+    const response = await axios.get<MapInterface>(`${Router.basePath}/api/maps/${id}`);
     const entity = new MapEntity(response.data);
     this.entities.push(entity);
     return entity;
