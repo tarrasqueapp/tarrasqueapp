@@ -25,24 +25,25 @@ log {
 }
 
 # Client
-handle {
+@client path {$BASE_PATH} {$BASE_PATH}/*
+handle @client {
   reverse_proxy client:3000
 }
 
 # Server
-@server path /api /api/*
+@server path {$BASE_PATH}/api {$BASE_PATH}/api/*
 handle @server {
   reverse_proxy server:3001
 }
 
 # Socket.IO
-@socket.io path /socket.io /socket.io/*
+@socket.io path {$BASE_PATH}/socket.io {$BASE_PATH}/socket.io/*
 handle @socket.io {
   reverse_proxy server:3001
 }
 
 # Plugins
-@plugins path /plugins /plugins/*
+@plugins path {$BASE_PATH}/plugins {$BASE_PATH}/plugins/*
 handle @plugins {
   file_server browse
 }

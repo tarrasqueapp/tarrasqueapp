@@ -16,7 +16,7 @@ const Canvas: React.FC = observer(() => {
 
   useEffect(() => {
     if (store.app.socket) return;
-    store.app.setSocket(io());
+    store.app.setSocket(io({ path: `${router.basePath}/socket.io` }));
   }, []);
 
   useEffect(() => {
