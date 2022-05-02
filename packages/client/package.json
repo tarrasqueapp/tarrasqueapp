@@ -1,7 +1,11 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "repository": "https://github.com/tarrasqueapp/tarrasqueapp",
+  "author": "Richard Solomou <richard@tarrasque.app>",
+  "license": "AGPL-3.0-or-later",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,10 +1,11 @@
 {
   "name": "server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "repository": "https://github.com/tarrasqueapp/tarrasqueapp",
+  "author": "Richard Solomou <richard@tarrasque.app>",
+  "license": "AGPL-3.0-or-later",
   "private": true,
-  "license": "UNLICENSED",
+  "type": "module",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
