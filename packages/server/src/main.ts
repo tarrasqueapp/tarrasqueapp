@@ -13,7 +13,8 @@ async function bootstrap() {
   }
 
   // Add /api prefix to all routes
-  app.setGlobalPrefix('api');
+  const apiPath = process.env.BASE_PATH ? process.env.BASE_PATH.slice(1) + '/api' : 'api';
+  app.setGlobalPrefix(apiPath);
 
   // Setup swagger
   const config = new DocumentBuilder()
@@ -23,7 +24,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup(apiPath, app, document);
 
   // Start server
   await app.listen(3001);

@@ -60,8 +60,8 @@ async function main() {
         name: 'Example Map',
         media: {
           create: {
-            url: '/map.webp',
-            thumbnailUrl: '/map.webp',
+            url: `${process.env.BASE_PATH}/map.webp`,
+            thumbnailUrl: `${process.env.BASE_PATH}/map.webp`,
             width: 2450,
             height: 1400,
             format: 'image/webp',
