@@ -1,66 +1,124 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Campaign, Prisma } from '@prisma/client';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
 
-import { PrismaService } from '../prisma/prisma.service';
+import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { UpdateCampaignDto } from './dto/update-campaign.dto';
+import { CampaignBaseEntity } from './entities/campaign-base.entity';
+import { CampaignEntity } from './entities/campaign.entity';
 
 @Injectable()
 export class CampaignsService {
+  private logger: Logger = new Logger(CampaignsService.name);
+
   constructor(private prisma: PrismaService) {}
 
-  async campaign(campaignWhereUniqueInput: Prisma.CampaignWhereUniqueInput) {
+  /**
+   * Get all campaigns for a given user
+   */
+  async getUserCampaigns(userId: string): Promise<CampaignEntity[]> {
+    this.logger.verbose(`📂 Getting campaigns for user "${userId}"`);
     try {
-      return await this.prisma.campaign.findUnique({
-        where: campaignWhereUniqueInput,
+      // User must be the creator of the campaign or a player
+      const campaigns = await this.prisma.campaign.findMany({
+        where: { OR: [{ createdById: userId }, { players: { some: { id: userId } } }] },
         include: {
-          maps: {
-            include: {
-              media: true,
-            },
-          },
+          maps: { include: { media: true } },
           players: true,
+          playerCharacters: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacters: { include: { controlledBy: true, media: true } },
+          createdBy: true,
+        },
+      });
+      this.logger.verbose(`✅️ Found ${campaigns.length} campaigns for user "${userId}"`);
+      return campaigns;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  /**
+   * Get a campaign by its id
+   */
+  async getCampaign(campaignId: string): Promise<CampaignEntity> {
+    this.logger.verbose(`📂 Getting campaign "${campaignId}"`);
+    try {
+      // Get the campaign
+      const campaign = await this.prisma.campaign.findUnique({
+        where: { id: campaignId },
+        include: {
+          maps: { include: { media: true } },
+          players: true,
+          playerCharacters: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacters: { include: { controlledBy: true, media: true } },
+          createdBy: true,
         },
         rejectOnNotFound: true,
       });
+      this.logger.verbose(`✅️ Found campaign "${campaignId}"`);
+      return campaign;
     } catch (error) {
+      this.logger.error(`🚨 Campaign "${campaignId}" not found`);
       throw new NotFoundException(error.message);
     }
   }
 
-  async campaigns(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.CampaignWhereUniqueInput;
-    where?: Prisma.CampaignWhereInput;
-    orderBy?: Prisma.CampaignOrderByWithRelationInput;
-  }): Promise<Campaign[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.campaign.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-      include: {
-        maps: {
-          include: {
-            media: true,
-          },
+  /**
+   * Create a new campaign
+   */
+  async createCampaign(data: CreateCampaignDto, createdById: string): Promise<CampaignBaseEntity> {
+    this.logger.verbose(`📂 Creating campaign "${data.name}"`);
+    try {
+      // Create the campaign
+      const campaign = await this.prisma.campaign.create({
+        data: {
+          name: data.name,
+          createdBy: { connect: { id: createdById } },
         },
-        players: true,
-      },
-    });
+      });
+      this.logger.verbose(`✅️ Created campaign "${campaign.id}"`);
+      return campaign;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
-  async createCampaign(data: Prisma.CampaignCreateInput) {
-    return this.prisma.campaign.create({ data });
+  /**
+   * Update a campaign
+   */
+  async updateCampaign(campaignId: string, data: UpdateCampaignDto): Promise<CampaignBaseEntity> {
+    this.logger.verbose(`📂 Updating campaign "${campaignId}"`);
+    try {
+      // Update the campaign
+      const campaign = await this.prisma.campaign.update({
+        where: { id: campaignId },
+        data: {
+          name: data.name,
+          players: { connect: data.players },
+        },
+      });
+      this.logger.verbose(`✅️ Updated campaign "${campaignId}"`);
+      return campaign;
+    } catch (error) {
+      this.logger.error(`🚨 Campaign "${campaignId}" not found`);
+      throw new NotFoundException(error.message);
+    }
   }
 
-  async updateCampaign(params: { where: Prisma.CampaignWhereUniqueInput; data: Prisma.CampaignUpdateInput }) {
-    const { data, where } = params;
-    return this.prisma.campaign.update({ data, where });
-  }
-
-  async deleteCampaign(where: Prisma.CampaignWhereUniqueInput) {
-    return this.prisma.campaign.delete({ where });
+  /**
+   * Delete a campaign
+   */
+  async deleteCampaign(campaignId: string): Promise<CampaignBaseEntity> {
+    this.logger.verbose(`📂 Deleting campaign "${campaignId}"`);
+    try {
+      // Delete the campaign
+      const campaign = await this.prisma.campaign.delete({ where: { id: campaignId } });
+      this.logger.verbose(`✅️ Deleted campaign "${campaignId}"`);
+      return campaign;
+    } catch (error) {
+      this.logger.error(`🚨 Campaign "${campaignId}" not found`);
+      throw new NotFoundException(error.message);
+    }
   }
 }

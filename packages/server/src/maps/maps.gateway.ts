@@ -17,18 +17,18 @@ export class MapsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('joinMap')
   handleJoinMap(client: Socket, mapId: string) {
     client.join(mapId);
-    this.logger.debug(`Client "${client.id}" joined map "${mapId}"`);
+    this.logger.verbose(`Client "${client.id}" joined map "${mapId}"`);
   }
 
   afterInit() {
-    this.logger.debug('Init');
+    this.logger.verbose('Init');
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.debug(`Client disconnected: "${client.id}"`);
+    this.logger.verbose(`Client disconnected: "${client.id}"`);
   }
 
   handleConnection(client: Socket) {
-    this.logger.debug(`Client connected: "${client.id}"`);
+    this.logger.verbose(`Client connected: "${client.id}"`);
   }
 }

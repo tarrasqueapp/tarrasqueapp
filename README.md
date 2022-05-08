@@ -24,7 +24,7 @@ To start the Docker development server, run:
 
     terry dev
 
-You can then access the development server at `http://localhost:3000`.
+You can then access the development server at `http://localhost:10000`.
 
 ### Run production server
 
@@ -32,7 +32,7 @@ To start the Docker production server, run:
 
     terry prod
 
-You can then access the production server at `http://localhost:3000`.
+You can then access the production server at `http://localhost:10000`.
 
 ## Database
 

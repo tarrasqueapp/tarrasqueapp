@@ -33,17 +33,18 @@ handle @client {
 # Server
 @server path {$BASE_PATH}/api {$BASE_PATH}/api/*
 handle @server {
-  reverse_proxy server:3001
+  reverse_proxy server:3000
 }
 
 # Socket.IO
 @socket.io path {$BASE_PATH}/socket.io {$BASE_PATH}/socket.io/*
 handle @socket.io {
-  reverse_proxy server:3001
+  reverse_proxy server:3000
 }
 
 # Plugins
 @plugins path {$BASE_PATH}/plugins {$BASE_PATH}/plugins/*
 handle @plugins {
+  root * /plugins
   file_server browse
 }

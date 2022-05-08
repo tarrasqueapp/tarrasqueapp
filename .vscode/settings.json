@@ -5,7 +5,6 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "files.associations": {
-    "*Caddyfile*": "caddyfile",
-    "**/caddy/srv/common": "caddyfile"
+    "**/.env**": "shellscript"
   }
 }

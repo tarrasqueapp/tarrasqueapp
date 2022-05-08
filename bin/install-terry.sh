@@ -53,7 +53,7 @@ do_install() {
   echo "alias terry=\"\$HOME/.terry/src/index.mjs\"" >> $PROFILE_FILE
 
   # Install completion
-  echo "✅ Terry has been installed. Please reload your profile."
+  echo "✅️ Terry has been installed. Please reload your profile."
 }
 
 do_install

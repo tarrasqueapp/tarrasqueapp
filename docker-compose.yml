@@ -30,7 +30,8 @@ services:
       - no-new-privileges:true
     networks:
       - caddy
-      - postgres
+      - db
+      - backend
     env_file:
       - ./.env
 
@@ -45,7 +46,7 @@ services:
     security_opt:
       - no-new-privileges:true
     networks:
-      - postgres
+      - db
     ports:
       - '5432:5432'
     volumes:
@@ -65,11 +66,11 @@ services:
     networks:
       - caddy
     ports:
-      - '3000:3000'
+      - '10000:10000'
     volumes:
       - ./data/caddy:/data/caddy
       - ./caddy/srv:/srv
-      - ./plugins:/srv/plugins
+      - ./plugins:/plugins
       - caddy_config:/config
       - caddy_data:/data
     env_file:
@@ -77,10 +78,38 @@ services:
     # stdin_open: true
     # tty: true
 
+  redis:
+    container_name: redis
+    image: redis:6-alpine
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
+  tus:
+    container_name: tus
+    image: tusproject/tusd
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - caddy
+    ports:
+      - '1080:1080'
+    command: -behind-proxy -upload-dir /tmp
+    volumes:
+      - tmp:/tmp
+
 networks:
   caddy:
-  postgres:
+  db:
+  backend:
 
 volumes:
   caddy_config:
   caddy_data:
+  tmp:

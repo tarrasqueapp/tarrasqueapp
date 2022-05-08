@@ -34,7 +34,7 @@ async function main() {
     await prisma.plugin.deleteMany({});
     console.debug('📂 Deleting all users...');
     await prisma.user.deleteMany({});
-    console.debug('✅ All data deleted.');
+    console.debug('✅️ All data deleted.');
 
     console.debug('📂 Creating new user...');
     await prisma.user.create({
@@ -168,7 +168,7 @@ async function main() {
         url: 'https://github.com/tarrasqueapp/tarrasque-example-plugin',
       },
     });
-    console.debug('✅ New data created.');
+    console.debug('✅️ New data created.');
   } catch (error) {
     console.error(error);
     process.exit(1);

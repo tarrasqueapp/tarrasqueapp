@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User as UserModel } from '@prisma/client';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+import { ConnectUserDto } from './dto/connect-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiBearerAuth()
@@ -10,29 +12,43 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('')
+  /**
+   * Get all users
+   */
+  @Get()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all users' })
-  async getUsers() {
-    return this.usersService.users({});
+  @ApiOkResponse({ status: 200, type: [UserEntity] })
+  async getUsers(): Promise<UserEntity[]> {
+    return await this.usersService.getUsers();
   }
 
+  /**
+   * Get a user by their id
+   */
   @Get(':id')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get specific user' })
-  async getUserById(@Param('id') id: string) {
-    return this.usersService.user({ id });
+  @ApiOkResponse({ status: 200, type: UserEntity })
+  async getUserById(@Param() { id }: ConnectUserDto): Promise<UserEntity> {
+    return await this.usersService.getUser(id);
   }
 
+  /**
+   * Update a user
+   */
+  @Put(':id')
+  @ApiBearerAuth()
+  @ApiOkResponse({ status: 200, type: UserEntity })
+  async updateUser(@Param() { id }: ConnectUserDto, @Body() data: UpdateUserDto): Promise<UserEntity> {
+    return await this.usersService.updateUser(id, data);
+  }
+
+  /**
+   * Delete a user
+   */
   @Delete(':id')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete user' })
-  async deleteUser(@Param('id') id: string) {
-    return this.usersService.deleteUser({ id });
-  }
-
-  @Post('')
-  async signupUser(@Body() userData: { name: string; email: string; password: string }): Promise<UserModel> {
-    return this.usersService.createUser(userData);
+  @ApiOkResponse({ status: 200, type: UserEntity })
+  async deleteUser(@Param() { id }: ConnectUserDto): Promise<UserEntity> {
+    return await this.usersService.deleteUser(id);
   }
 }

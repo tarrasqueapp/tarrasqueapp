@@ -19,7 +19,7 @@ do_install() {
   yarn server
 
   # Install completion
-  echo "✅ Tarrasque App dependencies have been installed."
+  echo "✅️ Tarrasque App dependencies have been installed."
 }
 
 do_install
