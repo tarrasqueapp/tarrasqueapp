@@ -1,29 +1,31 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
+import { Role } from '@prisma/client';
 
-import { UserDecorator } from '../common/decorators/user.decorator';
+import { User } from '../users/decorators/user.decorator';
+import { UserEntity } from '../users/entities/user.entity';
+import { RoleGuard } from '../users/guards/role.guard';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
+import { CampaignRole, CampaignRoleGuard } from './guards/campaign-role.guard';
 
 @ApiTags('campaigns')
 @Controller()
 export class CampaignsController {
-  private logger: Logger = new Logger(CampaignsController.name);
-
   constructor(private readonly campaignsService: CampaignsService) {}
 
   /**
    * Get all campaigns the user belongs to
    */
   @Get()
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: [CampaignEntity] })
-  async getCampaigns(@UserDecorator() user: User): Promise<CampaignEntity[]> {
+  async getCampaigns(@User() user: UserEntity): Promise<CampaignEntity[]> {
     return await this.campaignsService.getUserCampaigns(user.id);
   }
 
@@ -40,9 +42,10 @@ export class CampaignsController {
    * Create a new campaign
    */
   @Post()
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: CampaignBaseEntity })
-  async createCampaign(@Body() data: CreateCampaignDto, @UserDecorator() user: User): Promise<CampaignBaseEntity> {
+  async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
     return await this.campaignsService.createCampaign(data, user.id);
   }
 
@@ -50,20 +53,14 @@ export class CampaignsController {
    * Update a campaign
    */
   @Put(':campaignId')
+  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: CampaignBaseEntity })
   async updateCampaign(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() data: UpdateCampaignDto,
-    @UserDecorator() user: User,
   ): Promise<CampaignBaseEntity> {
-    // User must be the creator of the campaign
-    const campaign = await this.campaignsService.getCampaign(campaignId);
-    if (campaign.createdById !== user.id) {
-      this.logger.error(`🚨 User "${user.id}" is not allowed to update campaign "${campaignId}"`);
-      throw new ForbiddenException("You don't have permission to update this campaign");
-    }
-    // Update the campaign
     return await this.campaignsService.updateCampaign(campaignId, data);
   }
 
@@ -71,19 +68,11 @@ export class CampaignsController {
    * Delete a campaign
    */
   @Delete(':campaignId')
+  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: CampaignBaseEntity })
-  async deleteCampaign(
-    @Param() { campaignId }: ConnectCampaignDto,
-    @UserDecorator() user: User,
-  ): Promise<CampaignBaseEntity> {
-    // User must be the creator of the campaign
-    const campaign = await this.campaignsService.getCampaign(campaignId);
-    if (campaign.createdById !== user.id) {
-      this.logger.error(`🚨 User "${user.id}" is not the creator of campaign "${campaignId}"`);
-      throw new ForbiddenException("You don't have permission to delete this campaign");
-    }
-    // Delete the campaign
+  async deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignBaseEntity> {
     return await this.campaignsService.deleteCampaign(campaignId);
   }
 }

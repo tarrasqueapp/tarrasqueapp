@@ -1,11 +1,12 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
 import { excludeFields } from '../helpers';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserWithPasswordEntity } from './entities/user-with-password.entity';
+import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
@@ -15,20 +16,22 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * Get the fields that should be returned without the password
+   * Get the fields that should be returned when querying users
+   * @returns User fields withouth password and refresh token
    */
-  get fieldsWithoutPassword() {
-    return excludeFields(Prisma.UserScalarFieldEnum, ['password']);
+  get includedFields() {
+    return excludeFields(Prisma.UserScalarFieldEnum, ['password', 'refreshToken']);
   }
 
   /**
-   * Get all users that match the given criteria (without their password)
+   * Get all users (without their password or refresh token)
+   * @returns Users
    */
   async getUsers(): Promise<UserEntity[]> {
     this.logger.verbose(`📂 Getting users`);
     try {
       // Get the users
-      const users = await this.prisma.user.findMany({ select: this.fieldsWithoutPassword });
+      const users = await this.prisma.user.findMany({ select: this.includedFields });
       this.logger.verbose(`✅️ Found ${users.length} users`);
       return users;
     } catch (error) {
@@ -38,15 +41,17 @@ export class UsersService {
   }
 
   /**
-   * Get a user that matches the given criteria (without their password)
+   * Get a user that matches the given id (without their password or refresh token)
+   * @param userId The user's id
+   * @returns User
    */
-  async getUser(userId: string): Promise<UserEntity> {
+  async getUserById(userId: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: this.fieldsWithoutPassword,
+        select: this.includedFields,
         rejectOnNotFound: true,
       });
       this.logger.verbose(`✅️ Found user "${userId}"`);
@@ -58,32 +63,51 @@ export class UsersService {
   }
 
   /**
-   * Get a user that matches the given criteria (with their password)
+   * Get a user that matches the given id (without their password or refresh token)
+   * @param userId The user's id
+   * @returns User
    */
-  async getUserWithPassword(userId: string): Promise<UserWithPasswordEntity> {
+  async getUserByIdWithExcludedFields(userId: string): Promise<UserWithExcludedFieldsEntity> {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        rejectOnNotFound: true,
-      });
+      const user = await this.prisma.user.findUnique({ where: { id: userId }, rejectOnNotFound: true });
       this.logger.verbose(`✅️ Found user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Get a user that matches the given email (with their password and refresh token)
+   * @param email The user's email
+   * @returns User
+   */
+  async getUserByEmailWithExcludedFields(email: string): Promise<UserWithExcludedFieldsEntity> {
+    this.logger.verbose(`📂 Getting user with email "${email}"`);
+    try {
+      // Get the user
+      const user = await this.prisma.user.findUnique({ where: { email }, rejectOnNotFound: true });
+      this.logger.verbose(`✅️ Found user "${user.id}" with email "${email}"`);
+      return user;
+    } catch (error) {
+      this.logger.error(`🚨 User with email "${email}" not found`);
       throw new NotFoundException(error.message);
     }
   }
 
   /**
    * Create a new user
+   * @param data The user's data
+   * @returns The created user
    */
   async createUser(data: CreateUserDto): Promise<UserEntity> {
     this.logger.verbose(`📂 Creating user "${data.email}"`);
     try {
       // Create the user
-      const user = await this.prisma.user.create({ data, select: this.fieldsWithoutPassword });
+      const user = await this.prisma.user.create({ data, select: this.includedFields });
       this.logger.verbose(`✅️ Created user "${data.email}"`);
       return user;
     } catch (error) {
@@ -94,12 +118,15 @@ export class UsersService {
 
   /**
    * Update a user
+   * @param userId The user's id
+   * @param data The user's data
+   * @returns The updated user
    */
   async updateUser(userId: string, data: UpdateUserDto): Promise<UserEntity> {
     this.logger.verbose(`📂 Updating user "${userId}"`);
     try {
       // Update the user
-      const user = await this.prisma.user.update({ where: { id: userId }, data, select: this.fieldsWithoutPassword });
+      const user = await this.prisma.user.update({ where: { id: userId }, data, select: this.includedFields });
       this.logger.verbose(`✅️ Updated user "${userId}"`);
       return user;
     } catch (error) {
@@ -110,17 +137,60 @@ export class UsersService {
 
   /**
    * Delete a user
+   * @param userId The user's id
+   * @returns The deleted user
    */
   async deleteUser(userId: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Deleting user "${userId}"`);
     try {
       // Delete the user
-      const user = await this.prisma.user.delete({ where: { id: userId }, select: this.fieldsWithoutPassword });
+      const user = await this.prisma.user.delete({ where: { id: userId }, select: this.includedFields });
       this.logger.verbose(`✅️ Deleted user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
       throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Set the refresh token for a user
+   * @param userId The user's id
+   * @param refreshToken The refresh token
+   */
+  async setRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    this.logger.verbose(`📂 Setting refresh token for user "${userId}"`);
+    // Hash the refresh token
+    const hashedRefreshToken = await argon2.hash(refreshToken);
+    // Update the user
+    await this.updateUser(userId, { refreshToken: hashedRefreshToken });
+  }
+
+  /**
+   * Remove the refresh token from a user
+   * @param userId The user's id
+   * @returns The user
+   */
+  async removeRefreshToken(userId: string): Promise<UserEntity> {
+    this.logger.verbose(`📂 Removing refresh token for user "${userId}"`);
+    // Update the user
+    return this.updateUser(userId, { refreshToken: null });
+  }
+
+  /**
+   * Get user from refresh token
+   * @param userId The user's id
+   * @param refreshToken The refresh token
+   * @returns The user
+   */
+  async getUserIfRefreshTokenMatches(userId: string, refreshToken: string) {
+    // Get the user
+    const userWithExcludedFields = await this.getUserByIdWithExcludedFields(userId);
+    // Check if the refresh token matches
+    const refreshTokenMatches = await argon2.verify(userWithExcludedFields.refreshToken, refreshToken);
+    // Return the user if the refresh token matches
+    if (refreshTokenMatches) {
+      return await this.getUserById(userId);
     }
   }
 }

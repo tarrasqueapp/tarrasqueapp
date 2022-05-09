@@ -14,6 +14,9 @@ export class TokensService {
 
   /**
    * Get all tokens for a map
+   * @param mapId The map id
+   * @returns The tokens
+   *
    */
   async getTokens(tokenIds: string[]): Promise<TokenEntity[]> {
     this.logger.verbose(`📂 Getting tokens"`);
@@ -36,6 +39,8 @@ export class TokensService {
 
   /**
    * Get all tokens for a map
+   * @param mapId The map id
+   * @returns The tokens
    */
   async getMapTokens(mapId: string): Promise<TokenEntity[]> {
     this.logger.verbose(`📂 Getting tokens for map "${mapId}"`);
@@ -58,6 +63,10 @@ export class TokensService {
 
   /**
    * Create a token on a map
+   * @param data The token data
+   * @param mapId The map id
+   * @param createdById The user id
+   * @returns The token
    */
   async createToken(data: CreateTokenDto, mapId: string, createdById: string): Promise<TokenEntity> {
     this.logger.verbose(`📂 Creating token at ${data.x}x${data.y} on map "${mapId}"`);
@@ -80,6 +89,10 @@ export class TokensService {
 
   /**
    * Create tokens on a map
+   * @param data The token data
+   * @param mapId The map id
+   * @param createdById The user id
+   * @returns The tokens
    */
   async createTokens(data: CreateTokenDto[], mapId: string, createdById: string): Promise<TokenEntity[]> {
     const promises = data.map((token) => this.createToken(token, mapId, createdById));
@@ -88,6 +101,9 @@ export class TokensService {
 
   /**
    * Update a token on a map
+   * @param tokenId The token id
+   * @param data The token data
+   * @returns The token
    */
   async updateToken(tokenId: string, data: UpdateTokenDto): Promise<TokenBaseEntity> {
     this.logger.verbose(`📂 Updating token "${tokenId}"`);
@@ -104,14 +120,18 @@ export class TokensService {
 
   /**
    * Update tokens on a map
+   * @param data The token data
+   * @returns The tokens
    */
-  async updateTokens(tokens: UpdateTokenDto[]): Promise<TokenBaseEntity[]> {
-    const promises = tokens.map((token) => this.updateToken(token.id, token));
+  async updateTokens(data: UpdateTokenDto[]): Promise<TokenBaseEntity[]> {
+    const promises = data.map((token) => this.updateToken(token.id, token));
     return await Promise.all(promises);
   }
 
   /**
    * Delete a token on a map
+   * @param tokenId The token id
+   * @returns The token
    */
   async deleteToken(tokenId: string): Promise<TokenBaseEntity> {
     this.logger.verbose(`📂 Deleting token "${tokenId}"`);
@@ -128,6 +148,8 @@ export class TokensService {
 
   /**
    * Delete tokens on a map
+   * @param tokenIds The token ids
+   * @returns The tokens
    */
   async deleteTokens(tokenIds: string[]): Promise<TokenBaseEntity[]> {
     const promises = tokenIds.map((tokenId) => this.deleteToken(tokenId));

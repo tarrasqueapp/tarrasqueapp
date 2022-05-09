@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
+import { Role } from '@prisma/client';
 
-import { CampaignsService } from '../campaigns/campaigns.service';
 import { ConnectCampaignDto } from '../campaigns/dto/connect-campaign.dto';
-import { UserDecorator } from '../common/decorators/user.decorator';
+import { CampaignRole, CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
+import { User } from '../users/decorators/user.decorator';
+import { UserEntity } from '../users/entities/user.entity';
+import { RoleGuard } from '../users/guards/role.guard';
 import { ConnectMapDto } from './dto/connect-map.dto';
 import { CreateMapDto } from './dto/create-map.dto';
 import { UpdateMapDto } from './dto/update-map.dto';
@@ -15,9 +17,7 @@ import { MapsService } from './maps.service';
 @ApiTags('maps')
 @Controller()
 export class MapsController {
-  private logger: Logger = new Logger(MapsController.name);
-
-  constructor(private readonly mapsService: MapsService, private readonly campaignsService: CampaignsService) {}
+  constructor(private readonly mapsService: MapsService) {}
 
   /**
    * Get all maps for a campaign
@@ -41,20 +41,11 @@ export class MapsController {
    * Create a new map for the current campaign
    */
   @Post()
+  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: MapBaseEntity })
-  async createMap(
-    @Param() { campaignId }: ConnectCampaignDto,
-    @Body() data: CreateMapDto,
-    @UserDecorator() user: User,
-  ): Promise<MapBaseEntity> {
-    // Check if the user is allowed to create a map in this campaign
-    const campaign = await this.campaignsService.getCampaign(campaignId);
-    if (campaign.createdById !== user.id) {
-      this.logger.error(`🚨 User "${user.id}" is not allowed to create a map in campaign "${campaignId}"`);
-      throw new ForbiddenException("You don't have permission to create a map in this campaign");
-    }
-    // Create the map
+  async createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
     return await this.mapsService.createMap(data, user.id);
   }
 
@@ -62,18 +53,11 @@ export class MapsController {
    * Duplicate a map in the current campaign
    */
   @Post(':mapId/duplicate')
+  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: MapBaseEntity })
-  async duplicateMap(@Param() { mapId }: ConnectMapDto, @UserDecorator() user: User): Promise<MapBaseEntity> {
-    // Check if the user is allowed to duplicate this map
-    const map = await this.mapsService.getMap(mapId);
-    if (map.createdById !== user.id) {
-      this.logger.error(
-        `🚨 User "${user.id}" is not allowed to duplicate map "${mapId}" in campaign "${map.campaignId}"`,
-      );
-      throw new ForbiddenException("You don't have permission to duplicate this map");
-    }
-    // Duplicate the map
+  async duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
     return await this.mapsService.duplicateMap(mapId);
   }
 
@@ -81,20 +65,11 @@ export class MapsController {
    * Update a map
    */
   @Put(':mapId')
+  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: MapBaseEntity })
-  async updateMap(
-    @Param() { mapId }: ConnectMapDto,
-    @Body() data: UpdateMapDto,
-    @UserDecorator() user: User,
-  ): Promise<MapBaseEntity> {
-    // Check if the user is allowed to update this map
-    const map = await this.mapsService.getMap(mapId);
-    if (map.createdById !== user.id) {
-      this.logger.error(`🚨 User "${user.id}" is not allowed to update map "${mapId}" in campaign "${map.campaignId}"`);
-      throw new ForbiddenException("You don't have permission to update this map");
-    }
-    // Update the map
+  async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
     return await this.mapsService.updateMap(mapId, data);
   }
 
@@ -102,16 +77,11 @@ export class MapsController {
    * Delete a map
    */
   @Delete(':mapId')
+  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: MapBaseEntity })
-  async deleteMap(@Param() { mapId }: ConnectMapDto, @UserDecorator() user: User): Promise<MapBaseEntity> {
-    // Check if the user is allowed to delete this map
-    const map = await this.mapsService.getMap(mapId);
-    if (map.createdById !== user.id) {
-      this.logger.error(`🚨 User "${user.id}" is not allowed to delete map "${mapId}" in campaign "${map.campaignId}"`);
-      throw new ForbiddenException("You don't have permission to delete this map");
-    }
-    // Delete the map
+  async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
     return await this.mapsService.deleteMap(mapId);
   }
 }
