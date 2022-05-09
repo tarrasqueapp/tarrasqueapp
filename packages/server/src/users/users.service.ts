@@ -1,6 +1,6 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import argon2 from 'argon2';
+import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
 import { excludeFields } from '../helpers';
@@ -111,8 +111,8 @@ export class UsersService {
       this.logger.verbose(`✅️ Created user "${data.email}"`);
       return user;
     } catch (error) {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.logger.error(`🚨 User "${data.email}" already exists`);
+      throw new ConflictException('User already exists');
     }
   }
 
@@ -162,8 +162,18 @@ export class UsersService {
     this.logger.verbose(`📂 Setting refresh token for user "${userId}"`);
     // Hash the refresh token
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    // Update the user
-    await this.updateUser(userId, { refreshToken: hashedRefreshToken });
+    try {
+      // Update the user
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: hashedRefreshToken },
+        select: this.includedFields,
+      });
+      this.logger.verbose(`✅️ Removed refresh token for user "${userId}"`);
+    } catch (error) {
+      this.logger.error(`🚨 User "${userId}" not found`);
+      throw new NotFoundException(error.message);
+    }
   }
 
   /**
@@ -173,8 +183,19 @@ export class UsersService {
    */
   async removeRefreshToken(userId: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Removing refresh token for user "${userId}"`);
-    // Update the user
-    return this.updateUser(userId, { refreshToken: null });
+    try {
+      // Update the user
+      const user = await this.prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: null },
+        select: this.includedFields,
+      });
+      this.logger.verbose(`✅️ Removed refresh token for user "${userId}"`);
+      return user;
+    } catch (error) {
+      this.logger.error(`🚨 User "${userId}" not found`);
+      throw new NotFoundException(error.message);
+    }
   }
 
   /**
