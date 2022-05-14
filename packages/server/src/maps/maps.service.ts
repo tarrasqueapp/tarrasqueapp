@@ -22,7 +22,7 @@ export class MapsService {
     try {
       // Get the maps
       const maps = await this.prisma.map.findMany({ where: { campaignId }, include: { media: true } });
-      this.logger.verbose(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
+      this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
       return maps;
     } catch (error) {
       this.logger.error(error.message);
@@ -48,11 +48,28 @@ export class MapsService {
         },
         rejectOnNotFound: true,
       });
-      this.logger.verbose(`✅️ Found map "${mapId}"`);
+      this.logger.debug(`✅️ Found map "${mapId}"`);
       return map;
     } catch (error) {
       this.logger.error(`🚨 Map "${mapId}" not found`);
       throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Get map count
+   * @returns Map count
+   */
+  async getMapCount(): Promise<number> {
+    this.logger.verbose(`📂 Getting map count`);
+    try {
+      // Get the map count
+      const count = await this.prisma.map.count();
+      this.logger.debug(`✅️ Found ${count} maps`);
+      return count;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -75,7 +92,7 @@ export class MapsService {
         },
         include: { media: true },
       });
-      this.logger.verbose(`✅️ Created map "${data.name}"`);
+      this.logger.debug(`✅️ Created map "${data.name}"`);
       return map;
     } catch (error) {
       this.logger.error(error.message);
@@ -113,7 +130,7 @@ export class MapsService {
           media: true,
         },
       });
-      this.logger.verbose(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
+      this.logger.debug(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
       return newMap;
     } catch (error) {
       this.logger.error(error.message);
@@ -139,7 +156,7 @@ export class MapsService {
         },
         include: { media: true },
       });
-      this.logger.verbose(`✅️ Updated map "${mapId}"`);
+      this.logger.debug(`✅️ Updated map "${mapId}"`);
       return map;
     } catch (error) {
       this.logger.error(`🚨 Map "${mapId}" not found`);
@@ -157,7 +174,7 @@ export class MapsService {
     try {
       // Delete the map
       const map = await this.prisma.map.delete({ where: { id: mapId }, include: { media: true } });
-      this.logger.verbose(`✅️ Deleted map "${mapId}"`);
+      this.logger.debug(`✅️ Deleted map "${mapId}"`);
       return map;
     } catch (error) {
       this.logger.error(`🚨 Map "${mapId}" not found`);

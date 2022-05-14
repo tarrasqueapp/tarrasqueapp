@@ -31,7 +31,7 @@ export class CampaignsService {
           createdBy: true,
         },
       });
-      this.logger.verbose(`✅️ Found ${campaigns.length} campaigns for user "${userId}"`);
+      this.logger.debug(`✅️ Found ${campaigns.length} campaigns for user "${userId}"`);
       return campaigns;
     } catch (error) {
       this.logger.error(error.message);
@@ -59,11 +59,28 @@ export class CampaignsService {
         },
         rejectOnNotFound: true,
       });
-      this.logger.verbose(`✅️ Found campaign "${campaignId}"`);
+      this.logger.debug(`✅️ Found campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
       this.logger.error(`🚨 Campaign "${campaignId}" not found`);
       throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Get campaign count
+   * @returns Campaign count
+   */
+  async getCampaignCount(): Promise<number> {
+    this.logger.verbose(`📂 Getting campaign count`);
+    try {
+      // Get the campaign count
+      const count = await this.prisma.campaign.count();
+      this.logger.debug(`✅️ Found ${count} campaigns`);
+      return count;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -83,7 +100,7 @@ export class CampaignsService {
           createdBy: { connect: { id: createdById } },
         },
       });
-      this.logger.verbose(`✅️ Created campaign "${campaign.id}"`);
+      this.logger.debug(`✅️ Created campaign "${campaign.id}"`);
       return campaign;
     } catch (error) {
       this.logger.error(error.message);
@@ -108,7 +125,7 @@ export class CampaignsService {
           players: { connect: data.players },
         },
       });
-      this.logger.verbose(`✅️ Updated campaign "${campaignId}"`);
+      this.logger.debug(`✅️ Updated campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
       this.logger.error(`🚨 Campaign "${campaignId}" not found`);
@@ -126,7 +143,7 @@ export class CampaignsService {
     try {
       // Delete the campaign
       const campaign = await this.prisma.campaign.delete({ where: { id: campaignId } });
-      this.logger.verbose(`✅️ Deleted campaign "${campaignId}"`);
+      this.logger.debug(`✅️ Deleted campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
       this.logger.error(`🚨 Campaign "${campaignId}" not found`);

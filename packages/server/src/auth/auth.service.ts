@@ -24,7 +24,7 @@ export class AuthService {
     const hashedPassword = await argon2.hash(data.password);
     // Create the user
     const user = await this.usersService.createUser({ ...data, password: hashedPassword });
-    this.logger.verbose(`✅️ Registered user "${data.email}"`);
+    this.logger.debug(`✅️ Registered user "${data.email}"`);
     return user;
   }
 
@@ -40,7 +40,7 @@ export class AuthService {
     const userWithExcludedFields = await this.usersService.getUserByEmailWithExcludedFields(email);
     // Throw an error if the password is wrong
     await this.verifyPassword(userWithExcludedFields.password, password);
-    this.logger.verbose(`✅️ Logged in user "${email}"`);
+    this.logger.debug(`✅️ Logged in user "${email}"`);
     // Return the user without the excluded fields
     return await this.usersService.getUserById(userWithExcludedFields.id);
   }
@@ -58,7 +58,7 @@ export class AuthService {
       if (!passwordMatches) {
         throw new UnauthorizedException('Invalid email or password');
       }
-      this.logger.verbose(`✅️ Verified password"`);
+      this.logger.debug(`✅️ Verified password"`);
     } catch (error) {
       this.logger.error(`🚨 User failed to verify password`);
       throw new UnauthorizedException('Invalid email or password');

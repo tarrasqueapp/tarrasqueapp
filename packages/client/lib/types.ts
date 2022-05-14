@@ -1,7 +1,13 @@
+export enum Role {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
 export interface UserInterface {
   id: string;
   name: string;
   email: string;
+  roles: Role[];
   // DateTime
   createdAt: string;
   updatedAt: string;

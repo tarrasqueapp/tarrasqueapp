@@ -1,32 +1,18 @@
 html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-    Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+body,
+#__next {
+  height: 100%;
+  height: -webkit-fill-available;
 }
 
 html {
-  overflow: hidden;
-  height: 100%;
-}
-
-body {
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
-  height: 100%;
-  overflow: auto;
+  -webkit-font-feature-settings: 'lnum';
+  -moz-font-feature-settings: 'lnum';
+  font-feature-settings: 'lnum';
 }
 
 #__next {
   display: flex;
+  align-items: center;
+  justify-content: center;
 }

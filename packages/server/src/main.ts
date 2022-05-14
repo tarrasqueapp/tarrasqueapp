@@ -43,11 +43,5 @@ async function bootstrap() {
 
   // Start server
   await app.listen(3000, '0.0.0.0');
-
-  // Hot reloading
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
 }
 bootstrap();

@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import { theme } from '../lib/theme';
+import '../styles/fonts.css';
 import '../styles/globals.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.

@@ -79,7 +79,7 @@ export class TokensService {
           nonPlayerCharacter: { include: { controlledBy: true, media: true } },
         },
       });
-      this.logger.verbose(`✅️ Created token "${token.id}"`);
+      this.logger.debug(`✅️ Created token "${token.id}"`);
       return token;
     } catch (error) {
       this.logger.error(error.message);
@@ -110,7 +110,7 @@ export class TokensService {
     try {
       // Update the token
       const token = await this.prisma.token.update({ where: { id: tokenId }, data });
-      this.logger.verbose(`✅️ Updated token "${token.id}"`);
+      this.logger.debug(`✅️ Updated token "${token.id}"`);
       return token;
     } catch (error) {
       this.logger.error(`🚨 Token "${tokenId}" not found`);
@@ -138,7 +138,7 @@ export class TokensService {
     try {
       // Delete the token
       const token = await this.prisma.token.delete({ where: { id: tokenId } });
-      this.logger.verbose(`✅️ Deleted token "${token.id}"`);
+      this.logger.debug(`✅️ Deleted token "${token.id}"`);
       return token;
     } catch (error) {
       this.logger.error(`🚨 Token "${tokenId}" not found`);

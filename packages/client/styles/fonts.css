@@ -1,0 +1,40 @@
+/* Inter */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter/Inter-VariableFont_slnt,wght.ttf') format('truetype');
+}
+
+/* Libre Baskerville */
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('/fonts/Libre_Baskerville/LibreBaskerville-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('/fonts/Libre_Baskerville/LibreBaskerville-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('/fonts/Libre_Baskerville/LibreBaskerville-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Raleway */
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway/Raleway-VariableFont_wght.ttf') format('truetype');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway/Raleway-Raleway-Italic-VariableFont_wght.ttf') format('truetype');
+  font-style: italic;
+}

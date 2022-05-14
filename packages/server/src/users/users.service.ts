@@ -32,8 +32,25 @@ export class UsersService {
     try {
       // Get the users
       const users = await this.prisma.user.findMany({ select: this.includedFields });
-      this.logger.verbose(`✅️ Found ${users.length} users`);
+      this.logger.debug(`✅️ Found ${users.length} users`);
       return users;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  /**
+   * Get user count
+   * @returns User count
+   */
+  async getUserCount(): Promise<number> {
+    this.logger.verbose(`📂 Getting user count`);
+    try {
+      // Get the user count
+      const count = await this.prisma.user.count();
+      this.logger.debug(`✅️ Found ${count} users`);
+      return count;
     } catch (error) {
       this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);
@@ -54,7 +71,7 @@ export class UsersService {
         select: this.includedFields,
         rejectOnNotFound: true,
       });
-      this.logger.verbose(`✅️ Found user "${userId}"`);
+      this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
@@ -72,7 +89,7 @@ export class UsersService {
     try {
       // Get the user
       const user = await this.prisma.user.findUnique({ where: { id: userId }, rejectOnNotFound: true });
-      this.logger.verbose(`✅️ Found user "${userId}"`);
+      this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
@@ -90,7 +107,7 @@ export class UsersService {
     try {
       // Get the user
       const user = await this.prisma.user.findUnique({ where: { email }, rejectOnNotFound: true });
-      this.logger.verbose(`✅️ Found user "${user.id}" with email "${email}"`);
+      this.logger.debug(`✅️ Found user "${user.id}" with email "${email}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User with email "${email}" not found`);
@@ -108,7 +125,7 @@ export class UsersService {
     try {
       // Create the user
       const user = await this.prisma.user.create({ data, select: this.includedFields });
-      this.logger.verbose(`✅️ Created user "${data.email}"`);
+      this.logger.debug(`✅️ Created user "${data.email}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${data.email}" already exists`);
@@ -127,7 +144,7 @@ export class UsersService {
     try {
       // Update the user
       const user = await this.prisma.user.update({ where: { id: userId }, data, select: this.includedFields });
-      this.logger.verbose(`✅️ Updated user "${userId}"`);
+      this.logger.debug(`✅️ Updated user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
@@ -145,7 +162,7 @@ export class UsersService {
     try {
       // Delete the user
       const user = await this.prisma.user.delete({ where: { id: userId }, select: this.includedFields });
-      this.logger.verbose(`✅️ Deleted user "${userId}"`);
+      this.logger.debug(`✅️ Deleted user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
@@ -169,7 +186,7 @@ export class UsersService {
         data: { refreshToken: hashedRefreshToken },
         select: this.includedFields,
       });
-      this.logger.verbose(`✅️ Removed refresh token for user "${userId}"`);
+      this.logger.debug(`✅️ Removed refresh token for user "${userId}"`);
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
       throw new NotFoundException(error.message);
@@ -190,7 +207,7 @@ export class UsersService {
         data: { refreshToken: null },
         select: this.includedFields,
       });
-      this.logger.verbose(`✅️ Removed refresh token for user "${userId}"`);
+      this.logger.debug(`✅️ Removed refresh token for user "${userId}"`);
       return user;
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);

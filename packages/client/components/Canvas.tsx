@@ -41,7 +41,7 @@ const Canvas: React.FC = observer(() => {
   if (!store.maps.currentMap) return null;
 
   return (
-    <Stage width={windowSize.width} height={windowSize.height} options={{ backgroundColor: 0x171717 }}>
+    <Stage width={windowSize.width} height={windowSize.height} options={{ backgroundColor: 0x1a1818 }}>
       <Map
         src={store.maps.currentMap.media.url}
         width={store.maps.currentMap.media.width}

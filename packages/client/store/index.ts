@@ -8,6 +8,7 @@ import { nonPlayerCharacterStore } from './nonPlayerCharacters';
 import { pixiStore } from './pixi';
 import { playerCharacterStore } from './playerCharacters';
 import { pluginStore } from './plugins';
+import { setupStore } from './setup';
 import { tokenStore } from './tokens';
 import { toolbarStore } from './toolbar';
 import { userStore } from './users';
@@ -24,6 +25,7 @@ export const store = {
   pixi: pixiStore,
   playerCharacters: playerCharacterStore,
   plugins: pluginStore,
+  setup: setupStore,
   tokens: tokenStore,
   toolbar: toolbarStore,
   users: userStore,

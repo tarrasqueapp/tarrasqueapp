@@ -1,11 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 
-import { CampaignInterface, UserInterface } from '../lib/types';
+import { CampaignInterface, Role, UserInterface } from '../lib/types';
 
 export class UserEntity implements UserInterface {
   id = '';
   name = '';
   email = '';
+  roles = [Role.USER];
   // DateTime
   createdAt = '';
   updatedAt = '';
