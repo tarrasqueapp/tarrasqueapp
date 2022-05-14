@@ -5,7 +5,6 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Role } from '../../lib/types';
 import { store } from '../../store';
 import { ControlledTextField } from '../form/ControlledTextField';
 
@@ -34,8 +33,7 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
    * @param values
    */
   async function handleSubmitForm(values: Schema) {
-    const user = { ...values, roles: [Role.ADMIN, Role.USER] };
-    await store.setup.createUser(user);
+    await store.setup.createUser(values);
     onSubmit();
   }
 

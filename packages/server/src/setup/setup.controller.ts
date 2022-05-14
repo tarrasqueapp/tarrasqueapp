@@ -1,9 +1,11 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { FastifyReply } from 'fastify';
+import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { CampaignBaseEntity } from 'src/campaigns/entities/campaign-base.entity';
 import { CampaignRole, CampaignRoleGuard } from 'src/campaigns/guards/campaign-role.guard';
 import { CreateMapDto } from 'src/maps/dto/create-map.dto';
+import { MapBaseEntity } from 'src/maps/entities/map-base.entity';
 import { RoleGuard } from 'src/users/guards/role.guard';
 
 import { CampaignsService } from '../campaigns/campaigns.service';
@@ -50,16 +52,17 @@ export class SetupController {
    */
   @Post('create-user')
   @UseGuards(SetupGuard)
-  async createUser(@Body() data: CreateUserDto, @Res({ passthrough: true }) res: FastifyReply): Promise<SetupDto> {
-    const user = await this.authService.register(data);
+  async createUser(@Body() data: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<UserEntity> {
+    const user = await this.usersService.createUserWithRoles({ ...data, roles: [Role.ADMIN, Role.USER] });
     // Generate access and refresh tokens based on user
-    const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(user.id);
-    const { cookie: refreshTokenCookie, token: refreshToken } = this.authService.getCookieWithJwtRefreshToken(user.id);
+    const accessToken = this.authService.generateAccessToken(user.id);
+    const refreshToken = this.authService.generateRefreshToken(user.id);
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.header('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
-    return this.setupService.getSetup();
+    res.cookie('Authentication', accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie('Refresh', refreshToken, { httpOnly: true, signed: true, path: '/' });
+    return user;
   }
 
   /**
@@ -68,9 +71,8 @@ export class SetupController {
   @Post('create-campaign')
   @UseGuards(RoleGuard(Role.ADMIN))
   @UseGuards(SetupGuard)
-  async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<SetupDto> {
-    await this.campaignsService.createCampaign(data, user.id);
-    return this.setupService.getSetup();
+  async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
+    return this.campaignsService.createCampaign(data, user.id);
   }
 
   /**
@@ -80,8 +82,7 @@ export class SetupController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.ADMIN))
   @UseGuards(SetupGuard)
-  async createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<SetupDto> {
-    await this.mapsService.createMap(data, user.id);
-    return this.setupService.getSetup();
+  async createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
+    return this.mapsService.createMap(data, user.id);
   }
 }

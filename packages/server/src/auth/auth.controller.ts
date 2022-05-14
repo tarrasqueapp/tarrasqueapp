@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { FastifyReply } from 'fastify';
+import { Response } from 'express';
 
 import { User } from '../users/decorators/user.decorator';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -22,7 +22,7 @@ export class AuthController {
   @Post('register')
   @ApiOkResponse({ status: 200, type: UserEntity })
   async register(@Body() data: CreateUserDto): Promise<UserEntity> {
-    return this.authService.register(data);
+    return this.usersService.createUser(data);
   }
 
   /**
@@ -31,14 +31,15 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @ApiOkResponse({ status: 200, type: UserEntity })
-  async logIn(@Res({ passthrough: true }) res: FastifyReply, @User() user: UserEntity): Promise<UserEntity> {
+  async logIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
     // Generate access and refresh tokens based on user
-    const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(user.id);
-    const { cookie: refreshTokenCookie, token: refreshToken } = this.authService.getCookieWithJwtRefreshToken(user.id);
+    const accessToken = this.authService.generateAccessToken(user.id);
+    const refreshToken = this.authService.generateRefreshToken(user.id);
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.header('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
 
     return user;
   }
@@ -50,11 +51,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: null })
-  async logOut(@Res({ passthrough: true }) res: FastifyReply, @User() user: UserEntity): Promise<void> {
+  async logOut(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<void> {
     // Delete refresh token
     await this.usersService.removeRefreshToken(user.id);
     // Set cookies
-    res.header('Set-Cookie', this.authService.getCookiesForLogOut());
+    res.clearCookie(process.env.JWT_ACCESS_TOKEN_NAME);
+    res.clearCookie(process.env.JWT_REFRESH_TOKEN_NAME);
   }
 
   /**
@@ -75,10 +77,10 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: UserEntity })
-  refresh(@Res({ passthrough: true }) res: FastifyReply, @User() user: UserEntity): UserEntity {
-    const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(user.id);
+  refresh(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): UserEntity {
+    const accessToken = this.authService.generateAccessToken(user.id);
     // Set cookie
-    res.header('Set-Cookie', accessTokenCookie);
+    res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
     return user;
   }
 }

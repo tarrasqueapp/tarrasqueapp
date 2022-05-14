@@ -19,7 +19,7 @@ import { useSetup } from '../hooks/useSetup';
 
 const Setup: NextPage = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { data, error, isLoading } = useSetup();
+  const { data, error, mutate, isLoading } = useSetup();
   const router = useRouter();
 
   const setupCompleted = data?.databaseCreated && data?.userCreated && data?.campaignCreated && data?.mapCreated;
@@ -82,6 +82,7 @@ const Setup: NextPage = () => {
    */
   async function handleNext() {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    mutate();
   }
 
   return (

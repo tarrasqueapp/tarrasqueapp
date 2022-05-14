@@ -1,13 +1,13 @@
 import { LogLevel, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+  const app = await NestFactory.create(AppModule, {
     logger: [
       'log',
       'warn',
@@ -31,6 +31,9 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
+  // Cookie parser
+  app.use(cookieParser(process.env.COOKIE_SECRET));
+
   // Setup swagger
   const config = new DocumentBuilder()
     .setTitle('Tarrasque API')
@@ -42,6 +45,6 @@ async function bootstrap() {
   SwaggerModule.setup(apiPath, app, document);
 
   // Start server
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(3000);
 }
 bootstrap();

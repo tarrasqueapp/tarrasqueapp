@@ -41,7 +41,7 @@ export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
         Continue
       </LoadingButton>
       <Typography variant="caption" component="div">
-        This might take a few minutes
+        This might take a couple minutes
       </Typography>
     </form>
   );

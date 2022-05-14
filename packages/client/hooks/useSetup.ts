@@ -6,7 +6,7 @@ import { SetupInterface } from '../store/setup';
 
 export function useSetup() {
   const router = useRouter();
-  const { data, error } = useSWR<SetupInterface>(`${router.basePath}/api/setup`, fetcher);
+  const { data, error, mutate } = useSWR<SetupInterface>(`${router.basePath}/api/setup`, fetcher);
 
-  return { data, error, isLoading: !data && !error };
+  return { data, error, mutate, isLoading: !data && !error };
 }
