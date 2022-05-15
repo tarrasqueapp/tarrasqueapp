@@ -55,11 +55,13 @@ export class AuthService {
    * @returns The JWT access token
    */
   public generateAccessToken(userId: string) {
+    this.logger.verbose(`📂 Generating access token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
     });
+    this.logger.debug(`✅️ Generated access token`);
     return token;
   }
 
@@ -69,11 +71,13 @@ export class AuthService {
    * @returns The JWT refresh token
    */
   public generateRefreshToken(userId: string) {
+    this.logger.verbose(`📂 Generating refresh token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_TOKEN_SECRET,
       expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     });
+    this.logger.debug(`✅️ Generated refresh token`);
     return token;
   }
 

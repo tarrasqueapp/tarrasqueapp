@@ -77,10 +77,15 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ status: 200, type: UserEntity })
-  refresh(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): UserEntity {
+  async refresh(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
+    // Generate access and refresh tokens based on user
     const accessToken = this.authService.generateAccessToken(user.id);
-    // Set cookie
+    const refreshToken = this.authService.generateRefreshToken(user.id);
+    // Set refresh token
+    await this.usersService.setRefreshToken(user.id, refreshToken);
+    // Set cookies
     res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
     return user;
   }
 }

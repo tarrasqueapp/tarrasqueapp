@@ -60,8 +60,8 @@ export class SetupController {
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.cookie('Authentication', accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie('Refresh', refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
     return user;
   }
 
