@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 
 import { ConnectUserDto } from './dto/connect-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { RoleGuard } from './guards/role.guard';
@@ -33,6 +34,17 @@ export class UsersController {
   @ApiOkResponse({ status: 200, type: UserEntity })
   async getUserById(@Param() { id }: ConnectUserDto): Promise<UserEntity> {
     return await this.usersService.getUserById(id);
+  }
+
+  /**
+   * Create a new user
+   */
+  @Post()
+  @UseGuards(RoleGuard(Role.ADMIN))
+  @ApiBearerAuth()
+  @ApiOkResponse({ status: 200, type: UserEntity })
+  async createCampaign(@Body() data: CreateUserDto): Promise<UserEntity> {
+    return await this.usersService.createUser(data);
   }
 
   /**

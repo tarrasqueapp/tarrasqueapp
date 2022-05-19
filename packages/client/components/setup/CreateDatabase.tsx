@@ -3,13 +3,15 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { store } from '../../store';
+import { useCreateDatabase } from '../../hooks/data/setup/useCreateDatabase';
 
 interface IProps {
   onSubmit: () => void;
 }
 
 export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
+  const createDatabase = useCreateDatabase();
+
   // Setup form
   const methods = useForm({ mode: 'onChange' });
   const {
@@ -21,7 +23,7 @@ export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
    * Handle the form submission
    */
   async function handleSubmitForm() {
-    await store.setup.createDatabase();
+    await createDatabase.mutateAsync();
     onSubmit();
   }
 

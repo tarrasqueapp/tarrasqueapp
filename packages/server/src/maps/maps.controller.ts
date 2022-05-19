@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 
-import { ConnectCampaignDto } from '../campaigns/dto/connect-campaign.dto';
 import { CampaignRole, CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
@@ -15,18 +14,9 @@ import { MapEntity } from './entities/map.entity';
 import { MapsService } from './maps.service';
 
 @ApiTags('maps')
-@Controller()
+@Controller('maps')
 export class MapsController {
   constructor(private readonly mapsService: MapsService) {}
-
-  /**
-   * Get all maps for a campaign
-   */
-  @Get()
-  @ApiOkResponse({ status: 200, type: [MapEntity] })
-  async getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapBaseEntity[]> {
-    return await this.mapsService.getCampaignMaps(campaignId);
-  }
 
   /**
    * Get a map by its id
@@ -38,7 +28,7 @@ export class MapsController {
   }
 
   /**
-   * Create a new map for the current campaign
+   * Create a new map
    */
   @Post()
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
@@ -50,7 +40,7 @@ export class MapsController {
   }
 
   /**
-   * Duplicate a map in the current campaign
+   * Duplicate a map
    */
   @Post(':mapId/duplicate')
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))

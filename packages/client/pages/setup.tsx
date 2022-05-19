@@ -13,27 +13,32 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
+import { CreateCampaign } from '../components/setup/CreateCampaign';
 import { CreateDatabase } from '../components/setup/CreateDatabase';
+import { CreateMap } from '../components/setup/CreateMap';
 import { CreateUser } from '../components/setup/CreateUser';
-import { useSetup } from '../hooks/useSetup';
+import { useGetSetup } from '../hooks/data/setup/useGetSetup';
+import { useResetSetup } from '../hooks/data/setup/useResetSetup';
 
 const Setup: NextPage = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { data, error, mutate, isLoading } = useSetup();
+  const [isResetting, setIsResetting] = useState(false);
+  const { data, error, isLoading } = useGetSetup();
+  const resetSetup = useResetSetup();
   const router = useRouter();
 
-  const setupCompleted = data?.databaseCreated && data?.userCreated && data?.campaignCreated && data?.mapCreated;
+  const setupCompleted = Boolean(data?.database && data?.user && data?.campaign && data?.map);
 
   useEffect(() => {
     if (!data) return;
     // Set active step depending on setup progress
-    if (data.mapCreated) {
+    if (data.map) {
       setActiveStep(4);
-    } else if (data.campaignCreated) {
+    } else if (data.campaign) {
       setActiveStep(3);
-    } else if (data.userCreated) {
+    } else if (data.user) {
       setActiveStep(2);
-    } else if (data.databaseCreated) {
+    } else if (data.database) {
       setActiveStep(1);
     }
     // Redirect to the home page if the setup is already completed
@@ -48,13 +53,27 @@ const Setup: NextPage = () => {
   }
 
   // Show error message if there is an error
-  if (error) {
+  if (error instanceof Error) {
     return (
       <Box sx={{ textAlign: 'center' }}>
         <Typography paragraph>An error occurred while loading the setup wizard</Typography>
         <Typography color="error">{error.message}</Typography>
       </Box>
     );
+  }
+
+  /**
+   * Go to the next step
+   */
+  function handleNext() {
+    setActiveStep(activeStep - 1);
+  }
+
+  async function handleReset() {
+    setIsResetting(true);
+    await resetSetup.mutateAsync();
+    setActiveStep(1);
+    setIsResetting(false);
   }
 
   // Setup wizard steps
@@ -69,21 +88,20 @@ const Setup: NextPage = () => {
     },
     {
       label: 'Create a campaign',
-      content: <></>,
+      content: <CreateCampaign onSubmit={handleNext} onReset={handleReset} isResetting={isResetting} />,
     },
     {
       label: 'Create a map',
-      content: <></>,
+      content: (
+        <CreateMap
+          campaignId={data?.campaign?.id}
+          onSubmit={handleNext}
+          onReset={handleReset}
+          isResetting={isResetting}
+        />
+      ),
     },
   ];
-
-  /**
-   * Go to the next step
-   */
-  async function handleNext() {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    mutate();
-  }
 
   return (
     <Container maxWidth="xs">

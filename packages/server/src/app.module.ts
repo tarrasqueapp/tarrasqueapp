@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, RouterModule } from '@nestjs/core';
+import { APP_FILTER } from '@nestjs/core';
 import { PrismaClientExceptionFilter, PrismaModule } from 'nestjs-prisma';
 
 import { AuthModule } from './auth/auth.module';
@@ -20,32 +20,6 @@ import { UsersModule } from './users/users.module';
   ],
   imports: [
     PrismaModule.forRoot({ isGlobal: true }),
-    RouterModule.register([
-      {
-        path: '/campaigns',
-        module: CampaignsModule,
-        children: [
-          {
-            path: '/:campaignId/characters',
-            module: CharactersModule,
-          },
-          {
-            path: '/:campaignId/maps',
-            module: MapsModule,
-            children: [
-              {
-                path: '/:mapId/pointer',
-                module: PointerModule,
-              },
-              {
-                path: '/:mapId/tokens',
-                module: TokensModule,
-              },
-            ],
-          },
-        ],
-      },
-    ]),
     AuthModule,
     CampaignsModule,
     CharactersModule,

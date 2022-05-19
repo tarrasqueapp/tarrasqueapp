@@ -11,10 +11,15 @@ import {
   Popper,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
+import { useRouter } from 'next/router';
 
+import { useGetMap } from '../hooks/data/maps/useGetMap';
 import { store } from '../store';
 
 export const MapContextMenu: React.FC = observer(() => {
+  const router = useRouter();
+  const { data: map } = useGetMap(router.query.mapId as string);
+
   const width = 230;
 
   function getBoundingClientRect() {
@@ -32,7 +37,7 @@ export const MapContextMenu: React.FC = observer(() => {
   }
 
   function handlePingLocation() {
-    store.app.socket.emit('pingLocation', { mapId: store.maps.currentMap?.id, ...store.maps.contextMenuAnchorPoint });
+    store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.maps.contextMenuAnchorPoint });
     store.maps.setContextMenuVisible(false);
   }
 

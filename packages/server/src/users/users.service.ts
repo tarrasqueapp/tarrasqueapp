@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
@@ -128,7 +128,7 @@ export class UsersService {
       const hashedPassword = await argon2.hash(data.password);
       // Create the user
       const user = await this.prisma.user.create({
-        data: { ...data, password: hashedPassword },
+        data: { ...data, roles: [Role.USER], password: hashedPassword },
         select: this.includedFields,
       });
       this.logger.debug(`✅️ Created user "${data.email}"`);

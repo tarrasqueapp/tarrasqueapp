@@ -16,7 +16,7 @@ import { TokenEntity } from './entities/token.entity';
 import { TokensService } from './tokens.service';
 
 @ApiTags('tokens')
-@Controller()
+@Controller('tokens')
 export class TokensController {
   constructor(private readonly tokensService: TokensService) {}
 

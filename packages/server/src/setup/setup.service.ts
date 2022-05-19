@@ -1,9 +1,9 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import * as execa from 'execa';
-import { CampaignsService } from 'src/campaigns/campaigns.service';
-import { MapsService } from 'src/maps/maps.service';
-import { UsersService } from 'src/users/users.service';
 
+import { CampaignsService } from '../campaigns/campaigns.service';
+import { MapsService } from '../maps/maps.service';
+import { UsersService } from '../users/users.service';
 import { SetupDto } from './dto/setup.dto';
 
 @Injectable()
@@ -20,15 +20,19 @@ export class SetupService {
     const dto = new SetupDto();
     try {
       // Get user count
-      const userCount = await this.usersService.getUserCount();
-      dto.databaseCreated = true;
-      dto.userCreated = userCount > 0;
+      const users = await this.usersService.getUsers();
+      dto.database = true;
+      dto.user = users[0] || null;
       // Get campaign count
-      const campaignCount = await this.campaignsService.getCampaignCount();
-      dto.campaignCreated = campaignCount > 0;
+      if (dto.user) {
+        const campaigns = await this.campaignsService.getUserCampaigns(dto.user.id);
+        dto.campaign = campaigns[0] || null;
+      }
       // Get map count
-      const mapCount = await this.mapsService.getMapCount();
-      dto.mapCreated = mapCount > 0;
+      if (dto.campaign) {
+        const maps = await this.mapsService.getCampaignMaps(dto.campaign.id);
+        dto.map = maps[0] || null;
+      }
       // Return result
       return dto;
     } catch (error) {

@@ -1,11 +1,16 @@
 import { Add, FitScreen, Fullscreen, FullscreenExit, Remove } from '@mui/icons-material';
 import { Box, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { observer } from 'mobx-react-lite';
+import { useRouter } from 'next/router';
 
+import { useGetMap } from '../hooks/data/maps/useGetMap';
 import { Color } from '../lib/enums';
 import { store } from '../store';
 
 export const ZoomControls: React.FC = observer(() => {
+  const router = useRouter();
+  const { data: map } = useGetMap(router.query.mapId as string);
+
   function handleZoomIn() {
     store.pixi.viewport.animate({ scale: store.pixi.viewport.scaled + 0.2, time: 100 });
   }
@@ -15,13 +20,10 @@ export const ZoomControls: React.FC = observer(() => {
   }
 
   function handleFitScreen() {
-    if (!store.maps.currentMap) return;
+    if (!map) return;
     store.pixi.viewport.animate({
-      position: { x: store.maps.currentMap.media.width / 2, y: store.maps.currentMap.media.height / 2 },
-      scale: Math.min(
-        window.innerWidth / store.maps.currentMap.media.width,
-        window.innerHeight / store.maps.currentMap.media.height,
-      ),
+      position: { x: map.media.width / 2, y: map.media.height / 2 },
+      scale: Math.min(window.innerWidth / map.media.width, window.innerHeight / map.media.height),
       time: 100,
     });
   }

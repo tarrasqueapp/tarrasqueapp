@@ -1,3 +1,10 @@
+export interface SetupInterface {
+  database: boolean;
+  user: UserInterface | null;
+  campaign: CampaignInterface | null;
+  map: MapInterface | null;
+}
+
 export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',

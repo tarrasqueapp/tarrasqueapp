@@ -2,6 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 
+import { MapBaseEntity } from '../maps/entities/map-base.entity';
+import { MapEntity } from '../maps/entities/map.entity';
+import { MapsService } from '../maps/maps.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { RoleGuard } from '../users/guards/role.guard';
@@ -14,9 +17,9 @@ import { CampaignEntity } from './entities/campaign.entity';
 import { CampaignRole, CampaignRoleGuard } from './guards/campaign-role.guard';
 
 @ApiTags('campaigns')
-@Controller()
+@Controller('campaigns')
 export class CampaignsController {
-  constructor(private readonly campaignsService: CampaignsService) {}
+  constructor(private readonly campaignsService: CampaignsService, private readonly mapsService: MapsService) {}
 
   /**
    * Get all campaigns the user belongs to
@@ -36,6 +39,15 @@ export class CampaignsController {
   @ApiOkResponse({ status: 200, type: CampaignEntity })
   async getCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
     return await this.campaignsService.getCampaign(campaignId);
+  }
+
+  /**
+   * Get all maps for a campaign
+   */
+  @Get(':campaignId/maps')
+  @ApiOkResponse({ status: 200, type: [MapEntity] })
+  async getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapBaseEntity[]> {
+    return await this.mapsService.getCampaignMaps(campaignId);
   }
 
   /**

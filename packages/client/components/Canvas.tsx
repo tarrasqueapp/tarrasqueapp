@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { io } from 'socket.io-client';
 
+import { useGetMap } from '../hooks/data/maps/useGetMap';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { store } from '../store';
 import { Grid } from './Grid';
@@ -12,6 +13,7 @@ import { Token } from './Token';
 
 const Canvas: React.FC = observer(() => {
   const router = useRouter();
+  const { data: map } = useGetMap(router.query.mapId as string);
   const windowSize = useWindowSize();
 
   useEffect(() => {
@@ -20,12 +22,12 @@ const Canvas: React.FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (!store.app.socket || !store.maps.currentMap) return;
+    if (!store.app.socket || !map) return;
 
     store.app.socket.on('connect', () => {
-      if (!store.maps.currentMap) return;
+      if (!map) return;
       console.log('Connected');
-      store.app.socket.emit('joinMap', store.maps.currentMap?.id);
+      store.app.socket.emit('joinMap', map?.id);
     });
     store.app.socket.on('pingLocation', (data) => {
       console.log('pingLocation', data);
@@ -36,24 +38,15 @@ const Canvas: React.FC = observer(() => {
     store.app.socket.on('disconnect', () => {
       console.log('Disconnected');
     });
-  }, [store.app.socket, store.maps.currentMap]);
+  }, [store.app.socket, map]);
 
-  if (!store.maps.currentMap) return null;
+  if (!map) return null;
 
   return (
     <Stage width={windowSize.width} height={windowSize.height} options={{ backgroundColor: 0x1a1818 }}>
-      <Map
-        src={store.maps.currentMap.media.url}
-        width={store.maps.currentMap.media.width}
-        height={store.maps.currentMap.media.height}
-      >
+      <Map src={map.media.url} width={map.media.width} height={map.media.height}>
         <>
-          <Grid
-            graphWidth={store.maps.currentMap.media.width}
-            graphHeight={store.maps.currentMap.media.height}
-            minorGridSize={70}
-            minorStrokeWidth={1}
-          />
+          <Grid graphWidth={map.media.width} graphHeight={map.media.height} minorGridSize={70} minorStrokeWidth={1} />
           <Token src={`${router.basePath}/token.webp`} x={70} y={70} width={70} height={70} />
         </>
       </Map>

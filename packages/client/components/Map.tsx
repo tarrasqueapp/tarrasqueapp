@@ -1,7 +1,9 @@
 import { Sprite } from '@inlet/react-pixi';
+import { useRouter } from 'next/router';
 import * as PIXI from 'pixi.js';
 import { useEffect } from 'react';
 
+import { useGetMap } from '../hooks/data/maps/useGetMap';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { store } from '../store';
 import { Viewport } from './Viewport';
@@ -14,6 +16,8 @@ export interface IMapProps {
 }
 
 export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
+  const router = useRouter();
+  const { data: map } = useGetMap(router.query.mapId as string);
   const windowSize = useWindowSize();
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
   }
   function handleDoubleClick(event: PIXI.InteractionEvent) {
     console.log('Double Click.');
-    store.app.socket.emit('pingLocation', { mapId: store.maps.currentMap?.id, ...event.data.global });
+    store.app.socket.emit('pingLocation', { mapId: map?.id, ...event.data.global });
   }
   function handleRightClick(event: PIXI.InteractionEvent) {
     console.log('Right Click.', event.data.global);

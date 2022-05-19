@@ -21,7 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix(apiPath);
 
   // Validate all requests
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
   // Enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);

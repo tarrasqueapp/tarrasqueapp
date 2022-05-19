@@ -1,17 +1,9 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { Response } from 'express';
-import { AuthService } from 'src/auth/auth.service';
-import { CampaignBaseEntity } from 'src/campaigns/entities/campaign-base.entity';
-import { CampaignRole, CampaignRoleGuard } from 'src/campaigns/guards/campaign-role.guard';
-import { CreateMapDto } from 'src/maps/dto/create-map.dto';
-import { MapBaseEntity } from 'src/maps/entities/map-base.entity';
-import { RoleGuard } from 'src/users/guards/role.guard';
+import { PrismaService } from 'nestjs-prisma';
 
-import { CampaignsService } from '../campaigns/campaigns.service';
-import { CreateCampaignDto } from '../campaigns/dto/create-campaign.dto';
-import { MapsService } from '../maps/maps.service';
-import { User } from '../users/decorators/user.decorator';
+import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -22,18 +14,52 @@ import { SetupService } from './setup.service';
 @Controller('setup')
 export class SetupController {
   constructor(
+    private prisma: PrismaService,
     private readonly setupService: SetupService,
     private readonly usersService: UsersService,
-    private readonly campaignsService: CampaignsService,
-    private readonly mapsService: MapsService,
     private readonly authService: AuthService,
   ) {}
 
   /**
-   * Get the setup status
+   * Get the setup progress
    */
   @Get()
-  async getSetup(): Promise<SetupDto> {
+  async getSetup(@Res({ passthrough: true }) res: Response): Promise<SetupDto> {
+    const setup = await this.setupService.getSetup();
+    if (setup.user) {
+      // Generate access and refresh tokens based on user
+      const accessToken = this.authService.generateAccessToken(setup.user.id);
+      const refreshToken = this.authService.generateRefreshToken(setup.user.id);
+      // Set refresh token
+      await this.usersService.setRefreshToken(setup.user.id, refreshToken);
+      // Set cookies
+      res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
+      res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    }
+    return setup;
+  }
+
+  /**
+   * Reset the setup process
+   */
+  @Post('reset')
+  @UseGuards(SetupGuard)
+  async reset(@Res({ passthrough: true }) res: Response): Promise<SetupDto> {
+    const setup = await this.setupService.getSetup();
+    if (setup.user) {
+      // Delete refresh token
+      await this.usersService.removeRefreshToken(setup.user.id);
+      // Set cookies
+      res.clearCookie(process.env.JWT_ACCESS_TOKEN_NAME);
+      res.clearCookie(process.env.JWT_REFRESH_TOKEN_NAME);
+    }
+    // Delete all users
+    await this.prisma.user.deleteMany({});
+    // Delete all campaigns
+    await this.prisma.campaign.deleteMany({});
+    // Delete all maps
+    await this.prisma.map.deleteMany({});
+    // Return setup
     return this.setupService.getSetup();
   }
 
@@ -63,26 +89,5 @@ export class SetupController {
     res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
     res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
     return user;
-  }
-
-  /**
-   * Create a campaign
-   */
-  @Post('create-campaign')
-  @UseGuards(RoleGuard(Role.ADMIN))
-  @UseGuards(SetupGuard)
-  async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
-    return this.campaignsService.createCampaign(data, user.id);
-  }
-
-  /**
-   * Create a map
-   */
-  @Post('create-map')
-  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
-  @UseGuards(RoleGuard(Role.ADMIN))
-  @UseGuards(SetupGuard)
-  async createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
-    return this.mapsService.createMap(data, user.id);
   }
 }
