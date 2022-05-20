@@ -22,6 +22,7 @@ export function useLogin() {
   return useMutation(login, {
     onSuccess: () => {
       queryClient.invalidateQueries(`auth`);
+      queryClient.invalidateQueries(`auth/refresh`);
     },
   });
 }

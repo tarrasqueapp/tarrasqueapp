@@ -22,14 +22,14 @@ export const Token: React.FC<ITokenProps> = ({ src, x, y, width, height }) => {
       height={height}
       interactive
       pointerdown={(e) => {
-        console.log(e);
+        console.debug(e);
         e.stopPropagation();
         setMoving(true);
       }}
       pointerup={() => setMoving(false)}
       pointermove={(e) => {
         if (!moving) return;
-        console.log(e);
+        console.debug(e);
       }}
     />
   );

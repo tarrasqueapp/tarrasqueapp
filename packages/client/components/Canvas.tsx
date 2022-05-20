@@ -26,17 +26,17 @@ const Canvas: React.FC = observer(() => {
 
     store.app.socket.on('connect', () => {
       if (!map) return;
-      console.log('Connected');
+      console.debug('Connected');
       store.app.socket.emit('joinMap', map?.id);
     });
     store.app.socket.on('pingLocation', (data) => {
-      console.log('pingLocation', data);
+      console.debug('pingLocation', data);
     });
     store.app.socket.on('exception', (data) => {
-      console.log('exception', data);
+      console.debug('exception', data);
     });
     store.app.socket.on('disconnect', () => {
-      console.log('Disconnected');
+      console.debug('Disconnected');
     });
   }, [store.app.socket, map]);
 

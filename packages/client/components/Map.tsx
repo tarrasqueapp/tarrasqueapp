@@ -36,14 +36,14 @@ export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
   }, []);
 
   function handleSingleClick() {
-    console.log('Single Click.');
+    console.debug('Single Click.');
   }
   function handleDoubleClick(event: PIXI.InteractionEvent) {
-    console.log('Double Click.');
+    console.debug('Double Click.');
     store.app.socket.emit('pingLocation', { mapId: map?.id, ...event.data.global });
   }
   function handleRightClick(event: PIXI.InteractionEvent) {
-    console.log('Right Click.', event.data.global);
+    console.debug('Right Click.', event.data.global);
     store.maps.setContextMenuVisible(false);
     store.maps.setContextMenuAnchorPoint(event.data.global.x, event.data.global.y);
     store.maps.setContextMenuVisible(true);
