@@ -11,14 +11,12 @@ import {
   Popper,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { useRouter } from 'next/router';
 
-import { useGetMap } from '../hooks/data/maps/useGetMap';
+import { useGetCurrentMap } from '../hooks/data/maps/useGetCurrentMap';
 import { store } from '../store';
 
 export const MapContextMenu: React.FC = observer(() => {
-  const router = useRouter();
-  const { data: map } = useGetMap(router.query.mapId as string);
+  const { data: map } = useGetCurrentMap();
 
   const width = 230;
 

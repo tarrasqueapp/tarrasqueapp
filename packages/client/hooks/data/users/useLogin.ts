@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import { api } from '../../../lib/api';
-import { SetupInterface, UserInterface } from '../../../lib/types';
+import { UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to create the user
  * @returns The setup progress
  */
-async function createUser(user: Partial<UserInterface>) {
-  const { data } = await api.post<SetupInterface>(`/api/setup/create-user`, user);
+async function login(user: Partial<UserInterface>) {
+  const { data } = await api.post<UserInterface>(`/api/auth/login`, user);
   return data;
 }
 
@@ -16,12 +16,12 @@ async function createUser(user: Partial<UserInterface>) {
  * Create the user
  * @returns Create user mutation
  */
-export function useCreateUser() {
+export function useLogin() {
   const queryClient = useQueryClient();
 
-  return useMutation(createUser, {
+  return useMutation(login, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['setup']);
+      queryClient.invalidateQueries(`auth`);
     },
   });
 }

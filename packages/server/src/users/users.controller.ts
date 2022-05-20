@@ -20,7 +20,7 @@ export class UsersController {
   @Get()
   @UseGuards(RoleGuard(Role.ADMIN))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: [UserEntity] })
+  @ApiOkResponse({ type: [UserEntity] })
   async getUsers(): Promise<UserEntity[]> {
     return await this.usersService.getUsers();
   }
@@ -31,7 +31,7 @@ export class UsersController {
   @Get(':id')
   @UseGuards(RoleGuard(Role.ADMIN))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   async getUserById(@Param() { id }: ConnectUserDto): Promise<UserEntity> {
     return await this.usersService.getUserById(id);
   }
@@ -42,8 +42,8 @@ export class UsersController {
   @Post()
   @UseGuards(RoleGuard(Role.ADMIN))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: UserEntity })
-  async createCampaign(@Body() data: CreateUserDto): Promise<UserEntity> {
+  @ApiOkResponse({ type: UserEntity })
+  async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
     return await this.usersService.createUser(data);
   }
 
@@ -53,7 +53,7 @@ export class UsersController {
   @Put(':id')
   @UseGuards(RoleGuard(Role.ADMIN))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   async updateUser(@Param() { id }: ConnectUserDto, @Body() data: UpdateUserDto): Promise<UserEntity> {
     return await this.usersService.updateUser(id, data);
   }
@@ -64,7 +64,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(RoleGuard(Role.ADMIN))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   async deleteUser(@Param() { id }: ConnectUserDto): Promise<UserEntity> {
     return await this.usersService.deleteUser(id);
   }

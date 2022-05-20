@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { io } from 'socket.io-client';
 
-import { useGetMap } from '../hooks/data/maps/useGetMap';
+import { useGetCurrentMap } from '../hooks/data/maps/useGetCurrentMap';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { store } from '../store';
 import { Grid } from './Grid';
@@ -13,7 +13,7 @@ import { Token } from './Token';
 
 const Canvas: React.FC = observer(() => {
   const router = useRouter();
-  const { data: map } = useGetMap(router.query.mapId as string);
+  const { data: map } = useGetCurrentMap();
   const windowSize = useWindowSize();
 
   useEffect(() => {

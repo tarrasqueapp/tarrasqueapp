@@ -1,9 +1,8 @@
 import { Sprite } from '@inlet/react-pixi';
-import { useRouter } from 'next/router';
 import * as PIXI from 'pixi.js';
 import { useEffect } from 'react';
 
-import { useGetMap } from '../hooks/data/maps/useGetMap';
+import { useGetCurrentMap } from '../hooks/data/maps/useGetCurrentMap';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { store } from '../store';
 import { Viewport } from './Viewport';
@@ -16,8 +15,7 @@ export interface IMapProps {
 }
 
 export const Map: React.FC<IMapProps> = ({ src, width, height, children }) => {
-  const router = useRouter();
-  const { data: map } = useGetMap(router.query.mapId as string);
+  const { data: map } = useGetCurrentMap();
   const windowSize = useWindowSize();
 
   useEffect(() => {

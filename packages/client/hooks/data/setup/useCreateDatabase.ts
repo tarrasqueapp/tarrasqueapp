@@ -21,7 +21,7 @@ export function useCreateDatabase() {
 
   return useMutation(createDatabase, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['setup']);
+      queryClient.invalidateQueries(`setup`);
     },
   });
 }

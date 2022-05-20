@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Response } from 'express';
 import { PrismaService } from 'nestjs-prisma';
@@ -11,6 +12,7 @@ import { SetupDto } from './dto/setup.dto';
 import { SetupGuard } from './guards/setup.guard';
 import { SetupService } from './setup.service';
 
+@ApiTags('setup')
 @Controller('setup')
 export class SetupController {
   constructor(
@@ -24,19 +26,9 @@ export class SetupController {
    * Get the setup progress
    */
   @Get()
-  async getSetup(@Res({ passthrough: true }) res: Response): Promise<SetupDto> {
-    const setup = await this.setupService.getSetup();
-    if (setup.user) {
-      // Generate access and refresh tokens based on user
-      const accessToken = this.authService.generateAccessToken(setup.user.id);
-      const refreshToken = this.authService.generateRefreshToken(setup.user.id);
-      // Set refresh token
-      await this.usersService.setRefreshToken(setup.user.id, refreshToken);
-      // Set cookies
-      res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
-      res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
-    }
-    return setup;
+  @ApiOkResponse({ type: SetupDto })
+  async getSetup(): Promise<SetupDto> {
+    return this.setupService.getSetup();
   }
 
   /**
@@ -44,6 +36,7 @@ export class SetupController {
    */
   @Post('reset')
   @UseGuards(SetupGuard)
+  @ApiOkResponse({ type: SetupDto })
   async reset(@Res({ passthrough: true }) res: Response): Promise<SetupDto> {
     const setup = await this.setupService.getSetup();
     if (setup.user) {
@@ -53,12 +46,12 @@ export class SetupController {
       res.clearCookie(process.env.JWT_ACCESS_TOKEN_NAME);
       res.clearCookie(process.env.JWT_REFRESH_TOKEN_NAME);
     }
-    // Delete all users
-    await this.prisma.user.deleteMany({});
-    // Delete all campaigns
-    await this.prisma.campaign.deleteMany({});
     // Delete all maps
     await this.prisma.map.deleteMany({});
+    // Delete all campaigns
+    await this.prisma.campaign.deleteMany({});
+    // Delete all users
+    await this.prisma.user.deleteMany({});
     // Return setup
     return this.setupService.getSetup();
   }
@@ -68,6 +61,7 @@ export class SetupController {
    */
   @Post('create-database')
   @UseGuards(SetupGuard)
+  @ApiOkResponse({ type: SetupDto })
   async createDatabase(): Promise<SetupDto> {
     await this.setupService.createDatabase();
     return this.setupService.getSetup();
@@ -78,16 +72,8 @@ export class SetupController {
    */
   @Post('create-user')
   @UseGuards(SetupGuard)
-  async createUser(@Body() data: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<UserEntity> {
-    const user = await this.usersService.createUserWithRoles({ ...data, roles: [Role.ADMIN, Role.USER] });
-    // Generate access and refresh tokens based on user
-    const accessToken = this.authService.generateAccessToken(user.id);
-    const refreshToken = this.authService.generateRefreshToken(user.id);
-    // Set refresh token
-    await this.usersService.setRefreshToken(user.id, refreshToken);
-    // Set cookies
-    res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
-    return user;
+  @ApiOkResponse({ type: UserEntity })
+  async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
+    return await this.usersService.createUserWithRoles({ ...data, roles: [Role.ADMIN, Role.USER] });
   }
 }

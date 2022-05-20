@@ -22,7 +22,7 @@ export class MapsController {
    * Get a map by its id
    */
   @Get(':mapId')
-  @ApiOkResponse({ status: 200, type: MapEntity })
+  @ApiOkResponse({ type: MapEntity })
   async getMap(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
     return await this.mapsService.getMap(mapId);
   }
@@ -34,7 +34,7 @@ export class MapsController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: MapBaseEntity })
+  @ApiOkResponse({ type: MapBaseEntity })
   async createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
     return await this.mapsService.createMap(data, user.id);
   }
@@ -46,7 +46,7 @@ export class MapsController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: MapBaseEntity })
+  @ApiOkResponse({ type: MapBaseEntity })
   async duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
     return await this.mapsService.duplicateMap(mapId);
   }
@@ -58,7 +58,7 @@ export class MapsController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: MapBaseEntity })
+  @ApiOkResponse({ type: MapBaseEntity })
   async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
     return await this.mapsService.updateMap(mapId, data);
   }
@@ -70,7 +70,7 @@ export class MapsController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: MapBaseEntity })
+  @ApiOkResponse({ type: MapBaseEntity })
   async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
     return await this.mapsService.deleteMap(mapId);
   }

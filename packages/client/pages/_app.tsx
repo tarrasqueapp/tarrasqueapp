@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
+import { Layout } from '../components/Layout';
 import { theme } from '../lib/theme';
 import '../styles/fonts.css';
 import '../styles/globals.css';
@@ -16,6 +17,13 @@ const clientSideEmotionCache = createCache({ key: 'css', prepend: true });
 
 // Show a toast message when an error occurs
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
   queryCache: new QueryCache({
     onError: (error, query) => {
       if (query.state.data !== undefined && error instanceof Error) {
@@ -38,8 +46,10 @@ const MyApp: React.FC<IProps> = ({ Component, pageProps, emotionCache = clientSi
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <Layout>
+            <Component {...pageProps} />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Layout>
         </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>

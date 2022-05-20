@@ -23,7 +23,7 @@ import { useResetSetup } from '../hooks/data/setup/useResetSetup';
 const Setup: NextPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
-  const { data, error, isLoading } = useGetSetup();
+  const { data, error, isLoading, refetch } = useGetSetup();
   const resetSetup = useResetSetup();
   const router = useRouter();
 
@@ -66,7 +66,8 @@ const Setup: NextPage = () => {
    * Go to the next step
    */
   function handleNext() {
-    setActiveStep(activeStep - 1);
+    setActiveStep(activeStep + 1);
+    refetch();
   }
 
   async function handleReset() {

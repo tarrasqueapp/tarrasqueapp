@@ -27,7 +27,7 @@ export class CampaignsController {
   @Get()
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: [CampaignEntity] })
+  @ApiOkResponse({ type: [CampaignEntity] })
   async getCampaigns(@User() user: UserEntity): Promise<CampaignEntity[]> {
     return await this.campaignsService.getUserCampaigns(user.id);
   }
@@ -36,7 +36,7 @@ export class CampaignsController {
    * Get a campaign by its id
    */
   @Get(':campaignId')
-  @ApiOkResponse({ status: 200, type: CampaignEntity })
+  @ApiOkResponse({ type: CampaignEntity })
   async getCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
     return await this.campaignsService.getCampaign(campaignId);
   }
@@ -45,7 +45,7 @@ export class CampaignsController {
    * Get all maps for a campaign
    */
   @Get(':campaignId/maps')
-  @ApiOkResponse({ status: 200, type: [MapEntity] })
+  @ApiOkResponse({ type: [MapEntity] })
   async getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapBaseEntity[]> {
     return await this.mapsService.getCampaignMaps(campaignId);
   }
@@ -56,7 +56,7 @@ export class CampaignsController {
   @Post()
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: CampaignBaseEntity })
+  @ApiOkResponse({ type: CampaignBaseEntity })
   async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
     return await this.campaignsService.createCampaign(data, user.id);
   }
@@ -68,7 +68,7 @@ export class CampaignsController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: CampaignBaseEntity })
+  @ApiOkResponse({ type: CampaignBaseEntity })
   async updateCampaign(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() data: UpdateCampaignDto,
@@ -83,7 +83,7 @@ export class CampaignsController {
   @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: CampaignBaseEntity })
+  @ApiOkResponse({ type: CampaignBaseEntity })
   async deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignBaseEntity> {
     return await this.campaignsService.deleteCampaign(campaignId);
   }

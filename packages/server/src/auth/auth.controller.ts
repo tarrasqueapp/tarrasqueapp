@@ -20,7 +20,7 @@ export class AuthController {
    * Register a new user
    */
   @Post('register')
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   async register(@Body() data: CreateUserDto): Promise<UserEntity> {
     return this.usersService.createUser(data);
   }
@@ -30,7 +30,7 @@ export class AuthController {
    */
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   async logIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
     // Generate access and refresh tokens based on user
     const accessToken = this.authService.generateAccessToken(user.id);
@@ -50,7 +50,7 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: null })
+  @ApiOkResponse({ type: null })
   async logOut(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<void> {
     // Delete refresh token
     await this.usersService.removeRefreshToken(user.id);
@@ -65,7 +65,7 @@ export class AuthController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   authenticate(@User() user: UserEntity): UserEntity {
     return user;
   }
@@ -76,7 +76,7 @@ export class AuthController {
   @Get('refresh')
   @UseGuards(JwtRefreshGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: UserEntity })
+  @ApiOkResponse({ type: UserEntity })
   async refresh(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
     // Generate access and refresh tokens based on user
     const accessToken = this.authService.generateAccessToken(user.id);

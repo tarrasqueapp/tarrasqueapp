@@ -5,7 +5,8 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useCreateUser } from '../../hooks/data/setup/useCreateUser';
+import { useCreateSetupUser } from '../../hooks/data/setup/useCreateSetupUser';
+import { useLogin } from '../../hooks/data/users/useLogin';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface IProps {
@@ -13,7 +14,8 @@ interface IProps {
 }
 
 export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
-  const createUser = useCreateUser();
+  const createSetupUser = useCreateSetupUser();
+  const login = useLogin();
 
   // Setup form validation schema
   const schema = z.object({
@@ -35,7 +37,8 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
    * @param values
    */
   async function handleSubmitForm(values: Schema) {
-    await createUser.mutateAsync(values);
+    await createSetupUser.mutateAsync(values);
+    await login.mutateAsync(values);
     onSubmit();
   }
 

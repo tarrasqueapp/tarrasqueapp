@@ -24,7 +24,7 @@ export class TokensController {
    * Get all tokens for a map
    */
   @Get()
-  @ApiOkResponse({ status: 200, type: [TokenEntity] })
+  @ApiOkResponse({ type: [TokenEntity] })
   async getTokens(@Param() { mapId }: ConnectMapDto): Promise<TokenEntity[]> {
     return this.tokensService.getMapTokens(mapId);
   }
@@ -36,7 +36,7 @@ export class TokensController {
   @UseGuards(CampaignRoleGuard(CampaignRole.PLAYER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: [TokenEntity] })
+  @ApiOkResponse({ type: [TokenEntity] })
   async createTokens(
     @Param() { mapId }: ConnectCampaignMapDto,
     @Body() data: CreateTokensDto,
@@ -52,7 +52,7 @@ export class TokensController {
   @UseGuards(CampaignRoleGuard(CampaignRole.PLAYER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: [TokenBaseEntity] })
+  @ApiOkResponse({ type: [TokenBaseEntity] })
   async updateTokens(@Body() data: UpdateTokensDto): Promise<TokenBaseEntity[]> {
     return this.tokensService.updateTokens(data.tokens);
   }
@@ -64,7 +64,7 @@ export class TokensController {
   @UseGuards(CampaignRoleGuard(CampaignRole.PLAYER))
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
-  @ApiOkResponse({ status: 200, type: [TokenBaseEntity] })
+  @ApiOkResponse({ type: [TokenBaseEntity] })
   async deleteTokens(@Body() data: DeleteTokensDto): Promise<TokenBaseEntity[]> {
     const tokenIds = data.tokens.map((token) => token.id);
     return this.tokensService.deleteTokens(tokenIds);

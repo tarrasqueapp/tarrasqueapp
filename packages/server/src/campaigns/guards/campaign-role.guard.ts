@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Type, mixin } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Type, mixin } from '@nestjs/common';
 
 import { CampaignsService } from '../campaigns.service';
 
@@ -9,11 +9,13 @@ export enum CampaignRole {
 
 export const CampaignRoleGuard = (campaignRole: CampaignRole): Type<CanActivate> => {
   class CampaignRoleGuardMixin implements CanActivate {
-    constructor(private readonly campaignsService: CampaignsService) {}
+    constructor(@Inject(CampaignsService) private readonly campaignsService: CampaignsService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const request = context.switchToHttp().getRequest();
-      const { campaignId, user } = request.params;
+
+      const campaignId = request.params.campaignId || request.body.campaignId;
+      const user = request.user;
 
       if (!user || !campaignId) return false;
 
