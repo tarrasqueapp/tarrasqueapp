@@ -6,9 +6,9 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 10000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 10000",
     "lint": "next lint",
     "ncu": "ncu"
   },

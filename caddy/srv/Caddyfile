@@ -27,19 +27,19 @@ log {
 # Client
 @client path {$BASE_PATH} {$BASE_PATH}/*
 handle @client {
-  reverse_proxy client:3000
+  reverse_proxy client:10000
 }
 
 # Server
 @server path {$BASE_PATH}/api {$BASE_PATH}/api/*
 handle @server {
-  reverse_proxy server:3000
+  reverse_proxy server:10000
 }
 
 # Socket.IO
 @socket.io path {$BASE_PATH}/socket.io {$BASE_PATH}/socket.io/*
 handle @socket.io {
-  reverse_proxy server:3000
+  reverse_proxy server:10000
 }
 
 # Plugins

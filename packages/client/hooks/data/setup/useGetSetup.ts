@@ -7,7 +7,7 @@ import { SetupInterface } from '../../../lib/types';
  * Send a request to get the setup
  * @returns Setup progress
  */
-async function getSetup() {
+export async function getSetup() {
   const { data } = await api.get<SetupInterface>(`/api/setup`);
   return data;
 }
