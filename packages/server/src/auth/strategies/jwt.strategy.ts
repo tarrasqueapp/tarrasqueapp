@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import { config } from '../../config';
 import { UserEntity } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { TokenPayload } from '../tokenPayload.interface';
@@ -13,10 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.signedCookies?.[process.env.JWT_ACCESS_TOKEN_NAME];
+          return request?.signedCookies?.[config.jwtAccessTokenName];
         },
       ]),
-      secretOrKey: process.env.JWT_ACCESS_TOKEN_SECRET,
+      secretOrKey: config.jwtAccessTokenSecret,
     });
   }
 

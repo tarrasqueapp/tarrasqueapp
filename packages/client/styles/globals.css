@@ -16,3 +16,20 @@ html {
   align-items: center;
   justify-content: center;
 }
+
+/* Uppy */
+.uppy-Dashboard-inner {
+  border: none;
+}
+
+.uppy-Dashboard-AddFiles {
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+.uppy-Dashboard-dropFilesHereHint {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}

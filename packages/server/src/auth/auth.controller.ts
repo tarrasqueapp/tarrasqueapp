@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
+import { config } from '../config';
 import { User } from '../users/decorators/user.decorator';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
@@ -38,8 +39,8 @@ export class AuthController {
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.jwtAccessTokenName, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.jwtRefreshTokenName, refreshToken, { httpOnly: true, signed: true, path: '/' });
 
     return user;
   }
@@ -55,8 +56,8 @@ export class AuthController {
     // Delete refresh token
     await this.usersService.removeRefreshToken(user.id);
     // Set cookies
-    res.clearCookie(process.env.JWT_ACCESS_TOKEN_NAME);
-    res.clearCookie(process.env.JWT_REFRESH_TOKEN_NAME);
+    res.clearCookie(config.jwtAccessTokenName);
+    res.clearCookie(config.jwtRefreshTokenName);
   }
 
   /**
@@ -84,8 +85,8 @@ export class AuthController {
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.cookie(process.env.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(process.env.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.jwtAccessTokenName, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.jwtRefreshTokenName, refreshToken, { httpOnly: true, signed: true, path: '/' });
     return user;
   }
 }

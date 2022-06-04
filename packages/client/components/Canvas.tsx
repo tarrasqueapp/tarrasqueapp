@@ -1,24 +1,23 @@
 import { Stage } from '@inlet/react-pixi';
 import { observer } from 'mobx-react-lite';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { io } from 'socket.io-client';
 
 import { useGetCurrentMap } from '../hooks/data/maps/useGetCurrentMap';
 import { useWindowSize } from '../hooks/useWindowSize';
+import { config } from '../lib/config';
 import { store } from '../store';
 import { Grid } from './Grid';
 import { Map } from './Map';
 import { Token } from './Token';
 
 const Canvas: React.FC = observer(() => {
-  const router = useRouter();
   const { data: map } = useGetCurrentMap();
   const windowSize = useWindowSize();
 
   useEffect(() => {
     if (store.app.socket) return;
-    store.app.setSocket(io({ path: `${router.basePath}/socket.io` }));
+    store.app.setSocket(io({ path: `${config.basePath}/socket.io` }));
   }, []);
 
   useEffect(() => {
@@ -47,7 +46,7 @@ const Canvas: React.FC = observer(() => {
       <Map src={map.media.url} width={map.media.width} height={map.media.height}>
         <>
           <Grid graphWidth={map.media.width} graphHeight={map.media.height} minorGridSize={70} minorStrokeWidth={1} />
-          <Token src={`${router.basePath}/token.webp`} x={70} y={70} width={70} height={70} />
+          <Token src={`${config.basePath}/token.webp`} x={70} y={70} width={70} height={70} />
         </>
       </Map>
     </Stage>

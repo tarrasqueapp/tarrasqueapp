@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { PrismaService } from 'nestjs-prisma';
 
 import { AuthService } from '../auth/auth.service';
+import { config } from '../config';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -43,8 +44,8 @@ export class SetupController {
       // Delete refresh token
       await this.usersService.removeRefreshToken(setup.user.id);
       // Set cookies
-      res.clearCookie(process.env.JWT_ACCESS_TOKEN_NAME);
-      res.clearCookie(process.env.JWT_REFRESH_TOKEN_NAME);
+      res.clearCookie(config.jwtAccessTokenName);
+      res.clearCookie(config.jwtRefreshTokenName);
     }
     // Delete all maps
     await this.prisma.map.deleteMany({});

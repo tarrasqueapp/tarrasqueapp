@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import { config } from '../../config';
 import { UserEntity } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { TokenPayload } from '../tokenPayload.interface';
@@ -13,10 +14,10 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.signedCookies?.[process.env.JWT_REFRESH_TOKEN_NAME];
+          return request?.signedCookies?.[config.jwtRefreshTokenName];
         },
       ]),
-      secretOrKey: process.env.JWT_REFRESH_TOKEN_SECRET,
+      secretOrKey: config.jwtRefreshTokenSecret,
       passReqToCallback: true,
     });
   }
@@ -25,7 +26,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
    * Validate the refresh token and return the user
    */
   async validate(request: Request, payload: TokenPayload): Promise<UserEntity> {
-    const refreshToken = request.signedCookies?.[process.env.JWT_REFRESH_TOKEN_NAME];
+    const refreshToken = request.signedCookies?.[config.jwtRefreshTokenName];
     return this.userService.getUserIfRefreshTokenMatches(payload.userId, refreshToken);
   }
 }

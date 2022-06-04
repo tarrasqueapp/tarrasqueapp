@@ -1,4 +1,4 @@
-{$HOSTNAME:localhost} {
+{$DOMAIN:localhost} {
   tls {
     dns digitalocean {$CADDY_DIGITALOCEAN_API_TOKEN}
   }

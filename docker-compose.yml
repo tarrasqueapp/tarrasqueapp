@@ -16,6 +16,7 @@ services:
       - ./.env
     build:
       args:
+        - DOMAIN=${DOMAIN}
         - BASE_PATH=$BASE_PATH
 
   ################
@@ -32,6 +33,8 @@ services:
       - caddy
       - db
       - backend
+    volumes:
+      - tmp:/tmp
     env_file:
       - ./.env
 
@@ -66,7 +69,7 @@ services:
     networks:
       - caddy
     ports:
-      - '10000:10000'
+      - '$PORT:$PORT'
     volumes:
       - ./data/caddy:/data/caddy
       - ./caddy/srv:/srv
@@ -98,9 +101,7 @@ services:
       - no-new-privileges:true
     networks:
       - caddy
-    ports:
-      - '1080:1080'
-    command: -behind-proxy -upload-dir /tmp
+    command: -behind-proxy -upload-dir /tmp -base-path /tus/files/
     volumes:
       - tmp:/tmp
 

@@ -9,7 +9,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ path: `${process.env.BASE_PATH}/socket.io`, cors: { origin: '*' } })
+import { config } from '../config';
+
+@WebSocketGateway({ path: `${config.basePath}/socket.io`, cors: { origin: '*' } })
 export class MapsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('MapsGateway');

@@ -42,7 +42,7 @@ export const SetupPage: React.FC = () => {
   // Show progress bar while loading
   if (isLoading || setupCompleted || isLoadingRefreshToken) {
     return (
-      <Box sx={{ textAlign: 'center' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CircularProgress disableShrink />
       </Box>
     );

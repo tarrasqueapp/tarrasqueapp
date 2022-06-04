@@ -27,19 +27,19 @@ log {
 # Client
 @client path {$BASE_PATH} {$BASE_PATH}/*
 handle @client {
-  reverse_proxy client:10000
+  reverse_proxy client:{$PORT}
 }
 
 # Server
 @server path {$BASE_PATH}/api {$BASE_PATH}/api/*
 handle @server {
-  reverse_proxy server:10000
+  reverse_proxy server:{$PORT}
 }
 
 # Socket.IO
 @socket.io path {$BASE_PATH}/socket.io {$BASE_PATH}/socket.io/*
 handle @socket.io {
-  reverse_proxy server:10000
+  reverse_proxy server:{$PORT}
 }
 
 # Plugins
@@ -47,4 +47,10 @@ handle @socket.io {
 handle @plugins {
   root * /plugins
   file_server browse
+}
+
+# Tus
+@tus path {$BASE_PATH}/tus {$BASE_PATH}/tus/*
+handle @tus {
+  reverse_proxy tus:1080
 }

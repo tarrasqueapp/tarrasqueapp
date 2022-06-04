@@ -5,7 +5,7 @@ type IProps = TextFieldProps & {
   name: string;
 };
 
-export const ControlledTextField: React.FC<IProps> = ({ name, ...otherProps }) => {
+export const ControlledTextField: React.FC<IProps> = ({ name, ...props }) => {
   const {
     control,
     formState: { errors },
@@ -17,12 +17,7 @@ export const ControlledTextField: React.FC<IProps> = ({ name, ...otherProps }) =
       name={name}
       defaultValue=""
       render={({ field }) => (
-        <TextField
-          {...otherProps}
-          {...field}
-          error={!!errors[name]}
-          helperText={errors[name] ? errors[name].message : ''}
-        />
+        <TextField {...props} {...field} error={!!errors[name]} helperText={errors[name] ? errors[name].message : ''} />
       )}
     />
   );

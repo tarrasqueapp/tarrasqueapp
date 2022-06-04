@@ -2,6 +2,7 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 
+import { config } from '../config';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { TokenPayload } from './tokenPayload.interface';
@@ -58,8 +59,8 @@ export class AuthService {
     this.logger.verbose(`📂 Generating access token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-      expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+      secret: config.jwtAccessTokenSecret,
+      expiresIn: config.jwtAccessTokenExpirationTime,
     });
     this.logger.debug(`✅️ Generated access token`);
     return token;
@@ -74,8 +75,8 @@ export class AuthService {
     this.logger.verbose(`📂 Generating refresh token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_TOKEN_SECRET,
-      expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+      secret: config.jwtRefreshTokenSecret,
+      expiresIn: config.jwtRefreshTokenExpirationTime,
     });
     this.logger.debug(`✅️ Generated refresh token`);
     return token;
@@ -87,7 +88,7 @@ export class AuthService {
    * @returns The user
    */
   public async getUserFromToken(token: string) {
-    const payload: TokenPayload = this.jwtService.verify(token, { secret: process.env.JWT_ACCESS_TOKEN_SECRET });
+    const payload: TokenPayload = this.jwtService.verify(token, { secret: config.jwtAccessTokenSecret });
     if (payload.userId) {
       return this.usersService.getUserById(payload.userId);
     }

@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
+import { config } from '../src/config';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -60,8 +62,8 @@ async function main() {
         name: 'Example Map',
         media: {
           create: {
-            url: `${process.env.BASE_PATH}/map.webp`,
-            thumbnailUrl: `${process.env.BASE_PATH}/map.webp`,
+            url: `${config.basePath}/map.webp`,
+            thumbnailUrl: `${config.basePath}/map.webp`,
             width: 2450,
             height: 1400,
             format: 'image/webp',
@@ -85,8 +87,8 @@ async function main() {
         currencies: { create: { gold: 30, silver: 10 } },
         media: {
           create: {
-            url: `${process.env.BASE_PATH}/token.webp`,
-            thumbnailUrl: `${process.env.BASE_PATH}/token.webp`,
+            url: `${config.basePath}/token.webp`,
+            thumbnailUrl: `${config.basePath}/token.webp`,
             width: 280,
             height: 280,
             format: 'image/webp',

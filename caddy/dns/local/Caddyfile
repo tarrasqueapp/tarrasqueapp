@@ -1,4 +1,4 @@
-{$HOSTNAME:localhost} {
+{$DOMAIN:localhost} {
   tls internal
 
   import /srv/Caddyfile

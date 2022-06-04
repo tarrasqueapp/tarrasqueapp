@@ -210,6 +210,20 @@ export interface NonPlayerCharacterInterface {
   campaignId: string;
 }
 
+export interface DimensionsInterface {
+  width: number;
+  height: number;
+}
+
+export interface FileInterface {
+  name: string;
+  type: string;
+  extension: string;
+  size: number;
+  width: number;
+  height: number;
+}
+
 export interface MediaInterface {
   id: string;
   url: string;

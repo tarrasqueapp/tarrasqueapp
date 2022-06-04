@@ -1,9 +1,9 @@
 import { PixiComponent, useApp } from '@inlet/react-pixi';
-import { observer } from 'mobx-react-lite';
 import { Viewport as PixiViewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import { useGetCurrentMap } from '../hooks/data/maps/useGetCurrentMap';
 import { store } from '../store';
 import { SelectTool, Tool } from '../store/toolbar';
 
@@ -35,17 +35,6 @@ const PixiComponentViewport = PixiComponent('Viewport', {
     if (oldProps.pressToDrag !== newProps.pressToDrag) {
       viewport.drag({ pressDrag: newProps.pressToDrag });
     }
-  },
-  didMount: () => {
-    if (!store.maps.currentMap) return;
-    store.pixi.viewport.animate({
-      position: { x: store.maps.currentMap.media.width / 2, y: store.maps.currentMap.media.height / 2 },
-      scale: Math.min(
-        window.innerWidth / store.maps.currentMap.media.width,
-        window.innerHeight / store.maps.currentMap.media.height,
-      ),
-      time: 0,
-    });
   },
   create: (props: PixiComponentViewportProps) => {
     const viewport = new PixiViewport({
@@ -109,8 +98,19 @@ const PixiComponentViewport = PixiComponent('Viewport', {
   },
 });
 
-export const Viewport = observer((props: ViewportProps) => {
+export const Viewport = (props: ViewportProps) => {
+  const { data: map } = useGetCurrentMap();
   const app = useApp();
+
+  useEffect(() => {
+    if (!map) return;
+    store.pixi.viewport.animate({
+      position: { x: map.media.width / 2, y: map.media.height / 2 },
+      scale: Math.min(window.innerWidth / map.media.width, window.innerHeight / map.media.height),
+      time: 0,
+    });
+  }, [map]);
+
   return (
     <PixiComponentViewport
       app={app}
@@ -119,4 +119,4 @@ export const Viewport = observer((props: ViewportProps) => {
       {...props}
     />
   );
-});
+};

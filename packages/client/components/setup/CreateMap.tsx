@@ -6,7 +6,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
+import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { ControlledTextField } from '../form/ControlledTextField';
+import { ControlledUploader } from '../form/ControlledUploader';
 
 interface IProps {
   campaignId: string | undefined;
@@ -17,11 +19,19 @@ interface IProps {
 
 export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isResetting }) => {
   const createMap = useCreateMap();
+  const createMedia = useCreateMedia();
 
   // Setup form validation schema
   const schema = z.object({
     name: z.string().min(1),
-    mediaId: z.string().min(1),
+    file: z.object({
+      name: z.string().min(1),
+      type: z.string().min(1),
+      extension: z.string().min(1),
+      size: z.number(),
+      width: z.number(),
+      height: z.number(),
+    }),
   });
   type Schema = z.infer<typeof schema>;
 
@@ -37,19 +47,27 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
    * @param values
    */
   async function handleSubmitForm(values: Schema) {
-    await createMap.mutateAsync({ ...values, campaignId });
-    onSubmit();
+    const media = await createMedia.mutateAsync(values.file);
+    console.log(media);
+    // await createMap.mutateAsync({ name: values.name, mediaId: media.id, campaignId });
+    // onSubmit();
   }
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <ControlledTextField size="small" name="name" label="Name" sx={{ m: 1 }} />
-          <ControlledTextField size="small" name="mediaId" label="Media" sx={{ m: 1 }} />
+          <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} />
+          <Box sx={{ my: 1 }}>
+            <ControlledUploader
+              name="file"
+              allowedFileTypes={['image/*', 'video/*']}
+              DashboardProps={{ height: 200 }}
+            />
+          </Box>
         </Box>
 
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, mb: 1 }}>
           <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mr: 1 }}>
             Continue
           </LoadingButton>

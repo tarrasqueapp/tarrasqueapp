@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
 import { AppModule } from './app.module';
+import { config } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -12,12 +13,13 @@ async function bootstrap() {
       'log',
       'warn',
       'error',
-      ...((process.env.NODE_ENV !== 'production' ? ['debug', 'verbose'] : []) as LogLevel[]),
-    ],
+      config.nodeEnv !== 'production' && 'debug',
+      config.nodeEnv !== 'production' && config.verbose && 'verbose',
+    ].filter(Boolean) as LogLevel[],
   });
 
   // Add /api prefix to all routes
-  const apiPath = process.env.BASE_PATH ? process.env.BASE_PATH.slice(1) + '/api' : 'api';
+  const apiPath = config.basePath ? config.basePath.slice(1) + '/api' : 'api';
   app.setGlobalPrefix(apiPath);
 
   // Validate all requests
@@ -32,19 +34,19 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   // Cookie parser
-  app.use(cookieParser(process.env.COOKIE_SECRET));
+  app.use(cookieParser(config.cookieSecret));
 
   // Setup swagger
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('Tarrasque API')
     .setDescription('Mobile-friendly & open-source virtual tabletop for Dungeons & Dragons')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup(apiPath, app, document);
 
   // Start server
-  await app.listen(10000);
+  await app.listen(config.port);
 }
 bootstrap();

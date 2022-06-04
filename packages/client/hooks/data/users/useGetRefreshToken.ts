@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 
 import { api } from '../../../lib/api';
+import { config } from '../../../lib/config';
 import { UserInterface } from '../../../lib/types';
 import { DateTimeUtils } from '../../../utils/DateTimeUtils';
 
@@ -19,7 +20,7 @@ async function getRefreshToken() {
  */
 export function useGetRefreshToken() {
   // Get a new refresh token if the user is logged in
-  const refetchInterval = DateTimeUtils.toMillisecondsFromString(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '5m');
+  const refetchInterval = DateTimeUtils.toMillisecondsFromString(config.jwtAccessTokenExpirationTime || '5m');
 
   return useQuery(`auth/refresh`, () => getRefreshToken(), {
     refetchInterval,
