@@ -1,5 +1,9 @@
 FROM node:16-alpine
 
+COPY --from=mwader/static-ffmpeg:4.4.1 /ffmpeg /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:4.4.1 /ffprobe /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:4.4.1 /qt-faststart /usr/local/bin/
+
 WORKDIR /app
 
 COPY package.json yarn.lock ./

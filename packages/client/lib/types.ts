@@ -219,9 +219,9 @@ export interface FileInterface {
   name: string;
   type: string;
   extension: string;
-  size: number;
   width: number;
   height: number;
+  size: number;
 }
 
 export interface MediaInterface {

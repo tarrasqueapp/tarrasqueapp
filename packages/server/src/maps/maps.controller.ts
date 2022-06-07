@@ -23,8 +23,8 @@ export class MapsController {
    */
   @Get(':mapId')
   @ApiOkResponse({ type: MapEntity })
-  async getMap(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
-    return await this.mapsService.getMap(mapId);
+  getMap(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
+    return this.mapsService.getMap(mapId);
   }
 
   /**
@@ -35,8 +35,8 @@ export class MapsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
-  async createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
-    return await this.mapsService.createMap(data, user.id);
+  createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
+    return this.mapsService.createMap(data, user.id);
   }
 
   /**
@@ -47,8 +47,8 @@ export class MapsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
-  async duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
-    return await this.mapsService.duplicateMap(mapId);
+  duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
+    return this.mapsService.duplicateMap(mapId);
   }
 
   /**
@@ -59,8 +59,8 @@ export class MapsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
-  async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
-    return await this.mapsService.updateMap(mapId, data);
+  updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
+    return this.mapsService.updateMap(mapId, data);
   }
 
   /**
@@ -71,7 +71,7 @@ export class MapsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
-  async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
-    return await this.mapsService.deleteMap(mapId);
+  deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
+    return this.mapsService.deleteMap(mapId);
   }
 }

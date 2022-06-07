@@ -28,7 +28,7 @@ export class SetupController {
    */
   @Get()
   @ApiOkResponse({ type: SetupDto })
-  async getSetup(): Promise<SetupDto> {
+  getSetup(): Promise<SetupDto> {
     return this.setupService.getSetup();
   }
 
@@ -74,7 +74,7 @@ export class SetupController {
   @Post('create-user')
   @UseGuards(SetupGuard)
   @ApiOkResponse({ type: UserEntity })
-  async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
-    return await this.usersService.createUserWithRoles({ ...data, roles: [Role.ADMIN, Role.USER] });
+  createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
+    return this.usersService.createUserWithRoles({ ...data, roles: [Role.ADMIN, Role.USER] });
   }
 }

@@ -9,7 +9,7 @@ import { UsersService } from '../../users/users.service';
 import { TokenPayload } from '../tokenPayload.interface';
 
 @Injectable()
-export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
+export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(private readonly userService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -25,7 +25,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh-
   /**
    * Validate the refresh token and return the user
    */
-  async validate(request: Request, payload: TokenPayload): Promise<UserEntity> {
+  validate(request: Request, payload: TokenPayload): Promise<UserEntity> {
     const refreshToken = request.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
     return this.userService.getUserIfRefreshTokenMatches(payload.userId, refreshToken);
   }

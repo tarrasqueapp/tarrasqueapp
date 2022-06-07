@@ -19,6 +19,10 @@ WORKDIR /home/node/app
 RUN mkdir -p ./dist && chown -R node:node ./dist
 RUN chown -R node:node .
 
+COPY --from=mwader/static-ffmpeg:4.4.1 /ffmpeg /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:4.4.1 /ffprobe /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:4.4.1 /qt-faststart /usr/local/bin/
+
 COPY package.json yarn.lock ./
 COPY prisma prisma
 

@@ -42,15 +42,22 @@ handle @socket.io {
   reverse_proxy server:{$PORT}
 }
 
+# Tus
+@tus path {$BASE_PATH}/tus {$BASE_PATH}/tus/*
+handle @tus {
+  reverse_proxy tus:1080
+}
+
+# Uploads
+@uploads path {$BASE_PATH}/uploads {$BASE_PATH}/uploads/*
+handle @uploads {
+  root * /uploads
+  file_server browse
+}
+
 # Plugins
 @plugins path {$BASE_PATH}/plugins {$BASE_PATH}/plugins/*
 handle @plugins {
   root * /plugins
   file_server browse
-}
-
-# Tus
-@tus path {$BASE_PATH}/tus {$BASE_PATH}/tus/*
-handle @tus {
-  reverse_proxy tus:1080
 }

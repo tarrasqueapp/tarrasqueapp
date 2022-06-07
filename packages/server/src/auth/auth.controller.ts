@@ -22,7 +22,7 @@ export class AuthController {
    */
   @Post('register')
   @ApiOkResponse({ type: UserEntity })
-  async register(@Body() data: CreateUserDto): Promise<UserEntity> {
+  register(@Body() data: CreateUserDto): Promise<UserEntity> {
     return this.usersService.createUser(data);
   }
 

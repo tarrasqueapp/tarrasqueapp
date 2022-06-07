@@ -55,7 +55,7 @@ export class AuthService {
    * @param userId The user's ID
    * @returns The JWT access token
    */
-  public generateAccessToken(userId: string) {
+  generateAccessToken(userId: string) {
     this.logger.verbose(`📂 Generating access token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
@@ -71,11 +71,11 @@ export class AuthService {
    * @param userId The user's ID
    * @returns The JWT refresh token
    */
-  public generateRefreshToken(userId: string) {
+  generateRefreshToken(userId: string) {
     this.logger.verbose(`📂 Generating refresh token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: config.JWT_REFRESH_TOKEN_NAME,
+      secret: config.JWT_REFRESH_TOKEN_SECRET,
       expiresIn: config.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     });
     this.logger.debug(`✅️ Generated refresh token`);
@@ -87,7 +87,7 @@ export class AuthService {
    * @param token The JWT access token
    * @returns The user
    */
-  public async getUserFromToken(token: string) {
+  getUserFromToken(token: string) {
     const payload: TokenPayload = this.jwtService.verify(token, { secret: config.JWT_ACCESS_TOKEN_SECRET });
     if (payload.userId) {
       return this.usersService.getUserById(payload.userId);

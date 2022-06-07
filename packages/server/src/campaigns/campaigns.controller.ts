@@ -28,8 +28,8 @@ export class CampaignsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: [CampaignEntity] })
-  async getCampaigns(@User() user: UserEntity): Promise<CampaignEntity[]> {
-    return await this.campaignsService.getUserCampaigns(user.id);
+  getCampaigns(@User() user: UserEntity): Promise<CampaignEntity[]> {
+    return this.campaignsService.getUserCampaigns(user.id);
   }
 
   /**
@@ -37,8 +37,8 @@ export class CampaignsController {
    */
   @Get(':campaignId')
   @ApiOkResponse({ type: CampaignEntity })
-  async getCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
-    return await this.campaignsService.getCampaign(campaignId);
+  getCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
+    return this.campaignsService.getCampaign(campaignId);
   }
 
   /**
@@ -46,8 +46,8 @@ export class CampaignsController {
    */
   @Get(':campaignId/maps')
   @ApiOkResponse({ type: [MapEntity] })
-  async getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapBaseEntity[]> {
-    return await this.mapsService.getCampaignMaps(campaignId);
+  getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapBaseEntity[]> {
+    return this.mapsService.getCampaignMaps(campaignId);
   }
 
   /**
@@ -57,8 +57,8 @@ export class CampaignsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
-  async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
-    return await this.campaignsService.createCampaign(data, user.id);
+  createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
+    return this.campaignsService.createCampaign(data, user.id);
   }
 
   /**
@@ -69,11 +69,11 @@ export class CampaignsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
-  async updateCampaign(
+  updateCampaign(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() data: UpdateCampaignDto,
   ): Promise<CampaignBaseEntity> {
-    return await this.campaignsService.updateCampaign(campaignId, data);
+    return this.campaignsService.updateCampaign(campaignId, data);
   }
 
   /**
@@ -84,7 +84,7 @@ export class CampaignsController {
   @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
-  async deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignBaseEntity> {
-    return await this.campaignsService.deleteCampaign(campaignId);
+  deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignBaseEntity> {
+    return this.campaignsService.deleteCampaign(campaignId);
   }
 }

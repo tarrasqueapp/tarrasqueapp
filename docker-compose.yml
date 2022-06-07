@@ -14,10 +14,6 @@ services:
       - caddy
     env_file:
       - ./.env
-    build:
-      args:
-        - DOMAIN=${DOMAIN}
-        - BASE_PATH=$BASE_PATH
 
   ################
   ### Back-end ###
@@ -34,7 +30,8 @@ services:
       - db
       - backend
     volumes:
-      - tmp:/tmp
+      - ./data/tmp:/tmp
+      - ./data/uploads:/uploads
     env_file:
       - ./.env
 
@@ -69,11 +66,12 @@ services:
     networks:
       - caddy
     ports:
-      - '$PORT:$PORT'
+      - '${PORT}:${PORT}'
     volumes:
       - ./data/caddy:/data/caddy
+      - ./data/plugins:/plugins
+      - ./data/uploads:/uploads
       - ./caddy/srv:/srv
-      - ./plugins:/plugins
       - caddy_config:/config
       - caddy_data:/data
     env_file:
@@ -103,7 +101,7 @@ services:
       - caddy
     command: -behind-proxy -upload-dir /tmp -base-path /tus/files/
     volumes:
-      - tmp:/tmp
+      - ./data/tmp:/tmp
 
 networks:
   caddy:
@@ -113,4 +111,3 @@ networks:
 volumes:
   caddy_config:
   caddy_data:
-  tmp:

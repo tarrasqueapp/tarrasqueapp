@@ -1,31 +1,10 @@
-import { z } from 'zod';
-
 function getEnvironmentVariable(environmentVariable: string): string {
-  const unvalidatedEnvironmentVariable = process.env[environmentVariable];
-  if (!unvalidatedEnvironmentVariable) {
-    throw new Error(`Couldn't find environment variable: ${environmentVariable}`);
-  } else {
-    return unvalidatedEnvironmentVariable;
-  }
+  return process.env[environmentVariable] || '';
 }
 
-const schema = z.object({
-  BASE_PATH: z.string(),
-  NODE_ENV: z.string().min(1),
-  VERBOSE: z.boolean(),
-  PORT: z.number().min(1),
-  COOKIE_SECRET: z.string().min(1),
-  JWT_ACCESS_TOKEN_NAME: z.string().min(1),
-  JWT_ACCESS_TOKEN_SECRET: z.string().min(1),
-  JWT_ACCESS_TOKEN_EXPIRATION_TIME: z.string().min(1),
-  JWT_REFRESH_TOKEN_NAME: z.string().min(1),
-  JWT_REFRESH_TOKEN_SECRET: z.string().min(1),
-  JWT_REFRESH_TOKEN_EXPIRATION_TIME: z.string().min(1),
-});
-type Schema = z.infer<typeof schema>;
-
-export const config: Schema = {
+export const config = {
   BASE_PATH: getEnvironmentVariable('BASE_PATH'),
+  DOMAIN_FULL: getEnvironmentVariable('DOMAIN_FULL'),
   NODE_ENV: getEnvironmentVariable('NODE_ENV'),
   VERBOSE: getEnvironmentVariable('VERBOSE') === 'true',
   PORT: parseInt(getEnvironmentVariable('PORT'), 10),
@@ -36,6 +15,11 @@ export const config: Schema = {
   JWT_REFRESH_TOKEN_NAME: getEnvironmentVariable('JWT_REFRESH_TOKEN_NAME'),
   JWT_REFRESH_TOKEN_SECRET: getEnvironmentVariable('JWT_REFRESH_TOKEN_SECRET'),
   JWT_REFRESH_TOKEN_EXPIRATION_TIME: getEnvironmentVariable('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
+  STORAGE_PROVIDER: getEnvironmentVariable('STORAGE_PROVIDER'),
+  STORAGE_S3_BUCKET: getEnvironmentVariable('STORAGE_S3_BUCKET'),
+  STORAGE_S3_ACCESS_KEY_ID: getEnvironmentVariable('STORAGE_S3_ACCESS_KEY_ID'),
+  STORAGE_S3_SECRET_ACCESS_KEY: getEnvironmentVariable('STORAGE_S3_SECRET_ACCESS_KEY'),
+  STORAGE_S3_REGION: getEnvironmentVariable('STORAGE_S3_REGION'),
+  STORAGE_S3_ENDPOINT: getEnvironmentVariable('STORAGE_S3_ENDPOINT'),
+  STORAGE_S3_URL: getEnvironmentVariable('STORAGE_S3_URL'),
 };
-
-schema.parse(config);

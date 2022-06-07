@@ -25,7 +25,7 @@ export const Uploader: React.FC<UploaderProps> = ({ allowedFileTypes, onUploadCo
       },
       autoProceed: false,
     })
-      .use(Tus, { endpoint: config.TUS_URL, onShouldRetry: () => true })
+      .use(Tus, { endpoint: config.TUS_URL })
       .use(ImageEditor, {
         quality: 1,
         cropperOptions: {

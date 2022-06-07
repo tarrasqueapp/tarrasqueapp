@@ -9,7 +9,7 @@ import { UsersService } from '../../users/users.service';
 import { TokenPayload } from '../tokenPayload.interface';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly userService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   /**
    * Get the user from the token
    */
-  async validate(payload: TokenPayload): Promise<UserEntity> {
+  validate(payload: TokenPayload): Promise<UserEntity> {
     return this.userService.getUserById(payload.userId);
   }
 }

@@ -94,9 +94,9 @@ export class TokensService {
    * @param createdById The user id
    * @returns The tokens
    */
-  async createTokens(data: CreateTokenDto[], mapId: string, createdById: string): Promise<TokenEntity[]> {
+  createTokens(data: CreateTokenDto[], mapId: string, createdById: string): Promise<TokenEntity[]> {
     const promises = data.map((token) => this.createToken(token, mapId, createdById));
-    return await Promise.all(promises);
+    return Promise.all(promises);
   }
 
   /**
@@ -123,9 +123,9 @@ export class TokensService {
    * @param data The token data
    * @returns The tokens
    */
-  async updateTokens(data: UpdateTokenDto[]): Promise<TokenBaseEntity[]> {
+  updateTokens(data: UpdateTokenDto[]): Promise<TokenBaseEntity[]> {
     const promises = data.map((token) => this.updateToken(token.id, token));
-    return await Promise.all(promises);
+    return Promise.all(promises);
   }
 
   /**
@@ -151,8 +151,8 @@ export class TokensService {
    * @param tokenIds The token ids
    * @returns The tokens
    */
-  async deleteTokens(tokenIds: string[]): Promise<TokenBaseEntity[]> {
+  deleteTokens(tokenIds: string[]): Promise<TokenBaseEntity[]> {
     const promises = tokenIds.map((tokenId) => this.deleteToken(tokenId));
-    return await Promise.all(promises);
+    return Promise.all(promises);
   }
 }

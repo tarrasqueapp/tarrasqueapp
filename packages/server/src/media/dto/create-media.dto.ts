@@ -1,14 +1,11 @@
 import { IsNumber, IsString } from 'class-validator';
 
-export class FileDto {
+export class CreateMediaDto {
   @IsString()
-  name: string;
+  url: string;
 
   @IsString()
-  type: string;
-
-  @IsString()
-  extension: string;
+  thumbnailUrl: string;
 
   @IsNumber()
   width: number;
@@ -18,4 +15,7 @@ export class FileDto {
 
   @IsNumber()
   size: number;
+
+  @IsString()
+  format: string;
 }

@@ -28,9 +28,9 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
       name: z.string().min(1),
       type: z.string().min(1),
       extension: z.string().min(1),
-      size: z.number(),
       width: z.number(),
       height: z.number(),
+      size: z.number(),
     }),
   });
   type Schema = z.infer<typeof schema>;
