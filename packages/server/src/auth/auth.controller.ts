@@ -39,8 +39,8 @@ export class AuthController {
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.cookie(config.jwtAccessTokenName, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(config.jwtRefreshTokenName, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
 
     return user;
   }
@@ -56,8 +56,8 @@ export class AuthController {
     // Delete refresh token
     await this.usersService.removeRefreshToken(user.id);
     // Set cookies
-    res.clearCookie(config.jwtAccessTokenName);
-    res.clearCookie(config.jwtRefreshTokenName);
+    res.clearCookie(config.JWT_ACCESS_TOKEN_NAME);
+    res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);
   }
 
   /**
@@ -85,8 +85,8 @@ export class AuthController {
     // Set refresh token
     await this.usersService.setRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.cookie(config.jwtAccessTokenName, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(config.jwtRefreshTokenName, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie(config.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
     return user;
   }
 }

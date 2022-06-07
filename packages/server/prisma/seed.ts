@@ -62,8 +62,8 @@ async function main() {
         name: 'Example Map',
         media: {
           create: {
-            url: `${config.basePath}/map.webp`,
-            thumbnailUrl: `${config.basePath}/map.webp`,
+            url: `${config.BASE_PATH}/map.webp`,
+            thumbnailUrl: `${config.BASE_PATH}/map.webp`,
             width: 2450,
             height: 1400,
             format: 'image/webp',
@@ -87,8 +87,8 @@ async function main() {
         currencies: { create: { gold: 30, silver: 10 } },
         media: {
           create: {
-            url: `${config.basePath}/token.webp`,
-            thumbnailUrl: `${config.basePath}/token.webp`,
+            url: `${config.BASE_PATH}/token.webp`,
+            thumbnailUrl: `${config.BASE_PATH}/token.webp`,
             width: 280,
             height: 280,
             format: 'image/webp',

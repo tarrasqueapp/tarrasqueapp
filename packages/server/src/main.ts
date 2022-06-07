@@ -13,13 +13,13 @@ async function bootstrap() {
       'log',
       'warn',
       'error',
-      config.nodeEnv !== 'production' && 'debug',
-      config.nodeEnv !== 'production' && config.verbose && 'verbose',
+      config.NODE_ENV !== 'production' && 'debug',
+      config.NODE_ENV !== 'production' && config.VERBOSE && 'verbose',
     ].filter(Boolean) as LogLevel[],
   });
 
   // Add /api prefix to all routes
-  const apiPath = config.basePath ? config.basePath.slice(1) + '/api' : 'api';
+  const apiPath = config.BASE_PATH ? config.BASE_PATH.slice(1) + '/api' : 'api';
   app.setGlobalPrefix(apiPath);
 
   // Validate all requests
@@ -34,7 +34,7 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   // Cookie parser
-  app.use(cookieParser(config.cookieSecret));
+  app.use(cookieParser(config.COOKIE_SECRET));
 
   // Setup swagger
   const swaggerConfig = new DocumentBuilder()
@@ -47,6 +47,6 @@ async function bootstrap() {
   SwaggerModule.setup(apiPath, app, document);
 
   // Start server
-  await app.listen(config.port);
+  await app.listen(config.PORT);
 }
 bootstrap();

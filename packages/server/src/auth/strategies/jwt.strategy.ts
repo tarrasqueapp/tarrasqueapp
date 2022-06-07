@@ -14,10 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request?.signedCookies?.[config.jwtAccessTokenName];
+          return request?.signedCookies?.[config.JWT_ACCESS_TOKEN_NAME];
         },
       ]),
-      secretOrKey: config.jwtAccessTokenSecret,
+      secretOrKey: config.JWT_ACCESS_TOKEN_SECRET,
     });
   }
 

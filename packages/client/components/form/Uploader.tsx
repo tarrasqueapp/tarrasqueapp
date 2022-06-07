@@ -25,7 +25,7 @@ export const Uploader: React.FC<UploaderProps> = ({ allowedFileTypes, onUploadCo
       },
       autoProceed: false,
     })
-      .use(Tus, { endpoint: config.tusUrl, onShouldRetry: () => true })
+      .use(Tus, { endpoint: config.TUS_URL, onShouldRetry: () => true })
       .use(ImageEditor, {
         quality: 1,
         cropperOptions: {
@@ -56,7 +56,7 @@ export const Uploader: React.FC<UploaderProps> = ({ allowedFileTypes, onUploadCo
           throw new Error('Unsupported file type');
         }
 
-        const name = file.uploadURL.replace(config.tusUrl, '');
+        const name = file.uploadURL.replace(config.TUS_URL, '');
         const { extension, type, size } = file;
 
         onUploadComplete({ name, extension, type, size, ...dimensions });

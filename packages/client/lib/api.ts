@@ -3,7 +3,7 @@ import axios from 'axios';
 import { config } from './config';
 
 export const api = axios.create({
-  baseURL: typeof window !== 'undefined' ? config.basePath : `http://server:${config.port}${config.basePath}`,
+  baseURL: typeof window !== 'undefined' ? config.BASE_PATH : `http://server:${config.PORT}${config.BASE_PATH}`,
 });
 
 // Always return a readable error message

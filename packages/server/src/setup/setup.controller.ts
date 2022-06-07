@@ -44,8 +44,8 @@ export class SetupController {
       // Delete refresh token
       await this.usersService.removeRefreshToken(setup.user.id);
       // Set cookies
-      res.clearCookie(config.jwtAccessTokenName);
-      res.clearCookie(config.jwtRefreshTokenName);
+      res.clearCookie(config.JWT_ACCESS_TOKEN_NAME);
+      res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);
     }
     // Delete all maps
     await this.prisma.map.deleteMany({});

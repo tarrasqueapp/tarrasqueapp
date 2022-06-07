@@ -59,8 +59,8 @@ export class AuthService {
     this.logger.verbose(`📂 Generating access token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: config.jwtAccessTokenSecret,
-      expiresIn: config.jwtAccessTokenExpirationTime,
+      secret: config.JWT_ACCESS_TOKEN_SECRET,
+      expiresIn: config.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
     });
     this.logger.debug(`✅️ Generated access token`);
     return token;
@@ -75,8 +75,8 @@ export class AuthService {
     this.logger.verbose(`📂 Generating refresh token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: config.jwtRefreshTokenSecret,
-      expiresIn: config.jwtRefreshTokenExpirationTime,
+      secret: config.JWT_REFRESH_TOKEN_NAME,
+      expiresIn: config.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
     });
     this.logger.debug(`✅️ Generated refresh token`);
     return token;
@@ -88,7 +88,7 @@ export class AuthService {
    * @returns The user
    */
   public async getUserFromToken(token: string) {
-    const payload: TokenPayload = this.jwtService.verify(token, { secret: config.jwtAccessTokenSecret });
+    const payload: TokenPayload = this.jwtService.verify(token, { secret: config.JWT_ACCESS_TOKEN_SECRET });
     if (payload.userId) {
       return this.usersService.getUserById(payload.userId);
     }
