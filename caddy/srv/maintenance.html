@@ -14,25 +14,20 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet" />
 
     <style>
       html,
-      body,
-      #__next {
+      body {
         height: 100%;
         height: -webkit-fill-available;
       }
 
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Raleway', sans-serif;
         font-size: 14px;
         color: #f2f1ef;
         background-color: #1a1818;
-      }
-
-      img {
-        max-width: 500px;
       }
 
       .container {
@@ -55,15 +50,19 @@
         line-height: 1.75;
         border-radius: 8px;
       }
+
+      .description {
+        color: #9c9c9c;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <img src="https://tarrasque.io/images/logo/logo-wordmark.svg" width="200" alt="Tarrasque Logo" />
-      <h1>Sorry, we're down for maintenance.</h1>
-      <h2>We'll be back up shortly.</h2>
+      <img src="logo.svg" width="200" alt="Tarrasque App Logo" />
+      <h1 class="title">Sorry, we're down for maintenance.</h1>
+      <h2 class="description">We'll be back up shortly.</h2>
       <br />
-      <a href="/" class="button">REFRESH</a>
+      <a href="javascript:window.location.reload(true)" class="button">REFRESH</a>
     </div>
   </body>
 </html>

@@ -1,7 +1,7 @@
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable, InternalServerErrorException, Logger, OnModuleInit } from '@nestjs/common';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 
 import { config } from '../config';
 import { StorageProviderEnum } from './storage-provider.enum';
@@ -65,9 +65,17 @@ export class StorageService implements OnModuleInit {
   async uploadLocal(key: string, body: Buffer): Promise<string> {
     this.logger.verbose(`📂 Uploading file "${key} to local storage`);
     try {
+      // Get proceeding directories
+      const directories = key.split('/').slice(0, -1).join('/');
+
+      // Ensure upload directory exists
+      await fs.ensureDir(`/uploads/${directories}`);
+
+      // Write file to disk
       const filePath = `/uploads/${key}`;
       await fs.writeFile(filePath, body);
 
+      // Return public file URL
       this.logger.debug(`✅️ Uploaded file "${key}" to local storage`);
       return `${config.DOMAIN_FULL}${filePath}`;
     } catch (error) {
@@ -85,17 +93,21 @@ export class StorageService implements OnModuleInit {
   async uploadS3(key: string, body: Buffer): Promise<string> {
     this.logger.verbose(`📂 Uploading file "${key} to S3`);
     try {
+      // Upload file to S3
       const upload = new Upload({
         client: this.s3,
         params: { Bucket: config.STORAGE_S3_BUCKET, Key: `uploads/${key}`, Body: body },
       });
 
+      // Listen for upload progress
       upload.on('httpUploadProgress', (progress) => {
         this.logger.verbose(`📂 Uploading file "${key}" to S3: ${progress.loaded}/${progress.total}`);
       });
 
+      // Wait for upload to finish
       await upload.done();
 
+      // Return public file URL
       this.logger.debug(`✅️ Uploaded file "${key}" to S3`);
       return `${config.STORAGE_S3_URL}/uploads/${key}`;
     } catch (error) {

@@ -77,7 +77,7 @@ export class MediaService {
     const width = 400;
     const height = -1;
 
-    const thumbnailPath = `/tmp/${filePath}${this.THUMBNAIL_SUFFIX}`;
+    const thumbnailPath = `${filePath}${this.THUMBNAIL_SUFFIX}`;
 
     const args = [
       '-y',

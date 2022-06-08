@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 
 @Injectable()
 export class TmpService {
