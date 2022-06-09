@@ -33,6 +33,10 @@ export class SetupService {
         const maps = await this.mapsService.getCampaignMaps(dto.campaign.id);
         dto.map = maps[0] || null;
       }
+      // Set completed flag
+      if (dto.user && dto.campaign && dto.map) {
+        dto.completed = true;
+      }
       // Return result
       return dto;
     } catch (error) {

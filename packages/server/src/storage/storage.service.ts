@@ -96,7 +96,7 @@ export class StorageService implements OnModuleInit {
       // Upload file to S3
       const upload = new Upload({
         client: this.s3,
-        params: { Bucket: config.STORAGE_S3_BUCKET, Key: `uploads/${key}`, Body: body },
+        params: { Bucket: config.STORAGE_S3_BUCKET, Key: `uploads/${key}`, Body: body, ACL: 'public-read' },
       });
 
       // Listen for upload progress

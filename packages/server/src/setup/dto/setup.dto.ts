@@ -16,4 +16,7 @@ export class SetupDto {
 
   @ValidateNested()
   map = null as MapBaseEntity | null;
+
+  @IsBoolean()
+  completed = false;
 }

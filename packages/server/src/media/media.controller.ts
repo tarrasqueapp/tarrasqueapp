@@ -9,7 +9,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { RoleGuard } from '../users/guards/role.guard';
 import { FileDto } from './dto/file.dto';
 import { MediaEntity } from './entities/media.entity';
-import { MediaService } from './media.service';
+import { MediaService, THUMBNAIL_SUFFIX } from './media.service';
 
 @ApiTags('media')
 @Controller('media')
@@ -30,7 +30,7 @@ export class MediaController {
   async createMedia(@Body() data: FileDto, @User() user: UserEntity): Promise<MediaEntity> {
     // Generate a thumbnail
     await this.mediaService.generateThumbnail(data.name);
-    const thumbnailName = `${data.name}${this.mediaService.THUMBNAIL_SUFFIX}`;
+    const thumbnailName = `${data.name}${THUMBNAIL_SUFFIX}`;
 
     // Get the file and thumbnail from the temp path
     const file = await this.tmpService.getFile(data.name);

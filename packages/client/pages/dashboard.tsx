@@ -7,9 +7,11 @@ export async function getServerSideProps() {
   // Get the setup data from the database
   const setup = await getSetup();
 
+  // Render normally if the server can't be reached
+  if (!setup) return { props: {} };
+
   // Redirect to the setup page if the setup is not completed
-  const setupCompleted = Boolean(setup?.database && setup?.user && setup?.campaign && setup?.map);
-  if (!setupCompleted) return { redirect: { destination: '/setup' } };
+  if (!setup.completed) return { redirect: { destination: '/setup' } };
 
   return { props: {} };
 }

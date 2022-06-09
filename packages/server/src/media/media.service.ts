@@ -3,13 +3,16 @@ import { spawn } from 'child_process';
 import { stat } from 'fs-extra';
 import { PrismaService } from 'nestjs-prisma';
 
+import { TEMP_PATH } from '../storage/tmp.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { MediaEntity } from './entities/media.entity';
+
+export const THUMBNAIL_SUFFIX = '.thumbnail.webp';
+export const THUMBNAIL_WIDTH = 400;
 
 @Injectable()
 export class MediaService {
   private logger: Logger = new Logger(MediaService.name);
-  THUMBNAIL_SUFFIX = '.thumbnail.webp';
 
   constructor(private prisma: PrismaService) {}
 
@@ -68,23 +71,23 @@ export class MediaService {
   async generateThumbnail(fileName: string): Promise<string> {
     this.logger.verbose(`📂 Generating thumbnail for file "${fileName}"`);
 
-    const filePath = `/tmp/${fileName}`;
+    // Check that the file exists
+    const filePath = `${TEMP_PATH}/${fileName}`;
     if (!(await stat(filePath))) {
       throw new NotFoundException(`File "${filePath}" not found`);
     }
 
     const ffmpegPath = process.env.FFMPEG_PATH || 'ffmpeg';
-    const width = 400;
     const height = -1;
 
-    const thumbnailPath = `${filePath}${this.THUMBNAIL_SUFFIX}`;
+    const thumbnailPath = `${filePath}${THUMBNAIL_SUFFIX}`;
 
     const args = [
       '-y',
       `-i ${filePath}`,
       '-vframes 1',
       '-ss 00:00:00',
-      `-vf scale=${width}:${height}`,
+      `-vf scale=${THUMBNAIL_WIDTH}:${height}`,
       '-c:v webp',
       thumbnailPath,
     ];

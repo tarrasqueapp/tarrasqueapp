@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
+import { USER_SAFE_FIELDS } from '../users/users.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
@@ -25,10 +26,10 @@ export class CampaignsService {
         where: { OR: [{ createdById: userId }, { players: { some: { id: userId } } }] },
         include: {
           maps: { include: { media: true } },
-          players: true,
+          players: { select: USER_SAFE_FIELDS },
           playerCharacters: { include: { controlledBy: true, media: true } },
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
-          createdBy: true,
+          createdBy: { select: USER_SAFE_FIELDS },
         },
       });
       this.logger.debug(`✅️ Found ${campaigns.length} campaigns for user "${userId}"`);
@@ -52,10 +53,10 @@ export class CampaignsService {
         where: { id: campaignId },
         include: {
           maps: { include: { media: true } },
-          players: true,
+          players: { select: USER_SAFE_FIELDS },
           playerCharacters: { include: { controlledBy: true, media: true } },
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
-          createdBy: true,
+          createdBy: { select: USER_SAFE_FIELDS },
         },
         rejectOnNotFound: true,
       });

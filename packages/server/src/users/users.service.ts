@@ -10,19 +10,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
 import { UserEntity } from './entities/user.entity';
 
+export const USER_SAFE_FIELDS = excludeFields(Prisma.UserScalarFieldEnum, ['password', 'refreshToken']);
+
 @Injectable()
 export class UsersService {
   private logger: Logger = new Logger(UsersService.name);
 
   constructor(private prisma: PrismaService) {}
-
-  /**
-   * Get the fields that should be returned when querying users
-   * @returns User fields withouth password and refresh token
-   */
-  get includedFields() {
-    return excludeFields(Prisma.UserScalarFieldEnum, ['password', 'refreshToken']);
-  }
 
   /**
    * Get all users (without their password or refresh token)
@@ -32,7 +26,7 @@ export class UsersService {
     this.logger.verbose(`📂 Getting users`);
     try {
       // Get the users
-      const users = await this.prisma.user.findMany({ select: this.includedFields });
+      const users = await this.prisma.user.findMany({ select: USER_SAFE_FIELDS });
       this.logger.debug(`✅️ Found ${users.length} users`);
       return users;
     } catch (error) {
@@ -69,7 +63,7 @@ export class UsersService {
       // Get the user
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: this.includedFields,
+        select: USER_SAFE_FIELDS,
         rejectOnNotFound: true,
       });
       this.logger.debug(`✅️ Found user "${userId}"`);
@@ -129,7 +123,7 @@ export class UsersService {
       // Create the user
       const user = await this.prisma.user.create({
         data: { ...data, roles: [Role.USER], password: hashedPassword },
-        select: this.includedFields,
+        select: USER_SAFE_FIELDS,
       });
       this.logger.debug(`✅️ Created user "${data.email}"`);
       return user;
@@ -152,7 +146,7 @@ export class UsersService {
       // Create the user
       const user = await this.prisma.user.create({
         data: { ...data, password: hashedPassword },
-        select: this.includedFields,
+        select: USER_SAFE_FIELDS,
       });
       this.logger.debug(`✅️ Created user "${data.email}"`);
       return user;
@@ -172,7 +166,7 @@ export class UsersService {
     this.logger.verbose(`📂 Updating user "${userId}"`);
     try {
       // Update the user
-      const user = await this.prisma.user.update({ where: { id: userId }, data, select: this.includedFields });
+      const user = await this.prisma.user.update({ where: { id: userId }, data, select: USER_SAFE_FIELDS });
       this.logger.debug(`✅️ Updated user "${userId}"`);
       return user;
     } catch (error) {
@@ -190,7 +184,7 @@ export class UsersService {
     this.logger.verbose(`📂 Deleting user "${userId}"`);
     try {
       // Delete the user
-      const user = await this.prisma.user.delete({ where: { id: userId }, select: this.includedFields });
+      const user = await this.prisma.user.delete({ where: { id: userId }, select: USER_SAFE_FIELDS });
       this.logger.debug(`✅️ Deleted user "${userId}"`);
       return user;
     } catch (error) {
@@ -213,7 +207,7 @@ export class UsersService {
       await this.prisma.user.update({
         where: { id: userId },
         data: { refreshToken: hashedRefreshToken },
-        select: this.includedFields,
+        select: USER_SAFE_FIELDS,
       });
       this.logger.debug(`✅️ Set refresh token for user "${userId}"`);
     } catch (error) {
@@ -234,7 +228,7 @@ export class UsersService {
       const user = await this.prisma.user.update({
         where: { id: userId },
         data: { refreshToken: null },
-        select: this.includedFields,
+        select: USER_SAFE_FIELDS,
       });
       this.logger.debug(`✅️ Removed refresh token for user "${userId}"`);
       return user;

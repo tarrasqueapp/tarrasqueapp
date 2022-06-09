@@ -14,6 +14,10 @@ api.interceptors.response.use(undefined, (error) => {
     return Promise.reject(error);
   }
 
+  if (error.code === 'ECONNREFUSED') {
+    return false;
+  }
+
   const err = new Error(message);
 
   return Promise.reject(err);

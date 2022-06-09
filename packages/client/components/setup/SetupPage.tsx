@@ -19,8 +19,6 @@ export const SetupPage: React.FC = () => {
   const resetSetup = useResetSetup();
   const router = useRouter();
 
-  const setupCompleted = Boolean(data?.database && data?.user && data?.campaign && data?.map);
-
   useEffect(() => {
     if (!data) return;
     // Set active step depending on setup progress
@@ -33,14 +31,15 @@ export const SetupPage: React.FC = () => {
     } else if (data.database) {
       setActiveStep(1);
     }
+
     // Redirect to the home page if the setup is already completed
-    if (setupCompleted) {
+    if (data.completed) {
       router.push('/');
     }
   }, [data]);
 
   // Show progress bar while loading
-  if (isLoading || setupCompleted || isLoadingRefreshToken) {
+  if (isLoading || data?.completed || isLoadingRefreshToken) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CircularProgress disableShrink />

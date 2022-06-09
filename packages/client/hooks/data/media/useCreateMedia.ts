@@ -8,7 +8,7 @@ import { FileInterface, MediaInterface } from '../../../lib/types';
  * @param file - The uploaded file
  * @returns The created media
  */
-async function createMedia(file: FileInterface) {
+async function createMedia(file: Partial<FileInterface>) {
   const { data } = await api.post<MediaInterface>(`/api/media`, file);
   return data;
 }

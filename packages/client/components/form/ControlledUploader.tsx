@@ -19,7 +19,7 @@ export const ControlledUploader: React.FC<IProps> = ({ name, ...props }) => {
         control={control}
         name={name}
         defaultValue=""
-        render={({ field: { onChange } }) => <Uploader {...props} onUploadComplete={onChange} />}
+        render={({ field: { value, onChange } }) => <Uploader {...props} value={value} onChange={onChange} />}
       />
       {errors[name] && <FormHelperText error>Required</FormHelperText>}
     </FormControl>

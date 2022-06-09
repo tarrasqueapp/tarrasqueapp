@@ -3,6 +3,7 @@ export interface SetupInterface {
   user: UserInterface | null;
   campaign: CampaignInterface | null;
   map: MapInterface | null;
+  completed: boolean;
 }
 
 export enum Role {
@@ -219,9 +220,10 @@ export interface FileInterface {
   name: string;
   type: string;
   extension: string;
-  width: number;
-  height: number;
   size: number;
+  data: File | Blob;
+  width?: number;
+  height?: number;
 }
 
 export interface MediaInterface {

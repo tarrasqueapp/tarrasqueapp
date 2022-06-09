@@ -28,9 +28,9 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
       name: z.string().min(1),
       type: z.string().min(1),
       extension: z.string().min(1),
+      size: z.number().min(1),
       width: z.number(),
       height: z.number(),
-      size: z.number(),
     }),
   });
   type Schema = z.infer<typeof schema>;
@@ -48,9 +48,8 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
    */
   async function handleSubmitForm(values: Schema) {
     const media = await createMedia.mutateAsync(values.file);
-    console.log(media);
-    // await createMap.mutateAsync({ name: values.name, mediaId: media.id, campaignId });
-    // onSubmit();
+    await createMap.mutateAsync({ name: values.name, mediaId: media.id, campaignId });
+    onSubmit();
   }
 
   return (
@@ -59,11 +58,7 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} />
           <Box sx={{ my: 1 }}>
-            <ControlledUploader
-              name="file"
-              allowedFileTypes={['image/*', 'video/*']}
-              DashboardProps={{ height: 200 }}
-            />
+            <ControlledUploader name="file" allowedFileTypes={['image/*', 'video/*']} />
           </Box>
         </Box>
 

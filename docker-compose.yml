@@ -99,7 +99,7 @@ services:
       - no-new-privileges:true
     networks:
       - caddy
-    command: -behind-proxy -upload-dir /tmp -base-path /tus/files/
+    command: -behind-proxy -upload-dir /tmp/uploads -base-path /tus/files/
     volumes:
       - ./data/tmp:/tmp
 
