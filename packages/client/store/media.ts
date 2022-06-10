@@ -1,10 +1,52 @@
+import { UppyFile } from '@uppy/core';
 import { makeAutoObservable } from 'mobx';
 
-import { DimensionsInterface } from '../lib/types';
+import { DimensionsInterface, FileInterface } from '../lib/types';
 
 class MediaStore {
   constructor() {
     makeAutoObservable(this);
+  }
+
+  /**
+   * Check if file is an image
+   * @param file - The file to check
+   * @returns boolean
+   */
+  isImage(file?: FileInterface | File | Blob | UppyFile): boolean {
+    if (!file) return false;
+    return file.type?.startsWith('image/') || false;
+  }
+
+  /**
+   * Check if file is a video
+   * @param file - The file to check
+   * @returns boolean
+   */
+  isVideo(file?: FileInterface | File | Blob | UppyFile): boolean {
+    if (!file) return false;
+    return file.type?.startsWith('video/') || false;
+  }
+
+  /**
+   * Check if file is a media item
+   * @param file - The file to check
+   * @returns boolean
+   */
+  isMedia(file?: FileInterface | File | Blob | UppyFile): boolean {
+    if (!file) return false;
+    return this.isImage(file) || this.isVideo(file);
+  }
+
+  /**
+   * Convert a URL to a File
+   * @param url - The url of the file
+   * @returns file
+   */
+  async urlToFile(url: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], 'file', { type: response.headers.get('content-type') || undefined });
   }
 
   /**

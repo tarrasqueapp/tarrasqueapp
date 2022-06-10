@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
 
+import { useEffectAsync } from '../../hooks/useEffectAsync';
 import { config } from '../../lib/config';
 import { Color } from '../../lib/enums';
 import { FileInterface } from '../../lib/types';
@@ -18,7 +19,7 @@ export interface UploaderProps {
 }
 
 export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onChange }) => {
-  const [file, setFile] = useState<FileInterface | string | undefined>(value);
+  const [file, setFile] = useState<FileInterface | undefined>();
   const [preview, setPreview] = useState('');
   const [progress, setProgress] = useState(0);
   const [progressVisible, setProgressVisible] = useState(false);
@@ -28,50 +29,41 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
     return new Uppy({ restrictions: { allowedFileTypes, maxNumberOfFiles: 1 }, autoProceed: false })
       .use(Tus, { chunkSize: 1e6, endpoint: config.TUS_URL })
       .on('progress', (p) => progress !== p && setProgress(p))
-      .on('complete', () => setProgress(100))
-      .on('error', () => setProgress(0));
-  }, []);
+      .on('error', () => {
+        setProgress(0);
+        onChange && onChange(undefined);
+      })
+      .on('complete', async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+        if (!result.successful.length) return;
+        const uppyFile = result.successful[0];
 
-  // Returnd the file object when the upload is complete
-  useEffect(() => {
-    if (!uppy || !onChange) return;
+        setProgress(100);
 
-    async function handleComplete(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) {
-      if (!onChange || !result.successful.length) return;
-      const uppyFile = result.successful[0];
+        if (!uppyFile.type) {
+          toast.error('Unknown file type');
+          return;
+        }
 
-      if (!uppyFile.type) {
-        toast.error('Unknown file type');
-        return;
-      }
+        let file: FileInterface = {
+          name: uppyFile.uploadURL.replace(config.TUS_URL, ''),
+          type: uppyFile.type,
+          extension: uppyFile.extension,
+          size: uppyFile.size,
+          data: uppyFile.data,
+        };
 
-      let file: FileInterface = {
-        name: uppyFile.uploadURL.replace(config.TUS_URL, ''),
-        type: uppyFile.type,
-        extension: uppyFile.extension,
-        size: uppyFile.size,
-        data: uppyFile.data,
-      };
+        // Get the dimensions if the file is an image or a video
+        if (store.media.isImage(uppyFile)) {
+          const dimensions = await store.media.getImageDimensions(uppyFile.data);
+          file = { ...file, ...dimensions };
+        } else if (store.media.isVideo(uppyFile)) {
+          const dimensions = await store.media.getVideoDimensions(uppyFile.data);
+          file = { ...file, ...dimensions };
+        }
 
-      // Get the dimensions if the file is an image or a video
-      if (uppyFile.type.startsWith('image')) {
-        const dimensions = await store.media.getImageDimensions(uppyFile.data);
-        file = { ...file, ...dimensions };
-      } else if (uppyFile.type.startsWith('video')) {
-        const dimensions = await store.media.getVideoDimensions(uppyFile.data);
-        file = { ...file, ...dimensions };
-      }
-
-      setFile(file);
-      onChange(file);
-    }
-
-    uppy.on('complete', handleComplete);
-
-    return () => {
-      uppy.off('complete', handleComplete);
-    };
-  }, [uppy]);
+        onChange && onChange(file);
+      });
+  }, [onChange]);
 
   // Hide progress bar when upload is complete
   useEffect(() => {
@@ -84,16 +76,24 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   }, [progress]);
 
   // Set the preview image when a file is passed in
-  useEffect(() => {
+  useEffectAsync(async () => {
     if (!value) {
       setFile(undefined);
       setPreview('');
-    } else if (typeof value === 'object' && value.data) {
+      return;
+    }
+
+    if (typeof value === 'object' && 'data' in value) {
       setFile(value);
-      setPreview(URL.createObjectURL(value.data));
-    } else if (typeof value === 'string') {
-      setFile(undefined);
-      setPreview(value);
+      const objectUrl = URL.createObjectURL(value.data);
+      setPreview(store.media.isMedia(value) ? objectUrl : '');
+      return;
+    }
+
+    if (typeof value === 'string') {
+      const file = await store.media.urlToFile(value);
+      setFile({ name: file.name, type: file.type, extension: '', size: file.size, data: file });
+      setPreview(store.media.isMedia(file) ? value : '');
     }
   }, [value]);
 
@@ -107,8 +107,12 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
       setProgress(0);
 
       const acceptedFile = acceptedFiles[0];
-      const objectUrl = URL.createObjectURL(acceptedFile);
-      setPreview(objectUrl);
+      if (store.media.isMedia(acceptedFile)) {
+        const objectUrl = URL.createObjectURL(acceptedFile);
+        setPreview(objectUrl);
+      } else {
+        setPreview('');
+      }
 
       const file = {
         name: acceptedFile.name,
@@ -169,7 +173,19 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
             <Delete color="error" />
           </IconButton>
 
-          {preview ? <img src={preview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%' }} /> : 'no preview'}
+          {preview ? (
+            <>
+              {store.media.isImage(file) && (
+                <img src={preview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              )}
+
+              {store.media.isVideo(file) && (
+                <video controls src={preview} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              )}
+            </>
+          ) : (
+            file.name
+          )}
         </>
       ) : (
         <>

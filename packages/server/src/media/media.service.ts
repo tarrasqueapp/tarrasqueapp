@@ -68,7 +68,7 @@ export class MediaService {
    * @param fileName The temporary file name
    * @returns Thumbnail path
    */
-  async generateThumbnail(fileName: string): Promise<string> {
+  async generateThumbnail(fileName: string): Promise<unknown> {
     this.logger.verbose(`📂 Generating thumbnail for file "${fileName}"`);
 
     // Check that the file exists
@@ -88,7 +88,6 @@ export class MediaService {
       '-vframes 1',
       '-ss 00:00:00',
       `-vf scale=${THUMBNAIL_WIDTH}:${height}`,
-      '-c:v webp',
       thumbnailPath,
     ];
     const ffmpeg = spawn(ffmpegPath, args, { shell: true });
@@ -106,16 +105,21 @@ export class MediaService {
 
       ffmpeg.on('exit', (code) => {
         if (code !== 0) {
+          this.logger.error('🚨 Failed to generate thumbnail');
           const error = new Error(`ffmpeg exited ${code}\nffmpeg stderr:\n\n${stderr}`);
           reject(error);
         }
         if (stderr.includes('nothing was encoded')) {
+          this.logger.error('🚨 Failed to generate thumbnail');
           const error = new Error(`ffmpeg failed to encode file\nffmpeg stderr:\n\n${stderr}`);
           reject(error);
         }
       });
 
-      ffmpeg.on('close', resolve);
+      ffmpeg.on('close', (data) => {
+        this.logger.debug(`✅️ Generated thumbnail for file "${fileName}"`);
+        resolve(data);
+      });
     });
   }
 }

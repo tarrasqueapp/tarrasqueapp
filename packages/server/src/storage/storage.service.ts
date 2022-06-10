@@ -1,4 +1,4 @@
-import { S3 } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable, InternalServerErrorException, Logger, OnModuleInit } from '@nestjs/common';
 import * as fs from 'fs-extra';
@@ -6,17 +6,20 @@ import * as fs from 'fs-extra';
 import { config } from '../config';
 import { StorageProviderEnum } from './storage-provider.enum';
 
+const UPLOAD_PATH = '/uploads';
+
 @Injectable()
 export class StorageService implements OnModuleInit {
   private logger: Logger = new Logger(StorageService.name);
   private s3: S3;
 
   /**
-   * Validate storage provider and configure S3 client
+   * Validate storage provider, ensure upload path exists, and configure S3 client
    */
-  onModuleInit() {
+  async onModuleInit() {
     switch (config.STORAGE_PROVIDER) {
       case StorageProviderEnum.LOCAL:
+        await fs.ensureDir(UPLOAD_PATH);
         break;
 
       case StorageProviderEnum.S3:
@@ -69,10 +72,10 @@ export class StorageService implements OnModuleInit {
       const directories = key.split('/').slice(0, -1).join('/');
 
       // Ensure upload directory exists
-      await fs.ensureDir(`/uploads/${directories}`);
+      await fs.ensureDir(`${UPLOAD_PATH}/${directories}`);
 
       // Write file to disk
-      const filePath = `/uploads/${key}`;
+      const filePath = `${UPLOAD_PATH}/${key}`;
       await fs.writeFile(filePath, body);
 
       // Return public file URL
@@ -110,6 +113,64 @@ export class StorageService implements OnModuleInit {
       // Return public file URL
       this.logger.debug(`✅️ Uploaded file "${key}" to S3`);
       return `${config.STORAGE_S3_URL}/uploads/${key}`;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  /**
+   * Delete a file from storage
+   * @param key The key of the file
+   */
+  delete(key: string): Promise<void> {
+    switch (config.STORAGE_PROVIDER) {
+      case StorageProviderEnum.LOCAL:
+        return this.deleteLocal(key);
+
+      case StorageProviderEnum.S3:
+        return this.deleteS3(key);
+
+      default:
+        throw new Error(`Storage provider ${config.STORAGE_PROVIDER} is not supported`);
+    }
+  }
+
+  /**
+   * Delete a file from local storage
+   * @param key The key of the file
+   */
+  async deleteLocal(key: string): Promise<void> {
+    this.logger.verbose(`📂 Deleting file "${key} from local storage`);
+    try {
+      // Get proceeding directories
+      const directories = key.split('/').slice(0, -1).join('/');
+
+      // Ensure upload directory exists
+      await fs.ensureDir(`${UPLOAD_PATH}/${directories}`);
+
+      // Remove file from disk
+      const filePath = `${UPLOAD_PATH}/${key}`;
+      await fs.remove(filePath);
+
+      this.logger.debug(`✅️ Deleted file "${key}" from local storage`);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  /**
+   * Delete a file from S3
+   * @param key The key of the file
+   */
+  async deleteS3(key: string): Promise<void> {
+    this.logger.verbose(`📂 Deleting file "${key} from S3`);
+    try {
+      // Remove file from S3
+      await this.s3.send(new DeleteObjectCommand({ Bucket: config.STORAGE_S3_BUCKET, Key: `uploads/${key}` }));
+
+      this.logger.debug(`✅️ Deleted file "${key}" from S3`);
     } catch (error) {
       this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);

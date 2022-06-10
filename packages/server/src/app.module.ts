@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaClientExceptionFilter, PrismaModule } from 'nestjs-prisma';
 
 import { AuthModule } from './auth/auth.module';
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     },
   ],
   imports: [
+    ScheduleModule.forRoot(),
     PrismaModule.forRoot({ isGlobal: true }),
     AuthModule,
     CampaignsModule,
