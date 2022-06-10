@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import type { NextPage } from 'next';
 
+import { Uploader } from '../components/form/Uploader';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 
 export async function getServerSideProps() {
@@ -17,7 +18,14 @@ export async function getServerSideProps() {
 }
 
 const Dashboard: NextPage = () => {
-  return <Box>Dashboard</Box>;
+  return (
+    <Box>
+      Dashboard
+      <Box sx={{ width: 200 }}>
+        <Uploader value="http://localhost:10000/uploads/cl47ge85400161wpcs3eve2wd/f17d715133c812dd2207ef47507cb12e.thumbnail.webp" />
+      </Box>
+    </Box>
+  );
 };
 
 export default Dashboard;
