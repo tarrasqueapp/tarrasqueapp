@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install --pure-lockfile --network-timeout 600000 && yarn cache clean
+RUN yarn install --pure-lockfile
 
 COPY . .
 

@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 COPY prisma prisma
 
-RUN yarn install --pure-lockfile --network-timeout 600000 && yarn cache clean
+RUN yarn install
 
 COPY . .
 
@@ -26,7 +26,7 @@ COPY --from=mwader/static-ffmpeg:4.4.1 /qt-faststart /usr/local/bin/
 COPY package.json yarn.lock ./
 COPY prisma prisma
 
-RUN yarn install --pure-lockfile --network-timeout 600000 --production && yarn cache clean
+RUN yarn install --pure-lockfile --production
 
 USER node
 

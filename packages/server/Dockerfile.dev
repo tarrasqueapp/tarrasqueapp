@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 COPY prisma prisma
 
-RUN yarn install --pure-lockfile --network-timeout 600000 && yarn cache clean
+RUN yarn install --pure-lockfile
 
 COPY . .
 

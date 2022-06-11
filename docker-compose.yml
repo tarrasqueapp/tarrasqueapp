@@ -30,8 +30,8 @@ services:
       - db
       - backend
     volumes:
-      - ./data/tmp:/tmp
-      - ./data/uploads:/uploads
+      - tmp:/tmp
+      - uploads:/uploads
     env_file:
       - ./.env
 
@@ -47,10 +47,8 @@ services:
       - no-new-privileges:true
     networks:
       - db
-    ports:
-      - '5432:5432'
     volumes:
-      - ./data/postgres:/var/lib/postgresql
+      - postgres:/var/lib/postgresql
     env_file:
       - ./.env
 
@@ -65,15 +63,13 @@ services:
       - no-new-privileges:true
     networks:
       - caddy
-    ports:
-      - '${PORT}:${PORT}'
     volumes:
-      - ./data/caddy:/data/caddy
-      - ./data/plugins:/plugins
-      - ./data/uploads:/uploads
-      - ./caddy/srv:/srv
-      - caddy_config:/config
-      - caddy_data:/data
+      - caddy-config:/config
+      - caddy-data:/data
+      - caddy-srv:/srv
+      - caddy:/data/caddy
+      - plugins:/plugins
+      - uploads:/uploads
     env_file:
       - ./.env
     # stdin_open: true
@@ -87,8 +83,6 @@ services:
       - no-new-privileges:true
     networks:
       - backend
-    ports:
-      - '6379:6379'
     command: redis-server --requirepass ${REDIS_PASSWORD}
 
   tus:
@@ -101,7 +95,7 @@ services:
       - caddy
     command: -behind-proxy -upload-dir /tmp/uploads -base-path /tus/files/
     volumes:
-      - ./data/tmp:/tmp
+      - tmp:/tmp
 
 networks:
   caddy:
@@ -109,5 +103,56 @@ networks:
   backend:
 
 volumes:
-  caddy_config:
-  caddy_data:
+  # Docker volumes
+  caddy-config:
+  caddy-data:
+  # Mutagen volumes
+  caddy-srv:
+  caddy:
+  plugins:
+  postgres:
+  tmp:
+  uploads:
+
+x-mutagen:
+  sync:
+    defaults:
+      ignore:
+        vcs: true
+
+    caddy-srv:
+      alpha: './caddy/srv'
+      beta: 'volume://caddy-srv'
+
+    caddy:
+      alpha: './data/caddy'
+      beta: 'volume://caddy'
+
+    plugins:
+      alpha: './data/plugins'
+      beta: 'volume://plugins'
+
+    postgres:
+      alpha: './data/postgres'
+      beta: 'volume://postgres'
+
+    tmp:
+      alpha: './data/tmp'
+      beta: 'volume://tmp'
+
+    uploads:
+      alpha: './data/uploads'
+      beta: 'volume://uploads'
+
+  forward:
+    caddy:
+      source: 'tcp::${PORT}'
+      destination: 'network://caddy:tcp:caddy:${PORT}'
+
+    postgres:
+      source: 'tcp::5432'
+      destination: 'network://db:tcp:postgres:5432'
+
+    redis:
+      source: 'tcp::6379'
+      destination: 'network://backend:tcp:redis:6379'
