@@ -1,9 +1,6 @@
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import '@uppy/image-editor/dist/style.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import toast, { Toaster } from 'react-hot-toast';
