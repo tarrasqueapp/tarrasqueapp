@@ -14,6 +14,14 @@ services:
       - caddy
     env_file:
       - ./.env
+    build:
+      args:
+        - BASE_PATH=${BASE_PATH}
+        - PORT=${PORT}
+        - TUS_URL=${TUS_URL}
+        - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+        - SENTRY_ENABLED=${SENTRY_ENABLED}
+        - SENTRY_DSN=${SENTRY_DSN}
 
   ################
   ### Back-end ###
