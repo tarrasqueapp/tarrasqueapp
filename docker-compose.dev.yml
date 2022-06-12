@@ -10,8 +10,8 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - client:/app
-      - client-next:/app/.next
-      - client-node-modules:/app/node_modules
+      - /app/.next
+      - /app/node_modules
 
   ################
   ### Back-end ###
@@ -23,8 +23,8 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - server:/app
-      - server-dist:/app/.ist
-      - server-node-modules:/app/node_modules
+      - /app/dist
+      - /app/node_modules
 
   ######################
   ### Infrastructure ###
@@ -38,11 +38,6 @@ services:
       - etc-caddy:/etc/caddy
 
 volumes:
-  # Docker volumes
-  client-next:
-  client-node-modules:
-  server-dist:
-  server-node-modules:
   # Mutagen volumes
   client:
   etc-caddy:
