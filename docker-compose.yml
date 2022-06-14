@@ -38,7 +38,7 @@ services:
       - db
       - backend
     volumes:
-      - tmp:/tmp
+      - tmp:/tmp/uploads
       - uploads:/uploads
     env_file:
       - ./.env
@@ -103,7 +103,7 @@ services:
       - caddy
     command: -behind-proxy -upload-dir /tmp/uploads -base-path /tus/files/
     volumes:
-      - tmp:/tmp
+      - tmp:/tmp/uploads
 
 networks:
   caddy:
@@ -147,6 +147,9 @@ x-mutagen:
     tmp:
       alpha: './data/tmp'
       beta: 'volume://tmp'
+      permissions:
+        defaultOwner: 'id:1000'
+        defaultGroup: 'id:1000'
 
     uploads:
       alpha: './data/uploads'
