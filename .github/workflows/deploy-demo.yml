@@ -6,6 +6,7 @@ name: Build, push, and deploy
 
 # Controls when the action will run.
 on:
+  workflow_dispatch:
   # Triggers the workflow on push request on the main branch for changes in the specified paths.
   push:
     branches:
