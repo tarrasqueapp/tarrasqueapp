@@ -1,21 +1,27 @@
 # This workfow shows how to build a Docker image, tag and push it to DigitalOcean Container Registry, and
-# deploy the application on a DIgitalOcean Kubernetes cluster. For description to the entire worklow,
+# deploy the application on a DigitalOcean Kubernetes cluster. For description to the entire worklow,
 # see www.digitalocean.com/docs/kubernetes/how-to/deploy-using-github-actions.
 
 name: Build, push, and deploy
 
 # Controls when the action will run.
 on:
+  # Triggers the workflow on request via GitHub Actions UI
   workflow_dispatch:
-  # Triggers the workflow on push request on the main branch for changes in the specified paths.
+  # Triggers the workflow on push request on the main branch for changes in the specified paths
   push:
     branches:
       - main
     paths:
-      - 'helm/**'
-      - 'server.py'
-      - 'Dockerfile'
       - '.github/workflows/**'
+      - 'helm/**'
+      - 'packages/demo/**'
+
+env:
+  DIRECTORY: ./packages/demo
+  REGISTRY: registry.digitalocean.com/tarrasqueapp/demo
+  DEPLOYMENT_FILE_PATH: helm/demo/deployment.yaml
+  DEPLOYMENT_NAME: demo-deployment
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
@@ -38,31 +44,24 @@ jobs:
 
       # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
       - name: Build container image
-        run: docker build -t registry.digitalocean.com/tarrasqueapp/demo:$(echo $GITHUB_SHA | head -c7) -f $GITHUB_WORKSPACE/packages/demo/Dockerfile.prod $GITHUB_WORKSPACE/packages/demo
+        working-directory: ${{ env.DIRECTORY }}
+        run: docker build -t ${{ env.REGISTRY }}:$(echo $GITHUB_SHA | head -c7) -f Dockerfile.prod .
 
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/tarrasqueapp/demo:$(echo $GITHUB_SHA | head -c7)
+        run: docker push ${{ env.REGISTRY }}:$(echo $GITHUB_SHA | head -c7)
 
-      # Deploy to DigitalOCcean Kubernetes.
+      # Deploy to DigitalOcean Kubernetes.
       - name: Update deployment file
-        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/tarrasqueapp/demo:'${TAG}'|' $GITHUB_WORKSPACE/helm/demo/deployment.yml
+        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ env.REGISTRY }}:'${TAG}'|' $GITHUB_WORKSPACE/${{ env.DEPLOYMENT_FILE_PATH }}
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 tarrasqueapp
 
-      # If you haven't already integrated with your registry and only want workloads in a particular namespace to be able to pull
-      # from your registry, uncomment the next two commands.
-      #- name: Upload credentials of your registry to your DigitalOcean Kubernetes cluster
-      #  run: doctl registry kubernetes-manifest | kubectl apply -f -
-
-      #- name: Reference the secret you just uploaded as an imagePullSecrets
-      #  run: "kubectl patch serviceaccount default -p '{\"imagePullSecrets\": [{\"name\": \"registry-tarrasqueapp\"}]}'"
-
       - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/helm/demo/deployment.yml
+        run: kubectl apply -f $GITHUB_WORKSPACE/helm
 
       - name: Verify deployment
-        run: kubectl rollout status deployment/demo
+        run: kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }}
