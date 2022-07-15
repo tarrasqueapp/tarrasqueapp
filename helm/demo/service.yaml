@@ -11,4 +11,4 @@ spec:
       port: 3000
       targetPort: 80
   selector:
-    app: demo-selector
+    app: demo

@@ -7,7 +7,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demo-selector
+      app: demo
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app: demo-selector
+        app: demo
     spec:
       containers:
         - name: demo
