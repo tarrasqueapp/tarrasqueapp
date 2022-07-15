@@ -35,7 +35,7 @@ kind: Service
 metadata:
   name: demo-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: http
       protocol: TCP
