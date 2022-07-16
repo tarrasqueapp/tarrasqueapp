@@ -23,6 +23,7 @@ env:
   DEPLOYMENT_FILE_PATH: helm/demo/deployment.yaml
   DEPLOYMENT_NAME: demo-deployment
   NAMESPACE: demo
+  TAG: staging
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
@@ -46,17 +47,17 @@ jobs:
       # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
       - name: Build container image
         working-directory: ${{ env.DIRECTORY }}
-        run: docker build -t ${{ env.REGISTRY }}:$(echo $GITHUB_SHA | head -c7) -f Dockerfile.prod .
+        run: docker build -t ${{ env.REGISTRY }}:${{ env.TAG }} -f Dockerfile.prod .
 
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push ${{ env.REGISTRY }}:$(echo $GITHUB_SHA | head -c7)
+        run: docker push ${{ env.REGISTRY }}:${{ env.TAG }}
 
       # Deploy to DigitalOcean Kubernetes.
       - name: Update deployment file
-        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ env.REGISTRY }}:'${TAG}'|' $GITHUB_WORKSPACE/${{ env.DEPLOYMENT_FILE_PATH }}
+        run: sed -i 's|<IMAGE>|${{ env.REGISTRY }}:'${{ env.TAG }}'|' $GITHUB_WORKSPACE/${{ env.DEPLOYMENT_FILE_PATH }}
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 tarrasqueapp
