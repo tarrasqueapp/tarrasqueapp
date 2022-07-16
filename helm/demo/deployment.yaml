@@ -4,22 +4,18 @@ metadata:
   name: demo-deployment
   namespace: demo
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: demo
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
+  replicas: 1
   template:
     metadata:
       labels:
         app: demo
     spec:
       containers:
-        - name: demo
-          image: <IMAGE>
+        - image: <IMAGE>
+          imagePullPolicy: Always
+          name: demo
           ports:
-            - containerPort: 80
+            - containerPort: 3000
