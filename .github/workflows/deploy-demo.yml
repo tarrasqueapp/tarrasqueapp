@@ -22,6 +22,7 @@ env:
   REGISTRY: registry.digitalocean.com/tarrasqueapp/demo
   DEPLOYMENT_FILE_PATH: helm/demo/deployment.yaml
   DEPLOYMENT_NAME: demo-deployment
+  NAMESPACE: demo
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
@@ -64,4 +65,4 @@ jobs:
         run: kubectl apply -Rf $GITHUB_WORKSPACE/helm
 
       - name: Verify deployment
-        run: kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }}
+        run: kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }}
