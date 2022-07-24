@@ -47,6 +47,9 @@ jobs:
 
       - name: Deploy to DigitalOcean Kubernetes
         run: |
+          helm dependency build helm/cert-manager
+          helm dependency build helm/ingress-nginx
+
           helm upgrade --install cert-manager ./helm/cert-manager -n cert-manager --create-namespace
           helm upgrade --install ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
           helm upgrade --install demo ./helm/demo -n demo --create-namespace
