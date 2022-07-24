@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Deploy ingress-nginx
 
 on:
   workflow_dispatch:
@@ -7,16 +7,12 @@ on:
       - main
     paths:
       - '.github/workflows/**'
-      - 'helm/demo/**'
-      - 'packages/demo/**'
+      - 'helm/ingress-nginx/**'
 
 env:
-  CHART: demo
-  DEPLOYMENT: demo-deployment
-  NAMESPACE: demo
-  DIRECTORY: ./packages/demo
-  REGISTRY: registry.digitalocean.com/tarrasqueapp
-  IMAGE_TAG: staging
+  CHART: ingress-nginx
+  DEPLOYMENT: ingress-nginx-controller
+  NAMESPACE: ingress-nginx
 
 jobs:
   build:
@@ -31,21 +27,14 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      - name: Build container image
-        working-directory: ${{ env.DIRECTORY }}
-        run: docker build -t ${{ env.REGISTRY }}/${{ env.CHART }}:${{ env.IMAGE_TAG }} -f Dockerfile.prod .
-
-      - name: Log in to DigitalOcean Container Registry with short-lived credentials
-        run: doctl registry login --expiry-seconds 1200
-
-      - name: Push image to DigitalOcean Container Registry
-        run: docker push ${{ env.REGISTRY }}/${{ env.CHART }}:${{ env.IMAGE_TAG }}
-
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 tarrasqueapp
 
       - name: Deploy to DigitalOcean Kubernetes
         run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+          helm dependency build helm/${{ env.CHART }}
           helm upgrade --install ${{ env.CHART }} ./helm/${{ env.CHART }} --namespace ${{ env.NAMESPACE }} --create-namespace
 
       - name: Verify deployment
