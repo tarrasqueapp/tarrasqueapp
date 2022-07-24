@@ -15,8 +15,12 @@ env:
   NAMESPACE: ingress-nginx
 
 jobs:
-  build:
+  deploy-ingress-nginx:
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout master

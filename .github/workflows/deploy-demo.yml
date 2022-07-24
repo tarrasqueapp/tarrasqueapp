@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Deploy demo
 
 on:
   workflow_dispatch:
@@ -19,8 +19,12 @@ env:
   IMAGE_TAG: staging
 
 jobs:
-  build:
+  deploy-demo:
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout master

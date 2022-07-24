@@ -15,8 +15,12 @@ env:
   NAMESPACE: cert-manager
 
 jobs:
-  build:
+  deploy-cert-manager:
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout master
