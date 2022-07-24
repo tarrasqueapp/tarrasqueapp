@@ -1,0 +1,8 @@
+email: richard@tarrasque.app
+
+ingress-nginx:
+  controller:
+    service:
+      externalTrafficPolicy: Local
+    config:
+      use-proxy-protocol: true

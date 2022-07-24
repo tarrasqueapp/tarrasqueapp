@@ -45,3 +45,17 @@ Push the state from Prisma schema to the database during prototyping.
 Seed the database with sample data.
 
     yarn server prisma db seed
+
+# Kubernetes
+
+    helm delete cert-manager -n cert-manager
+    helm delete ingress-nginx -n ingress-nginx
+    helm delete demo -n demo
+
+    kubectl delete namespace cert-manager
+    kubectl delete namespace ingress-nginx
+    kubectl delete namespace demo
+
+    helm upgrade --install cert-manager ./helm/cert-manager -n cert-manager --create-namespace
+    helm upgrade --install ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
+    helm upgrade --install demo ./helm/demo -n demo --create-namespace
