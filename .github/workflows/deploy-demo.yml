@@ -12,7 +12,7 @@ on:
 
 env:
   CHART: demo
-  DEPLOYMENT: demo-deployment
+  DEPLOYMENT: demo
   NAMESPACE: demo
   DIRECTORY: ./packages/demo
   REGISTRY: registry.digitalocean.com/tarrasqueapp
