@@ -1,4 +1,4 @@
-name: Deploy cert-manager
+name: Deploy ingress-nginx
 
 on:
   workflow_dispatch:
@@ -6,16 +6,16 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/**'
-      - 'helm/cert-manager/**'
+      - '.github/workflows/deploy-ingress-nginx.yaml'
+      - 'helm/ingress-nginx/**'
 
 env:
-  CHART: cert-manager
-  DEPLOYMENT: cert-manager
-  NAMESPACE: cert-manager
+  CHART: ingress-nginx
+  DEPLOYMENT: ingress-nginx-controller
+  NAMESPACE: ingress-nginx
 
 jobs:
-  deploy-cert-manager:
+  deploy-ingress-nginx:
     runs-on: ubuntu-latest
 
     concurrency:
@@ -36,7 +36,7 @@ jobs:
 
       - name: Deploy to DigitalOcean Kubernetes
         run: |
-          helm repo add jetstack https://charts.jetstack.io
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo update
           helm dependency build helm/${{ env.CHART }}
           helm upgrade --install ${{ env.CHART }} ./helm/${{ env.CHART }} --namespace ${{ env.NAMESPACE }} --create-namespace

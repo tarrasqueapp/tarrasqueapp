@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/deploy-demo.yaml'
       - 'helm/demo/**'
       - 'packages/demo/**'
 
