@@ -3,6 +3,14 @@ email: richard@tarrasque.app
 ingress-nginx:
   controller:
     service:
+      type: LoadBalancer
       externalTrafficPolicy: Local
+      annotations:
+        service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
+        service.beta.kubernetes.io/do-loadbalancer-size-slug: 'lb-small'
+        service.beta.kubernetes.io/do-loadbalancer-name: 'tarrasqueapp-loadbalancer'
+        service.beta.kubernetes.io/do-loadbalancer-hostname: 'tarrasque.app'
     config:
       use-proxy-protocol: true
+      use-forwarded-headers: 'true'
+      real-ip-header: 'proxy_protocol'
