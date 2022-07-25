@@ -29,10 +29,13 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
     cert-manager.io/cluster-issuer: 'letsencrypt-production'
   hosts:
     - host: tarrasque.app
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: www.tarrasque.app
       paths:
         - path: /
           pathType: Prefix
@@ -40,6 +43,7 @@ ingress:
     - secretName: demo-tls
       hosts:
         - tarrasque.app
+        - www.tarrasque.app
 
 resources: {}
 

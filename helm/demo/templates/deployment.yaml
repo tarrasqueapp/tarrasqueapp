@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: {{ include "demo.fullname" . }}
   labels:
-    date: "{{ now | unixEpoch }}"
     {{- include "demo.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
@@ -20,6 +19,7 @@ spec:
       {{- end }}
       labels:
         {{- include "demo.selectorLabels" . | nindent 8 }}
+        date: "{{ now | unixEpoch }}"
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

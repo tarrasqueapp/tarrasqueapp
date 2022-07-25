@@ -1,21 +1,20 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import React from 'react';
 
-const Index: NextPage<any> = ({ ip1, ip2, ip3, ip4 }) => {
-  return (
-    <>
-      It works! Your IPs are {JSON.stringify(ip1)} {JSON.stringify(ip2)} {JSON.stringify(ip3)} {JSON.stringify(ip4)}
-    </>
-  );
+const Index: NextPage<any> = ({ ips }) => {
+  return <>It works! Your IPs are {JSON.stringify(ips)}</>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const ip1 = context.req.headers['X-Forwarded-For'];
-  const ip2 = context.req.headers['X-Real-Ip'];
-  const ip3 = context.req.headers['CF-Connecting-IP'];
-  const ip4 = context.req.connection.remoteAddress;
+  const ips = [
+    context.req.headers['X-Forwarded-For'],
+    context.req.headers['X-Real-Ip'],
+    context.req.headers['CF-Connecting-IP'],
+    context.req.connection.remoteAddress,
+    context.req.socket.remoteAddress,
+  ];
 
-  return { props: { ip1, ip2, ip3, ip4 } };
+  return { props: { ips } };
 };
 
 export default Index;

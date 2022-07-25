@@ -1,2 +1,4 @@
+email: richard@solomou.io
+
 cert-manager:
   installCRDs: true
