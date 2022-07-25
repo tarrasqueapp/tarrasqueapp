@@ -4,7 +4,7 @@ import React from 'react';
 const Index: NextPage<any> = ({ ip1, ip2, ip3, ip4 }) => {
   return (
     <>
-      It works! Your IP is {JSON.stringify(ip1)} {JSON.stringify(ip2)} {JSON.stringify(ip3)} {JSON.stringify(ip4)}
+      It works! Your IPs are {JSON.stringify(ip1)} {JSON.stringify(ip2)} {JSON.stringify(ip3)} {JSON.stringify(ip4)}
     </>
   );
 };

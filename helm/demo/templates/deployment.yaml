@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "demo.fullname" . }}
   labels:
+    date: "{{ now | unixEpoch }}"
     {{- include "demo.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
