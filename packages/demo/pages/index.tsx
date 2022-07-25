@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import React from 'react';
 
 const Index: NextPage<any> = ({ ips }) => {
-  return <>It works! Your IPs are {JSON.stringify(ips)}</>;
+  return <>It works! Your IP is {JSON.stringify(ips)}</>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
