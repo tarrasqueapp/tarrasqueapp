@@ -29,7 +29,8 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: 'letsencrypt-staging'
+    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
+    cert-manager.io/cluster-issuer: 'letsencrypt-production'
   hosts:
     - host: tarrasque.app
       paths:
