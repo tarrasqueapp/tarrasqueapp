@@ -48,6 +48,12 @@ Seed the database with sample data.
 
 # Kubernetes
 
+Create a secret for the registry:
+
+    doctl registry kubernetes-manifest | kubectl apply -f -
+
+Delete deployments
+
     helm delete cert-manager -n cert-manager
     helm delete ingress-nginx -n ingress-nginx
     helm delete demo -n demo
@@ -55,6 +61,8 @@ Seed the database with sample data.
     kubectl delete namespace cert-manager
     kubectl delete namespace ingress-nginx
     kubectl delete namespace demo
+
+Install helm charts:
 
     helm upgrade --install cert-manager ./helm/cert-manager -n cert-manager --create-namespace
     helm upgrade --install ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
