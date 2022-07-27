@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { FileInterface, MediaInterface } from '../../../lib/types';

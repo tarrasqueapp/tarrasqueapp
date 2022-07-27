@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { UserInterface } from '../../../lib/types';
@@ -17,5 +17,5 @@ async function getUser() {
  * @returns Setup query
  */
 export function useGetUser() {
-  return useQuery(`auth`, () => getUser());
+  return useQuery([`auth`], () => getUser());
 }

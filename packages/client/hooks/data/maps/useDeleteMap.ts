@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { MapInterface } from '../../../lib/types';
@@ -22,8 +22,8 @@ export function useDeleteMap() {
 
   return useMutation(deleteMap, {
     onSuccess: (map) => {
-      queryClient.invalidateQueries(`maps`);
-      queryClient.invalidateQueries(`maps/${map.id}`);
+      queryClient.invalidateQueries([`maps`]);
+      queryClient.invalidateQueries([`maps/${map.id}`]);
     },
   });
 }

@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { CampaignInterface } from '../../../lib/types';
@@ -19,5 +19,7 @@ async function getCampaignMaps(campaignId: string) {
  * @returns Campaign maps query
  */
 export function useGetCampaignMaps(campaignId: string) {
-  return useQuery(`campaigns/${campaignId}/maps`, () => getCampaignMaps(campaignId), { enabled: Boolean(campaignId) });
+  return useQuery([`campaigns/${campaignId}/maps`], () => getCampaignMaps(campaignId), {
+    enabled: Boolean(campaignId),
+  });
 }

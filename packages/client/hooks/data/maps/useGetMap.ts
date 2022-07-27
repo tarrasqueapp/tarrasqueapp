@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { MapInterface } from '../../../lib/types';
@@ -19,5 +19,5 @@ async function getMap(mapId: string) {
  * @returns Map query
  */
 export function useGetMap(mapId: string) {
-  return useQuery(`maps/${mapId}`, () => getMap(mapId), { enabled: Boolean(mapId) });
+  return useQuery([`maps/${mapId}`], () => getMap(mapId), { enabled: Boolean(mapId) });
 }

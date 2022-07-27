@@ -18,5 +18,5 @@ spec:
               key: api-token
         selector:
           dnsZones:
-          - 'tarrasque.app'
-          - '*.tarrasque.app'
+            - 'tarrasque.app'
+            - '*.tarrasque.app'

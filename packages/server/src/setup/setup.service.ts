@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import * as execa from 'execa';
+import { execa } from 'execa';
 
 import { CampaignsService } from '../campaigns/campaigns.service';
 import { MapsService } from '../maps/maps.service';

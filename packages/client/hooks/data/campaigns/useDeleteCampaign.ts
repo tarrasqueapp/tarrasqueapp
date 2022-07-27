@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { CampaignInterface } from '../../../lib/types';
@@ -22,8 +22,8 @@ export function useDeleteCampaign() {
 
   return useMutation(deleteCampaign, {
     onSuccess: (campaign) => {
-      queryClient.invalidateQueries(`campaigns`);
-      queryClient.invalidateQueries(`campaigns/${campaign.id}`);
+      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries([`campaigns/${campaign.id}`]);
     },
   });
 }

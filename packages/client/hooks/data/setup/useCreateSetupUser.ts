@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { SetupInterface, UserInterface } from '../../../lib/types';
@@ -21,7 +21,7 @@ export function useCreateSetupUser() {
 
   return useMutation(createSetupUser, {
     onSuccess: () => {
-      queryClient.invalidateQueries(`setup`);
+      queryClient.invalidateQueries([`setup`]);
     },
   });
 }

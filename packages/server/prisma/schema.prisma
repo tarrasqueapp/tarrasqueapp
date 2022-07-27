@@ -17,7 +17,7 @@ model User {
   name                          String
   email                         String               @unique
   password                      String
-  roles                         Role[]
+  roles                         Role[]               @default([USER])
   refreshToken                  String?
   // DateTime
   createdAt                     DateTime             @default(now())
@@ -48,7 +48,7 @@ model Campaign {
   // Maps
   maps                Map[]                @relation("CampaignMaps")
   // Players
-  players             User[]               @relation("CampaignPlayers", references: [id])
+  players             User[]               @relation("CampaignPlayers")
   // Player Characters
   playerCharacters    PlayerCharacter[]    @relation("CampaignPlayerCharacters")
   // Non Player Characters
@@ -209,7 +209,7 @@ model PlayerCharacter {
   createdBy    User        @relation("CreatedPlayerCharacters", fields: [createdById], references: [id])
   createdById  String
   // Controlled by
-  controlledBy User[]      @relation("ControlledPlayerCharacters", references: [id])
+  controlledBy User[]      @relation("ControlledPlayerCharacters")
   // Campaign
   campaign     Campaign    @relation("CampaignPlayerCharacters", fields: [campaignId], references: [id])
   campaignId   String
@@ -244,7 +244,7 @@ model NonPlayerCharacter {
   createdBy    User        @relation("CreatedNonPlayerCharacters", fields: [createdById], references: [id])
   createdById  String
   // Controlled by
-  controlledBy User[]      @relation("ControlledNonPlayerCharacters", references: [id])
+  controlledBy User[]      @relation("ControlledNonPlayerCharacters")
   // Campaign
   campaign     Campaign    @relation("CampaignNonPlayerCharacters", fields: [campaignId], references: [id])
   campaignId   String

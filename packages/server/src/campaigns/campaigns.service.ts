@@ -49,7 +49,7 @@ export class CampaignsService {
     this.logger.verbose(`📂 Getting campaign "${campaignId}"`);
     try {
       // Get the campaign
-      const campaign = await this.prisma.campaign.findUnique({
+      const campaign = await this.prisma.campaign.findUniqueOrThrow({
         where: { id: campaignId },
         include: {
           maps: { include: { media: true } },
@@ -58,7 +58,6 @@ export class CampaignsService {
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
         },
-        rejectOnNotFound: true,
       });
       this.logger.debug(`✅️ Found campaign "${campaignId}"`);
       return campaign;

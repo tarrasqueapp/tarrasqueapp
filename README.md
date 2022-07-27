@@ -52,6 +52,10 @@ Create a secret for the registry:
 
     doctl registry kubernetes-manifest | kubectl apply -f -
 
+Create a secret for Cloudflare:
+
+    kubectl create secret generic cloudflare-api-token-secret --from-literal="api-token=<CLOUDFLARE_API_TOKEN>" -n cert-manager
+
 Delete deployments
 
     helm delete cert-manager -n cert-manager
@@ -64,6 +68,6 @@ Delete deployments
 
 Install helm charts:
 
-    helm upgrade --install cert-manager ./helm/cert-manager -n cert-manager --create-namespace
-    helm upgrade --install ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
-    helm upgrade --install demo ./helm/demo -n demo --create-namespace
+    helm upgrade -i cert-manager ./helm/cert-manager -n cert-manager --create-namespace
+    helm upgrade -i ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
+    helm upgrade -i demo ./helm/demo -n demo --create-namespace

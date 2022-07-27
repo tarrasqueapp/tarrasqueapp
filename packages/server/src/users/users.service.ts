@@ -61,10 +61,9 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUniqueOrThrow({
         where: { id: userId },
         select: USER_SAFE_FIELDS,
-        rejectOnNotFound: true,
       });
       this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
@@ -83,7 +82,7 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUnique({ where: { id: userId }, rejectOnNotFound: true });
+      const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
       this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
     } catch (error) {
@@ -101,7 +100,7 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user with email "${email}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUnique({ where: { email }, rejectOnNotFound: true });
+      const user = await this.prisma.user.findUniqueOrThrow({ where: { email } });
       this.logger.debug(`✅️ Found user "${user.id}" with email "${email}"`);
       return user;
     } catch (error) {

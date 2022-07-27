@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { MapInterface } from '../../../lib/types';
@@ -22,7 +22,7 @@ export function useCreateMap() {
 
   return useMutation(createMap, {
     onSuccess: () => {
-      queryClient.invalidateQueries(`maps`);
+      queryClient.invalidateQueries([`maps`]);
     },
   });
 }

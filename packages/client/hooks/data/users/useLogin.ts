@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { UserInterface } from '../../../lib/types';
@@ -21,8 +21,8 @@ export function useLogin() {
 
   return useMutation(login, {
     onSuccess: () => {
-      queryClient.invalidateQueries(`auth`);
-      queryClient.invalidateQueries(`auth/refresh`);
+      queryClient.invalidateQueries([`auth`]);
+      queryClient.invalidateQueries([`auth/refresh`]);
     },
   });
 }

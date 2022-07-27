@@ -1,11 +1,10 @@
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import toast, { Toaster } from 'react-hot-toast';
-import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { Layout } from '../components/Layout';
 import { theme } from '../lib/theme';
@@ -49,7 +48,6 @@ const MyApp: React.FC<IProps> = ({ Component, pageProps, emotionCache = clientSi
           <Layout>
             <Component {...pageProps} />
             <Toaster />
-            <ReactQueryDevtools initialIsOpen={false} />
           </Layout>
         </QueryClientProvider>
       </ThemeProvider>

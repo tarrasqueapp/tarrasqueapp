@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { CampaignInterface } from '../../../lib/types';
@@ -17,5 +17,5 @@ async function getUserCampaigns() {
  * @returns Campaigns query
  */
 export function useGetUserCampaigns() {
-  return useQuery(`campaigns`, () => getUserCampaigns());
+  return useQuery([`campaigns`], () => getUserCampaigns());
 }

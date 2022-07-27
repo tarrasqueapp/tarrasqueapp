@@ -39,14 +39,13 @@ export class MapsService {
     this.logger.verbose(`📂 Getting map "${mapId}"`);
     try {
       // Get the map
-      const map = await this.prisma.map.findUnique({
+      const map = await this.prisma.map.findUniqueOrThrow({
         where: { id: mapId },
         include: {
           tokens: true,
           media: true,
           campaign: true,
         },
-        rejectOnNotFound: true,
       });
       this.logger.debug(`✅️ Found map "${mapId}"`);
       return map;

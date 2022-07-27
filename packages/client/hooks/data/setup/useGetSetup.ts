@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { SetupInterface } from '../../../lib/types';
@@ -17,5 +17,5 @@ export async function getSetup() {
  * @returns Setup query
  */
 export function useGetSetup() {
-  return useQuery(`setup`, () => getSetup());
+  return useQuery([`setup`], () => getSetup());
 }
