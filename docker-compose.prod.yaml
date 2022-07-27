@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
   #################
   ### Front-end ###
@@ -27,13 +27,4 @@ services:
       context: ./caddy/dns/${CADDY_DNS_METHOD}
       dockerfile: Dockerfile
     volumes:
-      - etc-caddy:/etc/caddy
-
-volumes:
-  etc-caddy:
-
-x-mutagen:
-  sync:
-    etc-caddy:
-      alpha: './caddy/dns/${CADDY_DNS_METHOD}'
-      beta: 'volume://etc-caddy'
+      - ./caddy/dns/${CADDY_DNS_METHOD}:/etc/caddy

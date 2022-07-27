@@ -1,9 +1,9 @@
-import { $, argv, cd } from 'zx';
+import { $, argv, cd, echo } from 'zx';
 
 async function main() {
   // Show help if the help flag is set
   if (argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Upgrades application dependencies for client and server according to semver.
 
@@ -13,17 +13,17 @@ async function main() {
     process.exit(0);
   }
 
-  console.info('📂 Upgrading root...');
+  echo(`📂 Upgrading root...`);
   await $`yarn upgrade`;
 
-  console.info('📂 Upgrading client...');
+  echo(`📂 Upgrading client...`);
   cd('packages/client');
   await $`yarn upgrade`;
 
-  console.info('📂 Upgrading server...');
+  echo(`📂 Upgrading server...`);
   cd('../server');
   await $`yarn upgrade`;
 
-  console.info('✅ Upgraded!');
+  echo(`✅ Upgraded!`);
 }
 main();

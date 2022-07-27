@@ -1,4 +1,4 @@
-import { $, argv, cd, fs } from 'zx';
+import { $, argv, cd, echo, fs } from 'zx';
 
 import { pluginsPath } from '../../helpers.mjs';
 
@@ -6,7 +6,7 @@ async function main() {
   const plugin = argv._[2];
 
   if (!plugin || argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Removes a Tarrasque plugin.
 
@@ -19,14 +19,14 @@ async function main() {
     process.exit(0);
   }
 
-  if (plugin.startsWith('/') || !fs.existsSync(`${pluginsPath}/${plugin}`)) {
-    console.error(`🚨 Plugin not found: ${plugin}`);
+  if (plugin.startsWith('/') || !(await fs.pathExists(`${pluginsPath}/${plugin}`))) {
+    echo(`🚨 Plugin not found: ${plugin}`);
     process.exit(1);
   }
 
   cd(pluginsPath);
   await $`rm -rf ${plugin}`;
 
-  console.info('✅ Removed!');
+  echo(`✅ Removed!`);
 }
 main();

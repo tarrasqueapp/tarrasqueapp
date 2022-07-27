@@ -1,4 +1,4 @@
-import { argv } from 'zx';
+import { argv, echo } from 'zx';
 
 async function main() {
   const commands: Record<string, () => Promise<unknown>> = {
@@ -13,7 +13,7 @@ async function main() {
   const foundCommand = commands[command];
 
   if (!foundCommand) {
-    console.info(`
+    echo(`
     Usage
       $ tarrasque plugin <command>
 

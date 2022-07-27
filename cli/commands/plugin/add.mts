@@ -1,43 +1,60 @@
-import { $, argv, cd, fs, quiet } from 'zx';
+import crypto from 'crypto';
+import { $, YAML, argv, cd, echo, fs, path } from 'zx';
 
-import { pluginsPath } from '../../helpers.mjs';
+import { appPath, pluginsPath } from '../../helpers.mjs';
 
 async function main() {
-  const repository = argv._[2];
+  const source = argv._[2];
 
-  if (!repository || argv.help || argv.h) {
-    console.info(`
+  if (!source || argv.help || argv.h) {
+    echo(`
     Description
       Adds a new Tarrasque plugin.
 
     Usage
       $ tarrasque plugin add <url>
 
-    <url> represents the GitHub repository URL of the plugin.
-    Must end with ".git".
+    <url> represents a local folder or the GitHub repository URL of the plugin.
   `);
     process.exit(0);
   }
 
-  const regex = /(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)(\.git)(\/?|\#[-\d\w._]+?)$/;
-  if (!regex.test(repository)) {
-    console.error(`🚨 Invalid repository: ${repository}`);
-    process.exit(1);
-  }
-
-  const basename = await quiet($`basename ${repository}`);
-  const repositoryName = basename.stdout.replace(/\n$/, '').replace('.git', '');
-
-  if (fs.existsSync(`${pluginsPath}/${repositoryName}`)) {
-    console.error(`🚨 Plugin already installed: ${repositoryName}`);
-    process.exit(1);
-  }
-
+  const temporaryPluginPath = crypto.randomUUID();
   cd(pluginsPath);
-  await $`git clone ${repository}`;
-  cd(repositoryName);
+
+  const gitRepositoryRegex = /(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)(\.git)?(\/?|\#[-\d\w._]+?)$/;
+  if (gitRepositoryRegex.test(source)) {
+    // Clone the plugin from Git repository
+    echo(`📂 Cloning git repository...`);
+    await $`git clone ${source} ${temporaryPluginPath}`;
+  } else if (fs.existsSync(path.resolve(appPath, source))) {
+    // Copy the plugin from the local directory
+    echo(`📂 Copying local directory...`);
+    await fs.copy(path.resolve(appPath, source), temporaryPluginPath);
+  } else {
+    echo(`🚨 Invalid plugin source: ${source}`);
+    process.exit(1);
+  }
+
+  // Read YAML file
+  const pluginYaml = await fs.readFile(`${temporaryPluginPath}/tarrasque.yaml`);
+  const plugin = YAML.parse(pluginYaml.toString());
+
+  // Check that the plugin doesn't already exist
+  if (await fs.pathExists(`${pluginsPath}/${plugin.id}`)) {
+    echo(`🚨 Plugin already installed: ${plugin.id}`);
+    await $`rm -rf ${temporaryPluginPath}`;
+    process.exit(1);
+  }
+
+  // Rename the plugin directory to the plugin's ID
+  echo(`📂 Installing plugin ${plugin.id}...`);
+  await fs.rename(temporaryPluginPath, `${pluginsPath}/${plugin.id}`);
+
+  // Install dependencies
+  cd(`${pluginsPath}/${plugin.id}`);
   await $`yarn`;
 
-  console.info('✅ Installed!');
+  echo(`✅ Installed!`);
 }
 main();

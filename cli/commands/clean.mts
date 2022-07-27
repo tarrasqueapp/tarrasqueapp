@@ -1,9 +1,9 @@
-import { $, argv, cd } from 'zx';
+import { $, argv, cd, echo } from 'zx';
 
 async function main() {
   // Show help if the help flag is set
   if (argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Deletes installed dependencies and build files.
 
@@ -13,17 +13,17 @@ async function main() {
     process.exit(0);
   }
 
-  console.info('📂 Cleaning root...');
+  echo(`📂 Cleaning root...`);
   await $`rm -rf yarn-error.log`;
 
-  console.info('📂 Cleaning client...');
+  echo(`📂 Cleaning client...`);
   cd('packages/client');
   await $`rm -rf yarn-error.log node_modules .next dist`;
 
-  console.info('📂 Cleaning server...');
+  echo(`📂 Cleaning server...`);
   cd('../server');
   await $`rm -rf yarn-error.log node_modules dist`;
 
-  console.info('✅ Cleaned!');
+  echo(`✅ Cleaned!`);
 }
 main();

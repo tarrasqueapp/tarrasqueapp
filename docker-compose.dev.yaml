@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
   #################
   ### Front-end ###
@@ -9,7 +9,7 @@ services:
       context: ./packages/client
       dockerfile: Dockerfile.dev
     volumes:
-      - client:/app
+      - ./packages/client:/app
       - /app/.next
       - /app/node_modules
 
@@ -22,7 +22,7 @@ services:
       context: ./packages/server
       dockerfile: Dockerfile.dev
     volumes:
-      - server:/app
+      - ./packages/server:/app
       - /app/dist
       - /app/node_modules
 
@@ -35,34 +35,4 @@ services:
       context: ./caddy/dns/local
       dockerfile: Dockerfile
     volumes:
-      - etc-caddy:/etc/caddy
-
-volumes:
-  # Mutagen volumes
-  client:
-  etc-caddy:
-  server:
-
-x-mutagen:
-  sync:
-    client:
-      alpha: './packages/client'
-      beta: 'volume://client'
-      mode: 'two-way-resolved'
-      ignore:
-        paths:
-          - '.next'
-          - 'node_modules'
-
-    etc-caddy:
-      alpha: './caddy/dns/local'
-      beta: 'volume://etc-caddy'
-
-    server:
-      alpha: './packages/server'
-      beta: 'volume://server'
-      mode: 'two-way-resolved'
-      ignore:
-        paths:
-          - 'dist'
-          - 'node_modules'
+      - ./caddy/dns/local:/etc/caddy

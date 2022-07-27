@@ -1,10 +1,10 @@
-import { $, argv, cd, fs } from 'zx';
+import { $, argv, cd, echo, fs } from 'zx';
 
 import { pluginsPath } from '../../helpers.mjs';
 
 async function main() {
   if (argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Updates all Tarrasque plugins to the latest version.
 
@@ -26,6 +26,6 @@ async function main() {
     }
   }
 
-  console.info('✅ Updated!');
+  echo(`✅ Updated!`);
 }
 main();

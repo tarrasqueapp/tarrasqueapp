@@ -1,4 +1,4 @@
-import { $, argv, cd, fs } from 'zx';
+import { $, argv, cd, echo, fs } from 'zx';
 
 import { pluginsPath } from '../../helpers.mjs';
 
@@ -6,7 +6,7 @@ async function main() {
   const plugin = argv._[2];
 
   if (!plugin || argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Updates a Tarrasque plugin to the latest version.
 
@@ -19,8 +19,8 @@ async function main() {
     process.exit(0);
   }
 
-  if (!fs.existsSync(`${pluginsPath}/${plugin}`)) {
-    console.error(`🚨 Plugin not found: ${plugin}`);
+  if (!(await fs.pathExists(`${pluginsPath}/${plugin}`))) {
+    echo(`🚨 Plugin not found: ${plugin}`);
     process.exit(1);
   }
 
@@ -28,6 +28,6 @@ async function main() {
   await $`git pull`;
   await $`yarn`;
 
-  console.info('✅ Updated!');
+  echo(`✅ Updated!`);
 }
 main();

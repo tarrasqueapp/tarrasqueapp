@@ -1,10 +1,10 @@
-import { argv, fs, globby } from 'zx';
+import { argv, echo, fs, globby } from 'zx';
 
 import { pluginsPath } from '../../helpers.mjs';
 
 async function main() {
   if (argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Lists all installed Tarrasque plugins.
 
@@ -24,7 +24,7 @@ async function main() {
     data.push({ name: json.name, version: packageJson.version, command: json.command });
   }
 
-  console.info(`
+  echo(`
   Installed plugins:
     ${data.map(({ name, version, command }) => `${name}@${version} (${command})`).join('\n    ')}
   `);

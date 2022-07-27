@@ -1,9 +1,9 @@
-import { $, argv, cd } from 'zx';
+import { $, argv, cd, echo } from 'zx';
 
 async function main() {
   // Show help if the help flag is set
   if (argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Installs application dependencies for client and server.
 
@@ -13,17 +13,17 @@ async function main() {
     process.exit(0);
   }
 
-  console.info('📂 Installing root...');
+  echo(`📂 Installing root...`);
   await $`yarn`;
 
-  console.info('📂 Installing client...');
+  echo(`📂 Installing client...`);
   cd('packages/client');
   await $`yarn`;
 
-  console.info('📂 Installing server...');
+  echo(`📂 Installing server...`);
   cd('../server');
   await $`yarn`;
 
-  console.info('✅ Installed!');
+  echo(`✅ Installed!`);
 }
 main();

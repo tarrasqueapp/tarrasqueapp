@@ -1,6 +1,5 @@
-#!/usr/bin/env npx ts-node --esm --compilerOptions={"module":"ESNext","target":"ESNext","moduleResolution":"node"}
-import 'dotenv/config';
-import { argv, cd, fs, globby } from 'zx';
+#!/usr/bin/env npx ts-node --esm
+import { YAML, argv, cd, echo, fs, globby } from 'zx';
 
 import { appPath, commandsPath, pluginsPath } from './helpers.mjs';
 
@@ -15,7 +14,7 @@ async function main() {
   if (argv.version || argv.v) {
     // Get the version from package.json
     const packageJson = await fs.readJson(`${appPath}/package.json`);
-    console.info(`Tarrasque CLI v${packageJson.version}`);
+    echo(`Tarrasque CLI v${packageJson.version}`);
     process.exit(0);
   }
 
@@ -38,18 +37,19 @@ async function main() {
   }
 
   // Get all plugin commands
-  const plugins = await globby([`${pluginsPath}/*/tarrasque.json`]);
-  for (const plugin of plugins) {
-    const json = await fs.readJson(plugin);
-    const packageJson = await fs.readJson(`${pluginsPath}/${json.name}/package.json`);
-    commands[json.command] = () => import(`${pluginsPath}/${json.name}/${packageJson.main}`);
+  const plugins = await globby([`${pluginsPath}/*/tarrasque.yaml`]);
+  for (const yaml of plugins) {
+    const pluginYaml = await fs.readFile(yaml);
+    const plugin = YAML.parse(pluginYaml.toString());
+    if (!plugin.cli?.command || !plugin.cli?.entrypoint) continue;
+    commands[plugin.cli.command] = () => import(`${pluginsPath}/${plugin.id}/${plugin.cli.entrypoint}`);
   }
 
   const foundCommand = commands[command];
 
   // Show help if no command is found or the command is not found while the help flag is set
   if (!foundCommand) {
-    console.info(`
+    echo(`
     Usage
       $ tarrasque <command>
 

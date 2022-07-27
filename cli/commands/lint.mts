@@ -1,9 +1,9 @@
-import { $, argv, cd } from 'zx';
+import { $, argv, cd, echo } from 'zx';
 
 async function main() {
   // Show help if the help flag is set
   if (argv.help || argv.h) {
-    console.info(`
+    echo(`
     Description
       Checks the application for linting errors.
 
@@ -13,17 +13,17 @@ async function main() {
     process.exit(0);
   }
 
-  console.info('📂 Linting root...');
+  echo(`📂 Linting root...`);
   await $`yarn lint`;
 
-  console.info('📂 Linting client...');
+  echo(`📂 Linting client...`);
   cd('packages/client');
   await $`yarn lint`;
 
-  console.info('📂 Linting server...');
+  echo(`📂 Linting server...`);
   cd('../server');
   await $`yarn lint`;
 
-  console.info('✅ Linted!');
+  echo(`✅ Linted!`);
 }
 main();

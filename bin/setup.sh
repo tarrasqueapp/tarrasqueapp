@@ -9,11 +9,6 @@ command_exists() {
   command -v "$@" > /dev/null 2>&1
 }
 
-# Function to check if global npm package exists
-package_exists() {
-  npm list -g --depth=0 | grep -q "$1"
-}
-
 do_install() {
   # Check that Docker is installed
   if ! command_exists docker; then
@@ -26,20 +21,6 @@ do_install() {
   if ! command_exists docker-compose; then
     echo "🚨 Docker Compose is not installed. Please install Docker Compose and try again."
     echo "See https://docs.docker.com/compose/install/ for instructions."
-    exit 1
-  fi
-
-  # Check that Mutagen is installed
-  if ! command_exists mutagen; then
-    echo "🚨 Mutagen is not installed. Please install Mutagen and try again."
-    echo "See https://mutagen.io/documentation/introduction/installation for instructions."
-    exit 1
-  fi
-
-  # Check that Mutagen Compose is installed
-  if ! command_exists mutagen-compose; then
-    echo "🚨 Mutagen Compose is not installed. Please install Mutagen Compose and try again."
-    echo "See https://github.com/mutagen-io/mutagen-compose/blob/main/README.md for instructions."
     exit 1
   fi
 
@@ -94,22 +75,6 @@ do_install() {
     # Exit if Yarn is not installed on Windows
     else
       echo "See https://yarnpkg.com/en/docs/install"
-      exit 1
-    fi
-  fi
-
-  # Check that zx is installed
-  if ! package_exists zx; then
-    echo "🚨 zx is not installed. Please install zx and try again."
-    # Automatic installation of zx
-    read -p "Do you want to install zx? [y/N] " -n 1 -r
-    echo
-    # Check if user wants to install zx
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      npm install -g zx
-    # Exit if user doesn't want to install zx
-    else
-      echo "🚨 zx is required to install this program."
       exit 1
     fi
   fi
