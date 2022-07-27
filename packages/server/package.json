@@ -13,6 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "ncu": "ncu",
+    "lint": "eslint .",
     "seed": "prisma db push && prisma db seed"
   },
   "prisma": {

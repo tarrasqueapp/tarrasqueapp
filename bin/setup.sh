@@ -114,7 +114,7 @@ do_install() {
     fi
   fi
 
-  source $SCRIPT_DIR/install-terry.sh
+  source $SCRIPT_DIR/install-cli.sh
   source $SCRIPT_DIR/install-deps.sh
 }
 

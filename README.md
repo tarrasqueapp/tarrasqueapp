@@ -2,7 +2,7 @@
 
 ## Setup
 
-Run the following commands to install the dependencies for Tarrasque App, as well as Terry, the CLI helper for running Tarrasque App commands:
+Run the following commands to install the dependencies for Tarrasque App, as well the CLI helper for running Tarrasque App commands:
 
     ./bin/setup.sh
 
@@ -10,7 +10,7 @@ Run the following commands to install the dependencies for Tarrasque App, as wel
 
 This will run `yarn` on each workspace.
 
-    terry install
+    tarrasque install
 
 ### Set environment variables
 
@@ -22,7 +22,7 @@ There's a `.env.example` file in the root folder. Copy `.env.example` to `.env` 
 
 To start the Docker development server, run:
 
-    terry dev
+    tarrasque dev
 
 You can then access the development server at `http://localhost:10000`.
 
@@ -30,7 +30,7 @@ You can then access the development server at `http://localhost:10000`.
 
 To start the Docker production server, run:
 
-    terry prod
+    tarrasque prod
 
 You can then access the production server at `http://localhost:10000`.
 
