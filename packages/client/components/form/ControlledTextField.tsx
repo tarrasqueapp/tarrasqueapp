@@ -17,7 +17,12 @@ export const ControlledTextField: React.FC<IProps> = ({ name, ...props }) => {
       name={name}
       defaultValue=""
       render={({ field }) => (
-        <TextField {...props} {...field} error={!!errors[name]} helperText={errors[name] ? errors[name].message : ''} />
+        <TextField
+          {...props}
+          {...field}
+          error={!!errors[name]}
+          helperText={errors[name] ? <>{errors[name]?.message}</> : ''}
+        />
       )}
     />
   );

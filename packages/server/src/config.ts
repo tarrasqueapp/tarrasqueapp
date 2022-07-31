@@ -1,9 +1,7 @@
 export const config = {
-  BASE_PATH: process.env.BASE_PATH || '',
-  DOMAIN_FULL: process.env.DOMAIN_FULL || '',
+  DOMAIN: process.env.DOMAIN || '',
   NODE_ENV: process.env.NODE_ENV || '',
   VERBOSE: process.env.VERBOSE === 'true',
-  PORT: parseInt(process.env.PORT || '', 10),
   COOKIE_SECRET: process.env.COOKIE_SECRET || '',
   JWT_ACCESS_TOKEN_NAME: process.env.JWT_ACCESS_TOKEN_NAME || '',
   JWT_ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET || '',

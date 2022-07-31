@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
-import { PrismaClientExceptionFilter, PrismaModule } from 'nestjs-prisma';
+import { PrismaModule } from 'nestjs-prisma';
 
 import { AuthModule } from './auth/auth.module';
 import { CampaignsModule } from './campaigns/campaigns.module';
@@ -14,12 +13,6 @@ import { TokensModule } from './tokens/tokens.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: PrismaClientExceptionFilter,
-    },
-  ],
   imports: [
     ScheduleModule.forRoot(),
     PrismaModule.forRoot({ isGlobal: true }),

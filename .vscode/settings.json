@@ -8,6 +8,7 @@
     "editor.defaultFormatter": "ms-kubernetes-tools.vscode-kubernetes-tools"
   },
   "files.associations": {
-    "**/.env**": "shellscript"
+    "**/.env**": "shellscript",
+    "**/nginx/*.conf.*": "nginx"
   }
 }

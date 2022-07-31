@@ -20,9 +20,9 @@ async function main() {
     process.exit(0);
   }
 
-  const services = process.argv.slice(4).join(' ');
+  const services = process.argv.slice(3).join(' ');
   const command =
-    `-f docker-compose.yml -f docker-compose.dev.yml --env-file ./.env up --build --remove-orphans ${services}`.trim();
+    `-f docker-compose.yaml -f docker-compose.dev.yaml --env-file ./.env up --build --remove-orphans ${services}`.trim();
 
   spawn('docker-compose', command.split(' '), { stdio: [0, 1, 2] });
 }

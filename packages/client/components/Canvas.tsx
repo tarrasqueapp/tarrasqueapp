@@ -17,7 +17,7 @@ const Canvas: React.FC = observer(() => {
 
   useEffect(() => {
     if (store.app.socket) return;
-    store.app.setSocket(io({ path: `${config.BASE_PATH}/socket.io` }));
+    store.app.setSocket(io({ path: `/socket.io` }));
   }, []);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Canvas: React.FC = observer(() => {
       <Map src={map.media.url} width={map.media.width} height={map.media.height}>
         <>
           <Grid graphWidth={map.media.width} graphHeight={map.media.height} minorGridSize={70} minorStrokeWidth={1} />
-          <Token src={`${config.BASE_PATH}/token.webp`} x={70} y={70} width={70} height={70} />
+          <Token src="/token.webp" x={70} y={70} width={70} height={70} />
         </>
       </Map>
     </Stage>

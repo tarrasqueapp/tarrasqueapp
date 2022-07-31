@@ -1,9 +1,11 @@
 {
   "recommendations": [
-    "zamerick.vscode-caddyfile-syntax",
     "editorconfig.editorconfig",
     "dbaeumer.vscode-eslint",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "william-voyek.vscode-nginx",
     "esbenp.prettier-vscode",
-    "prisma.prisma"
+    "prisma.prisma",
+    "redhat.vscode-yaml"
   ]
 }

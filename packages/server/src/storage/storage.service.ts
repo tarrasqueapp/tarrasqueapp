@@ -80,7 +80,7 @@ export class StorageService implements OnModuleInit {
 
       // Return public file URL
       this.logger.debug(`✅️ Uploaded file "${key}" to local storage`);
-      return `${config.DOMAIN_FULL}${filePath}`;
+      return `${config.DOMAIN}${filePath}`;
     } catch (error) {
       this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);

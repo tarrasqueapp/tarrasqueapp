@@ -1,5 +1,0 @@
-{$DOMAIN:localhost} {
-  tls internal
-
-  import /srv/Caddyfile
-}

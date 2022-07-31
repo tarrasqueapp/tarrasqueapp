@@ -17,14 +17,3 @@ services:
     build:
       context: ./packages/server
       dockerfile: Dockerfile.prod
-
-  ######################
-  ### Infrastructure ###
-  ######################
-
-  caddy:
-    build:
-      context: ./caddy/dns/${CADDY_DNS_METHOD}
-      dockerfile: Dockerfile
-    volumes:
-      - ./caddy/dns/${CADDY_DNS_METHOD}:/etc/caddy

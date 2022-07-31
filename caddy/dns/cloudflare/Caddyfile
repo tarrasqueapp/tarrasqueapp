@@ -1,7 +1,0 @@
-{$DOMAIN:localhost} {
-  tls {
-    dns cloudflare {$CADDY_CLOUDFLARE_API_TOKEN}
-  }
-
-  import /srv/Caddyfile
-}

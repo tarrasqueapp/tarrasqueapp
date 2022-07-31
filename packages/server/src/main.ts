@@ -19,7 +19,7 @@ async function bootstrap() {
   });
 
   // Add /api prefix to all routes
-  const apiPath = config.BASE_PATH ? config.BASE_PATH.slice(1) + '/api' : 'api';
+  const apiPath = 'api';
   app.setGlobalPrefix(apiPath);
 
   // Validate all requests
@@ -47,6 +47,6 @@ async function bootstrap() {
   SwaggerModule.setup(apiPath, app, document);
 
   // Start server
-  await app.listen(config.PORT);
+  await app.listen(3000);
 }
 bootstrap();

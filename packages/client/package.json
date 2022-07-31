@@ -6,9 +6,9 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "dev": "next dev -p $PORT",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT",
+    "start": "next start",
     "lint": "next lint",
     "ncu": "ncu"
   },
@@ -22,10 +22,10 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.92",
     "@mui/material": "^5.9.2",
-    "@sentry/nextjs": "^7.7.0",
-    "@sentry/tracing": "^7.7.0",
+    "@sentry/nextjs": "^7.8.0",
+    "@sentry/tracing": "^7.8.0",
     "@tanstack/react-query": "^4.0.10",
-    "@uppy/core": "^2.3.1",
+    "@uppy/core": "^2.3.2",
     "@uppy/tus": "^2.4.1",
     "axios": "^0.27.2",
     "material-ui-popup-state": "^4.0.1",
@@ -38,13 +38,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.2",
-    "react-hook-form": "^7.33.1",
+    "react-hook-form": "^7.34.0",
     "react-hot-toast": "^2.3.0",
     "socket.io-client": "^4.5.1",
     "zod": "^3.17.10"
   },
   "devDependencies": {
-    "@types/node": "^18.6.1",
+    "@types/node": "^18.6.2",
     "@types/react": "^18.0.15",
     "typescript": "^4.7.4"
   }
