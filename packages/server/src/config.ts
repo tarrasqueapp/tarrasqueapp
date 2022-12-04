@@ -1,5 +1,5 @@
 export const config = {
-  DOMAIN: process.env.DOMAIN || '',
+  HOST: process.env.HOST || '',
   NODE_ENV: process.env.NODE_ENV || '',
   VERBOSE: process.env.VERBOSE === 'true',
   COOKIE_SECRET: process.env.COOKIE_SECRET || '',
@@ -9,6 +9,8 @@ export const config = {
   JWT_REFRESH_TOKEN_NAME: process.env.JWT_REFRESH_TOKEN_NAME || '',
   JWT_REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET || '',
   JWT_REFRESH_TOKEN_EXPIRATION_TIME: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || '',
+  SENTRY_ENABLED: Boolean(process.env.SENTRY_ENABLED) || false,
+  SENTRY_DSN: process.env.SENTRY_DSN || '',
   STORAGE_PROVIDER: process.env.STORAGE_PROVIDER || '',
   STORAGE_S3_BUCKET: process.env.STORAGE_S3_BUCKET || '',
   STORAGE_S3_ACCESS_KEY_ID: process.env.STORAGE_S3_ACCESS_KEY_ID || '',
@@ -16,4 +18,5 @@ export const config = {
   STORAGE_S3_REGION: process.env.STORAGE_S3_REGION || '',
   STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT || '',
   STORAGE_S3_URL: process.env.STORAGE_S3_URL || '',
+  FFMPEG_PATH: process.env.FFMPEG_PATH || '',
 };

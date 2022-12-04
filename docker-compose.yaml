@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   #################
   ### Front-end ###
@@ -12,14 +13,16 @@ services:
       - no-new-privileges:true
     networks:
       - nginx_network
-    env_file:
-      - ./.env
     build:
+      context: ./packages/client
       args:
-        - TUS_URL=${TUS_URL}
+        - HOST=${HOST}
+        - NODE_ENV=${NODE_ENV}
         - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
         - SENTRY_ENABLED=${SENTRY_ENABLED}
         - SENTRY_DSN=${SENTRY_DSN}
+    env_file:
+      - ./.env
 
   ################
   ### Back-end ###
@@ -34,6 +37,8 @@ services:
     networks:
       - nginx_network
       - server_network
+    build:
+      context: ./packages/server
     volumes:
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads
@@ -65,18 +70,19 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:latest
+    image: nginx:alpine
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - nginx_network
+    command: nginx -g 'daemon off;'
     volumes:
       - ./data/plugins:/plugins
       - ./data/uploads:/uploads
       - ./nginx:/etc/nginx/templates
     ports:
-      - '80:80'
+      - '4000:80'
     env_file:
       - ./.env
 
@@ -89,18 +95,6 @@ services:
     networks:
       - server_network
     command: redis-server --requirepass ${REDIS_PASSWORD}
-
-  tus:
-    container_name: tus
-    image: tusproject/tusd
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - nginx_network
-    command: -behind-proxy -upload-dir=/tmp/uploads -base-path=${TUS_SUFFIX}
-    volumes:
-      - ./data/tmp:/tmp/uploads
 
 networks:
   server_network:

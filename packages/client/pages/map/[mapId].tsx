@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 
-import { HUD } from '../../components/HUD';
+import { Overlay } from '../../components/overlay/Overlay';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
 
 export async function getServerSideProps() {
@@ -18,13 +18,13 @@ export async function getServerSideProps() {
   return { props: {} };
 }
 
-const Canvas = dynamic(() => import('../../components/Canvas'), { ssr: false });
+const Canvas = dynamic(() => import('../../components/canvas/Canvas'), { ssr: false });
 
 const MapId: NextPage = () => {
   return (
     <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
       <Canvas />
-      <HUD />
+      <Overlay />
     </Box>
   );
 };

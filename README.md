@@ -24,7 +24,7 @@ To start the Docker development server, run:
 
     tarrasque dev
 
-You can then access the development server at `http://localhost`.
+You can then access the development server at `http://localhost:4000`.
 
 ### Run production server
 
@@ -32,7 +32,7 @@ To start the Docker production server, run:
 
     tarrasque prod
 
-You can then access the production server at `http://localhost`.
+You can then access the production server at `http://localhost:4000`.
 
 ## Database
 

@@ -6,7 +6,6 @@ services:
 
   client:
     build:
-      context: ./packages/client
       dockerfile: Dockerfile.dev
     volumes:
       - ./packages/client:/app
@@ -19,7 +18,6 @@ services:
 
   server:
     build:
-      context: ./packages/server
       dockerfile: Dockerfile.dev
     volumes:
       - ./packages/server:/app

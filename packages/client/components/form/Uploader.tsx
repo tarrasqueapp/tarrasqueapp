@@ -7,8 +7,8 @@ import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
 
 import { useEffectAsync } from '../../hooks/useEffectAsync';
+import { Color } from '../../lib/colors';
 import { config } from '../../lib/config';
-import { Color } from '../../lib/enums';
 import { FileInterface } from '../../lib/types';
 import { store } from '../../store';
 
@@ -27,11 +27,11 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   // Setup Uppy
   const uppy = useMemo(() => {
     return new Uppy({ restrictions: { allowedFileTypes, maxNumberOfFiles: 1 }, autoProceed: false })
-      .use(Tus, { chunkSize: 1e6, endpoint: config.TUS_URL })
+      .use(Tus, { chunkSize: 1e6, endpoint: '/tus/files/', headers: { host: config.HOST } })
       .on('progress', (p) => progress !== p && setProgress(p))
       .on('error', () => {
         setProgress(0);
-        onChange && onChange(undefined);
+        onChange?.(undefined);
       })
       .on('complete', async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
         if (!result.successful.length) return;
@@ -45,7 +45,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
         }
 
         let file: FileInterface = {
-          name: uppyFile.uploadURL.replace(config.TUS_URL, ''),
+          name: uppyFile.uploadURL.replace('/tus/files', ''),
           type: uppyFile.type,
           extension: uppyFile.extension,
           size: uppyFile.size,
@@ -61,7 +61,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
           file = { ...file, ...dimensions };
         }
 
-        onChange && onChange(file);
+        onChange?.(file);
       });
   }, [onChange]);
 
@@ -123,7 +123,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
       };
       setFile(file);
 
-      uppy.reset();
+      uppy.cancelAll();
       uppy.addFile(file);
       uppy.upload();
     },
@@ -138,8 +138,8 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
     setPreview('');
     setFile(undefined);
     setProgress(0);
-    onChange && onChange(undefined);
-    uppy.reset();
+    onChange?.(undefined);
+    uppy.cancelAll();
   }
 
   return (

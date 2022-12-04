@@ -1,0 +1,61 @@
+replicaCount: 1
+
+image:
+  repository: registry.digitalocean.com/tarrasqueapp/client
+  pullPolicy: Always
+  tag: staging
+
+imagePullSecrets:
+  - name: registry-tarrasqueapp
+nameOverride: ''
+fullnameOverride: ''
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ''
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: 'letsencrypt-production'
+  hosts:
+    - host: tarrasque.app
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: www.tarrasque.app
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: client-tls
+      hosts:
+        - tarrasque.app
+        - www.tarrasque.app
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

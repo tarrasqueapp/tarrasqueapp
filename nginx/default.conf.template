@@ -2,8 +2,11 @@ proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=STATIC:10m inactive=7d us
 
 server {
     listen 80 default_server;
-    server_name $HOSTNAME;
+    server_name tarrasqueapp;
     server_tokens off;
+
+    # Disable access logs
+    access_log off;
 
     # Enable gzip
     gzip on;
@@ -62,7 +65,7 @@ server {
         proxy_request_buffering off;
         proxy_buffering off;
         client_max_body_size 0;
-        proxy_pass http://tus:1080;
+        proxy_pass http://server:3000;
     }
 
     location /plugins {

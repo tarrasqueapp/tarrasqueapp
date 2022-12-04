@@ -3,6 +3,7 @@ import { spawn } from 'child_process';
 import { stat } from 'fs-extra';
 import { PrismaService } from 'nestjs-prisma';
 
+import { config } from '../config';
 import { TEMP_PATH } from '../storage/tmp.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { MediaEntity } from './entities/media.entity';
@@ -77,7 +78,7 @@ export class MediaService {
       throw new NotFoundException(`File "${filePath}" not found`);
     }
 
-    const ffmpegPath = process.env.FFMPEG_PATH || 'ffmpeg';
+    const ffmpegPath = config.FFMPEG_PATH || 'ffmpeg';
     const height = -1;
 
     const thumbnailPath = `${filePath}${THUMBNAIL_SUFFIX}`;

@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-import { Color } from './enums';
+import { Color } from './colors';
 
 export const theme = createTheme({
   palette: {
@@ -22,6 +22,9 @@ export const theme = createTheme({
   },
   components: {
     MuiTooltip: {
+      defaultProps: {
+        followCursor: true,
+      },
       styleOverrides: {
         tooltip: {
           backgroundColor: Color.Black,

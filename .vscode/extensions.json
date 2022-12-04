@@ -1,11 +1,11 @@
 {
   "recommendations": [
-    "editorconfig.editorconfig",
     "dbaeumer.vscode-eslint",
-    "ms-kubernetes-tools.vscode-kubernetes-tools",
-    "william-voyek.vscode-nginx",
+    "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
     "prisma.prisma",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "william-voyek.vscode-nginx"
   ]
 }
