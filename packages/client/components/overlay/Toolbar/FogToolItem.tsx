@@ -13,7 +13,7 @@ export const FogToolItem: React.FC = observer(() => {
 
   const HideFogTool = (props: any) => {
     return (
-      <Tooltip title="Hide" followCursor>
+      <Tooltip title="Hide">
         <ToggleButton
           value={FogTool.Hide}
           size="small"
@@ -32,7 +32,7 @@ export const FogToolItem: React.FC = observer(() => {
 
   const ShowFogTool = (props: any) => {
     return (
-      <Tooltip title="Show" followCursor>
+      <Tooltip title="Show">
         <ToggleButton
           value={FogTool.Show}
           size="small"

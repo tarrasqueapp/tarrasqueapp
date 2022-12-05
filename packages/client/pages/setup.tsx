@@ -2,9 +2,9 @@ import { Box, Container, Paper } from '@mui/material';
 import { NextPage } from 'next';
 import React from 'react';
 
-import { SetupPage } from '../components/setup/SetupPage';
+import { Setup } from '../components/setup/Setup';
 
-const Setup: NextPage = () => {
+const SetupPage: NextPage = () => {
   return (
     <Container maxWidth="xs">
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -13,11 +13,11 @@ const Setup: NextPage = () => {
         </Box>
 
         <Paper sx={{ p: 1, width: '100%' }}>
-          <SetupPage />
+          <Setup />
         </Paper>
       </Box>
     </Container>
   );
 };
 
-export default Setup;
+export default SetupPage;

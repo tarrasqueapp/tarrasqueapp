@@ -147,11 +147,11 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        border: `2px dashed ${isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : alpha(Color.Brown, 0.4)}`,
+        border: `1px dashed ${isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : alpha(Color.Grey, 0.4)}`,
         background: isDragActive && !isDragReject ? alpha(Color.Brown, 0.05) : undefined,
         cursor: 'pointer',
         position: 'relative',
-        p: 4,
+        p: file ? 0 : 4,
         borderRadius: 1,
       }}
       {...getRootProps()}
@@ -169,7 +169,16 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
 
       {file ? (
         <>
-          <IconButton onClick={handleDelete} sx={{ position: 'absolute', top: 4, right: 4 }}>
+          <IconButton
+            onClick={handleDelete}
+            sx={{
+              position: 'absolute',
+              top: 4,
+              right: 4,
+              background: 'rgba(0, 0, 0, 0.6)',
+              '&:hover': { background: 'rgba(0, 0, 0, 0.8)' },
+            }}
+          >
             <Delete color="error" />
           </IconButton>
 

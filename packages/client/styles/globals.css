@@ -2,7 +2,7 @@ html,
 body,
 #__next {
   height: 100%;
-  height: -webkit-fill-available;
+  height: stretch;
 }
 
 html {

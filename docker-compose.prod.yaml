@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   #################
   ### Front-end ###
@@ -6,6 +7,7 @@ services:
 
   client:
     build:
+      context: ./packages/client
       dockerfile: Dockerfile.prod
 
   ################
@@ -14,4 +16,5 @@ services:
 
   server:
     build:
+      context: ./packages/server
       dockerfile: Dockerfile.prod

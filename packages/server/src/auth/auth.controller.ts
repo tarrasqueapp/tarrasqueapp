@@ -27,12 +27,12 @@ export class AuthController {
   }
 
   /**
-   * Login with email and password
+   * Sign in with email and password
    */
-  @Post('login')
+  @Post('sign-in')
   @UseGuards(LocalAuthGuard)
   @ApiOkResponse({ type: UserEntity })
-  async logIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
+  async signIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
     // Generate access and refresh tokens based on user
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = this.authService.generateRefreshToken(user.id);
@@ -46,13 +46,13 @@ export class AuthController {
   }
 
   /**
-   * Logout the user
+   * Sign out the user
    */
-  @Post('logout')
+  @Post('sign-out')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: null })
-  async logOut(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<void> {
+  async signOut(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<void> {
     // Delete refresh token
     await this.usersService.removeRefreshToken(user.id);
     // Set cookies

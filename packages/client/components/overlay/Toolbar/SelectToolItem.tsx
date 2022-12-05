@@ -13,7 +13,7 @@ export const SelectToolItem: React.FC = observer(() => {
 
   const SingleSelectTool = (props: any) => {
     return (
-      <Tooltip title="Single Select" followCursor>
+      <Tooltip title="Single Select">
         <ToggleButton
           value={SelectTool.Single}
           size="small"
@@ -32,7 +32,7 @@ export const SelectToolItem: React.FC = observer(() => {
 
   const MultiSelectTool = (props: any) => {
     return (
-      <Tooltip title="Multiple Select" followCursor>
+      <Tooltip title="Multiple Select">
         <ToggleButton
           value={SelectTool.Multi}
           size="small"

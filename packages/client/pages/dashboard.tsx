@@ -1,10 +1,13 @@
-import { Box } from '@mui/material';
-import type { NextPage } from 'next';
+import { Box, CircularProgress } from '@mui/material';
+import type { GetServerSideProps, NextPage } from 'next';
 
-import { Uploader } from '../components/form/Uploader';
+import { NextLink } from '../components/NextLink';
+import { Campaign } from '../components/dashboard/Campaign';
+import { useGetUserCampaigns } from '../hooks/data/campaigns/useGetUserCampaigns';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
+import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
   const setup = await getSetup();
 
@@ -12,20 +15,33 @@ export async function getServerSideProps() {
   if (!setup) return { props: {} };
 
   // Redirect to the setup page if the setup is not completed
-  if (!setup.completed) return { redirect: { destination: '/setup' } };
+  if (!setup.completed) return { props: {}, redirect: { destination: '/setup' } };
+
+  // Redirect to the sign-in page if the user is not signed in
+  try {
+    await getUser({ withCredentials: true, headers: { Cookie: context.req.headers.cookie || '' } });
+  } catch (err) {
+    return { props: {}, redirect: { destination: '/sign-in' } };
+  }
 
   return { props: {} };
-}
+};
 
-const Dashboard: NextPage = () => {
+const DashboardPage: NextPage = () => {
+  const { data: user } = useGetUser();
+  const { data: campaigns } = useGetUserCampaigns();
+
+  if (!user) return <CircularProgress disableShrink />;
+
   return (
     <Box>
-      Dashboard
-      <Box sx={{ width: 200 }}>
-        <Uploader />
-      </Box>
+      {campaigns?.map((campaign) => (
+        <Campaign key={campaign.id} campaign={campaign} />
+      ))}
+
+      <NextLink href="/sign-out">Sign out</NextLink>
     </Box>
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

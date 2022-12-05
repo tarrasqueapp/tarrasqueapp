@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { AxiosRequestConfig } from 'axios';
 
 import { api } from '../../../lib/api';
 import { UserInterface } from '../../../lib/types';
@@ -7,8 +8,8 @@ import { UserInterface } from '../../../lib/types';
  * Send a request to get the user
  * @returns Setup progress
  */
-async function getUser() {
-  const { data } = await api.get<UserInterface>(`/api/auth`);
+export async function getUser(config?: AxiosRequestConfig) {
+  const { data } = await api.get<UserInterface>(`/api/auth`, config);
   return data;
 }
 

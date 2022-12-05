@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { CampaignInterface } from '../../../lib/types';
+import { MapInterface } from '../../../lib/types';
 
 /**
  * Send a request to get a campaign's maps
@@ -9,7 +9,7 @@ import { CampaignInterface } from '../../../lib/types';
  * @returns The campaign's maps
  */
 async function getCampaignMaps(campaignId: string) {
-  const { data } = await api.get<CampaignInterface[]>(`/api/campaigns/${campaignId}/maps`);
+  const { data } = await api.get<MapInterface[]>(`/api/campaigns/${campaignId}/maps`);
   return data;
 }
 

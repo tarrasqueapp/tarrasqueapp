@@ -9,9 +9,9 @@ import { CreateCampaign } from './CreateCampaign';
 import { CreateDatabase } from './CreateDatabase';
 import { CreateMap } from './CreateMap';
 import { CreateUser } from './CreateUser';
-import { Login } from './Login';
+import { SignIn } from './SignIn';
 
-export const SetupPage: React.FC = () => {
+export const Setup: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
   const { data, error, isLoading, refetch } = useGetSetup();
@@ -48,7 +48,7 @@ export const SetupPage: React.FC = () => {
   }
 
   if (data?.user && !refreshTokenData) {
-    return <Login />;
+    return <SignIn />;
   }
 
   // Show error message if there is an error

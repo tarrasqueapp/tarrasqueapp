@@ -6,11 +6,15 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 
-import { useLogin } from '../../hooks/data/users/useLogin';
+import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { ControlledTextField } from '../form/ControlledTextField';
 
-export const Login: React.FC = () => {
-  const login = useLogin();
+interface ISignInProps {
+  onSuccess?: () => void;
+}
+
+export const SignIn: React.FC<ISignInProps> = ({ onSuccess }) => {
+  const signIn = useSignIn();
 
   // Setup form validation schema
   const schema = z.object({
@@ -32,7 +36,8 @@ export const Login: React.FC = () => {
    */
   async function handleSubmitForm(values: Schema) {
     try {
-      await login.mutateAsync(values);
+      await signIn.mutateAsync(values);
+      onSuccess?.();
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -50,7 +55,7 @@ export const Login: React.FC = () => {
 
         <Box sx={{ textAlign: 'center' }}>
           <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ m: 1 }}>
-            Login
+            Sign in
           </LoadingButton>
         </Box>
       </form>

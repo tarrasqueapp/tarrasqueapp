@@ -15,6 +15,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
    * Get the user from the email and password
    */
   validate(email: string, password: string): Promise<UserEntity> {
-    return this.authService.login(email, password);
+    return this.authService.signIn(email, password);
   }
 }

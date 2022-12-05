@@ -38,22 +38,22 @@ export const ZoomControls: React.FC = observer(() => {
   return (
     <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
       <ToggleButtonGroup orientation="vertical" sx={{ background: Color.Black }}>
-        <Tooltip title="Zoom In" placement="left" followCursor>
+        <Tooltip title="Zoom In" placement="left">
           <ToggleButton value="zoom-in" size="small" onClick={handleZoomIn}>
             <Add />
           </ToggleButton>
         </Tooltip>
-        <Tooltip title="Zoom Out" placement="left" followCursor>
+        <Tooltip title="Zoom Out" placement="left">
           <ToggleButton value="zoom-out" size="small" onClick={handleZoomOut}>
             <Remove />
           </ToggleButton>
         </Tooltip>
-        <Tooltip title="Fit Screen" placement="left" followCursor>
+        <Tooltip title="Fit Screen" placement="left">
           <ToggleButton value="fit-screen" size="small" onClick={handleFitScreen}>
             <FitScreen />
           </ToggleButton>
         </Tooltip>
-        <Tooltip title="Full Screen" placement="left" followCursor>
+        <Tooltip title="Full Screen" placement="left">
           <ToggleButton
             value="full-screen"
             size="small"

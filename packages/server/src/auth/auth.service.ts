@@ -19,7 +19,7 @@ export class AuthService {
    * @param password The user's password
    * @returns The user with the hashed password and the hashed refresh token
    */
-  async login(email: string, password: string): Promise<UserEntity> {
+  async signIn(email: string, password: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Logging in user "${email}"`);
     // Get the user
     const userWithExcludedFields = await this.usersService.getUserByEmailWithExcludedFields(email);

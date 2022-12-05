@@ -1,44 +1,51 @@
 import { Brush, Category, PushPin, SquareFoot } from '@mui/icons-material';
 import { Box, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { observer } from 'mobx-react-lite';
 
 import { Color } from '../../../lib/colors';
+import { store } from '../../../store';
 import { Tool } from '../../../store/toolbar';
 import { FogToolItem } from './FogToolItem';
 import { SelectToolItem } from './SelectToolItem';
 
-export const Toolbar: React.FC = () => {
-  function handlePanMode() {}
-
+export const Toolbar: React.FC = observer(() => {
   return (
     <Box sx={{ position: 'fixed', top: 4, left: 4, display: 'flex', flexDirection: 'column' }}>
-      <ToggleButtonGroup orientation="vertical" sx={{ background: Color.Black }}>
+      <ToggleButtonGroup
+        size="small"
+        exclusive
+        value={store.toolbar.tool}
+        onChange={(event, newTool) => newTool && store.toolbar.setTool(newTool)}
+        orientation="vertical"
+        sx={{ background: Color.Black }}
+      >
         <SelectToolItem />
         <FogToolItem />
 
-        <Tooltip title="Draw" followCursor>
-          <ToggleButton value={Tool.Draw} size="small" onClick={handlePanMode}>
+        <Tooltip title="Draw">
+          <ToggleButton value={Tool.Draw} selected={store.toolbar.tool === Tool.Draw}>
             <Brush />
           </ToggleButton>
         </Tooltip>
 
-        <Tooltip title="Shape" followCursor>
-          <ToggleButton value={Tool.Shape} size="small" onClick={handlePanMode}>
+        <Tooltip title="Shape">
+          <ToggleButton value={Tool.Shape} selected={store.toolbar.tool === Tool.Shape}>
             <Category />
           </ToggleButton>
         </Tooltip>
 
-        <Tooltip title="Measure" followCursor>
-          <ToggleButton value={Tool.Measure} size="small" onClick={handlePanMode}>
+        <Tooltip title="Measure">
+          <ToggleButton value={Tool.Measure} selected={store.toolbar.tool === Tool.Measure}>
             <SquareFoot />
           </ToggleButton>
         </Tooltip>
 
-        <Tooltip title="Note" followCursor>
-          <ToggleButton value={Tool.Note} size="small" onClick={handlePanMode}>
+        <Tooltip title="Note">
+          <ToggleButton value={Tool.Note} selected={store.toolbar.tool === Tool.Note}>
             <PushPin />
           </ToggleButton>
         </Tooltip>
       </ToggleButtonGroup>
     </Box>
   );
-};
+});

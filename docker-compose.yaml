@@ -7,14 +7,12 @@ services:
 
   client:
     container_name: client
-    platform: linux/amd64
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - nginx_network
     build:
-      context: ./packages/client
       args:
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
@@ -30,15 +28,12 @@ services:
 
   server:
     container_name: server
-    platform: linux/amd64
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - nginx_network
       - server_network
-    build:
-      context: ./packages/server
     volumes:
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads

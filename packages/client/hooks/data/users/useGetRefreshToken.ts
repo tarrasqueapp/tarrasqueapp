@@ -19,10 +19,11 @@ async function getRefreshToken() {
  * @returns Setup query
  */
 export function useGetRefreshToken() {
-  // Get a new refresh token if the user is logged in
+  // Get a new refresh token if the user is signed in
   const refetchInterval = DateTimeUtils.toMillisecondsFromString(config.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '5m');
 
   return useQuery([`auth/refresh`], () => getRefreshToken(), {
     refetchInterval,
+    refetchIntervalInBackground: true,
   });
 }
