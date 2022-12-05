@@ -1669,19 +1669,12 @@ pirates@^4.0.1:
   resolved "https://registry.yarnpkg.com/pirates/-/pirates-4.0.5.tgz#feec352ea5c3268fb23a37c702ab1699f35a5f3b"
   integrity sha512-8V9+HQPupnaXMA23c5hvl69zXvTwTzyAYasnkb0Tts4XvO4CliqONMOnvlq26rkhLC3nWDFBJf73LU1e1VZLaQ==
 
-pixi-graphpaper@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/pixi-graphpaper/-/pixi-graphpaper-2.0.1.tgz#8ae9aee14578a706b04aee8c9c4a60d61dbe4e7d"
-  integrity sha512-jg5cqifwJ5sChbnIQ86+uXFSAnOZJwHZkoeJYvl3Vi88MVe3QhEfW9ZoMNvnwf5BOlfmhBFmUaDnV6IeP+j/vg==
-  dependencies:
-    pixi.js "^6.2.2"
-
 pixi-viewport@^4.38.0:
   version "4.38.0"
   resolved "https://registry.yarnpkg.com/pixi-viewport/-/pixi-viewport-4.38.0.tgz#7deeec65a75046315638999d0379ff54ec26bdc3"
   integrity sha512-TGj6Ymk/BU0wZcW4c1eP4e96aETJmB7jhjBflMjQU06/ZHPy7qHw8JyDqZ+C84SEg0ewCHjDNZ2vgR3Kjk74BQ==
 
-pixi.js@^6.2.2, pixi.js@^6.5.8:
+pixi.js@^6.5.8:
   version "6.5.8"
   resolved "https://registry.yarnpkg.com/pixi.js/-/pixi.js-6.5.8.tgz#9c4962d9cc37f43b58b92fdc2c1ab62f1b1de12c"
   integrity sha512-TAovIMCvKiWlonyAEbStOSq2+GZliRgs+Pqlavffa/D0Rmvmb78bytWRxgonGx1qkg7G8W7eIbF55tFP4a5Krw==

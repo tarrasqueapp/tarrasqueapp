@@ -2,8 +2,7 @@ import { Box, CircularProgress } from '@mui/material';
 import type { GetServerSideProps, NextPage } from 'next';
 
 import { NextLink } from '../components/NextLink';
-import { Campaign } from '../components/dashboard/Campaign';
-import { useGetUserCampaigns } from '../hooks/data/campaigns/useGetUserCampaigns';
+import { Campaigns } from '../components/dashboard/Campaigns';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
 
@@ -29,15 +28,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const DashboardPage: NextPage = () => {
   const { data: user } = useGetUser();
-  const { data: campaigns } = useGetUserCampaigns();
 
   if (!user) return <CircularProgress disableShrink />;
 
   return (
     <Box>
-      {campaigns?.map((campaign) => (
-        <Campaign key={campaign.id} campaign={campaign} />
-      ))}
+      <Campaigns />
 
       <NextLink href="/sign-out">Sign out</NextLink>
     </Box>

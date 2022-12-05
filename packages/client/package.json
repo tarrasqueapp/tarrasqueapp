@@ -31,7 +31,6 @@
     "mobx": "^6.7.0",
     "mobx-react-lite": "^3.4.0",
     "next": "^13.0.6",
-    "pixi-graphpaper": "^2.0.1",
     "pixi-viewport": "^4.38.0",
     "pixi.js": "^6.5.8",
     "react": "^18.2.0",

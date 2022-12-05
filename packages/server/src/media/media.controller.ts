@@ -37,8 +37,8 @@ export class MediaController {
     const thumbnail = await this.tmpService.getFile(`${thumbnailName}`);
 
     // Upload the file and thumbnail to the storage
-    const url = await this.storageService.upload(`${user.id}/${data.name}.${data.extension}`, file);
-    const thumbnailUrl = await this.storageService.upload(`${user.id}/${thumbnailName}`, thumbnail);
+    const url = await this.storageService.upload(`${user.id}/${data.name}.${data.extension}`, file, data.type);
+    const thumbnailUrl = await this.storageService.upload(`${user.id}/${thumbnailName}`, thumbnail, data.type);
 
     // Create the media
     const media = await this.mediaService.createMedia(

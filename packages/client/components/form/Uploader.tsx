@@ -4,11 +4,9 @@ import Uppy, { UploadResult } from '@uppy/core';
 import Tus from '@uppy/tus';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import toast from 'react-hot-toast';
 
 import { useEffectAsync } from '../../hooks/useEffectAsync';
 import { Color } from '../../lib/colors';
-import { config } from '../../lib/config';
 import { FileInterface } from '../../lib/types';
 import { store } from '../../store';
 
@@ -27,7 +25,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   // Setup Uppy
   const uppy = useMemo(() => {
     return new Uppy({ restrictions: { allowedFileTypes, maxNumberOfFiles: 1 }, autoProceed: false })
-      .use(Tus, { chunkSize: 1e6, endpoint: '/tus/files/', headers: { host: config.HOST } })
+      .use(Tus, { chunkSize: 1e6, endpoint: '/tus/files/' })
       .on('progress', (p) => progress !== p && setProgress(p))
       .on('error', () => {
         setProgress(0);
@@ -36,31 +34,8 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
       .on('complete', async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
         if (!result.successful.length) return;
         const uppyFile = result.successful[0];
-
+        const file = await store.media.convertUppyToFile(uppyFile);
         setProgress(100);
-
-        if (!uppyFile.type) {
-          toast.error('Unknown file type');
-          return;
-        }
-
-        let file: FileInterface = {
-          name: uppyFile.uploadURL.replace('/tus/files', ''),
-          type: uppyFile.type,
-          extension: uppyFile.extension,
-          size: uppyFile.size,
-          data: uppyFile.data,
-        };
-
-        // Get the dimensions if the file is an image or a video
-        if (store.media.isImage(uppyFile)) {
-          const dimensions = await store.media.getImageDimensions(uppyFile.data);
-          file = { ...file, ...dimensions };
-        } else if (store.media.isVideo(uppyFile)) {
-          const dimensions = await store.media.getVideoDimensions(uppyFile.data);
-          file = { ...file, ...dimensions };
-        }
-
         onChange?.(file);
       });
   }, [onChange]);

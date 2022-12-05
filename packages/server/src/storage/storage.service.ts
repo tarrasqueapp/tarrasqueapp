@@ -44,15 +44,16 @@ export class StorageService implements OnModuleInit {
    * Upload a file to storage
    * @param key The key of the file
    * @param body The body of the file
+   * @param contentType The content type of the file
    * @returns The created file URL
    */
-  upload(key: string, body: Buffer): Promise<string> {
+  upload(key: string, body: Buffer, contentType: string): Promise<string> {
     switch (config.STORAGE_PROVIDER) {
       case StorageProviderEnum.LOCAL:
         return this.uploadLocal(key, body);
 
       case StorageProviderEnum.S3:
-        return this.uploadS3(key, body);
+        return this.uploadS3(key, body, contentType);
 
       default:
         throw new Error(`Storage provider ${config.STORAGE_PROVIDER} is not supported`);
@@ -91,15 +92,22 @@ export class StorageService implements OnModuleInit {
    * Upload a file to S3
    * @param key The key of the file
    * @param body The body of the file
+   * @param contentType The content type of the file
    * @returns The created file URL
    */
-  async uploadS3(key: string, body: Buffer): Promise<string> {
+  async uploadS3(key: string, body: Buffer, contentType: string): Promise<string> {
     this.logger.verbose(`📂 Uploading file "${key} to S3`);
     try {
       // Upload file to S3
       const upload = new Upload({
         client: this.s3,
-        params: { Bucket: config.STORAGE_S3_BUCKET, Key: `uploads/${key}`, Body: body, ACL: 'public-read' },
+        params: {
+          Bucket: config.STORAGE_S3_BUCKET,
+          Key: `uploads/${key}`,
+          Body: body,
+          ContentType: contentType,
+          ACL: 'public-read',
+        },
       });
 
       // Listen for upload progress

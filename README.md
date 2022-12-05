@@ -24,7 +24,7 @@ To start the Docker development server, run:
 
     tarrasque dev
 
-You can then access the development server at `http://localhost:4000`.
+You can then access the development server at `http://localhost`.
 
 ### Run production server
 
@@ -32,7 +32,7 @@ To start the Docker production server, run:
 
     tarrasque prod
 
-You can then access the production server at `http://localhost:4000`.
+You can then access the production server at `http://localhost`.
 
 ## Database
 
@@ -60,14 +60,14 @@ Delete deployments
 
     helm delete cert-manager -n cert-manager
     helm delete ingress-nginx -n ingress-nginx
-    helm delete demo -n demo
+    helm delete client -n client
 
     kubectl delete namespace cert-manager
     kubectl delete namespace ingress-nginx
-    kubectl delete namespace demo
+    kubectl delete namespace client
 
 Install helm charts:
 
     helm upgrade -i cert-manager ./helm/cert-manager -n cert-manager --create-namespace
     helm upgrade -i ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
-    helm upgrade -i demo ./helm/demo -n demo --create-namespace
+    helm upgrade -i client ./helm/client -n client --create-namespace

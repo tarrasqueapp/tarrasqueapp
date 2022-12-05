@@ -20,6 +20,7 @@ export const Toolbar: React.FC = observer(() => {
         sx={{ background: Color.Black }}
       >
         <SelectToolItem />
+
         <FogToolItem />
 
         <Tooltip title="Draw">

@@ -5,11 +5,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
 import cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
-import tus from 'tus-node-server';
 
 import { AppModule } from './app.module';
 import { config } from './config';
-import { TEMP_PATH } from './storage/tmp.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -26,9 +24,9 @@ async function bootstrap() {
   // Trust nginx proxy
   app.set('trust proxy', true);
 
-  // Add /api prefix to all routes except for /tus
+  // Add /api prefix to all routes
   const apiPath = 'api';
-  app.setGlobalPrefix(apiPath, { exclude: ['tus'] });
+  app.setGlobalPrefix(apiPath);
 
   // Validate all requests
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
@@ -43,11 +41,6 @@ async function bootstrap() {
 
   // Cookie parser
   app.use(cookieParser(config.COOKIE_SECRET));
-
-  // Setup tus
-  const server = new tus.Server({ path: '/files', relativeLocation: true });
-  server.datastore = new tus.FileStore({ directory: TEMP_PATH });
-  app.use('/tus', server.handle.bind(server));
 
   // Setup Sentry
   Sentry.init({ dsn: config.SENTRY_DSN, enabled: config.SENTRY_ENABLED });

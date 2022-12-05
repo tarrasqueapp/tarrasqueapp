@@ -20,6 +20,10 @@ export const MapContextMenu: React.FC = observer(() => {
 
   const width = 230;
 
+  /**
+   * Get the bounding rect for the anchor element
+   * @returns The bounding rect
+   */
   function getBoundingClientRect() {
     return {
       x: store.maps.contextMenuAnchorPoint.x,
@@ -34,6 +38,9 @@ export const MapContextMenu: React.FC = observer(() => {
     };
   }
 
+  /**
+   * Ping the location
+   */
   function handlePingLocation() {
     store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.maps.contextMenuAnchorPoint });
     store.maps.setContextMenuVisible(false);

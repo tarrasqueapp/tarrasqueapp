@@ -1,7 +1,5 @@
-import * as PIXI from 'pixi.js';
-import { Sprite } from 'react-pixi-fiber';
-
 import { Camera } from './Camera';
+import { MapMedia } from './MapMedia';
 
 export interface IMapProps {
   mapId: string;
@@ -14,7 +12,7 @@ export interface IMapProps {
 export const Map: React.FC<IMapProps> = ({ mapId, width, height, url, children }) => {
   return (
     <Camera mapId={mapId} width={width} height={height}>
-      <Sprite texture={PIXI.Texture.from(url)} x={0} y={0} anchor={0} />
+      <MapMedia url={url} />
       {children}
     </Camera>
   );

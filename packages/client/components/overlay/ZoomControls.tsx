@@ -11,16 +11,28 @@ import { HotkeysUtils } from '../../utils/HotkeyUtils';
 export const ZoomControls: React.FC = observer(() => {
   const { data: map } = useGetCurrentMap();
 
+  /**
+   * Handle zooming in with the mouse wheel
+   * @param event The mouse wheel event
+   */
   function handleZoomIn(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();
     store.pixi.viewport.animate({ scale: store.pixi.viewport.scaled + 0.2, time: 100 });
   }
 
+  /**
+   * Handle zooming out with the mouse wheel
+   * @param event The mouse wheel event
+   */
   function handleZoomOut(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();
     store.pixi.viewport.animate({ scale: Math.max(store.pixi.viewport.scaled - 0.2, 0), time: 100 });
   }
 
+  /**
+   * Handle zooming to fit the screen
+   * @param event The mouse wheel event
+   */
   function handleFitScreen(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();
     if (!map) return;
@@ -31,6 +43,7 @@ export const ZoomControls: React.FC = observer(() => {
     });
   }
 
+  // Register hotkeys
   useHotkeys(HotkeysUtils.ZoomIn, handleZoomIn, [handleZoomIn]);
   useHotkeys(HotkeysUtils.ZoomOut, handleZoomOut, {}, [handleZoomOut]);
   useHotkeys(HotkeysUtils.ZoomToFit, handleFitScreen, {}, [handleFitScreen]);
@@ -43,16 +56,19 @@ export const ZoomControls: React.FC = observer(() => {
             <Add />
           </ToggleButton>
         </Tooltip>
+
         <Tooltip title="Zoom Out" placement="left">
           <ToggleButton value="zoom-out" size="small" onClick={handleZoomOut}>
             <Remove />
           </ToggleButton>
         </Tooltip>
+
         <Tooltip title="Fit Screen" placement="left">
           <ToggleButton value="fit-screen" size="small" onClick={handleFitScreen}>
             <FitScreen />
           </ToggleButton>
         </Tooltip>
+
         <Tooltip title="Full Screen" placement="left">
           <ToggleButton
             value="full-screen"

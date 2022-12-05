@@ -1,6 +1,10 @@
-import React from 'react';
+import * as PIXI from 'pixi.js';
+import React, { useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 
-import { PixiGraphPaper } from './pixi/PixiGraphPaper';
+import { Color } from '../../lib/colors';
+import { HotkeysUtils } from '../../utils/HotkeyUtils';
+import { GridBase } from './GridBase';
 
 interface IGridProps {
   width: number;
@@ -8,5 +12,12 @@ interface IGridProps {
 }
 
 export const Grid: React.FC<IGridProps> = ({ width, height }) => {
-  return <PixiGraphPaper graphWidth={width} graphHeight={height} minorGridSize={70} minorStrokeWidth={1} />;
+  const [visible, setVisible] = useState(true);
+
+  // Register hotkey
+  useHotkeys(HotkeysUtils.Grid, () => setVisible((visible) => !visible), [visible]);
+
+  if (!visible) return null;
+
+  return <GridBase width={width} height={height} size={70} color={PIXI.utils.string2hex(Color.Black)} />;
 };

@@ -1,11 +1,47 @@
-import { UppyFile } from '@uppy/core';
+import { UploadedUppyFile, UppyFile } from '@uppy/core';
 import { makeAutoObservable } from 'mobx';
+import toast from 'react-hot-toast';
 
+import { config } from '../lib/config';
 import { DimensionsInterface, FileInterface } from '../lib/types';
 
 class MediaStore {
   constructor() {
     makeAutoObservable(this);
+  }
+
+  /**
+   * Convert an Uppy file to a FileInterface
+   * @param uppyFile - The Uppy file to convert
+   * @returns file
+   * @throws Error
+   */
+  async convertUppyToFile(
+    uppyFile: UploadedUppyFile<Record<string, unknown>, Record<string, unknown>>,
+  ): Promise<FileInterface | undefined> {
+    if (!uppyFile.type) {
+      toast.error('Unknown file type');
+      return;
+    }
+
+    let file: FileInterface = {
+      name: uppyFile.uploadURL.replace(`${config.HOST}/tus/files/`, ''),
+      type: uppyFile.type,
+      extension: uppyFile.extension,
+      size: uppyFile.size,
+      data: uppyFile.data,
+    };
+
+    // Get the dimensions if the file is an image or a video
+    if (this.isImage(uppyFile)) {
+      const dimensions = await this.getImageDimensions(uppyFile.data);
+      file = { ...file, ...dimensions };
+    } else if (this.isVideo(uppyFile)) {
+      const dimensions = await this.getVideoDimensions(uppyFile.data);
+      file = { ...file, ...dimensions };
+    }
+
+    return file;
   }
 
   /**

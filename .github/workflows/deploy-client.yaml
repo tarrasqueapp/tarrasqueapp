@@ -1,4 +1,4 @@
-name: Deploy demo
+name: Deploy client
 
 on:
   workflow_dispatch:
@@ -6,20 +6,20 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/deploy-demo.yaml'
-      - 'helm/demo/**'
-      - 'packages/demo/**'
+      - '.github/workflows/deploy-client.yaml'
+      - 'helm/client/**'
+      - 'packages/client/**'
 
 env:
-  CHART: demo
-  DEPLOYMENT: demo
-  NAMESPACE: demo
-  DIRECTORY: ./packages/demo
+  CHART: client
+  DEPLOYMENT: client
+  NAMESPACE: client
+  DIRECTORY: ./packages/client
   REGISTRY: registry.digitalocean.com/tarrasqueapp
   IMAGE_TAG: staging
 
 jobs:
-  deploy-demo:
+  deploy-client:
     runs-on: ubuntu-latest
 
     concurrency:
