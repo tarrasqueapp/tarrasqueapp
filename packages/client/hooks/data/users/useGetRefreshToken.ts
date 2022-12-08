@@ -22,7 +22,8 @@ export function useGetRefreshToken() {
   const queryClient = useQueryClient();
 
   // Get a new refresh token if the user is signed in
-  const refetchInterval = DateTimeUtils.toMillisecondsFromString(config.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '5m');
+  const expirationTime = DateTimeUtils.toMillisecondsFromString(config.JWT_ACCESS_TOKEN_EXPIRATION_TIME);
+  const refetchInterval = expirationTime / 2;
 
   return useQuery([`auth/refresh`], () => getRefreshToken(), {
     refetchInterval,

@@ -60,7 +60,7 @@ const Canvas: React.FC = observer(() => {
     >
       <Map mapId={map.id} width={map.media.width} height={map.media.height} url={map.media.url}>
         <Grid width={map.media.width} height={map.media.height} />
-        <Token url="/token.webp" x={70} y={70} width={70} height={70} />
+        <Token url="https://cdn.tarrasque.app/sample/token.webp" x={70} y={70} width={70} height={70} />
       </Map>
     </Stage>
   );

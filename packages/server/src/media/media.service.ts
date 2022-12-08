@@ -78,7 +78,6 @@ export class MediaService {
       throw new NotFoundException(`File "${filePath}" not found`);
     }
 
-    const ffmpegPath = config.FFMPEG_PATH || 'ffmpeg';
     const height = -1;
 
     const thumbnailPath = `${filePath}${THUMBNAIL_SUFFIX}`;
@@ -91,7 +90,7 @@ export class MediaService {
       `-vf scale=${THUMBNAIL_WIDTH}:${height}`,
       thumbnailPath,
     ];
-    const ffmpeg = spawn(ffmpegPath, args, { shell: true });
+    const ffmpeg = spawn(config.FFMPEG_PATH, args, { shell: true });
 
     return new Promise((resolve, reject) => {
       let stderr = '';

@@ -41,6 +41,7 @@
     "react-hotkeys-hook": "^4.0.4",
     "react-pixi-fiber": "^1.0.4",
     "socket.io-client": "^4.5.4",
+    "use-local-storage": "^2.3.6",
     "zod": "^3.19.1"
   },
   "devDependencies": {

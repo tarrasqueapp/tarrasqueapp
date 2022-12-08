@@ -44,14 +44,16 @@ const AccordionDetails = styled(MuiAccordionDetails)({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 });
 
-interface ICampaignBaseProps {
+export interface ICampaignBaseProps {
+  expanded?: boolean;
+  onToggle?: (expanded: boolean) => void;
   campaign?: CampaignInterface;
   maps?: MapInterface[];
 }
 
-export const CampaignBase: React.FC<ICampaignBaseProps> = ({ campaign, maps }) => {
+export const CampaignBase: React.FC<ICampaignBaseProps> = ({ expanded, onToggle, campaign, maps }) => {
   return (
-    <Accordion defaultExpanded>
+    <Accordion expanded={campaign ? expanded : true} onChange={(event, expanded) => onToggle?.(expanded)}>
       <AccordionSummary>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: '1 0 auto' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
