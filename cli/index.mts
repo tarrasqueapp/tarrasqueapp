@@ -61,7 +61,7 @@ async function main() {
       --help, -h      Displays this message
 
     For more information run a command with the --help flag
-      $ tarrasque dev --help
+      $ tarrasque docker --help
   `);
     process.exit(0);
   }
