@@ -8,7 +8,7 @@ import { MapInterface } from '../../../lib/types';
  * @param campaignId - The ID of the campaign to fetch maps for
  * @returns The campaign's maps
  */
-async function getCampaignMaps(campaignId: string) {
+async function getCampaignMaps(campaignId?: string) {
   const { data } = await api.get<MapInterface[]>(`/api/campaigns/${campaignId}/maps`);
   return data;
 }
@@ -18,7 +18,7 @@ async function getCampaignMaps(campaignId: string) {
  * @param campaignId - The id of the campaign to get maps for
  * @returns Campaign maps query
  */
-export function useGetCampaignMaps(campaignId: string) {
+export function useGetCampaignMaps(campaignId?: string) {
   return useQuery([`campaigns/${campaignId}/maps`], () => getCampaignMaps(campaignId), {
     enabled: Boolean(campaignId),
   });

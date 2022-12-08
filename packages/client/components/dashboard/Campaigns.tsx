@@ -6,9 +6,16 @@ export const Campaigns: React.FC = () => {
 
   return (
     <>
-      {campaigns?.map((campaign) => (
-        <Campaign key={campaign.id} campaign={campaign} />
-      ))}
+      {campaigns ? (
+        campaigns?.map((campaign) => <Campaign key={campaign.id} campaign={campaign} />)
+      ) : (
+        <>
+          <Campaign key={Math.random()} />
+          <Campaign key={Math.random()} />
+          <Campaign key={Math.random()} />
+          <Campaign key={Math.random()} />
+        </>
+      )}
     </>
   );
 };

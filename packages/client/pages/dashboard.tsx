@@ -1,10 +1,12 @@
 import { Box, CircularProgress } from '@mui/material';
 import type { GetServerSideProps, NextPage } from 'next';
 
-import { NextLink } from '../components/NextLink';
+import { Center } from '../components/common/Center';
 import { Campaigns } from '../components/dashboard/Campaigns';
+import { Sidebar } from '../components/dashboard/Sidebar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
+import { Gradient } from '../lib/colors';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
@@ -29,13 +31,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const DashboardPage: NextPage = () => {
   const { data: user } = useGetUser();
 
-  if (!user) return <CircularProgress disableShrink />;
+  if (!user) {
+    return (
+      <Center>
+        <CircularProgress disableShrink color="secondary" />
+      </Center>
+    );
+  }
 
   return (
-    <Box>
-      <Campaigns />
+    <Box sx={{ display: 'flex', flex: '1 0 auto', background: Gradient.Linear }}>
+      <Sidebar />
 
-      <NextLink href="/sign-out">Sign out</NextLink>
+      <Box component="main" sx={{ width: 'calc(100% - 240px)', p: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Campaigns />
+        </Box>
+      </Box>
     </Box>
   );
 };

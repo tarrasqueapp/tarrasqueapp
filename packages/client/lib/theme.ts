@@ -6,12 +6,9 @@ export const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: { main: Color.Brown },
-    secondary: { main: Color.Gold },
-    error: { main: Color.Red },
-    warning: { main: Color.Yellow },
+    secondary: { main: Color.BlueDark },
     info: { main: Color.White },
-    success: { main: Color.Green },
-    background: { default: Color.Black, paper: Color.Black },
+    background: { default: Color.BlackLight, paper: Color.BrownVeryDark },
   },
   typography: {
     fontFamily: `"Raleway", sans-serif`,
@@ -21,13 +18,54 @@ export const theme = createTheme({
     h4: { fontSize: 16 },
   },
   components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px',
+        },
+      },
+    },
     MuiTooltip: {
       defaultProps: {
         followCursor: true,
       },
       styleOverrides: {
         tooltip: {
-          backgroundColor: Color.Black,
+          backgroundColor: Color.BrownDark,
+          fontWeight: 'bold',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          background: Color.BrownVeryDark,
+          boxShadow: 'none',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '20px !important',
+          padding: '8px 20px',
+          fontWeight: 'bold',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px 10px 0 0 !important',
+        },
+      },
+    },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          transform: 'scale(1)',
         },
       },
     },
