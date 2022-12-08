@@ -22,9 +22,6 @@ export default class MyDocument extends Document<IProps> {
           <meta name="description" content="Tarrasque App" />
           <meta name="keywords" content="Tarrasque App" />
 
-          {/* Favicon */}
-          <link rel="icon" type="image/png" sizes="196x196" href="/images/icons/favicon-196.png" />
-
           {/* Android */}
           <meta name="theme-color" content={Color.Brown} />
           <meta name="mobile-web-app-capable" content="yes" />
@@ -51,8 +48,11 @@ export default class MyDocument extends Document<IProps> {
           <meta property="twitter:description" content="Tarrasque App" />
           <meta property="twitter:image" content={`${config.HOST}/images/og.jpg`} />
 
-          {/* PWA */}
+          {/* Favicon */}
+          <link rel="icon" type="image/png" sizes="196x196" href="/images/icons/favicon-196.png" />
           <link rel="apple-touch-icon" href="/images/icons/apple-icon-180.png" />
+
+          {/* Splash */}
           <link
             rel="apple-touch-startup-image"
             href="/images/icons/apple-splash-2048-2732.jpg"
