@@ -12,11 +12,12 @@ import { CreateUser } from './CreateUser';
 import { SignIn } from './SignIn';
 
 export const Setup: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [isResetting, setIsResetting] = useState(false);
   const { data, error, isLoading, refetch } = useGetSetup();
   const { data: refreshTokenData, isLoading: isLoadingRefreshToken } = useGetRefreshToken();
   const resetSetup = useResetSetup();
+
+  const [activeStep, setActiveStep] = useState(0);
+  const [isResetting, setIsResetting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {

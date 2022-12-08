@@ -17,7 +17,7 @@ export const Toolbar: React.FC = observer(() => {
         value={store.toolbar.tool}
         onChange={(event, newTool) => newTool && store.toolbar.setTool(newTool)}
         orientation="vertical"
-        sx={{ background: Color.Black }}
+        sx={{ background: Color.BlackLight }}
       >
         <SelectToolItem />
 

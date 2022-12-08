@@ -66,7 +66,7 @@ export const FogToolItem: React.FC = observer(() => {
         <Popper {...bindPopper(popupState)} placement="right" transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <ToggleButtonGroup size="small" sx={{ background: Color.Black, ml: 0.5 }}>
+              <ToggleButtonGroup size="small" sx={{ background: Color.BlackLight, ml: 0.5 }}>
                 <HideFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Hide} />
                 <ShowFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Show} />
               </ToggleButtonGroup>

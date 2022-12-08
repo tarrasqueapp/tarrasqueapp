@@ -3,6 +3,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { Center } from '../components/common/Center';
 import { SignIn } from '../components/setup/SignIn';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser } from '../hooks/data/users/useGetUser';
@@ -30,17 +31,19 @@ const SignInPage: NextPage = () => {
   const router = useRouter();
 
   return (
-    <Container maxWidth="xs">
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Box sx={{ textAlign: 'center', mb: 2 }}>
-          <img src="/images/logo.svg" alt="Logo" width="150" />
-        </Box>
+    <Center>
+      <Container maxWidth="xs">
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <img src="/images/logo.svg" alt="Logo" width="150" />
+          </Box>
 
-        <Paper sx={{ p: 2, width: '100%' }}>
-          <SignIn onSuccess={() => router.push('/dashboard')} />
-        </Paper>
-      </Box>
-    </Container>
+          <Paper sx={{ p: 2, width: '100%' }}>
+            <SignIn onSuccess={() => router.push('/dashboard')} />
+          </Paper>
+        </Box>
+      </Container>
+    </Center>
   );
 };
 

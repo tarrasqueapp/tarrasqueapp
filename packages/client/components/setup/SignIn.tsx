@@ -54,7 +54,7 @@ export const SignIn: React.FC<ISignInProps> = ({ onSuccess }) => {
         </Box>
 
         <Box sx={{ textAlign: 'center' }}>
-          <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ m: 1 }}>
+          <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mt: 2, mb: 1 }}>
             Sign in
           </LoadingButton>
         </Box>

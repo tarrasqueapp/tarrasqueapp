@@ -20,6 +20,7 @@ export const ControlledTextField: React.FC<IProps> = ({ name, ...props }) => {
         <TextField
           {...props}
           {...field}
+          variant="filled"
           error={!!errors[name]}
           helperText={errors[name] ? <>{errors[name]?.message}</> : ''}
         />

@@ -50,7 +50,7 @@ export const ZoomControls: React.FC = observer(() => {
 
   return (
     <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
-      <ToggleButtonGroup orientation="vertical" sx={{ background: Color.Black }}>
+      <ToggleButtonGroup orientation="vertical" sx={{ background: Color.BlackLight }}>
         <Tooltip title="Zoom In" placement="left">
           <ToggleButton value="zoom-in" size="small" onClick={handleZoomIn}>
             <Add />

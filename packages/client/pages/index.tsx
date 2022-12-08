@@ -1,7 +1,9 @@
-import { Box, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+
+import { Center } from '../components/common/Center';
 
 const IndexPage: NextPage = () => {
   const router = useRouter();
@@ -11,9 +13,9 @@ const IndexPage: NextPage = () => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', flex: '1 0 auto', alignItems: 'center', justifyContent: 'center' }}>
-      <CircularProgress disableShrink />
-    </Box>
+    <Center>
+      <CircularProgress disableShrink color="secondary" />
+    </Center>
   );
 };
 

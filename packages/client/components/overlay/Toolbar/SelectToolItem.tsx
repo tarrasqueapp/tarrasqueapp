@@ -66,7 +66,7 @@ export const SelectToolItem: React.FC = observer(() => {
         <Popper {...bindPopper(popupState)} placement="right" transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <ToggleButtonGroup size="small" sx={{ background: Color.Black, ml: 0.5 }}>
+              <ToggleButtonGroup size="small" sx={{ background: Color.BlackLight, ml: 0.5 }}>
                 <SingleSelectTool
                   selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
                 />

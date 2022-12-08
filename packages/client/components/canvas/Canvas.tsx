@@ -14,6 +14,7 @@ import { Token } from './Token';
 
 const Canvas: React.FC = observer(() => {
   const { data: map } = useGetCurrentMap();
+
   const windowSize = useWindowSize();
 
   // Establish a new Socket.io connection
