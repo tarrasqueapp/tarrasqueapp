@@ -1,10 +1,11 @@
 import { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import { Layout } from '../components/Layout';
 import createEmotionCache from '../lib/createEmotionCache';
@@ -21,13 +22,6 @@ const queryClient = new QueryClient({
       retry: false,
     },
   },
-  queryCache: new QueryCache({
-    onError: (error, query) => {
-      if (query.state.data !== undefined && error instanceof Error) {
-        toast.error(`Something went wrong: ${error.message}`);
-      }
-    },
-  }),
 });
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -52,6 +46,7 @@ const MyApp: React.FC<IProps> = ({ Component, pageProps, emotionCache = clientSi
             <Component {...pageProps} />
             <Toaster />
           </Layout>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>

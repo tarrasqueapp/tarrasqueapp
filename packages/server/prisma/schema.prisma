@@ -18,7 +18,7 @@ model User {
   email                         String               @unique
   password                      String
   roles                         Role[]               @default([USER])
-  refreshToken                  String?
+  refreshTokens                 RefreshToken[]       @relation("UserRefreshTokens")
   // DateTime
   createdAt                     DateTime             @default(now())
   updatedAt                     DateTime             @default(now()) @updatedAt
@@ -37,6 +37,17 @@ model User {
   // Non Player Characters
   createdNonPlayerCharacters    NonPlayerCharacter[] @relation("CreatedNonPlayerCharacters")
   controlledNonPlayerCharacters NonPlayerCharacter[] @relation("ControlledNonPlayerCharacters")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  value     String   @unique
+  // DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  // User
+  user      User     @relation("UserRefreshTokens", fields: [userId], references: [id])
+  userId    String
 }
 
 model Campaign {

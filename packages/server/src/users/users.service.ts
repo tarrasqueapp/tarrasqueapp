@@ -1,4 +1,11 @@
-import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
@@ -10,7 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
 import { UserEntity } from './entities/user.entity';
 
-export const USER_SAFE_FIELDS = excludeFields(Prisma.UserScalarFieldEnum, ['password', 'refreshToken']);
+export const USER_SAFE_FIELDS = excludeFields(Prisma.UserScalarFieldEnum, ['password']);
 
 @Injectable()
 export class UsersService {
@@ -19,7 +26,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * Get all users (without their password or refresh token)
+   * Get all users (without their password)
    * @returns Users
    */
   async getUsers(): Promise<UserEntity[]> {
@@ -53,7 +60,7 @@ export class UsersService {
   }
 
   /**
-   * Get a user that matches the given id (without their password or refresh token)
+   * Get a user that matches the given id (without their password)
    * @param userId The user's id
    * @returns User
    */
@@ -74,7 +81,7 @@ export class UsersService {
   }
 
   /**
-   * Get a user that matches the given id (without their password or refresh token)
+   * Get a user that matches the given id (without their password)
    * @param userId The user's id
    * @returns User
    */
@@ -82,7 +89,10 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+        include: { refreshTokens: true },
+      });
       this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
     } catch (error) {
@@ -100,7 +110,10 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user with email "${email}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUniqueOrThrow({ where: { email } });
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { email },
+        include: { refreshTokens: true },
+      });
       this.logger.debug(`✅️ Found user "${user.id}" with email "${email}"`);
       return user;
     } catch (error) {
@@ -193,22 +206,19 @@ export class UsersService {
   }
 
   /**
-   * Set the refresh token for a user
+   * Create a new refresh token for a user
    * @param userId The user's id
-   * @param refreshToken The refresh token
+   * @param value The refresh token's value
+   * @returns The created refresh token
    */
-  async setRefreshToken(userId: string, refreshToken: string): Promise<void> {
-    this.logger.verbose(`📂 Setting refresh token for user "${userId}"`);
-    // Hash the refresh token
-    const hashedRefreshToken = await argon2.hash(refreshToken);
+  async createRefreshToken(userId: string, value: string): Promise<void> {
+    this.logger.verbose(`📂 Creating refresh token for user "${userId}"`);
     try {
-      // Update the user
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: { refreshToken: hashedRefreshToken },
-        select: USER_SAFE_FIELDS,
+      // Create the refresh token
+      await this.prisma.refreshToken.create({
+        data: { value, user: { connect: { id: userId } } },
       });
-      this.logger.debug(`✅️ Set refresh token for user "${userId}"`);
+      this.logger.debug(`✅️ Created refresh token for user "${userId}"`);
     } catch (error) {
       this.logger.error(`🚨 User "${userId}" not found`);
       throw new NotFoundException(error.message);
@@ -216,23 +226,39 @@ export class UsersService {
   }
 
   /**
+   * Set the refresh token for a user
+   * @param refreshToken The refresh token's value
+   * @param newValue The new refresh token's value
+   */
+  async updateRefreshToken(refreshToken: string, newValue: string): Promise<void> {
+    this.logger.verbose(`📂 Updating refresh token "${refreshToken}"`);
+    // Hash the refresh token
+    try {
+      // Update the refresh token
+      await this.prisma.refreshToken.update({
+        where: { value: refreshToken },
+        data: { value: newValue },
+      });
+      this.logger.debug(`✅️ Updated refresh token "${refreshToken}"`);
+    } catch (error) {
+      this.logger.error(`🚨 Refresh token "${refreshToken}" not found`);
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
    * Remove the refresh token from a user
-   * @param userId The user's id
+   * @param refreshToken The refresh token
    * @returns The user
    */
-  async removeRefreshToken(userId: string): Promise<UserEntity> {
-    this.logger.verbose(`📂 Removing refresh token for user "${userId}"`);
+  async removeRefreshToken(refreshToken: string): Promise<void> {
+    this.logger.verbose(`📂 Removing refresh token "${refreshToken}"`);
     try {
-      // Update the user
-      const user = await this.prisma.user.update({
-        where: { id: userId },
-        data: { refreshToken: null },
-        select: USER_SAFE_FIELDS,
-      });
-      this.logger.debug(`✅️ Removed refresh token for user "${userId}"`);
-      return user;
+      // Delete the refresh token
+      await this.prisma.refreshToken.delete({ where: { value: refreshToken } });
+      this.logger.debug(`✅️ Removed refresh token "${refreshToken}"`);
     } catch (error) {
-      this.logger.error(`🚨 User "${userId}" not found`);
+      this.logger.error(`🚨 Refresh token "${refreshToken}" not found`);
       throw new NotFoundException(error.message);
     }
   }
@@ -243,14 +269,16 @@ export class UsersService {
    * @param refreshToken The refresh token
    * @returns The user
    */
-  async getUserIfRefreshTokenMatches(userId: string, refreshToken: string) {
+  async getUserIfRefreshTokenMatches(userId: string, refreshToken: string): Promise<UserEntity> {
     // Get the user
     const userWithExcludedFields = await this.getUserByIdWithExcludedFields(userId);
-    // Check if the refresh token matches
-    const refreshTokenMatches = await argon2.verify(userWithExcludedFields.refreshToken, refreshToken);
-    // Return the user if the refresh token matches
-    if (refreshTokenMatches) {
-      return await this.getUserById(userId);
+    // Check if the refresh token exists for the user
+    const foundRefreshToken = userWithExcludedFields.refreshTokens.find((token) => token.value === refreshToken);
+    // Throw an error if the refresh token doesn't exist
+    if (!foundRefreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
     }
+    // Return the user
+    return await this.getUserById(userId);
   }
 }

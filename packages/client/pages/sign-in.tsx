@@ -1,12 +1,13 @@
 import { Box, Container, Paper } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { Center } from '../components/common/Center';
 import { SignIn } from '../components/setup/SignIn';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser } from '../hooks/data/users/useGetUser';
+import { useProtectedRoute } from '../hooks/useProtectedRoute';
+import { Role } from '../lib/types';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
@@ -28,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const SignInPage: NextPage = () => {
-  const router = useRouter();
+  useProtectedRoute(Role.GUEST);
 
   return (
     <Center>
@@ -39,7 +40,7 @@ const SignInPage: NextPage = () => {
           </Box>
 
           <Paper sx={{ p: 2, width: '100%' }}>
-            <SignIn onSuccess={() => router.push('/dashboard')} />
+            <SignIn />
           </Paper>
         </Box>
       </Container>

@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { PrismaService } from 'nestjs-prisma';
 
-import { AuthService } from '../auth/auth.service';
 import { config } from '../config';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
@@ -20,7 +19,6 @@ export class SetupController {
     private prisma: PrismaService,
     private readonly setupService: SetupService,
     private readonly usersService: UsersService,
-    private readonly authService: AuthService,
   ) {}
 
   /**
@@ -38,11 +36,13 @@ export class SetupController {
   @Post('reset')
   @UseGuards(SetupGuard)
   @ApiOkResponse({ type: SetupDto })
-  async reset(@Res({ passthrough: true }) res: Response): Promise<SetupDto> {
+  async reset(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<SetupDto> {
     const setup = await this.setupService.getSetup();
     if (setup.user) {
+      // Get current refresh token
+      const refreshToken = req.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
       // Delete refresh token
-      await this.usersService.removeRefreshToken(setup.user.id);
+      await this.usersService.removeRefreshToken(refreshToken);
       // Set cookies
       res.clearCookie(config.JWT_ACCESS_TOKEN_NAME);
       res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);

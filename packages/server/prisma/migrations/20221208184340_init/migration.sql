@@ -7,12 +7,22 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "roles" "Role"[],
-    "refreshToken" TEXT,
+    "roles" "Role"[] DEFAULT ARRAY['USER']::"Role"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "RefreshToken" (
+    "id" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "RefreshToken_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -60,7 +70,7 @@ CREATE TABLE "HitPoints" (
     "current" INTEGER NOT NULL DEFAULT 10,
     "maximum" INTEGER NOT NULL DEFAULT 10,
     "temporary" INTEGER NOT NULL DEFAULT 0,
-    "formula" TEXT NOT NULL DEFAULT E'1d10',
+    "formula" TEXT NOT NULL DEFAULT '1d10',
     "playerCharacterId" TEXT,
     "nonPlayerCharacterId" TEXT,
 
@@ -71,7 +81,7 @@ CREATE TABLE "HitPoints" (
 CREATE TABLE "ArmorClass" (
     "id" TEXT NOT NULL,
     "value" INTEGER NOT NULL DEFAULT 10,
-    "description" TEXT NOT NULL DEFAULT E'',
+    "description" TEXT NOT NULL DEFAULT '',
     "playerCharacterId" TEXT,
     "nonPlayerCharacterId" TEXT,
 
@@ -135,8 +145,8 @@ CREATE TABLE "Currencies" (
 CREATE TABLE "PlayerCharacter" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "size" TEXT NOT NULL DEFAULT E'Medium',
-    "alignment" TEXT NOT NULL DEFAULT E'Neutral',
+    "size" TEXT NOT NULL DEFAULT 'Medium',
+    "alignment" TEXT NOT NULL DEFAULT 'Neutral',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "mediaId" TEXT,
@@ -150,8 +160,8 @@ CREATE TABLE "PlayerCharacter" (
 CREATE TABLE "NonPlayerCharacter" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "size" TEXT NOT NULL DEFAULT E'Medium',
-    "alignment" TEXT NOT NULL DEFAULT E'Neutral',
+    "size" TEXT NOT NULL DEFAULT 'Medium',
+    "alignment" TEXT NOT NULL DEFAULT 'Neutral',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "mediaId" TEXT,
@@ -227,6 +237,9 @@ CREATE TABLE "_ControlledNonPlayerCharacters" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "RefreshToken_value_key" ON "RefreshToken"("value");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Movement_playerCharacterId_key" ON "Movement"("playerCharacterId");
 
 -- CreateIndex
@@ -272,16 +285,19 @@ CREATE UNIQUE INDEX "_ControlledNonPlayerCharacters_AB_unique" ON "_ControlledNo
 CREATE INDEX "_ControlledNonPlayerCharacters_B_index" ON "_ControlledNonPlayerCharacters"("B");
 
 -- AddForeignKey
+ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Map" ADD CONSTRAINT "Map_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Map" ADD CONSTRAINT "Map_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Map" ADD CONSTRAINT "Map_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Map" ADD CONSTRAINT "Map_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Map" ADD CONSTRAINT "Map_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Movement" ADD CONSTRAINT "Movement_playerCharacterId_fkey" FOREIGN KEY ("playerCharacterId") REFERENCES "PlayerCharacter"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -326,22 +342,22 @@ ALTER TABLE "Skill" ADD CONSTRAINT "Skill_nonPlayerCharacterId_fkey" FOREIGN KEY
 ALTER TABLE "Currencies" ADD CONSTRAINT "Currencies_playerCharacterId_fkey" FOREIGN KEY ("playerCharacterId") REFERENCES "PlayerCharacter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "NonPlayerCharacter" ADD CONSTRAINT "NonPlayerCharacter_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "NonPlayerCharacter" ADD CONSTRAINT "NonPlayerCharacter_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "NonPlayerCharacter" ADD CONSTRAINT "NonPlayerCharacter_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "NonPlayerCharacter" ADD CONSTRAINT "NonPlayerCharacter_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Media" ADD CONSTRAINT "Media_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

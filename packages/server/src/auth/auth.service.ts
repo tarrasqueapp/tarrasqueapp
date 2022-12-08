@@ -5,7 +5,7 @@ import * as argon2 from 'argon2';
 import { config } from '../config';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import { TokenPayload } from './tokenPayload.interface';
+import { TokenPayload } from './token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -55,7 +55,7 @@ export class AuthService {
    * @param userId The user's ID
    * @returns The JWT access token
    */
-  generateAccessToken(userId: string) {
+  generateAccessToken(userId: string): string {
     this.logger.verbose(`📂 Generating access token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
@@ -71,7 +71,7 @@ export class AuthService {
    * @param userId The user's ID
    * @returns The JWT refresh token
    */
-  generateRefreshToken(userId: string) {
+  generateRefreshToken(userId: string): string {
     this.logger.verbose(`📂 Generating refresh token`);
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
@@ -84,11 +84,11 @@ export class AuthService {
 
   /**
    * Get the user from the JWT access token
-   * @param token The JWT access token
+   * @param accessToken The JWT access token
    * @returns The user
    */
-  getUserFromToken(token: string) {
-    const payload: TokenPayload = this.jwtService.verify(token, { secret: config.JWT_ACCESS_TOKEN_SECRET });
+  getUserFromAccessToken(accessToken: string): Promise<UserEntity> {
+    const payload: TokenPayload = this.jwtService.verify(accessToken, { secret: config.JWT_ACCESS_TOKEN_SECRET });
     if (payload.userId) {
       return this.usersService.getUserById(payload.userId);
     }

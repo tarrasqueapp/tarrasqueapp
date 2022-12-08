@@ -8,6 +8,7 @@ import { useSignOut } from '../hooks/data/users/useSignOut';
 
 const SignOutPage: NextPage = () => {
   const signOut = useSignOut();
+
   const router = useRouter();
 
   useEffect(() => {

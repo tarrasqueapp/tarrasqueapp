@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Role, User } from '@prisma/client';
 import { IsDateString, IsEmail, IsEnum, IsString } from 'class-validator';
 
-export class UserEntity implements Omit<User, 'password' | 'refreshToken'> {
+export class UserEntity implements Omit<User, 'password'> {
   @IsString()
   id: string;
   @IsString()

@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Role, User } from '@prisma/client';
-import { IsDateString, IsEmail, IsEnum, IsJWT, IsString } from 'class-validator';
+import { IsDateString, IsEmail, IsEnum, IsString, ValidateNested } from 'class-validator';
+
+import { RefreshTokenEntity } from './refresh-token-entity';
 
 export class UserWithExcludedFieldsEntity implements User {
   @IsString()
@@ -18,8 +20,8 @@ export class UserWithExcludedFieldsEntity implements User {
   @ApiProperty({ enum: Role, isArray: true })
   roles: Role[];
 
-  @IsJWT()
-  refreshToken: string;
+  @ValidateNested({ each: true })
+  refreshTokens: RefreshTokenEntity[];
 
   // DateTime
   @IsDateString()

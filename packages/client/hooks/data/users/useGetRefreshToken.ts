@@ -16,20 +16,24 @@ async function getRefreshToken() {
 
 /**
  * Get the updated refresh token
- * @returns Setup query
+ * @returns Refresh token query
  */
 export function useGetRefreshToken() {
   const queryClient = useQueryClient();
 
+  const refetchEnabled = Boolean(queryClient.getQueryData([`auth`]));
   // Get a new refresh token if the user is signed in
   const expirationTime = DateTimeUtils.toMillisecondsFromString(config.JWT_ACCESS_TOKEN_EXPIRATION_TIME);
   const refetchInterval = expirationTime / 2;
 
   return useQuery([`auth/refresh`], () => getRefreshToken(), {
-    refetchInterval,
-    refetchIntervalInBackground: true,
-    onSuccess: () => {
-      queryClient.invalidateQueries([`auth`]);
+    refetchInterval: refetchEnabled ? refetchInterval : false,
+    refetchIntervalInBackground: refetchEnabled,
+    onSuccess: (data) => {
+      queryClient.setQueryData([`auth`], data);
+    },
+    onError: () => {
+      queryClient.setQueryData([`auth`], null);
     },
   });
 }

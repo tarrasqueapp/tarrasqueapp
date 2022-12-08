@@ -7,7 +7,9 @@ import { Footer } from '../components/dashboard/Footer';
 import { Sidebar } from '../components/dashboard/Sidebar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
+import { useProtectedRoute } from '../hooks/useProtectedRoute';
 import { Gradient } from '../lib/colors';
+import { Role } from '../lib/types';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
@@ -31,6 +33,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const DashboardPage: NextPage = () => {
   const { data: user } = useGetUser();
+
+  useProtectedRoute(Role.USER);
 
   if (!user) {
     return (

@@ -9,11 +9,7 @@ import { z } from 'zod';
 import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { ControlledTextField } from '../form/ControlledTextField';
 
-interface ISignInProps {
-  onSuccess?: () => void;
-}
-
-export const SignIn: React.FC<ISignInProps> = ({ onSuccess }) => {
+export const SignIn: React.FC = () => {
   const signIn = useSignIn();
 
   // Setup form validation schema
@@ -36,8 +32,7 @@ export const SignIn: React.FC<ISignInProps> = ({ onSuccess }) => {
    */
   async function handleSubmitForm(values: Schema) {
     try {
-      await signIn.mutateAsync(values);
-      onSuccess?.();
+      signIn.mutate(values);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);

@@ -7,6 +7,7 @@ export interface SetupInterface {
 }
 
 export enum Role {
+  GUEST = 'GUEST',
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
