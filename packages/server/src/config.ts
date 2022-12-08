@@ -1,4 +1,5 @@
 export const config = {
+  VERSION: process.env.VERSION || '',
   HOST: process.env.HOST || '',
   NODE_ENV: process.env.NODE_ENV || '',
   VERBOSE: process.env.VERBOSE === 'true',

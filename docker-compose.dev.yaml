@@ -7,8 +7,8 @@ services:
 
   client:
     build:
-      context: ./packages/client
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: ./packages/client/docker/Dockerfile.dev
     volumes:
       - ./packages/client:/app
       - /app/.next
@@ -20,8 +20,8 @@ services:
 
   server:
     build:
-      context: ./packages/server
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: ./packages/server/docker/Dockerfile.dev
     volumes:
       - ./packages/server:/app
       - /app/dist

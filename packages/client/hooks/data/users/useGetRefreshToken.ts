@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { config } from '../../../lib/config';
@@ -19,11 +19,16 @@ async function getRefreshToken() {
  * @returns Setup query
  */
 export function useGetRefreshToken() {
+  const queryClient = useQueryClient();
+
   // Get a new refresh token if the user is signed in
   const refetchInterval = DateTimeUtils.toMillisecondsFromString(config.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '5m');
 
   return useQuery([`auth/refresh`], () => getRefreshToken(), {
     refetchInterval,
     refetchIntervalInBackground: true,
+    onSuccess: () => {
+      queryClient.invalidateQueries([`auth`]);
+    },
   });
 }

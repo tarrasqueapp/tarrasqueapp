@@ -1,14 +1,14 @@
 FROM node:18-alpine AS builder
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat jq
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY packages/client/package.json packages/client/yarn.lock ./
 
 RUN yarn install --pure-lockfile
 
-COPY . .
+COPY packages/client ./
 
 ARG HOST
 ARG NODE_ENV
@@ -16,7 +16,10 @@ ARG JWT_ACCESS_TOKEN_EXPIRATION_TIME
 ARG SENTRY_ENABLED
 ARG SENTRY_DSN
 
-RUN yarn build
+COPY package.json /root/
+RUN jq -r .version /root/package.json > /root/.version
+
+RUN export VERSION=$(cat /root/.version) && yarn build
 
 
 FROM node:18-alpine AS runner

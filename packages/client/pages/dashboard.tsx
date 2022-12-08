@@ -3,6 +3,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 
 import { Center } from '../components/common/Center';
 import { Campaigns } from '../components/dashboard/Campaigns';
+import { Footer } from '../components/dashboard/Footer';
 import { Sidebar } from '../components/dashboard/Sidebar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
@@ -43,10 +44,15 @@ const DashboardPage: NextPage = () => {
     <Box sx={{ display: 'flex', flex: '1 0 auto', background: Gradient.Linear }}>
       <Sidebar />
 
-      <Box component="main" sx={{ width: 'calc(100% - 240px)', p: 3 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box
+        component="main"
+        sx={{ width: 'calc(100% - 240px)', display: 'flex', flexDirection: 'column', flex: '1 0 auto', p: 3 }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 0 auto' }}>
           <Campaigns />
         </Box>
+
+        <Footer />
       </Box>
     </Box>
   );

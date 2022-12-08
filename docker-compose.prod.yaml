@@ -7,8 +7,8 @@ services:
 
   client:
     build:
-      context: ./packages/client
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: ./packages/client/docker/Dockerfile.prod
 
   ################
   ### Back-end ###
@@ -16,5 +16,5 @@ services:
 
   server:
     build:
-      context: ./packages/server
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: ./packages/server/docker/Dockerfile.prod

@@ -1,4 +1,5 @@
 export const config = {
+  VERSION: process.env.VERSION || '',
   HOST: process.env.HOST || '',
   NODE_ENV: process.env.NODE_ENV || '',
   JWT_ACCESS_TOKEN_EXPIRATION_TIME: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '',

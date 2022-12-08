@@ -49,7 +49,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Tarrasque API')
     .setDescription('Mobile-friendly & open-source virtual tabletop for Dungeons & Dragons')
-    .setVersion('1.0')
+    .setVersion(config.VERSION)
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
