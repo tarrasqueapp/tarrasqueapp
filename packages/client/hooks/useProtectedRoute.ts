@@ -5,7 +5,7 @@ import { Role } from '../lib/types';
 import { useGetRefreshToken } from './data/users/useGetRefreshToken';
 
 export function useProtectedRoute(role: Role) {
-  const { data: user, error } = useGetRefreshToken();
+  const { data: user, error, isLoading } = useGetRefreshToken();
 
   const router = useRouter();
 
@@ -21,7 +21,7 @@ export function useProtectedRoute(role: Role) {
       }
 
       // Redirect to sign in page if the user is not signed in and the page is not public
-      if (!user && role !== Role.GUEST) {
+      if (!user && !isLoading && role !== Role.GUEST) {
         router.push('/sign-in');
         return;
       }
