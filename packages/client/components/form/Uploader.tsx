@@ -106,7 +106,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
 
   /**
    * Remove the file from the uploader and reset the Uppy instance
-   * @param event The event that triggered the delete
+   * @param event - The event that triggered the delete
    */
   function handleDelete(event: React.MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();

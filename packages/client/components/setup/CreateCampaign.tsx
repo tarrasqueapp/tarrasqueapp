@@ -35,7 +35,7 @@ export const CreateCampaign: React.FC<IProps> = ({ onSubmit, onReset, isResettin
 
   /**
    * Handle the form submission
-   * @param values
+   * @param values - The campaign values
    */
   async function handleSubmitForm(values: Schema) {
     await createCampaign.mutateAsync(values);

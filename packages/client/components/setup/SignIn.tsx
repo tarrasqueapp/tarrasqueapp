@@ -28,7 +28,7 @@ export const SignIn: React.FC = () => {
 
   /**
    * Handle the form submission
-   * @param values
+   * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
     try {

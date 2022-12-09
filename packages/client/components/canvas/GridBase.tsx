@@ -11,7 +11,7 @@ interface IGridBaseProps {
 export const GridBase = CustomPIXIComponent<PIXI.Graphics, IGridBaseProps>(
   {
     customDisplayObject: () => new PIXI.Graphics(),
-    customApplyProps: function (instance, oldProps, newProps) {
+    customApplyProps: (instance, oldProps, newProps) => {
       const { width, height, size, color } = newProps;
 
       // Clear the grid

@@ -42,9 +42,9 @@ export class StorageService implements OnModuleInit {
 
   /**
    * Upload a file to storage
-   * @param key The key of the file
-   * @param body The body of the file
-   * @param contentType The content type of the file
+   * @param key - The key of the file
+   * @param body - The body of the file
+   * @param contentType - The content type of the file
    * @returns The created file URL
    */
   upload(key: string, body: Buffer, contentType: string): Promise<string> {
@@ -62,8 +62,8 @@ export class StorageService implements OnModuleInit {
 
   /**
    * Upload a file to local storage
-   * @param key The key of the file
-   * @param body The body of the file
+   * @param key - The key of the file
+   * @param body - The body of the file
    * @returns The created file URL
    */
   async uploadLocal(key: string, body: Buffer): Promise<string> {
@@ -90,9 +90,9 @@ export class StorageService implements OnModuleInit {
 
   /**
    * Upload a file to S3
-   * @param key The key of the file
-   * @param body The body of the file
-   * @param contentType The content type of the file
+   * @param key - The key of the file
+   * @param body - The body of the file
+   * @param contentType - The content type of the file
    * @returns The created file URL
    */
   async uploadS3(key: string, body: Buffer, contentType: string): Promise<string> {
@@ -129,7 +129,7 @@ export class StorageService implements OnModuleInit {
 
   /**
    * Delete a file from storage
-   * @param key The key of the file
+   * @param key - The key of the file
    */
   delete(key: string): Promise<void> {
     switch (config.STORAGE_PROVIDER) {
@@ -146,7 +146,7 @@ export class StorageService implements OnModuleInit {
 
   /**
    * Delete a file from local storage
-   * @param key The key of the file
+   * @param key - The key of the file
    */
   async deleteLocal(key: string): Promise<void> {
     this.logger.verbose(`📂 Deleting file "${key} from local storage`);
@@ -170,7 +170,7 @@ export class StorageService implements OnModuleInit {
 
   /**
    * Delete a file from S3
-   * @param key The key of the file
+   * @param key - The key of the file
    */
   async deleteS3(key: string): Promise<void> {
     this.logger.verbose(`📂 Deleting file "${key} from S3`);

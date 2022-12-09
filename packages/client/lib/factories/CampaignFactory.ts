@@ -5,7 +5,7 @@ export class CampaignFactory implements Partial<CampaignInterface> {
 
   /**
    * Generate new campaign
-   * @param campaign
+   * @param campaign - The campaign to generate
    */
   constructor(campaign?: Partial<CampaignInterface>) {
     Object.assign(this, campaign);

@@ -44,7 +44,7 @@ export class TmpService implements OnModuleInit {
 
   /**
    * Get file from temp path
-   * @param fileName The name of the file
+   * @param fileName - The name of the file
    * @returns The file body
    */
   async getFile(fileName: string): Promise<Buffer> {
@@ -65,7 +65,7 @@ export class TmpService implements OnModuleInit {
 
   /**
    * Delete file from temp path
-   * @param fileName The name of the file
+   * @param fileName - The name of the file
    */
   async deleteFile(fileName: string): Promise<void> {
     this.logger.verbose(`📂 Deleting file "${fileName}" from temp path`);

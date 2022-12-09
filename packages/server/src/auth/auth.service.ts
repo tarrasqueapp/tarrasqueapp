@@ -15,8 +15,8 @@ export class AuthService {
 
   /**
    * Log in user and return the user with the hashed password.
-   * @param email The user's email
-   * @param password The user's password
+   * @param email - The user's email
+   * @param password - The user's password
    * @returns The user with the hashed password and the hashed refresh token
    */
   async signIn(email: string, password: string): Promise<UserEntity> {
@@ -32,8 +32,8 @@ export class AuthService {
 
   /**
    * Verify the password against the hashed password
-   * @param hashedPassword The hashed password
-   * @param password The password
+   * @param hashedPassword - The hashed password
+   * @param password - The password
    */
   async verifyPassword(hashedPassword: string, password: string): Promise<void> {
     this.logger.verbose(`📂 Verifying password`);
@@ -52,7 +52,7 @@ export class AuthService {
 
   /**
    * Sign a JWT access token for the user
-   * @param userId The user's ID
+   * @param userId - The user's ID
    * @returns The JWT access token
    */
   generateAccessToken(userId: string): string {
@@ -68,7 +68,7 @@ export class AuthService {
 
   /**
    * Sign a JWT refresh token for the user
-   * @param userId The user's ID
+   * @param userId - The user's ID
    * @returns The JWT refresh token
    */
   generateRefreshToken(userId: string): string {
@@ -84,7 +84,7 @@ export class AuthService {
 
   /**
    * Get the user from the JWT access token
-   * @param accessToken The JWT access token
+   * @param accessToken - The JWT access token
    * @returns The user
    */
   getUserFromAccessToken(accessToken: string): Promise<UserEntity> {

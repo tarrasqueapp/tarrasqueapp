@@ -5,7 +5,7 @@ import { SetupInterface } from '../../../lib/types';
 
 /**
  * Send a request to reset the setup
- * @returns The reseted setup
+ * @returns The resetted setup
  */
 async function resetSetup() {
   const { data } = await api.post<SetupInterface>(`/api/setup/reset`);

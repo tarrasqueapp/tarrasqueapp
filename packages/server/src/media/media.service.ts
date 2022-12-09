@@ -19,8 +19,8 @@ export class MediaService {
 
   /**
    * Create a new media
-   * @param data The media data
-   * @param createdById The user id
+   * @param data - The media data
+   * @param createdById - The user id
    * @returns The created media
    */
   async createMedia(data: CreateMediaDto, createdById: string): Promise<MediaEntity> {
@@ -48,7 +48,7 @@ export class MediaService {
 
   /**
    * Delete a media
-   * @param mediaId The media id
+   * @param mediaId - The media id
    * @returns The deleted media
    */
   async deleteMedia(mediaId: string): Promise<MediaEntity> {
@@ -66,7 +66,7 @@ export class MediaService {
 
   /**
    * Generate a thumbnail for a media item
-   * @param fileName The temporary file name
+   * @param fileName - The temporary file name
    * @returns Thumbnail path
    */
   async generateThumbnail(fileName: string): Promise<unknown> {

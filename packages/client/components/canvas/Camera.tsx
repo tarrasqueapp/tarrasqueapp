@@ -30,8 +30,11 @@ export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, 
     });
   }, [width, height]);
 
-  // Detect whether the user is using a trackpad
   useEffect(() => {
+    /**
+     * Detect whether the user is using a trackpad
+     * @param event - The mouse wheel event
+     */
     function detectTrackPad(event: Event) {
       if ((event as any).wheelDeltaY) {
         if ((event as any).wheelDeltaY === (event as any).deltaY * -3) {
@@ -51,7 +54,7 @@ export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, 
 
   /**
    * Handle the load event
-   * @param viewport
+   * @param viewport - The viewport instance
    */
   function handleLoad(viewport: Viewport) {
     console.debug('Map loaded.');
@@ -75,7 +78,7 @@ export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, 
 
   /**
    * Handle the double click event
-   * @param event
+   * @param event - The interaction event
    */
   function handleDoubleClick(event: PIXI.InteractionEvent) {
     console.debug('Double Click.');
@@ -85,7 +88,7 @@ export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, 
 
   /**
    * Handle the right click event
-   * @param event
+   * @param event - The interaction event
    */
   function handleRightClick(event: PIXI.InteractionEvent) {
     console.debug('Right Click.', event.data.global);

@@ -47,7 +47,7 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
 
   /**
    * Handle the form submission
-   * @param values
+   * @param values - The map values
    */
   async function handleSubmitForm(values: Schema) {
     const media = await createMedia.mutateAsync(values.file);

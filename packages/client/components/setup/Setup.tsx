@@ -63,6 +63,9 @@ export const Setup: React.FC = () => {
     setActiveStep(activeStep + 1);
   }
 
+  /**
+   * Reset the setup and go to the first step
+   */
   async function handleReset() {
     setIsResetting(true);
     await resetSetup.mutateAsync();

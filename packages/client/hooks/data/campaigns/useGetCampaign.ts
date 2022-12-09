@@ -15,7 +15,7 @@ async function getCampaign(campaignId: string) {
 
 /**
  * Get a campaign by ID
- * @param campaignId - The id of the campaign to get
+ * @param campaignId - The ID of the campaign to get
  * @returns Campaign query
  */
 export function useGetCampaign(campaignId: string) {

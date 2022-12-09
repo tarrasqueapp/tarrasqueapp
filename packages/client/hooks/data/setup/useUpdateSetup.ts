@@ -5,8 +5,8 @@ import { SetupInterface } from '../../../lib/types';
 
 /**
  * Send a request to update setup
- * @param setup
- * @returns the updated setup
+ * @param setup - The setup to update with
+ * @returns The updated setup
  */
 async function updateSetup(setup: Partial<SetupInterface>) {
   const { data } = await api.put<SetupInterface>(`/api/setup`, setup);
@@ -15,7 +15,7 @@ async function updateSetup(setup: Partial<SetupInterface>) {
 
 /**
  * Update setup
- * @returns setup update mutation
+ * @returns Setup update mutation
  */
 export function useUpdateSetup() {
   const queryClient = useQueryClient();

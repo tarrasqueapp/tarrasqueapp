@@ -1,3 +1,9 @@
+/**
+ * Exclude fields from a type T based on a list of keys K (which must be a subset of T) and return a new type
+ * @param fields - The initial fields
+ * @param excluded - The fields to exclude
+ * @returns The new type
+ */
 export function excludeFields<T, K extends (keyof T)[]>(
   fields: T,
   excluded: K,

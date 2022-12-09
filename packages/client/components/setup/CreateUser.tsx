@@ -37,7 +37,7 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
 
   /**
    * Handle the form submission
-   * @param values
+   * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
     await createSetupUser.mutateAsync(values);

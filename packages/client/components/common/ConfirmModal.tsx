@@ -13,6 +13,9 @@ export interface IConfirmModalProps {
 export const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, onConfirm, onClose, title, children }) => {
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Set the loading state and call the onConfirm function
+   */
   async function handleConfirm() {
     setLoading(true);
     await onConfirm();

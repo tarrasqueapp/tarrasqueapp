@@ -4,6 +4,14 @@ import { useEffect } from 'react';
 import { Role } from '../lib/types';
 import { useGetRefreshToken } from './data/users/useGetRefreshToken';
 
+/**
+ * Protect routes from unauthorized access
+ * @param role - The role required to access the route
+ * @example
+ * ```
+ * useProtectedRoute(Role.ADMIN);
+ * ```
+ */
 export function useProtectedRoute(role: Role) {
   const { data: user, error, isLoading } = useGetRefreshToken();
 

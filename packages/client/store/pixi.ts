@@ -10,7 +10,7 @@ class PixiStore {
 
   /**
    * Set pixi-viewport instance.
-   * @param viewport
+   * @param viewport - The pixi-viewport instance
    */
   setViewport(viewport: Viewport) {
     this.viewport = viewport;

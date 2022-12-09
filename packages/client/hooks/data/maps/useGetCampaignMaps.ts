@@ -15,7 +15,7 @@ async function getCampaignMaps(campaignId?: string) {
 
 /**
  * Get the campaign's maps
- * @param campaignId - The id of the campaign to get maps for
+ * @param campaignId - The ID of the campaign to get maps for
  * @returns Campaign maps query
  */
 export function useGetCampaignMaps(campaignId?: string) {

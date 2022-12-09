@@ -48,7 +48,7 @@ export const AddEditCampaignModal: React.FC<IAddEditCampaignModalProps> = observ
 
   /**
    * Handle the form submission
-   * @param values
+   * @param values - The campaign values
    */
   async function handleSubmitForm(values: Schema) {
     if (campaign) {

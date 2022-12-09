@@ -7,7 +7,7 @@ import { DateTimeUtils } from '../../../utils/DateTimeUtils';
 
 /**
  * Send a request to get the updated refresh token
- * @returns User
+ * @returns The user data
  */
 async function getRefreshToken() {
   const { data } = await api.get<UserInterface>(`/api/auth/refresh`);

@@ -43,7 +43,7 @@ class ToolbarStore {
 
   /**
    * Set selected tool
-   * @param tool
+   * @param tool - The tool to select
    */
   setTool(tool: Tool) {
     this.tool = tool;
@@ -51,7 +51,7 @@ class ToolbarStore {
 
   /**
    * Set selected select tool
-   * @param selectTool
+   * @param selectTool - The select tool variant to select
    */
   setSelectTool(selectTool: SelectTool) {
     this.selectTool = selectTool;
@@ -59,7 +59,7 @@ class ToolbarStore {
 
   /**
    * Set selected fog tool
-   * @param fogTool
+   * @param fogTool - The fog tool variant to select
    */
   setFogTool(fogTool: FogTool) {
     this.fogTool = fogTool;
@@ -67,7 +67,7 @@ class ToolbarStore {
 
   /**
    * Set selected draw tool
-   * @param drawTool
+   * @param drawTool - The draw tool variant to select
    */
   setDrawTool(drawTool: DrawTool) {
     this.drawTool = drawTool;
@@ -75,7 +75,7 @@ class ToolbarStore {
 
   /**
    * Set selected shape tool
-   * @param shapeTool
+   * @param shapeTool - The shape tool variant to select
    */
   setShapeTool(shapeTool: ShapeTool) {
     this.shapeTool = shapeTool;

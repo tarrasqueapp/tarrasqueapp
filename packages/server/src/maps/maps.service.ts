@@ -14,7 +14,7 @@ export class MapsService {
 
   /**
    * Get all maps for a campaign
-   * @param campaignId The campaign id
+   * @param campaignId - The campaign id
    * @returns The maps
    */
   async getCampaignMaps(campaignId: string): Promise<MapBaseEntity[]> {
@@ -36,7 +36,7 @@ export class MapsService {
 
   /**
    * Get a map that matches the given criteria
-   * @param mapId The map id
+   * @param mapId - The map id
    * @returns The map
    */
   async getMap(mapId: string): Promise<MapEntity> {
@@ -78,8 +78,8 @@ export class MapsService {
 
   /**
    * Create a new map
-   * @param data The map data
-   * @param createdById The user id
+   * @param data - The map data
+   * @param createdById - The user id
    * @returns The created map
    */
   async createMap(data: CreateMapDto, createdById: string): Promise<MapBaseEntity> {
@@ -105,7 +105,7 @@ export class MapsService {
 
   /**
    * Duplicate a map based on an existing one
-   * @param mapId The map id
+   * @param mapId - The map id
    * @returns The duplicated map
    */
   async duplicateMap(mapId: string): Promise<MapBaseEntity> {
@@ -143,8 +143,8 @@ export class MapsService {
 
   /**
    * Update a map
-   * @param mapId The map id
-   * @param data The map data
+   * @param mapId - The map id
+   * @param data - The map data
    * @returns The updated map
    */
   async updateMap(mapId: string, data: UpdateMapDto): Promise<MapBaseEntity> {
@@ -169,7 +169,7 @@ export class MapsService {
 
   /**
    * Delete a map
-   * @param mapId The map id
+   * @param mapId - The map id
    * @returns The deleted map
    */
   async deleteMap(mapId: string): Promise<MapBaseEntity> {

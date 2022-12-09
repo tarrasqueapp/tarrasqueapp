@@ -13,7 +13,7 @@ class MediaStore {
   /**
    * Convert an Uppy file to a FileInterface
    * @param uppyFile - The Uppy file to convert
-   * @returns file
+   * @returns The converted file
    * @throws Error
    */
   async convertUppyToFile(
@@ -47,7 +47,7 @@ class MediaStore {
   /**
    * Check if file is an image
    * @param file - The file to check
-   * @returns boolean
+   * @returns If the file is an image
    */
   isImage(file?: FileInterface | File | Blob | UppyFile): boolean {
     if (!file) return false;
@@ -57,7 +57,7 @@ class MediaStore {
   /**
    * Check if file is a video
    * @param file - The file to check
-   * @returns boolean
+   * @returns If the file is a video
    */
   isVideo(file?: FileInterface | File | Blob | UppyFile): boolean {
     if (!file) return false;
@@ -67,7 +67,7 @@ class MediaStore {
   /**
    * Check if file is a media item
    * @param file - The file to check
-   * @returns boolean
+   * @returns If the file is a media item
    */
   isMedia(file?: FileInterface | File | Blob | UppyFile): boolean {
     if (!file) return false;
@@ -77,7 +77,7 @@ class MediaStore {
   /**
    * Convert a URL to a File
    * @param url - The url of the file
-   * @returns file
+   * @returns The file blob
    */
   async urlToFile(url: string): Promise<File> {
     const response = await fetch(url);
@@ -88,7 +88,7 @@ class MediaStore {
   /**
    * Get image dimensions
    * @param file - The image file
-   * @returns dimensions
+   * @returns The image dimensions
    */
   getImageDimensions(file: File | Blob): Promise<DimensionsInterface> {
     return new Promise((resolve) => {
@@ -110,7 +110,7 @@ class MediaStore {
   /**
    * Get video dimensions
    * @param file - The video file
-   * @returns dimensions
+   * @returns The video dimensions
    */
   getVideoDimensions(file: File | Blob): Promise<DimensionsInterface> {
     return new Promise((resolve) => {
@@ -120,7 +120,7 @@ class MediaStore {
         const video = document.createElement('video');
         video.src = reader.result as string;
 
-        video.addEventListener('loadedmetadata', function () {
+        video.addEventListener('loadedmetadata', () => {
           resolve({ width: video.videoWidth, height: video.videoHeight });
         });
       });

@@ -12,7 +12,7 @@ class AppStore {
 
   /**
    * Set Socket.IO client.
-   * @param socket
+   * @param socket - The Socket.IO client
    */
   setSocket(socket: Socket) {
     this.socket = socket;
@@ -20,7 +20,7 @@ class AppStore {
 
   /**
    * Set trackpad or mouse mode.
-   * @param isTrackpad
+   * @param isTrackpad - If the device is a trackpad
    */
   setIsTrackpad(isTrackpad: boolean) {
     if (this.isTrackpad === isTrackpad) return;

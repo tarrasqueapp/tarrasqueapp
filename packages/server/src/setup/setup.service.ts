@@ -46,7 +46,7 @@ export class SetupService {
 
   /**
    * Update the setup
-   * @param setup The setup
+   * @param setup - The setup to update with
    * @returns The updated setup
    */
   async updateSetup(data: Partial<Setup>): Promise<Setup> {
@@ -64,7 +64,6 @@ export class SetupService {
 
   /**
    * Create the initial database and run the migrations
-   * @returns Success flag
    */
   async createDatabase(): Promise<void> {
     this.logger.verbose(`📂 Creating database`);

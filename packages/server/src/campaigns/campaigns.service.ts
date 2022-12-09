@@ -15,7 +15,7 @@ export class CampaignsService {
 
   /**
    * Get all campaigns for a given user
-   * @param userId The user's id
+   * @param userId - The user's id
    * @returns The user's campaigns
    */
   async getUserCampaigns(userId: string): Promise<CampaignEntity[]> {
@@ -43,7 +43,7 @@ export class CampaignsService {
 
   /**
    * Get a campaign by its id
-   * @param campaignId The campaign's id
+   * @param campaignId - The campaign's id
    * @returns The campaign
    */
   async getCampaign(campaignId: string): Promise<CampaignEntity> {
@@ -87,8 +87,8 @@ export class CampaignsService {
 
   /**
    * Create a new campaign
-   * @param data The campaign's data
-   * @param createdById The user's id
+   * @param data - The campaign's data
+   * @param createdById - The user's id
    * @returns The created campaign
    */
   async createCampaign(data: CreateCampaignDto, createdById: string): Promise<CampaignBaseEntity> {
@@ -111,8 +111,8 @@ export class CampaignsService {
 
   /**
    * Update a campaign
-   * @param campaignId The campaign's id
-   * @param data The campaign's data
+   * @param campaignId - The campaign's id
+   * @param data - The campaign's data
    * @returns The updated campaign
    */
   async updateCampaign(campaignId: string, data: UpdateCampaignDto): Promise<CampaignBaseEntity> {
@@ -136,7 +136,7 @@ export class CampaignsService {
 
   /**
    * Delete a campaign
-   * @param campaignId The campaign's id
+   * @param campaignId - The campaign's id
    * @returns The deleted campaign
    */
   async deleteCampaign(campaignId: string): Promise<CampaignBaseEntity> {

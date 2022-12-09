@@ -1,8 +1,8 @@
 export class DateTimeUtils {
   /**
    * Get the milliseconds in a duration
-   * @param duration - a duration string
-   * @returns the number of milliseconds in the given duration
+   * @param duration - A duration string
+   * @returns The number of milliseconds in the given duration
    */
   static toMillisecondsFromString(duration: string): number {
     const match = duration.match(/^(\d+)([a-z]+)$/);
@@ -15,8 +15,8 @@ export class DateTimeUtils {
 
   /**
    * Get the milliseconds multiplier for a duration unit
-   * @param unit - a unit of time
-   * @returns the number of milliseconds in the given unit
+   * @param unit - A unit of time
+   * @returns The number of milliseconds in the given unit
    */
   static getMillisecondsMultiplier(unit: string): number {
     switch (unit) {

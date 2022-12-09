@@ -13,7 +13,7 @@ export const ZoomControls: React.FC = observer(() => {
 
   /**
    * Handle zooming in with the mouse wheel
-   * @param event The mouse wheel event
+   * @param event - The mouse wheel event
    */
   function handleZoomIn(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();
@@ -22,7 +22,7 @@ export const ZoomControls: React.FC = observer(() => {
 
   /**
    * Handle zooming out with the mouse wheel
-   * @param event The mouse wheel event
+   * @param event - The mouse wheel event
    */
   function handleZoomOut(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();
@@ -31,7 +31,7 @@ export const ZoomControls: React.FC = observer(() => {
 
   /**
    * Handle zooming to fit the screen
-   * @param event The mouse wheel event
+   * @param event - The mouse wheel event
    */
   function handleFitScreen(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();

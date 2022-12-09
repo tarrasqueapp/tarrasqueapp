@@ -86,7 +86,7 @@ export class PlatformUtils {
 
   /**
    * Whether the platform matches an expression
-   * @param reg
+   * @param reg - The expression to match
    */
   static checkPlatform(reg: RegExp) {
     return window.navigator.platform && reg.test(window.navigator.platform);
@@ -94,7 +94,7 @@ export class PlatformUtils {
 
   /**
    * Whether the browser matches an expression
-   * @param reg
+   * @param reg - The expression to match
    */
   static checkUserAgent(reg: RegExp) {
     return window.navigator.userAgent && reg.test(window.navigator.userAgent);

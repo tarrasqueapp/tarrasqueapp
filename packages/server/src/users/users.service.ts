@@ -26,7 +26,7 @@ export class UsersService {
 
   /**
    * Get all users (without their password)
-   * @returns Users
+   * @returns All users
    */
   async getUsers(): Promise<UserEntity[]> {
     this.logger.verbose(`📂 Getting users`);
@@ -60,7 +60,7 @@ export class UsersService {
 
   /**
    * Get a user that matches the given id (without their password)
-   * @param userId The user's id
+   * @param userId - The user's id
    * @returns User
    */
   async getUserById(userId: string): Promise<UserEntity> {
@@ -81,7 +81,7 @@ export class UsersService {
 
   /**
    * Get a user that matches the given id (without their password)
-   * @param userId The user's id
+   * @param userId - The user's id
    * @returns User
    */
   async getUserByIdWithExcludedFields(userId: string): Promise<UserWithExcludedFieldsEntity> {
@@ -102,7 +102,7 @@ export class UsersService {
 
   /**
    * Get a user that matches the given email (with their password and refresh token)
-   * @param email The user's email
+   * @param email - The user's email
    * @returns User
    */
   async getUserByEmailWithExcludedFields(email: string): Promise<UserWithExcludedFieldsEntity> {
@@ -123,7 +123,7 @@ export class UsersService {
 
   /**
    * Create a new user
-   * @param data The user's data
+   * @param data - The user's data
    * @returns The created user
    */
   async createUser(data: CreateUserDto): Promise<UserEntity> {
@@ -146,8 +146,8 @@ export class UsersService {
 
   /**
    * Update a user
-   * @param userId The user's id
-   * @param data The user's data
+   * @param userId - The user's id
+   * @param data - The user's data
    * @returns The updated user
    */
   async updateUser(userId: string, data: UpdateUserDto): Promise<UserEntity> {
@@ -165,7 +165,7 @@ export class UsersService {
 
   /**
    * Delete a user
-   * @param userId The user's id
+   * @param userId - The user's id
    * @returns The deleted user
    */
   async deleteUser(userId: string): Promise<UserEntity> {
@@ -183,8 +183,8 @@ export class UsersService {
 
   /**
    * Create a new refresh token for a user
-   * @param userId The user's id
-   * @param value The refresh token's value
+   * @param userId - The user's id
+   * @param value - The refresh token's value
    * @returns The created refresh token
    */
   async createRefreshToken(userId: string, value: string): Promise<void> {
@@ -203,8 +203,8 @@ export class UsersService {
 
   /**
    * Set the refresh token for a user
-   * @param refreshToken The refresh token's value
-   * @param newValue The new refresh token's value
+   * @param refreshToken - The refresh token's value
+   * @param newValue - The new refresh token's value
    */
   async updateRefreshToken(refreshToken: string, newValue: string): Promise<void> {
     this.logger.verbose(`📂 Updating refresh token "${refreshToken}"`);
@@ -224,8 +224,7 @@ export class UsersService {
 
   /**
    * Remove the refresh token from a user
-   * @param refreshToken The refresh token
-   * @returns The user
+   * @param refreshToken - The refresh token
    */
   async removeRefreshToken(refreshToken: string): Promise<void> {
     this.logger.verbose(`📂 Removing refresh token "${refreshToken}"`);
@@ -241,9 +240,9 @@ export class UsersService {
 
   /**
    * Get user from refresh token
-   * @param userId The user's id
-   * @param refreshToken The refresh token
-   * @returns The user
+   * @param userId - The user's id
+   * @param refreshToken - The refresh token
+   * @returns The matched user
    */
   async getUserIfRefreshTokenMatches(userId: string, refreshToken: string): Promise<UserEntity> {
     // Get the user

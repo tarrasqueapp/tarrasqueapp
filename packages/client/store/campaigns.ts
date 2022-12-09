@@ -17,7 +17,7 @@ class CampaignStore {
 
   /**
    * Set the selected campaign to edit or remove
-   * @param campaign
+   * @param campaign - The campaign to edit or remove
    */
   setSelectedCampaign(campaign: CampaignInterface | null) {
     this.selectedCampaign = campaign;
@@ -25,7 +25,7 @@ class CampaignStore {
 
   /**
    * Set the modal to open
-   * @param modal
+   * @param modal - The modal to open
    */
   setModal(modal: CampaignModal | null) {
     this.modal = modal;

@@ -10,8 +10,8 @@ export const CampaignAccordions: React.FC = () => {
 
   /**
    * Handle toggling the expanded state of a campaign
-   * @param campaignId The ID of the campaign to toggle
-   * @param expanded The new expanded state of the campaign
+   * @param campaignId - The ID of the campaign to toggle
+   * @param expanded - The new expanded state of the campaign
    */
   function handleToggle(campaignId: string, expanded: boolean) {
     if (!campaignId) return;

@@ -7,7 +7,8 @@ interface IWindowSize {
 }
 
 /**
- * Get current window size
+ * Get the window size and orientation
+ * @returns The window size and orientation
  */
 function getWindowSize() {
   if (typeof window === 'undefined') {
@@ -27,7 +28,12 @@ function getWindowSize() {
 }
 
 /**
- * Window size hook
+ * Listen to window resize and orientation change events and return the window size and orientation
+ * @returns The window size and orientation
+ * @example
+ * ```
+ * const { width, height, orientation } = useWindowSize();
+ * ```
  */
 export function useWindowSize() {
   const [windowSize, setWindowSize] = useState(getWindowSize());
@@ -36,6 +42,9 @@ export function useWindowSize() {
    * Listen to resize and orientation change events
    */
   useEffect(() => {
+    /**
+     * Handle resize and orientation change events
+     */
     function handleResize() {
       setWindowSize(getWindowSize());
     }
