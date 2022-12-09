@@ -7,6 +7,8 @@ import { z } from 'zod';
 
 import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
+import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
+import { SetupStep } from '../../lib/types';
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledUploader } from '../form/ControlledUploader';
 
@@ -20,6 +22,7 @@ interface IProps {
 export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isResetting }) => {
   const createMap = useCreateMap();
   const createMedia = useCreateMedia();
+  const updateSetup = useUpdateSetup();
 
   // Setup form validation schema
   const schema = z.object({
@@ -49,6 +52,7 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
   async function handleSubmitForm(values: Schema) {
     const media = await createMedia.mutateAsync(values.file);
     await createMap.mutateAsync({ name: values.name, mediaId: media.id, campaignId });
+    await updateSetup.mutateAsync({ step: SetupStep.COMPLETED, completed: true });
     onSubmit();
   }
 

@@ -2,9 +2,11 @@ import { Box, CircularProgress, Paper, Step, StepContent, StepLabel, Stepper, Ty
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
+import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useGetSetup } from '../../hooks/data/setup/useGetSetup';
 import { useResetSetup } from '../../hooks/data/setup/useResetSetup';
 import { useGetRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
+import { SetupStep } from '../../lib/types';
 import { CreateCampaign } from './CreateCampaign';
 import { CreateDatabase } from './CreateDatabase';
 import { CreateMap } from './CreateMap';
@@ -12,7 +14,8 @@ import { CreateUser } from './CreateUser';
 import { SignIn } from './SignIn';
 
 export const Setup: React.FC = () => {
-  const { data, error, isLoading, refetch } = useGetSetup();
+  const { data, error, isLoading } = useGetSetup();
+  const { data: campaigns } = useGetUserCampaigns();
   const { data: refreshTokenData, isLoading: isLoadingRefreshToken } = useGetRefreshToken();
   const resetSetup = useResetSetup();
 
@@ -22,21 +25,12 @@ export const Setup: React.FC = () => {
 
   useEffect(() => {
     if (!data) return;
-    // Set active step depending on setup progress
-    if (data.map) {
-      setActiveStep(4);
-    } else if (data.campaign) {
-      setActiveStep(3);
-    } else if (data.user) {
-      setActiveStep(2);
-    } else if (data.database) {
-      setActiveStep(1);
-    }
-
     // Redirect to the home page if the setup is already completed
     if (data.completed) {
       router.push('/');
     }
+    // Set active step depending on setup progress
+    setActiveStep(data.step - 1);
   }, [data]);
 
   // Show progress bar while loading
@@ -48,7 +42,7 @@ export const Setup: React.FC = () => {
     );
   }
 
-  if (data?.user && !refreshTokenData) {
+  if (data && data.step > SetupStep.USER && !refreshTokenData) {
     return <SignIn />;
   }
 
@@ -67,7 +61,6 @@ export const Setup: React.FC = () => {
    */
   function handleNext() {
     setActiveStep(activeStep + 1);
-    refetch();
   }
 
   async function handleReset() {
@@ -95,7 +88,7 @@ export const Setup: React.FC = () => {
       label: 'Create a map',
       content: (
         <CreateMap
-          campaignId={data?.campaign?.id}
+          campaignId={campaigns?.[0]?.id}
           onSubmit={handleNext}
           onReset={handleReset}
           isResetting={isResetting}

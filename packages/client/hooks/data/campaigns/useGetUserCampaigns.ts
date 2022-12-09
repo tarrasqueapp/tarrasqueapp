@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { CampaignInterface } from '../../../lib/types';
@@ -17,5 +17,9 @@ async function getUserCampaigns() {
  * @returns Campaigns query
  */
 export function useGetUserCampaigns() {
-  return useQuery([`campaigns`], () => getUserCampaigns());
+  const queryClient = useQueryClient();
+
+  return useQuery([`campaigns`], () => getUserCampaigns(), {
+    enabled: Boolean(queryClient.getQueryData([`auth/refresh`])),
+  });
 }

@@ -6,12 +6,11 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, Role } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
 import { excludeFields } from '../helpers';
-import { CreateUserWithRolesDto } from './dto/create-user-with-roles.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
@@ -128,29 +127,6 @@ export class UsersService {
    * @returns The created user
    */
   async createUser(data: CreateUserDto): Promise<UserEntity> {
-    this.logger.verbose(`📂 Creating user "${data.email}"`);
-    try {
-      // Hash the password
-      const hashedPassword = await argon2.hash(data.password);
-      // Create the user
-      const user = await this.prisma.user.create({
-        data: { ...data, roles: [Role.USER], password: hashedPassword },
-        select: USER_SAFE_FIELDS,
-      });
-      this.logger.debug(`✅️ Created user "${data.email}"`);
-      return user;
-    } catch (error) {
-      this.logger.error(`🚨 User "${data.email}" already exists`);
-      throw new ConflictException('User already exists');
-    }
-  }
-
-  /**
-   * Create a new user with role data
-   * @param data The user's data
-   * @returns The created user
-   */
-  async createUserWithRoles(data: CreateUserWithRolesDto): Promise<UserEntity> {
     this.logger.verbose(`📂 Creating user "${data.email}"`);
     try {
       // Hash the password

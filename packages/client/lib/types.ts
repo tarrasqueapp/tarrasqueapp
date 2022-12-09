@@ -1,8 +1,13 @@
+export enum SetupStep {
+  DATABASE = 1,
+  USER = 2,
+  CAMPAIGN = 3,
+  MAP = 4,
+  COMPLETED = 5,
+}
+
 export interface SetupInterface {
-  database: boolean;
-  user: UserInterface | null;
-  campaign: CampaignInterface | null;
-  map: MapInterface | null;
+  step: SetupStep;
   completed: boolean;
 }
 

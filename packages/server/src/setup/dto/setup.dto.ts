@@ -1,22 +1,15 @@
-import { IsBoolean, ValidateNested } from 'class-validator';
+import { Setup } from '@prisma/client';
+import { IsBoolean, IsNumber } from 'class-validator';
 
-import { CampaignBaseEntity } from '../../campaigns/entities/campaign-base.entity';
-import { MapBaseEntity } from '../../maps/entities/map-base.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { SetupStep } from '../setup-step.enum';
 
-export class SetupDto {
-  @IsBoolean()
-  database = false;
+export class SetupDto implements Setup {
+  @IsNumber()
+  id: number;
 
-  @ValidateNested()
-  user = null as UserEntity | null;
-
-  @ValidateNested()
-  campaign = null as CampaignBaseEntity | null;
-
-  @ValidateNested()
-  map = null as MapBaseEntity | null;
+  @IsNumber()
+  step: SetupStep;
 
   @IsBoolean()
-  completed = false;
+  completed: boolean;
 }

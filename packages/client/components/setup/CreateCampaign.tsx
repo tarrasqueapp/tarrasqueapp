@@ -6,6 +6,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
+import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
+import { SetupStep } from '../../lib/types';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface IProps {
@@ -16,6 +18,7 @@ interface IProps {
 
 export const CreateCampaign: React.FC<IProps> = ({ onSubmit, onReset, isResetting }) => {
   const createCampaign = useCreateCampaign();
+  const updateSetup = useUpdateSetup();
 
   // Setup form validation schema
   const schema = z.object({
@@ -36,6 +39,7 @@ export const CreateCampaign: React.FC<IProps> = ({ onSubmit, onReset, isResettin
    */
   async function handleSubmitForm(values: Schema) {
     await createCampaign.mutateAsync(values);
+    await updateSetup.mutateAsync({ step: SetupStep.MAP });
     onSubmit();
   }
 

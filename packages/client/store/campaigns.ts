@@ -15,10 +15,18 @@ class CampaignStore {
     makeAutoObservable(this);
   }
 
+  /**
+   * Set the selected campaign to edit or remove
+   * @param campaign
+   */
   setSelectedCampaign(campaign: CampaignInterface | null) {
     this.selectedCampaign = campaign;
   }
 
+  /**
+   * Set the modal to open
+   * @param modal
+   */
   setModal(modal: CampaignModal | null) {
     this.modal = modal;
   }

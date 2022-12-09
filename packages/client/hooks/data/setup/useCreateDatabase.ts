@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { SetupInterface } from '../../../lib/types';
@@ -17,11 +17,5 @@ async function createDatabase() {
  * @returns Create database mutation
  */
 export function useCreateDatabase() {
-  const queryClient = useQueryClient();
-
-  return useMutation(createDatabase, {
-    onSuccess: () => {
-      queryClient.invalidateQueries([`setup`]);
-    },
-  });
+  return useMutation(createDatabase);
 }

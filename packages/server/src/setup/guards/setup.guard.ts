@@ -7,12 +7,12 @@ export class SetupGuard implements CanActivate {
   constructor(private readonly setupService: SetupService) {}
 
   /**
-   * Only allow access to the setup route if there are no users in the database
+   * Only allow access to the setup route if the setup is not completed
    */
   async canActivate(): Promise<boolean> {
     try {
       const setup = await this.setupService.getSetup();
-      return !setup.database || !setup.user || !setup.campaign || !setup.map;
+      return !setup.completed;
     } catch (error) {
       return true;
     }

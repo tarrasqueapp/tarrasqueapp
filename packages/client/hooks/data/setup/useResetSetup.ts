@@ -21,10 +21,7 @@ export function useResetSetup() {
 
   return useMutation(resetSetup, {
     onSuccess: () => {
-      queryClient.invalidateQueries([`setup`]);
-      queryClient.invalidateQueries([`campaigns`]);
-      queryClient.invalidateQueries([`users`]);
-      queryClient.invalidateQueries([`maps`]);
+      queryClient.invalidateQueries();
     },
   });
 }

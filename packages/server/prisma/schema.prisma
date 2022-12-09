@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Setup {
+  id        Int     @id @default(1)
+  step      Int     @default(1)
+  completed Boolean @default(false)
+}
+
 enum Role {
   USER
   ADMIN

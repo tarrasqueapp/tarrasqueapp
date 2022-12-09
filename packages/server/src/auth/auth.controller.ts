@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 import { Request, Response } from 'express';
 
 import { config } from '../config';
@@ -59,7 +60,7 @@ export class AuthController {
   @Post('register')
   @ApiOkResponse({ type: UserEntity })
   register(@Body() data: CreateUserDto): Promise<UserEntity> {
-    return this.usersService.createUser(data);
+    return this.usersService.createUser({ ...data, roles: [Role.USER] });
   }
 
   /**

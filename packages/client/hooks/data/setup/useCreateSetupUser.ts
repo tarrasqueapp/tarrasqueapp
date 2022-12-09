@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { SetupInterface, UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to create the user
- * @returns The setup progress
+ * @returns The created user
  */
 async function createSetupUser(user: Partial<UserInterface>) {
   const { data } = await api.post<SetupInterface>(`/api/setup/create-user`, user);
@@ -17,11 +17,5 @@ async function createSetupUser(user: Partial<UserInterface>) {
  * @returns Create user mutation
  */
 export function useCreateSetupUser() {
-  const queryClient = useQueryClient();
-
-  return useMutation(createSetupUser, {
-    onSuccess: () => {
-      queryClient.invalidateQueries([`setup`]);
-    },
-  });
+  return useMutation(createSetupUser);
 }

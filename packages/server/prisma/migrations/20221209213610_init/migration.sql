@@ -2,6 +2,15 @@
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
 
 -- CreateTable
+CREATE TABLE "Setup" (
+    "id" INTEGER NOT NULL DEFAULT 1,
+    "step" INTEGER NOT NULL DEFAULT 1,
+    "completed" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Setup_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,

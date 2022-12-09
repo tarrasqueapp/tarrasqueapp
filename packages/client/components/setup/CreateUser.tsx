@@ -6,7 +6,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useCreateSetupUser } from '../../hooks/data/setup/useCreateSetupUser';
+import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
 import { useSignIn } from '../../hooks/data/users/useSignIn';
+import { SetupStep } from '../../lib/types';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface IProps {
@@ -16,6 +18,7 @@ interface IProps {
 export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
   const createSetupUser = useCreateSetupUser();
   const signIn = useSignIn();
+  const updateSetup = useUpdateSetup();
 
   // Setup form validation schema
   const schema = z.object({
@@ -39,6 +42,7 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
   async function handleSubmitForm(values: Schema) {
     await createSetupUser.mutateAsync(values);
     await signIn.mutateAsync(values);
+    await updateSetup.mutateAsync({ step: SetupStep.CAMPAIGN });
     onSubmit();
   }
 
