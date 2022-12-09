@@ -2,8 +2,9 @@ import { Box, CircularProgress } from '@mui/material';
 import type { GetServerSideProps, NextPage } from 'next';
 
 import { Center } from '../components/common/Center';
-import { Campaigns } from '../components/dashboard/Campaigns';
+import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
 import { Footer } from '../components/dashboard/Footer';
+import { Modals } from '../components/dashboard/Modals';
 import { Sidebar } from '../components/dashboard/Sidebar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
@@ -53,11 +54,13 @@ const DashboardPage: NextPage = () => {
         sx={{ width: 'calc(100% - 240px)', display: 'flex', flexDirection: 'column', flex: '1 0 auto', p: 3 }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 0 auto' }}>
-          <Campaigns />
+          <CampaignAccordions />
         </Box>
 
         <Footer />
       </Box>
+
+      <Modals />
     </Box>
   );
 };

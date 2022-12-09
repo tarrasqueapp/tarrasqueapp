@@ -1,6 +1,7 @@
 import { enableStaticRendering } from 'mobx-react-lite';
 
 import { appStore } from './app';
+import { campaignStore } from './campaigns';
 import { mapStore } from './maps';
 import { mediaStore } from './media';
 import { pixiStore } from './pixi';
@@ -11,6 +12,7 @@ enableStaticRendering(isServer);
 
 export const store = {
   app: appStore,
+  campaigns: campaignStore,
   maps: mapStore,
   media: mediaStore,
   pixi: pixiStore,

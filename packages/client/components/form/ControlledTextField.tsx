@@ -1,4 +1,5 @@
 import { TextField, TextFieldProps } from '@mui/material';
+import { useEffect, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 type IProps = TextFieldProps & {
@@ -11,6 +12,14 @@ export const ControlledTextField: React.FC<IProps> = ({ name, ...props }) => {
     formState: { errors },
   } = useFormContext();
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (props.autoFocus) {
+      inputRef.current?.focus();
+    }
+  }, [props.autoFocus, inputRef]);
+
   return (
     <Controller
       control={control}
@@ -18,6 +27,7 @@ export const ControlledTextField: React.FC<IProps> = ({ name, ...props }) => {
       defaultValue=""
       render={({ field }) => (
         <TextField
+          inputRef={inputRef}
           {...props}
           {...field}
           variant="filled"

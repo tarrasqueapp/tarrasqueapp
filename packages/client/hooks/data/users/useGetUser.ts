@@ -6,7 +6,7 @@ import { UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to get the user
- * @returns Setup progress
+ * @returns User
  */
 export async function getUser(config?: AxiosRequestConfig) {
   const { data } = await api.get<UserInterface>(`/api/auth`, config);
@@ -15,7 +15,7 @@ export async function getUser(config?: AxiosRequestConfig) {
 
 /**
  * Get the user
- * @returns Setup query
+ * @returns User
  */
 export function useGetUser() {
   return useQuery([`auth`], () => getUser());

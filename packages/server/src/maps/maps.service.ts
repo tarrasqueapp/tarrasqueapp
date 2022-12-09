@@ -21,7 +21,11 @@ export class MapsService {
     this.logger.verbose(`📂 Getting maps for campaign "${campaignId}"`);
     try {
       // Get the maps
-      const maps = await this.prisma.map.findMany({ where: { campaignId }, include: { media: true } });
+      const maps = await this.prisma.map.findMany({
+        where: { campaignId },
+        include: { media: true },
+        orderBy: { updatedAt: 'desc' },
+      });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
       return maps;
     } catch (error) {

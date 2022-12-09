@@ -1,8 +1,10 @@
-import { GetApp } from '@mui/icons-material';
+import { Add, ExitToApp } from '@mui/icons-material';
 import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import NextLink from 'next/link';
 
 import { Color } from '../../lib/colors';
-import { NextLink } from '../NextLink';
+import { store } from '../../store';
+import { CampaignModal } from '../../store/campaigns';
 
 export const Sidebar: React.FC = () => {
   return (
@@ -24,20 +26,38 @@ export const Sidebar: React.FC = () => {
         <img src="/images/logo.svg" alt="Logo" width="150" />
       </Box>
 
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: '1 0 auto',
+          justifyContent: 'space-between',
+        }}
+      >
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => store.campaigns.setModal(CampaignModal.AddEdit)}>
               <ListItemIcon>
-                <GetApp />
+                <Add />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary="Add Campaign" />
             </ListItemButton>
           </ListItem>
-        ))}
+        </List>
 
-        <NextLink href="/sign-out">Sign out</NextLink>
-      </List>
+        <List>
+          <NextLink href="/sign-out" passHref legacyBehavior>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <ExitToApp />
+                </ListItemIcon>
+                <ListItemText primary="Sign out" />
+              </ListItemButton>
+            </ListItem>
+          </NextLink>
+        </List>
+      </Box>
     </Drawer>
   );
 };

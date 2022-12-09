@@ -31,6 +31,7 @@ export class CampaignsService {
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
         },
+        orderBy: { updatedAt: 'desc' },
       });
       this.logger.debug(`✅️ Found ${campaigns.length} campaigns for user "${userId}"`);
       return campaigns;

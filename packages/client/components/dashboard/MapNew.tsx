@@ -13,7 +13,7 @@ export const MapNew: React.FC = () => {
     <Paper
       sx={{
         width: 200,
-        height: 150,
+        height: 200,
         display: 'flex',
         cursor: 'pointer',
         backgroundImage: `repeating-linear-gradient(0deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(90deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(180deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(270deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength})`,

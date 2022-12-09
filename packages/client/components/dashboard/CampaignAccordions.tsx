@@ -1,9 +1,9 @@
 import useLocalStorage from 'use-local-storage';
 
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
-import { Campaign } from './Campaign';
+import { CampaignAccordion } from './CampaignAccordion';
 
-export const Campaigns: React.FC = () => {
+export const CampaignAccordions: React.FC = () => {
   const { data: campaigns } = useGetUserCampaigns();
 
   const [collapsedCampaigns, setCollapsedCampaigns] = useLocalStorage<string[]>('campaigns-collapsed', []);
@@ -32,7 +32,7 @@ export const Campaigns: React.FC = () => {
     <>
       {campaigns ? (
         campaigns?.map((campaign) => (
-          <Campaign
+          <CampaignAccordion
             key={campaign.id}
             campaign={campaign}
             expanded={!collapsedCampaigns.includes(campaign.id)}
@@ -41,10 +41,9 @@ export const Campaigns: React.FC = () => {
         ))
       ) : (
         <>
-          <Campaign key={Math.random()} />
-          <Campaign key={Math.random()} />
-          <Campaign key={Math.random()} />
-          <Campaign key={Math.random()} />
+          {[...Array(4)].map((item, index) => (
+            <CampaignAccordion key={index} />
+          ))}
         </>
       )}
     </>

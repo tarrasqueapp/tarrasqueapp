@@ -1,4 +1,3 @@
-console.log(process.env.SENTRY_ENABLED, typeof process.env.SENTRY_ENABLED);
 export const config = {
   VERSION: process.env.VERSION ?? '',
   HOST: process.env.HOST ?? 'http://localhost',

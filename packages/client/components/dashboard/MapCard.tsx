@@ -16,24 +16,27 @@ import { Color } from '../../lib/colors';
 import { MapInterface } from '../../lib/types';
 import { MathUtils } from '../../utils/MathUtils';
 
-interface IMapProps {
+const MIN_WIDTH = 200;
+const MAX_HEIGHT = 200;
+
+interface IMapCardProps {
   map?: MapInterface;
 }
 
-export const Map: React.FC<IMapProps> = ({ map }) => {
+export const MapCard: React.FC<IMapCardProps> = ({ map }) => {
   const skeletonWidth = MathUtils.getRandomBetween(150, 300);
-  const maxHeight = 150;
 
-  // Get the width and height of the map
-  const width = map?.media.width ?? skeletonWidth;
-  const height = map?.media.height ?? maxHeight;
-  const aspectRatio = width / height;
+  // Get the width and height of the map and calculate the aspect ratio
+  const mapWidth = map?.media.width ?? skeletonWidth;
+  const mapHeight = map?.media.height ?? MAX_HEIGHT;
+  const aspectRatio = mapWidth / mapHeight;
 
-  // Calculate the new width based on the aspect ratio
-  const newWidth = maxHeight * aspectRatio;
+  // Calculate the new dimensions based on the aspect ratio, minimum width, and max height
+  const width = Math.min(Math.max(mapWidth, MIN_WIDTH), MAX_HEIGHT * aspectRatio);
+  const height = width / aspectRatio;
 
   return (
-    <Card sx={{ position: 'relative', width: newWidth, height: maxHeight }}>
+    <Card sx={{ position: 'relative', width, height: height }}>
       {map ? (
         <>
           <NextLink href="/map/[mapId]" as={`/map/${map?.id}`} passHref legacyBehavior>
@@ -76,7 +79,7 @@ export const Map: React.FC<IMapProps> = ({ map }) => {
           </CardContent>
         </>
       ) : (
-        <Skeleton width={skeletonWidth} height={150} />
+        <Skeleton width={width} height={height} />
       )}
     </Card>
   );

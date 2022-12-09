@@ -32,7 +32,7 @@ export const SignIn: React.FC = () => {
    */
   async function handleSubmitForm(values: Schema) {
     try {
-      signIn.mutate(values);
+      await signIn.mutateAsync(values);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
