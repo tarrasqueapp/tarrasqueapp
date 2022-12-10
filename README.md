@@ -22,7 +22,7 @@ There's a `.env.example` file in the root folder. Copy `.env.example` to `.env` 
 
 To start the Docker development server, run:
 
-    tarrasque dev
+    tarrasque docker up
 
 You can then access the development server at `http://localhost`.
 
@@ -30,7 +30,7 @@ You can then access the development server at `http://localhost`.
 
 To start the Docker production server, run:
 
-    tarrasque prod
+    tarrasque docker up --prod
 
 You can then access the production server at `http://localhost`.
 
@@ -38,13 +38,21 @@ You can then access the production server at `http://localhost`.
 
 ### Create database
 
-Push the state from Prisma schema to the database during prototyping.
+Push the Prisma schema state to the database.
 
     yarn server prisma db push
 
-Seed the database with sample data.
+### Migrate database
 
-    yarn server prisma db seed
+Create migrations from your Prisma schema, apply them to the database, and generate artifacts.
+
+    yarn server prisma migrate dev --name <migration-name>
+
+### Browse database
+
+Browse the database using the Prisma Studio.
+
+    yarn server prisma studio
 
 # Kubernetes
 
@@ -71,3 +79,11 @@ Install helm charts:
     helm upgrade -i cert-manager ./helm/cert-manager -n cert-manager --create-namespace
     helm upgrade -i ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
     helm upgrade -i client ./helm/client -n client --create-namespace
+
+# PWA Assets
+
+PWA assets are generated from the `packages/client/public/images/logo.svg` file and are used for the PWA manifest, splash screen, and icons.
+
+Run the following command to generate the PWA assets:
+
+    ./bin/generate-pwa-assets.sh
