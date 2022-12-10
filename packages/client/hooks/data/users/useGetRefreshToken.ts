@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
 
 import { api } from '../../../lib/api';
 import { config } from '../../../lib/config';
@@ -26,7 +27,7 @@ export function useGetRefreshToken() {
   const expirationTime = DateTimeUtils.toMillisecondsFromString(config.JWT_ACCESS_TOKEN_EXPIRATION_TIME);
   const refetchInterval = expirationTime / 2;
 
-  return useQuery([`auth/refresh`], () => getRefreshToken(), {
+  return useQuery<UserInterface, AxiosResponse>([`auth/refresh`], () => getRefreshToken(), {
     refetchInterval: refetchEnabled ? refetchInterval : false,
     refetchIntervalInBackground: refetchEnabled,
     onSuccess: (data) => {

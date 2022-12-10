@@ -3,6 +3,8 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 
 import { CampaignRole, CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
+import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
+import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { RoleGuard } from '../users/guards/role.guard';
@@ -16,7 +18,11 @@ import { MapsService } from './maps.service';
 @ApiTags('maps')
 @Controller('maps')
 export class MapsController {
-  constructor(private readonly mapsService: MapsService) {}
+  constructor(
+    private readonly mapsService: MapsService,
+    private readonly mediaService: MediaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   /**
    * Get a map by its id
@@ -30,9 +36,8 @@ export class MapsController {
   /**
    * Create a new map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
   @Post()
-  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
   createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
@@ -42,9 +47,8 @@ export class MapsController {
   /**
    * Duplicate a map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
   @Post(':mapId/duplicate')
-  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
   duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
@@ -54,9 +58,8 @@ export class MapsController {
   /**
    * Update a map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
   @Put(':mapId')
-  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
   updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
@@ -66,12 +69,20 @@ export class MapsController {
   /**
    * Delete a map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
   @Delete(':mapId')
-  @UseGuards(CampaignRoleGuard(CampaignRole.OWNER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
-  deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
-    return this.mapsService.deleteMap(mapId);
+  async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
+    // Delete the map and the media item from the database
+    const map = await this.mapsService.deleteMap(mapId);
+    const media = await this.mediaService.deleteMedia(map.mediaId);
+    // Delete the files from the storage
+    await Promise.all([
+      this.storageService.delete(`${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`),
+      this.storageService.delete(`${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`),
+    ]);
+    // Return the map
+    return map;
   }
 }

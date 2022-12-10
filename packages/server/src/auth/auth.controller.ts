@@ -21,8 +21,8 @@ export class AuthController {
   /**
    * Return the user's profile
    */
-  @Get()
   @UseGuards(JwtAuthGuard)
+  @Get()
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   authenticate(@User() user: UserEntity): UserEntity {
@@ -32,8 +32,8 @@ export class AuthController {
   /**
    * Set new access token
    */
-  @Get('refresh')
   @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async refresh(
@@ -66,8 +66,8 @@ export class AuthController {
   /**
    * Sign in with email and password
    */
-  @Post('sign-in')
   @UseGuards(LocalAuthGuard)
+  @Post('sign-in')
   @ApiOkResponse({ type: UserEntity })
   async signIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
     // Generate access and refresh tokens based on user
@@ -85,17 +85,17 @@ export class AuthController {
   /**
    * Sign out the user
    */
-  @Post('sign-out')
   @UseGuards(JwtAuthGuard)
+  @Post('sign-out')
   @ApiBearerAuth()
   @ApiOkResponse({ type: null })
   async signOut(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
     // Get current refresh token
     const refreshToken = req.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
-    // Delete refresh token
-    await this.usersService.removeRefreshToken(refreshToken);
     // Set cookies
     res.clearCookie(config.JWT_ACCESS_TOKEN_NAME);
     res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);
+    // Delete refresh token
+    this.usersService.removeRefreshToken(refreshToken);
   }
 }

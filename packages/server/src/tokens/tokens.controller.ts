@@ -32,9 +32,8 @@ export class TokensController {
   /**
    * Create tokens on a map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.PLAYER))
   @Post()
-  @UseGuards(CampaignRoleGuard(CampaignRole.PLAYER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: [TokenEntity] })
   createTokens(
@@ -48,9 +47,8 @@ export class TokensController {
   /**
    * Update tokens on a map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.PLAYER))
   @Put()
-  @UseGuards(CampaignRoleGuard(CampaignRole.PLAYER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: [TokenBaseEntity] })
   updateTokens(@Body() data: UpdateTokensDto): Promise<TokenBaseEntity[]> {
@@ -60,9 +58,8 @@ export class TokensController {
   /**
    * Delete tokens on a map
    */
+  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.PLAYER))
   @Delete()
-  @UseGuards(CampaignRoleGuard(CampaignRole.PLAYER))
-  @UseGuards(RoleGuard(Role.USER))
   @ApiBearerAuth()
   @ApiOkResponse({ type: [TokenBaseEntity] })
   deleteTokens(@Body() data: DeleteTokensDto): Promise<TokenBaseEntity[]> {

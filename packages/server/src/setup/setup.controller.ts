@@ -31,8 +31,8 @@ export class SetupController {
     return this.setupService.getSetup();
   }
 
-  @Put()
   @UseGuards(SetupGuard)
+  @Put()
   @ApiOkResponse({ type: SetupDto })
   updateSetup(@Body() data: Partial<SetupDto>): Promise<SetupDto> {
     return this.setupService.updateSetup(data);
@@ -41,8 +41,8 @@ export class SetupController {
   /**
    * Create the database
    */
-  @Post('create-database')
   @UseGuards(SetupGuard)
+  @Post('create-database')
   @ApiOkResponse({ type: null })
   async createDatabase(): Promise<void> {
     await this.setupService.createDatabase();
@@ -52,8 +52,8 @@ export class SetupController {
   /**
    * Create a user
    */
-  @Post('create-user')
   @UseGuards(SetupGuard)
+  @Post('create-user')
   @ApiOkResponse({ type: UserEntity })
   async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
     return await this.usersService.createUser({ ...data, roles: [Role.ADMIN, Role.USER] });
@@ -62,8 +62,8 @@ export class SetupController {
   /**
    * Reset the setup process
    */
-  @Post('reset')
   @UseGuards(SetupGuard)
+  @Post('reset')
   @ApiOkResponse({ type: SetupDto })
   async reset(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<SetupDto> {
     const setup = await this.setupService.getSetup();

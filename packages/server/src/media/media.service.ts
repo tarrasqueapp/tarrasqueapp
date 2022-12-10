@@ -8,7 +8,8 @@ import { TEMP_PATH } from '../storage/tmp.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { MediaEntity } from './entities/media.entity';
 
-export const THUMBNAIL_SUFFIX = '.thumbnail.webp';
+export const ORIGINAL_FILENAME = 'original';
+export const THUMBNAIL_FILENAME = 'thumbnail.webp';
 export const THUMBNAIL_WIDTH = 400;
 
 @Injectable()
@@ -29,12 +30,14 @@ export class MediaService {
       // Create the media
       const media = await this.prisma.media.create({
         data: {
+          id: data.id,
           url: data.url,
           thumbnailUrl: data.thumbnailUrl,
           width: data.width,
           height: data.height,
           size: data.size,
           format: data.format,
+          extension: data.extension,
           createdBy: { connect: { id: createdById } },
         },
       });
@@ -80,7 +83,7 @@ export class MediaService {
 
     const height = -1;
 
-    const thumbnailPath = `${filePath}${THUMBNAIL_SUFFIX}`;
+    const thumbnailPath = `${filePath}.${THUMBNAIL_FILENAME}`;
 
     const args = [
       '-y',

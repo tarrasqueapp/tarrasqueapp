@@ -155,11 +155,17 @@ export class StorageService implements OnModuleInit {
       const directories = key.split('/').slice(0, -1).join('/');
 
       // Ensure upload directory exists
-      await fs.ensureDir(`${UPLOAD_PATH}/${directories}`);
+      const directoryPath = `${UPLOAD_PATH}/${directories}`;
+      await fs.ensureDir(directoryPath);
 
       // Remove file from disk
       const filePath = `${UPLOAD_PATH}/${key}`;
       await fs.remove(filePath);
+
+      // If directory is empty, remove it
+      if ((await fs.readdir(directoryPath)).length === 0) {
+        await fs.remove(directoryPath);
+      }
 
       this.logger.debug(`✅️ Deleted file "${key}" from local storage`);
     } catch (error) {

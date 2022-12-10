@@ -22,8 +22,8 @@ export function useProtectedRoute(role: Role) {
 
     // Avoid looping redirects
     if (router.pathname !== '/sign-in') {
-      // Sign out the user if there is an error getting the refresh token
-      if (error) {
+      // Sign out the user if there is an authorization error
+      if (error && error.status === 401) {
         router.push('/sign-out');
         return;
       }
@@ -47,5 +47,5 @@ export function useProtectedRoute(role: Role) {
       router.push(referrer);
       return;
     }
-  }, [router.query, user, error]);
+  }, [router.query, user, error, isLoading]);
 }

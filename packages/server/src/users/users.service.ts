@@ -6,11 +6,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Prisma } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
-import { excludeFields } from '../helpers';
+import { config } from '../config';
+import { excludeFields, toMillisecondsFromString } from '../helpers';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
@@ -255,5 +257,20 @@ export class UsersService {
     }
     // Return the user
     return await this.getUserById(userId);
+  }
+
+  /**
+   * Remove old refresh tokens at midnight
+   */
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async removeOldRefreshTokens(): Promise<void> {
+    this.logger.verbose(`📂 Removing old refresh tokens`);
+    // Convert the expiration time to milliseconds
+    const expirationTime = toMillisecondsFromString(config.JWT_REFRESH_TOKEN_EXPIRATION_TIME);
+    // Get the expiry date by subtracting the expiration time from the current date
+    const expiryDate = new Date(Date.now() - expirationTime);
+    // Delete the refresh tokens
+    await this.prisma.refreshToken.deleteMany({ where: { updatedAt: { lte: expiryDate } } });
+    this.logger.debug(`✅️ Removed old refresh tokens`);
   }
 }

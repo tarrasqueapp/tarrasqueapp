@@ -189,6 +189,7 @@ CREATE TABLE "Media" (
     "height" INTEGER NOT NULL,
     "size" INTEGER NOT NULL,
     "format" TEXT NOT NULL,
+    "extension" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdById" TEXT NOT NULL,

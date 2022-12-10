@@ -275,6 +275,7 @@ model Media {
   height              Int
   size                Int
   format              String
+  extension           String
   // DateTime
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now()) @updatedAt

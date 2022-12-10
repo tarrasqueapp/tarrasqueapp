@@ -23,6 +23,9 @@ export class MediaEntity implements Media {
   @IsString()
   format: string;
 
+  @IsString()
+  extension: string;
+
   // DateTime
   @IsDateString()
   createdAt: Date;

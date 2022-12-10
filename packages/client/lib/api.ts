@@ -6,17 +6,16 @@ export const api = axios.create({
 
 // Always return a readable error message
 api.interceptors.response.use(undefined, (error) => {
+  const status = error.response?.status || error.status;
   const message = error.response?.data?.message || error.message;
-
-  if (!message) {
-    return Promise.reject(error);
-  }
 
   if (error.code === 'ECONNREFUSED') {
     return false;
   }
 
-  const err = new Error(message);
+  if (!message) {
+    return Promise.reject(error);
+  }
 
-  return Promise.reject(err);
+  return Promise.reject({ status, message });
 });
