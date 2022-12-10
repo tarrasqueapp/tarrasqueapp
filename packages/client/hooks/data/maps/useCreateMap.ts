@@ -21,7 +21,8 @@ export function useCreateMap() {
   const queryClient = useQueryClient();
 
   return useMutation(createMap, {
-    onSuccess: () => {
+    onSuccess: (map) => {
+      queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
       queryClient.invalidateQueries([`maps`]);
     },
   });

@@ -1,21 +1,35 @@
 import { makeAutoObservable } from 'mobx';
 
-class MapStore {
-  contextMenuVisible = false;
-  contextMenuAnchorPoint = { x: 0, y: 0 };
+import { MapInterface } from '../lib/types';
+
+export enum MapModal {
+  AddEdit = 'add',
+  Remove = 'remove',
+}
+
+class MapsStore {
+  selectedMap = null as unknown as MapInterface | null;
+  modal = null as unknown as MapModal | null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setContextMenuVisible(contextMenuVisible: boolean) {
-    this.contextMenuVisible = contextMenuVisible;
+  /**
+   * Set the selected map to edit or remove
+   * @param map - The map to edit or remove
+   */
+  setSelectedMap(map: MapInterface | null) {
+    this.selectedMap = map;
   }
 
-  setContextMenuAnchorPoint(x: number, y: number) {
-    this.contextMenuAnchorPoint.x = x;
-    this.contextMenuAnchorPoint.y = y;
+  /**
+   * Set the modal to open
+   * @param modal - The modal to open
+   */
+  setModal(modal: MapModal | null) {
+    this.modal = modal;
   }
 }
 
-export const mapStore = new MapStore();
+export const mapsStore = new MapsStore();

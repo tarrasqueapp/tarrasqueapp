@@ -3,10 +3,10 @@ import { observer } from 'mobx-react-lite';
 import { useDeleteCampaign } from '../../hooks/data/campaigns/useDeleteCampaign';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
-import { AddEditCampaignModal } from '../campaigns/AddEditCampaignModal';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { AddEditCampaignModal } from './AddEditCampaignModal';
 
-export const Modals: React.FC = observer(() => {
+export const CampaignModals: React.FC = observer(() => {
   const deleteCampaign = useDeleteCampaign();
 
   return (

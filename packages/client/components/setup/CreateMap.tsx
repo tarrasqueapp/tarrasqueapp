@@ -61,6 +61,7 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus />
+
           <Box sx={{ my: 1 }}>
             <ControlledUploader name="file" allowedFileTypes={['image/*', 'video/*']} />
           </Box>

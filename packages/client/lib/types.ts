@@ -240,6 +240,7 @@ export interface MediaInterface {
   height: number;
   size: number;
   format: string;
+  extension: string;
   // DateTime
   createdAt: string;
   updatedAt: string;

@@ -1,11 +1,12 @@
 import { Box, CircularProgress } from '@mui/material';
 import type { GetServerSideProps, NextPage } from 'next';
 
+import { CampaignModals } from '../components/campaigns/CampaignModals';
 import { Center } from '../components/common/Center';
 import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
 import { Footer } from '../components/dashboard/Footer';
-import { Modals } from '../components/dashboard/Modals';
 import { Sidebar } from '../components/dashboard/Sidebar';
+import { MapModals } from '../components/maps/MapModals';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
 import { useProtectedRoute } from '../hooks/useProtectedRoute';
@@ -60,7 +61,8 @@ const DashboardPage: NextPage = () => {
         <Footer />
       </Box>
 
-      <Modals />
+      <CampaignModals />
+      <MapModals />
     </Box>
   );
 };

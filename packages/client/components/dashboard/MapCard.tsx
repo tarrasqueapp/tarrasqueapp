@@ -1,4 +1,4 @@
-import { MoreHoriz } from '@mui/icons-material';
+import { Delete, Edit, MoreHoriz } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -6,14 +6,21 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Popover,
   Skeleton,
   Tooltip,
   Typography,
 } from '@mui/material';
+import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 
-import { Color } from '../../lib/colors';
-import { MapInterface } from '../../lib/types';
+import { CampaignInterface, MapInterface } from '../../lib/types';
+import { store } from '../../store';
+import { MapModal } from '../../store/maps';
 import { MathUtils } from '../../utils/MathUtils';
 
 const MIN_WIDTH = 200;
@@ -21,9 +28,10 @@ const MAX_HEIGHT = 200;
 
 interface IMapCardProps {
   map?: MapInterface;
+  campaign?: CampaignInterface;
 }
 
-export const MapCard: React.FC<IMapCardProps> = ({ map }) => {
+export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
   const skeletonWidth = MathUtils.getRandomBetween(150, 300);
 
   // Get the width and height of the map and calculate the aspect ratio
@@ -71,11 +79,54 @@ export const MapCard: React.FC<IMapCardProps> = ({ map }) => {
               {map.name}
             </Typography>
 
-            <Tooltip title="More" placement="bottom">
-              <IconButton edge="end">
-                <MoreHoriz htmlColor={Color.White} />
-              </IconButton>
-            </Tooltip>
+            <PopupState variant="popover" popupId={`map-card-${map.id}`}>
+              {(popupState) => (
+                <>
+                  <Tooltip title="More">
+                    <IconButton {...bindTrigger(popupState)}>
+                      <MoreHoriz />
+                    </IconButton>
+                  </Tooltip>
+                  <Popover
+                    {...bindPopover(popupState)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  >
+                    <MenuList>
+                      <MenuItem
+                        onClick={() => {
+                          if (!map || !campaign) return;
+                          store.campaigns.setSelectedCampaign(campaign);
+                          store.maps.setSelectedMap(map);
+                          store.maps.setModal(MapModal.AddEdit);
+                          popupState.close();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Edit fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Edit</ListItemText>
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          if (!map || !campaign) return;
+                          store.campaigns.setSelectedCampaign(campaign);
+                          store.maps.setSelectedMap(map);
+                          store.maps.setModal(MapModal.Remove);
+                          popupState.close();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Delete fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Remove</ListItemText>
+                      </MenuItem>
+                    </MenuList>
+                  </Popover>
+                </>
+              )}
+            </PopupState>
           </CardContent>
         </>
       ) : (

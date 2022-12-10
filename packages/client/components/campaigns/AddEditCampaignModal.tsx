@@ -68,14 +68,7 @@ export const AddEditCampaignModal: React.FC<IAddEditCampaignModalProps> = observ
           <DialogTitle>{campaign?.name || 'Add Campaign'}</DialogTitle>
 
           <DialogContent>
-            <ControlledTextField
-              size="small"
-              name="name"
-              label="Name"
-              autoFocus
-              inputProps={{ autoFocus: true }}
-              fullWidth
-            />
+            <ControlledTextField size="small" name="name" label="Name" autoFocus fullWidth />
           </DialogContent>
 
           <DialogActions>

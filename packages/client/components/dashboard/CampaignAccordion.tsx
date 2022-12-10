@@ -70,9 +70,10 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
             <Typography variant="h3">
               {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 300)} />}
             </Typography>
+
             <Typography variant="caption">
               {maps ? maps.length : <Skeleton width={10} sx={{ display: 'inline-block' }} />} map
-              {!maps || maps.length > 1 ? 's' : ''}
+              {!maps || maps.length === 1 ? '' : 's'}
             </Typography>
           </Box>
 
@@ -89,7 +90,7 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
               </IconButton>
             </Tooltip>
 
-            <PopupState variant="popover" popupId="demo-popup-menu">
+            <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
               {(popupState) => (
                 <>
                   <Tooltip title="More">
@@ -127,10 +128,10 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
 
       <AccordionDetails>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', p: 3, gap: 3 }}>
-          <MapNew />
+          <MapNew campaign={campaign || null} />
 
           {maps ? (
-            maps?.map((map) => <MapCard key={map.id} map={map} />)
+            maps?.map((map) => <MapCard key={map.id} map={map} campaign={campaign} />)
           ) : (
             <>
               {[...Array(8)].map((item, index) => (

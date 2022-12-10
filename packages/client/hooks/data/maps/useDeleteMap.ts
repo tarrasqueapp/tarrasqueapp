@@ -9,7 +9,7 @@ import { MapInterface } from '../../../lib/types';
  * @returns The deleted map
  */
 async function deleteMap(map: MapInterface) {
-  const { data } = await api.delete<MapInterface>(`/api/maps/${map.id}`);
+  const { data } = await api.delete<MapInterface>(`/api/maps/${map.id}`, { data: { campaignId: map.campaignId } });
   return data;
 }
 
@@ -22,8 +22,8 @@ export function useDeleteMap() {
 
   return useMutation(deleteMap, {
     onSuccess: (map) => {
+      queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
       queryClient.invalidateQueries([`maps`]);
-      queryClient.invalidateQueries([`maps/${map.id}`]);
     },
   });
 }

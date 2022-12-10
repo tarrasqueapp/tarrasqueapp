@@ -7,7 +7,7 @@ export enum CampaignModal {
   Remove = 'remove',
 }
 
-class CampaignStore {
+class CampaignsStore {
   selectedCampaign = null as unknown as CampaignInterface | null;
   modal = null as unknown as CampaignModal | null;
 
@@ -32,4 +32,4 @@ class CampaignStore {
   }
 }
 
-export const campaignStore = new CampaignStore();
+export const campaignsStore = new CampaignsStore();
