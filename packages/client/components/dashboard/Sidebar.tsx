@@ -44,11 +44,11 @@ export const Sidebar: React.FC = observer(() => {
       >
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => store.campaigns.setModal(CampaignModal.AddEdit)}>
+            <ListItemButton onClick={() => store.campaigns.setModal(CampaignModal.CreateUpdate)}>
               <ListItemIcon>
                 <Add />
               </ListItemIcon>
-              <ListItemText primary="Add Campaign" />
+              <ListItemText primary="Create Campaign" />
             </ListItemButton>
           </ListItem>
         </List>

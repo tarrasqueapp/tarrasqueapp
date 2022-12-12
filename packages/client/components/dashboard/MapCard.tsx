@@ -87,14 +87,14 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
                           if (!map || !campaign) return;
                           store.campaigns.setSelectedCampaign(campaign);
                           store.maps.setSelectedMap(map);
-                          store.maps.setModal(MapModal.AddEdit);
+                          store.maps.setModal(MapModal.CreateUpdate);
                           popupState.close();
                         }}
                       >
                         <ListItemIcon>
                           <Edit fontSize="small" />
                         </ListItemIcon>
-                        <ListItemText>Edit</ListItemText>
+                        <ListItemText>Update</ListItemText>
                       </MenuItem>
 
                       <MenuItem
@@ -102,14 +102,14 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
                           if (!map || !campaign) return;
                           store.campaigns.setSelectedCampaign(campaign);
                           store.maps.setSelectedMap(map);
-                          store.maps.setModal(MapModal.Remove);
+                          store.maps.setModal(MapModal.Delete);
                           popupState.close();
                         }}
                       >
                         <ListItemIcon>
                           <Delete fontSize="small" />
                         </ListItemIcon>
-                        <ListItemText>Remove</ListItemText>
+                        <ListItemText>Delete</ListItemText>
                       </MenuItem>
                     </MenuList>
                   </Popover>

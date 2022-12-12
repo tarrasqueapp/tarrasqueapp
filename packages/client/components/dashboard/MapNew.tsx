@@ -32,7 +32,7 @@ export const MapNew: React.FC<IMapNewProps> = ({ campaign }) => {
         disabled={!campaign}
         onClick={() => {
           store.campaigns.setSelectedCampaign(campaign);
-          store.maps.setModal(MapModal.AddEdit);
+          store.maps.setModal(MapModal.CreateUpdate);
         }}
         sx={{
           display: 'flex',

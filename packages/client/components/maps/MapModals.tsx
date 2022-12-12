@@ -1,18 +1,19 @@
+import { Typography } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
 import { useDeleteMap } from '../../hooks/data/maps/useDeleteMap';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 import { ConfirmModal } from '../common/ConfirmModal';
-import { AddEditMapModal } from './AddEditMapModal';
+import { CreateUpdateMapModal } from './CreateUpdateMapModal';
 
 export const MapModals: React.FC = observer(() => {
   const deleteMap = useDeleteMap();
 
   return (
     <>
-      <AddEditMapModal
-        open={store.maps.modal === MapModal.AddEdit}
+      <CreateUpdateMapModal
+        open={store.maps.modal === MapModal.CreateUpdate}
         onClose={() => {
           store.maps.setModal(null);
           setTimeout(() => {
@@ -26,7 +27,7 @@ export const MapModals: React.FC = observer(() => {
 
       <ConfirmModal
         title="Delete Map"
-        open={store.maps.modal === MapModal.Remove}
+        open={store.maps.modal === MapModal.Delete}
         onConfirm={async () => {
           if (!store.maps.selectedMap) return;
           await deleteMap.mutateAsync(store.maps.selectedMap);
@@ -39,8 +40,10 @@ export const MapModals: React.FC = observer(() => {
           }, 100);
         }}
       >
-        You&apos;re about to delete the map &quot;<strong>{store.maps.selectedMap?.name}</strong>&quot;. This can NOT be
-        undone.
+        You&apos;re about to delete the map &quot;<strong>{store.maps.selectedMap?.name}</strong>&quot;.{' '}
+        <Typography color="error" component="span">
+          This cannot be undone.
+        </Typography>
       </ConfirmModal>
     </>
   );

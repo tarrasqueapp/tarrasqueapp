@@ -3,8 +3,8 @@ import { makeAutoObservable } from 'mobx';
 import { CampaignInterface } from '../lib/types';
 
 export enum CampaignModal {
-  AddEdit = 'add',
-  Remove = 'remove',
+  CreateUpdate = 'create-update',
+  Delete = 'delete',
 }
 
 class CampaignsStore {

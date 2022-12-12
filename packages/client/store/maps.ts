@@ -3,8 +3,8 @@ import { makeAutoObservable } from 'mobx';
 import { MapInterface } from '../lib/types';
 
 export enum MapModal {
-  AddEdit = 'add',
-  Remove = 'remove',
+  CreateUpdate = 'create-update',
+  Delete = 'delete',
 }
 
 class MapsStore {

@@ -38,7 +38,7 @@ export const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, onConfirm, on
       <DialogTitle>{title || 'Are you sure?'}</DialogTitle>
 
       <DialogContent>
-        <DialogContentText>{children || 'This can NOT be undone.'}</DialogContentText>
+        <DialogContentText>{children || 'This cannot be undone.'}</DialogContentText>
       </DialogContent>
 
       <DialogActions>

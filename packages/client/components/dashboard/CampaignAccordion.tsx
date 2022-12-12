@@ -79,12 +79,12 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
 
         <AccordionActions>
           <Box sx={{ display: 'flex' }} onClick={(event) => event.stopPropagation()}>
-            <Tooltip title="Edit">
+            <Tooltip title="Update">
               <IconButton
                 onClick={() => {
                   if (!campaign) return;
                   store.campaigns.setSelectedCampaign(campaign);
-                  store.campaigns.setModal(CampaignModal.AddEdit);
+                  store.campaigns.setModal(CampaignModal.CreateUpdate);
                 }}
               >
                 <Edit />
@@ -109,14 +109,14 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
                         onClick={() => {
                           if (!campaign) return;
                           store.campaigns.setSelectedCampaign(campaign);
-                          store.campaigns.setModal(CampaignModal.Remove);
+                          store.campaigns.setModal(CampaignModal.Delete);
                           popupState.close();
                         }}
                       >
                         <ListItemIcon>
                           <Delete fontSize="small" />
                         </ListItemIcon>
-                        <ListItemText>Remove</ListItemText>
+                        <ListItemText>Delete</ListItemText>
                       </MenuItem>
                     </MenuList>
                   </Popover>
