@@ -150,11 +150,12 @@ export class MapsService {
   async updateMap(mapId: string, data: UpdateMapDto): Promise<MapBaseEntity> {
     this.logger.verbose(`📂 Updating map "${mapId}"`);
     try {
+      // Update the map
       const map = await this.prisma.map.update({
         where: { id: mapId },
         data: {
           name: data.name,
-          media: { connect: { id: data.mediaId } },
+          ...(data.mediaId && { media: { connect: { id: data.mediaId } } }),
           campaign: { connect: { id: data.campaignId } },
         },
         include: { media: true },

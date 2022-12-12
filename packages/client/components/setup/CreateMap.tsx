@@ -9,6 +9,7 @@ import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
 import { SetupStep } from '../../lib/types';
+import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledUploader } from '../form/ControlledUploader';
 
@@ -26,15 +27,8 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
 
   // Setup form validation schema
   const schema = z.object({
-    name: z.string().min(1),
-    file: z.object({
-      name: z.string().min(1),
-      type: z.string().min(1),
-      extension: z.string().min(1),
-      size: z.number().min(1),
-      width: z.number(),
-      height: z.number(),
-    }),
+    name: ValidateUtils.Name,
+    file: ValidateUtils.File,
   });
   type Schema = z.infer<typeof schema>;
 
@@ -42,7 +36,7 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
   const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   /**
@@ -68,7 +62,7 @@ export const CreateMap: React.FC<IProps> = ({ campaignId, onSubmit, onReset, isR
         </Box>
 
         <Box sx={{ mt: 2, mb: 1 }}>
-          <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mr: 1 }}>
+          <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit" sx={{ mr: 1 }}>
             Continue
           </LoadingButton>
 

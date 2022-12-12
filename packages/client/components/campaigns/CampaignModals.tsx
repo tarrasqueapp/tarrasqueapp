@@ -21,6 +21,7 @@ export const CampaignModals: React.FC = observer(() => {
       />
 
       <ConfirmModal
+        title="Delete Campaign"
         open={store.campaigns.modal === CampaignModal.Remove}
         onConfirm={async () => {
           if (!store.campaigns.selectedCampaign) return;
@@ -30,7 +31,10 @@ export const CampaignModals: React.FC = observer(() => {
           store.campaigns.setModal(null);
           setTimeout(() => store.campaigns.setSelectedCampaign(null), 100);
         }}
-      />
+      >
+        You&apos;re about to delete the campaign &quot;<strong>{store.campaigns.selectedCampaign?.name}</strong>&quot;
+        and all of its maps, characters, and associated data. This can NOT be undone.
+      </ConfirmModal>
     </>
   );
 });

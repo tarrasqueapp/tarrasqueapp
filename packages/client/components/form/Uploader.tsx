@@ -1,5 +1,5 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
-import { Box, CircularProgress, IconButton, Typography, alpha } from '@mui/material';
+import { Box, Button, CircularProgress, IconButton, Typography, alpha } from '@mui/material';
 import Uppy, { UploadResult } from '@uppy/core';
 import Tus from '@uppy/tus';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -7,17 +7,17 @@ import { useDropzone } from 'react-dropzone';
 
 import { useEffectAsync } from '../../hooks/useEffectAsync';
 import { Color } from '../../lib/colors';
-import { FileInterface } from '../../lib/types';
+import { FileInterface, MediaInterface } from '../../lib/types';
 import { store } from '../../store';
 
 export interface UploaderProps {
-  value?: FileInterface | string;
+  value?: string | FileInterface | MediaInterface;
   allowedFileTypes?: string[] | null;
-  onChange?: (file?: FileInterface) => void;
+  onChange?: (file?: FileInterface | null) => void;
 }
 
 export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onChange }) => {
-  const [file, setFile] = useState<FileInterface | undefined>();
+  const [file, setFile] = useState<FileInterface | null>(null);
   const [preview, setPreview] = useState('');
   const [progress, setProgress] = useState(0);
   const [progressVisible, setProgressVisible] = useState(false);
@@ -29,7 +29,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
       .on('progress', (p) => progress !== p && setProgress(p))
       .on('error', () => {
         setProgress(0);
-        onChange?.(undefined);
+        onChange?.(null);
       })
       .on('complete', async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
         if (!result.successful.length) return;
@@ -53,11 +53,12 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   // Set the preview image when a file is passed in
   useEffectAsync(async () => {
     if (!value) {
-      setFile(undefined);
+      setFile(null);
       setPreview('');
       return;
     }
 
+    // Check if the value is a file object
     if (typeof value === 'object' && 'data' in value) {
       setFile(value);
       const objectUrl = URL.createObjectURL(value.data);
@@ -65,10 +66,20 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
       return;
     }
 
+    // Check if the value is a media object
+    if (typeof value === 'object' && 'url' in value) {
+      const file = await store.media.urlToFile(value.thumbnailUrl);
+      setFile({ name: file.name, type: file.type, extension: '', size: file.size, data: file });
+      setPreview(value.thumbnailUrl);
+      return;
+    }
+
+    // Check if the value is a string
     if (typeof value === 'string') {
       const file = await store.media.urlToFile(value);
       setFile({ name: file.name, type: file.type, extension: '', size: file.size, data: file });
       setPreview(store.media.isMedia(file) ? value : '');
+      return;
     }
   }, [value]);
 
@@ -111,76 +122,141 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   function handleDelete(event: React.MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
     setPreview('');
-    setFile(undefined);
+    setFile(null);
     setProgress(0);
-    onChange?.(undefined);
+    onChange?.(null);
     uppy.cancelAll();
   }
 
+  /**
+   * Generate a string of file types that can be uploaded
+   * @param fileTypes - The file types that can be uploaded
+   * @returns A formatted string of file types
+   */
+  function generateFileTypesString(fileTypes: string[]) {
+    if (!fileTypes.length) return '';
+
+    // If the file type ends with /*, keep the part before the /*, otherwise convert it to an extension
+    fileTypes = fileTypes.map((fileType) => {
+      if (fileType.endsWith('/*')) return fileType.replace(/\/\*$/, '');
+      return `.${fileType.replace(/.*\//, '')}`;
+    });
+
+    // Remove duplicates
+    fileTypes = [...new Set(fileTypes)];
+
+    // Generate the string
+    if (fileTypes.length === 2) return fileTypes.join(' and ');
+    if (fileTypes.length > 2) {
+      return `${fileTypes.slice(0, -1).join(', ')}, and ${fileTypes.slice(-1)}`;
+    }
+    if (fileTypes.length === 1) return fileTypes[0];
+    return '';
+  }
+
+  const borderColor = isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : 'rgba(255, 255, 255, 0.09)';
+  const spacing = '20px';
+  const dashLength = '30px';
+  const borderWidth = '2px';
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        border: `1px dashed ${isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : alpha(Color.Grey, 0.4)}`,
-        background: isDragActive && !isDragReject ? alpha(Color.Brown, 0.05) : undefined,
-        cursor: 'pointer',
-        position: 'relative',
-        p: file ? 0 : 4,
-        borderRadius: 1,
-      }}
-      {...getRootProps()}
-    >
-      <input {...getInputProps()} />
+    <Box sx={{ position: 'relative' }}>
+      <Button
+        fullWidth
+        sx={{
+          m: 0.2,
+          p: 0,
+          borderRadius: '10px',
+          overflow: 'hidden',
+          textTransform: 'none',
+          color: Color.White,
+          backgroundImage: `repeating-linear-gradient(0deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(90deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(180deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(270deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength})`,
+          backgroundSize: `${borderWidth} 100%, 100% ${borderWidth}, ${borderWidth} 100%, 100% ${borderWidth}`,
+          backgroundPosition: '0 0, 0 0, 100% 0, 0 100%',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: '1 0 auto',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: isDragActive && !isDragReject ? alpha(Color.Brown, 0.05) : undefined,
+            overflow: 'hidden',
+            height: 200,
+          }}
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+
+          {file ? (
+            <>
+              {preview ? (
+                <>
+                  {store.media.isImage(file) && (
+                    <Box
+                      component="img"
+                      src={preview}
+                      alt="Preview"
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                    />
+                  )}
+
+                  {store.media.isVideo(file) && (
+                    <Box
+                      component="video"
+                      controls
+                      src={preview}
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                    />
+                  )}
+                </>
+              ) : (
+                file.name
+              )}
+            </>
+          ) : (
+            <>
+              <CloudUpload fontSize="large" htmlColor={Color.BrownLight} sx={{ mt: -2 }} />
+
+              <Typography variant="h4" sx={{ mt: 2 }}>
+                {isDragActive && !isDragReject && 'Drop the file here'}
+                {isDragReject && 'File type not accepted'}
+                {!isDragActive && 'Click to select or drag and drop'}
+              </Typography>
+
+              <Typography variant="caption">
+                {allowedFileTypes && `Only ${generateFileTypesString(allowedFileTypes)} files are allowed`}
+              </Typography>
+            </>
+          )}
+        </Box>
+      </Button>
 
       {progressVisible && (
         <CircularProgress
           color="success"
           variant="determinate"
           value={progress}
-          sx={{ position: 'absolute', top: 4, right: 4 }}
+          sx={{ position: 'absolute', top: 4, right: 4, zIndex: 1, pointerEvents: 'none' }}
         />
       )}
 
-      {file ? (
-        <>
-          <IconButton
-            onClick={handleDelete}
-            sx={{
-              position: 'absolute',
-              top: 4,
-              right: 4,
-              background: 'rgba(0, 0, 0, 0.6)',
-              '&:hover': { background: 'rgba(0, 0, 0, 0.8)' },
-            }}
-          >
-            <Delete color="error" />
-          </IconButton>
-
-          {preview ? (
-            <>
-              {store.media.isImage(file) && (
-                <img src={preview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-              )}
-
-              {store.media.isVideo(file) && (
-                <video controls src={preview} style={{ maxWidth: '100%', maxHeight: '100%' }} />
-              )}
-            </>
-          ) : (
-            file.name
-          )}
-        </>
-      ) : (
-        <>
-          <CloudUpload fontSize="large" htmlColor={Color.Brown} sx={{ margin: '0 auto' }} />
-
-          <Typography variant="h4" sx={{ mt: 2 }} align="center">
-            {isDragActive && !isDragReject && 'Drop the file here'}
-            {isDragReject && 'File type not accepted'}
-            {!isDragActive && 'Click to select or drag and drop'}
-          </Typography>
-        </>
+      {file && (
+        <IconButton
+          onClick={handleDelete}
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            background: 'rgba(0, 0, 0, 0.5)',
+            '&:hover': { background: 'rgba(0, 0, 0, 0.6)' },
+          }}
+        >
+          <Delete color="error" />
+        </IconButton>
       )}
     </Box>
   );

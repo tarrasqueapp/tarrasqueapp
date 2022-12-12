@@ -62,7 +62,25 @@ export class MapsController {
   @Put(':mapId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
-  updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
+  async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
+    // Check if media is being updated
+    if (data.mediaId) {
+      try {
+        // Check that the new media exists
+        await this.mediaService.getMedia(data.mediaId);
+        // Delete the old media
+        const media = await this.mediaService.deleteMedia(data.mediaId);
+        // Delete the files from the storage
+        await Promise.all([
+          this.storageService.delete(`${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`),
+          this.storageService.delete(`${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`),
+        ]);
+      } catch (e) {
+        // If the new media doesn't exist, delete the mediaId from the data
+        delete data.mediaId;
+      }
+    }
+    // Update the map
     return this.mapsService.updateMap(mapId, data);
   }
 

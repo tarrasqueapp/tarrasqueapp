@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { z } from 'zod';
 
 import { useSignIn } from '../../hooks/data/users/useSignIn';
+import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 export const SignIn: React.FC = () => {
@@ -14,8 +15,8 @@ export const SignIn: React.FC = () => {
 
   // Setup form validation schema
   const schema = z.object({
-    email: z.string().min(1).email(),
-    password: z.string().min(8),
+    email: ValidateUtils.Email,
+    password: ValidateUtils.Password,
   });
   type Schema = z.infer<typeof schema>;
 

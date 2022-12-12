@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
 import { SetupStep } from '../../lib/types';
+import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface IProps {
@@ -22,7 +23,7 @@ export const CreateCampaign: React.FC<IProps> = ({ onSubmit, onReset, isResettin
 
   // Setup form validation schema
   const schema = z.object({
-    name: z.string().min(1),
+    name: ValidateUtils.Name,
   });
   type Schema = z.infer<typeof schema>;
 
@@ -30,7 +31,7 @@ export const CreateCampaign: React.FC<IProps> = ({ onSubmit, onReset, isResettin
   const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   /**
@@ -51,7 +52,7 @@ export const CreateCampaign: React.FC<IProps> = ({ onSubmit, onReset, isResettin
         </Box>
 
         <Box sx={{ mt: 2 }}>
-          <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mr: 1 }}>
+          <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit" sx={{ mr: 1 }}>
             Continue
           </LoadingButton>
 

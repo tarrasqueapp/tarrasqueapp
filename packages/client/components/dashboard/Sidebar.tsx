@@ -1,25 +1,33 @@
 import { Add, ExitToApp } from '@mui/icons-material';
-import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import {
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Theme,
+  useMediaQuery,
+} from '@mui/material';
+import { observer } from 'mobx-react-lite';
 import NextLink from 'next/link';
+import { useCallback } from 'react';
 
-import { Color } from '../../lib/colors';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC = observer(() => {
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const ref = useCallback((node: HTMLDivElement) => store.dashboard.setSidebar(node), []);
+
   return (
     <Drawer
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: 240,
-          borderRadius: 0,
-          boxSizing: 'border-box',
-          background: Color.BlackLight,
-        },
-      }}
-      variant="permanent"
+      ref={ref}
+      sx={{ width: 250, '& .MuiDrawer-paper': { width: 250 } }}
+      open={store.dashboard.sidebarOpen}
+      onClose={() => store.dashboard.toggleSidebar(false)}
+      variant={isMobile ? 'temporary' : 'permanent'}
       anchor="left"
     >
       <Box sx={{ py: 2, textAlign: 'center' }}>
@@ -60,4 +68,4 @@ export const Sidebar: React.FC = () => {
       </Box>
     </Drawer>
   );
-};
+});

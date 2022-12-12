@@ -21,10 +21,6 @@ import NextLink from 'next/link';
 import { CampaignInterface, MapInterface } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
-import { MathUtils } from '../../utils/MathUtils';
-
-const MIN_WIDTH = 200;
-const MAX_HEIGHT = 200;
 
 interface IMapCardProps {
   map?: MapInterface;
@@ -32,19 +28,11 @@ interface IMapCardProps {
 }
 
 export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
-  const skeletonWidth = MathUtils.getRandomBetween(150, 300);
-
-  // Get the width and height of the map and calculate the aspect ratio
-  const mapWidth = map?.media.width ?? skeletonWidth;
-  const mapHeight = map?.media.height ?? MAX_HEIGHT;
-  const aspectRatio = mapWidth / mapHeight;
-
-  // Calculate the new dimensions based on the aspect ratio, minimum width, and max height
-  const width = Math.min(Math.max(mapWidth, MIN_WIDTH), MAX_HEIGHT * aspectRatio);
-  const height = width / aspectRatio;
+  const width = 250;
+  const height = 200;
 
   return (
-    <Card sx={{ position: 'relative', width, height: height }}>
+    <Card sx={{ position: 'relative', width, height }}>
       {map ? (
         <>
           <NextLink href="/map/[mapId]" as={`/map/${map?.id}`} passHref legacyBehavior>
@@ -57,6 +45,7 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
+                    objectPosition: 'top',
                     position: 'absolute',
                     inset: 0,
                   }}
@@ -75,7 +64,7 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
               background: 'rgba(0, 0, 0, 0.65)',
             }}
           >
-            <Typography variant="body2" sx={{ wordBreak: 'break-all', mr: 1, maxWidth: 300 }}>
+            <Typography variant="body2" sx={{ wordBreak: 'break-all', mr: 0.5 }}>
               {map.name}
             </Typography>
 

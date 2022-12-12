@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -11,6 +11,7 @@ import { useUpdateCampaign } from '../../hooks/data/campaigns/useUpdateCampaign'
 import { CampaignFactory } from '../../lib/factories/CampaignFactory';
 import { CampaignInterface } from '../../lib/types';
 import { store } from '../../store';
+import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface IAddEditCampaignModalProps {
@@ -23,9 +24,11 @@ export const AddEditCampaignModal: React.FC<IAddEditCampaignModalProps> = observ
   const createCampaign = useCreateCampaign();
   const updateCampaign = useUpdateCampaign();
 
+  const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
   // Setup form validation schema
   const schema = z.object({
-    name: z.string().min(1),
+    name: ValidateUtils.Name,
   });
   type Schema = z.infer<typeof schema>;
 
@@ -38,7 +41,7 @@ export const AddEditCampaignModal: React.FC<IAddEditCampaignModalProps> = observ
   const {
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   // Reset the form when the campaign changes
@@ -62,10 +65,13 @@ export const AddEditCampaignModal: React.FC<IAddEditCampaignModalProps> = observ
   }
 
   return (
-    <Dialog fullWidth maxWidth="xs" onClose={onClose} open={open}>
+    <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(handleSubmitForm)}>
-          <DialogTitle>{campaign?.name || 'Add Campaign'}</DialogTitle>
+        <form
+          onSubmit={handleSubmit(handleSubmitForm)}
+          style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
+        >
+          <DialogTitle>{campaign ? 'Edit Campaign' : 'Add Campaign'}</DialogTitle>
 
           <DialogContent>
             <ControlledTextField size="small" name="name" label="Name" autoFocus fullWidth />
@@ -74,7 +80,7 @@ export const AddEditCampaignModal: React.FC<IAddEditCampaignModalProps> = observ
           <DialogActions>
             <Button onClick={onClose}>Cancel</Button>
 
-            <LoadingButton loading={isSubmitting} variant="contained" type="submit">
+            <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit">
               Submit
             </LoadingButton>
           </DialogActions>

@@ -26,14 +26,14 @@ export const MapContextMenu: React.FC = observer(() => {
    */
   function getBoundingClientRect() {
     return {
-      x: store.maps.contextMenuAnchorPoint.x,
-      y: store.maps.contextMenuAnchorPoint.y,
+      x: store.map.contextMenuAnchorPoint.x,
+      y: store.map.contextMenuAnchorPoint.y,
       width,
       height: 0,
-      top: store.maps.contextMenuAnchorPoint.y,
+      top: store.map.contextMenuAnchorPoint.y,
       right: 0,
       bottom: 0,
-      left: store.maps.contextMenuAnchorPoint.x,
+      left: store.map.contextMenuAnchorPoint.x,
       toJSON: () => null,
     };
   }
@@ -42,12 +42,12 @@ export const MapContextMenu: React.FC = observer(() => {
    * Ping the location
    */
   function handlePingLocation() {
-    store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.maps.contextMenuAnchorPoint });
-    store.maps.setContextMenuVisible(false);
+    store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.map.contextMenuAnchorPoint });
+    store.map.setContextMenuVisible(false);
   }
 
   return (
-    <Popper open={store.maps.contextMenuVisible} anchorEl={{ getBoundingClientRect }} transition>
+    <Popper open={store.map.contextMenuVisible} anchorEl={{ getBoundingClientRect }} transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper>

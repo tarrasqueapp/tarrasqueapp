@@ -13,13 +13,13 @@ interface IMapNewProps {
 export const MapNew: React.FC<IMapNewProps> = ({ campaign }) => {
   const borderColor = Color.BrownDark;
   const spacing = '20px';
-  const dashLength = '40px';
-  const borderWidth = '3px';
+  const dashLength = '30px';
+  const borderWidth = '2px';
 
   return (
     <Paper
       sx={{
-        width: 200,
+        width: 250,
         height: 200,
         display: 'flex',
         backgroundImage: `repeating-linear-gradient(0deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(90deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(180deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength}), repeating-linear-gradient(270deg, ${borderColor}, ${borderColor} ${spacing}, transparent ${spacing}, transparent ${dashLength}, ${borderColor} ${dashLength})`,

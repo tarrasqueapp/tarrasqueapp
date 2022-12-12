@@ -25,6 +25,7 @@ export const MapModals: React.FC = observer(() => {
       />
 
       <ConfirmModal
+        title="Delete Map"
         open={store.maps.modal === MapModal.Remove}
         onConfirm={async () => {
           if (!store.maps.selectedMap) return;
@@ -37,7 +38,10 @@ export const MapModals: React.FC = observer(() => {
             store.campaigns.setSelectedCampaign(null);
           }, 100);
         }}
-      />
+      >
+        You&apos;re about to delete the map &quot;<strong>{store.maps.selectedMap?.name}</strong>&quot;. This can NOT be
+        undone.
+      </ConfirmModal>
     </>
   );
 });

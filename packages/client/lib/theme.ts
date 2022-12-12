@@ -1,8 +1,8 @@
-import { createTheme } from '@mui/material/styles';
+import { alpha, createTheme, filledInputClasses, formLabelClasses, responsiveFontSizes } from '@mui/material';
 
 import { Color } from './colors';
 
-export const theme = createTheme({
+export let theme = createTheme({
   palette: {
     mode: 'dark',
     primary: { main: Color.Brown },
@@ -18,6 +18,7 @@ export const theme = createTheme({
     h4: { fontSize: 16 },
   },
   components: {
+    // Global
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -36,16 +37,37 @@ export const theme = createTheme({
         },
       },
     },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          transform: 'scale(1)',
+        },
+      },
+    },
+    // Navigation
     MuiAppBar: {
       styleOverrides: {
         root: {
           borderRadius: 0,
-          background: Color.BrownVeryDark,
+          background: alpha(Color.BlackLight, 0.9),
           boxShadow: 'none',
           borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
         },
       },
     },
+    MuiDrawer: {
+      styleOverrides: {
+        root: {
+          flexShrink: 0,
+        },
+        paper: {
+          borderRadius: 0,
+          boxSizing: 'border-box',
+          background: alpha(Color.BlackLight, 0.9),
+        },
+      },
+    },
+    // Forms
     MuiButton: {
       styleOverrides: {
         root: {
@@ -58,16 +80,46 @@ export const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          borderRadius: '10px 10px 0 0 !important',
+          borderRadius: '10px !important',
         },
       },
     },
-    MuiSkeleton: {
+    MuiTextField: {
+      defaultProps: {
+        variant: 'filled',
+      },
       styleOverrides: {
         root: {
-          transform: 'scale(1)',
+          [`& .${filledInputClasses.root}`]: {
+            '&::before, &::after': {
+              border: 'none !important',
+            },
+          },
+        },
+      },
+    },
+    // Dialogs
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          display: 'flex',
+          flex: '1 0 auto',
+          [`& .${filledInputClasses.focused}`]: {
+            [`&.${formLabelClasses.root}`]: {
+              color: Color.BrownLight,
+            },
+          },
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontWeight: 'bold',
         },
       },
     },
   },
 });
+
+theme = responsiveFontSizes(theme);

@@ -66,7 +66,7 @@ export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, 
    */
   function handleBeforeSingleClick() {
     console.debug('Before Single Click.');
-    store.maps.setContextMenuVisible(false);
+    store.map.setContextMenuVisible(false);
   }
 
   /**
@@ -92,10 +92,10 @@ export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, 
    */
   function handleRightClick(event: PIXI.InteractionEvent) {
     console.debug('Right Click.', event.data.global);
-    store.maps.setContextMenuVisible(false);
+    store.map.setContextMenuVisible(false);
     // Update the app state with the global coordinates of the right click event
-    store.maps.setContextMenuAnchorPoint(event.data.global.x, event.data.global.y);
-    store.maps.setContextMenuVisible(true);
+    store.map.setContextMenuAnchorPoint(event.data.global.x, event.data.global.y);
+    store.map.setContextMenuVisible(true);
   }
 
   return (

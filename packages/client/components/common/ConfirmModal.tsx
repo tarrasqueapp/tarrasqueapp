@@ -1,5 +1,14 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Theme,
+  useMediaQuery,
+} from '@mui/material';
 import React, { useState } from 'react';
 
 export interface IConfirmModalProps {
@@ -12,6 +21,7 @@ export interface IConfirmModalProps {
 
 export const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, onConfirm, onClose, title, children }) => {
   const [loading, setLoading] = useState(false);
+  const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   /**
    * Set the loading state and call the onConfirm function
@@ -24,7 +34,7 @@ export const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, onConfirm, on
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog fullScreen={fullScreen} open={open} onClose={onClose}>
       <DialogTitle>{title || 'Are you sure?'}</DialogTitle>
 
       <DialogContent>

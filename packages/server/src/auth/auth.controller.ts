@@ -57,9 +57,9 @@ export class AuthController {
   /**
    * Register a new user
    */
-  @Post('register')
+  @Post('sign-up')
   @ApiOkResponse({ type: UserEntity })
-  register(@Body() data: CreateUserDto): Promise<UserEntity> {
+  signUp(@Body() data: CreateUserDto): Promise<UserEntity> {
     return this.usersService.createUser({ ...data, roles: [Role.USER] });
   }
 
@@ -89,7 +89,7 @@ export class AuthController {
   @Post('sign-out')
   @ApiBearerAuth()
   @ApiOkResponse({ type: null })
-  async signOut(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
+  signOut(@Req() req: Request, @Res({ passthrough: true }) res: Response): void {
     // Get current refresh token
     const refreshToken = req.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
     // Set cookies

@@ -9,6 +9,7 @@ import { useCreateSetupUser } from '../../hooks/data/setup/useCreateSetupUser';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
 import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { SetupStep } from '../../lib/types';
+import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface IProps {
@@ -22,9 +23,9 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
 
   // Setup form validation schema
   const schema = z.object({
-    name: z.string().min(1),
-    email: z.string().min(1).email(),
-    password: z.string().min(8),
+    name: ValidateUtils.Name,
+    email: ValidateUtils.Email,
+    password: ValidateUtils.Password,
   });
   type Schema = z.infer<typeof schema>;
 
@@ -32,7 +33,7 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
   const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   /**
@@ -55,7 +56,7 @@ export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
           <ControlledTextField size="small" name="password" label="Password" type="password" sx={{ my: 1 }} />
         </Box>
 
-        <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mt: 2 }}>
+        <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit" sx={{ mt: 2 }}>
           Continue
         </LoadingButton>
       </form>

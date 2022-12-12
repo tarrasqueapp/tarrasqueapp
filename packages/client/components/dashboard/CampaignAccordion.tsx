@@ -1,5 +1,6 @@
 import { Delete, Edit, ExpandMore, MoreHoriz } from '@mui/icons-material';
 import {
+  AccordionActions,
   AccordionProps,
   AccordionSummaryProps,
   Box,
@@ -45,12 +46,12 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   '&.Mui-expanded': {
     borderRadius: '10px 10px 0 0',
   },
-  backgroundColor: 'rgba(0, 0, 0, .03)',
+  backgroundColor: 'rgba(0, 0, 0, 0.03)',
 });
 
 const AccordionDetails = styled(MuiAccordionDetails)({
   padding: 0,
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
+  borderTop: '1px solid rgba(0, 0, 0, 0.125)',
 });
 
 export interface ICampaignAccordionProps {
@@ -65,19 +66,19 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
   return (
     <Accordion expanded={campaign ? expanded : true} onChange={(event, expanded) => onToggle?.(expanded)}>
       <AccordionSummary>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: '1 0 auto' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h3">
-              {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 300)} />}
-            </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <Typography variant="h3">
+            {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 300)} />}
+          </Typography>
 
-            <Typography variant="caption">
-              {maps ? maps.length : <Skeleton width={10} sx={{ display: 'inline-block' }} />} map
-              {!maps || maps.length === 1 ? '' : 's'}
-            </Typography>
-          </Box>
+          <Typography variant="caption">
+            {maps ? maps.length : <Skeleton width={10} sx={{ display: 'inline-block' }} />} map
+            {!maps || maps.length === 1 ? '' : 's'}
+          </Typography>
+        </Box>
 
-          <Box onClick={(event) => event.stopPropagation()}>
+        <AccordionActions>
+          <Box sx={{ display: 'flex' }} onClick={(event) => event.stopPropagation()}>
             <Tooltip title="Edit">
               <IconButton
                 onClick={() => {
@@ -123,11 +124,20 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
               )}
             </PopupState>
           </Box>
-        </Box>
+        </AccordionActions>
       </AccordionSummary>
 
       <AccordionDetails>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', p: 3, gap: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: { xs: 'center', md: 'inherit' },
+            p: 3,
+            gap: 3,
+          }}
+        >
           <MapNew campaign={campaign || null} />
 
           {maps ? (

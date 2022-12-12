@@ -19,6 +19,24 @@ export class MediaService {
   constructor(private prisma: PrismaService) {}
 
   /**
+   * Get a media by its id
+   * @param mediaId - The media id
+   * @returns The media
+   */
+  async getMedia(mediaId: string): Promise<MediaEntity> {
+    this.logger.verbose(`📂 Getting media "${mediaId}"`);
+    try {
+      // Get the media
+      const media = await this.prisma.media.findUnique({ where: { id: mediaId } });
+      this.logger.debug(`✅️ Got media "${mediaId}"`);
+      return media;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
    * Create a new media
    * @param data - The media data
    * @param createdById - The user id

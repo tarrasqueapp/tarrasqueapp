@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -12,6 +12,7 @@ import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { MapFactory } from '../../lib/factories/MapFactory';
 import { CampaignInterface, MapInterface } from '../../lib/types';
 import { store } from '../../store';
+import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledUploader } from '../form/ControlledUploader';
 
@@ -27,17 +28,12 @@ export const AddEditMapModal: React.FC<IAddEditMapModalProps> = observer(({ open
   const createMedia = useCreateMedia();
   const updateMap = useUpdateMap();
 
+  const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
   // Setup form validation schema
   const schema = z.object({
-    name: z.string().min(1),
-    file: z.object({
-      name: z.string().min(1),
-      type: z.string().min(1),
-      extension: z.string().min(1),
-      size: z.number().min(1),
-      width: z.number(),
-      height: z.number(),
-    }),
+    name: ValidateUtils.Name,
+    media: z.union([ValidateUtils.File, ValidateUtils.Media]),
   });
   type Schema = z.infer<typeof schema>;
 
@@ -50,7 +46,7 @@ export const AddEditMapModal: React.FC<IAddEditMapModalProps> = observer(({ open
   const {
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   // Reset the form when the map changes
@@ -66,34 +62,46 @@ export const AddEditMapModal: React.FC<IAddEditMapModalProps> = observer(({ open
     if (!campaign) return;
 
     if (map) {
-      await updateMap.mutateAsync({ name: values.name, id: map.id, campaignId: campaign.id });
+      const media = ValidateUtils.File.safeParse(values.media).success
+        ? await createMedia.mutateAsync(values.media)
+        : null;
+
+      await updateMap.mutateAsync({
+        name: values.name,
+        id: map.id,
+        campaignId: campaign.id,
+        ...(media && { mediaId: media.id }),
+      });
       onClose();
       return;
     }
 
-    const media = await createMedia.mutateAsync(values.file);
+    const media = await createMedia.mutateAsync(values.media);
     await createMap.mutateAsync({ name: values.name, mediaId: media.id, campaignId: campaign.id });
     onClose();
   }
 
   return (
-    <Dialog fullWidth maxWidth="xs" onClose={onClose} open={open}>
+    <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(handleSubmitForm)}>
-          <DialogTitle>{map?.name || 'Add Map'}</DialogTitle>
+        <form
+          onSubmit={handleSubmit(handleSubmitForm)}
+          style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
+        >
+          <DialogTitle>{map ? 'Edit Map' : 'Add Map'}</DialogTitle>
 
           <DialogContent>
             <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
 
             <Box sx={{ my: 1 }}>
-              <ControlledUploader name="file" allowedFileTypes={['image/*', 'video/*']} />
+              <ControlledUploader name="media" allowedFileTypes={['image/*', 'video/*']} />
             </Box>
           </DialogContent>
 
           <DialogActions>
             <Button onClick={onClose}>Cancel</Button>
 
-            <LoadingButton loading={isSubmitting} variant="contained" type="submit">
+            <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit">
               Submit
             </LoadingButton>
           </DialogActions>

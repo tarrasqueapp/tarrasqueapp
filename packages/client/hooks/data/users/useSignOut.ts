@@ -21,7 +21,7 @@ export function useSignOut() {
 
   return useMutation(() => signOut(), {
     onSuccess: () => {
-      queryClient.clear();
+      setTimeout(() => queryClient.clear(), 100);
     },
   });
 }

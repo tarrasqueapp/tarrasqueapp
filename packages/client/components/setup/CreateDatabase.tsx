@@ -42,6 +42,7 @@ export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
       <LoadingButton loading={isSubmitting} variant="contained" type="submit">
         Continue
       </LoadingButton>
+
       <Typography variant="caption" component="div">
         This might take a couple minutes
       </Typography>
