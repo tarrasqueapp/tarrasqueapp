@@ -57,15 +57,15 @@ jobs:
           file: ${{ env.DOCKERFILE }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
-            HOST="https://${{ inputs.ENVIRONMENT_URL }}"
-            NODE_ENV="${{ secrets.NODE_ENV }}"
-            JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}"
-            SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}"
-            SENTRY_DSN="${{ secrets.SENTRY_DSN }}"
-            SENTRY_URL="${{ secrets.SENTRY_URL }}"
-            SENTRY_ORG="${{ secrets.SENTRY_ORG }}"
-            SENTRY_PROJECT="${{ secrets.SENTRY_PROJECT }}"
-            SENTRY_AUTH_TOKEN="${{ secrets.SENTRY_AUTH_TOKEN }}"
+            HOST=https://${{ inputs.ENVIRONMENT_URL }}
+            NODE_ENV=${{ secrets.NODE_ENV }}
+            JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
+            SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            SENTRY_URL=${{ secrets.SENTRY_URL }}
+            SENTRY_ORG=${{ secrets.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max

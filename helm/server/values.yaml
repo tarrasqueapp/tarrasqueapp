@@ -46,31 +46,31 @@ env:
   - name: VERSION
     value: "1.0.0"
   - name: HOST
-    value: https://cloud.tarrasque.app
+    value: "https://cloud.tarrasque.app"
   - name: NODE_ENV
-    value: production
+    value: "production"
   - name: VERBOSE
     value: "true"
   - name: COOKIE_SECRET
     value: ""
   - name: JWT_ACCESS_TOKEN_NAME
-    value: Authentication
+    value: "Authentication"
   - name: JWT_ACCESS_TOKEN_SECRET
     value: ""
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
-    value: 5m
+    value: "5m"
   - name: JWT_REFRESH_TOKEN_NAME
-    value: Refresh
+    value: "Refresh"
   - name: JWT_REFRESH_TOKEN_SECRET
     value: ""
   - name: JWT_REFRESH_TOKEN_EXPIRATION_TIME
-    value: 7d
+    value: "7d"
   - name: SENTRY_ENABLED
     value: "true"
   - name: SENTRY_DSN
     value: ""
   - name: STORAGE_PROVIDER
-    value: s3
+    value: "s3"
   - name: STORAGE_S3_BUCKET
     value: ""
   - name: STORAGE_S3_ACCESS_KEY_ID
