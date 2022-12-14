@@ -1,0 +1,26 @@
+name: '[STAGING] Deploy client'
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - '.github/workflows/deploy-client*.yaml'
+      - 'helm/client/**'
+      - 'packages/client/**'
+
+jobs:
+  deploy-client:
+    uses: ./.github/workflows/deploy-client-base.yaml
+
+    with:
+      ENVIRONMENT: staging
+      ENVIRONMENT_URL: staging-cloud.tarrasque.app
+      KUBE_NAMESPACE: staging-client
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-staging" \
+        --set ingress.hosts[0].host="staging-cloud.tarrasque.app",ingress.hosts[0].paths[0].path="/",ingress.hosts[0].paths[0].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-client",ingress.tls[0].hosts[0]="staging-cloud.tarrasque.app" \
+
+    secrets: inherit

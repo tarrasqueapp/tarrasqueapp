@@ -22,6 +22,11 @@ export default class MyDocument extends Document<IProps> {
           <meta name="description" content="Tarrasque App" />
           <meta name="keywords" content="Tarrasque App" />
 
+          {/* Don't index on staging environment */}
+          {/* {!EnvironmentUtils.isProduction() && <meta name="robots" content="noindex,nofollow" />} */}
+          {/* TODO: Change on launch */}
+          <meta name="robots" content="noindex,nofollow" />
+
           {/* Android */}
           <meta name="theme-color" content={Color.Brown} />
           <meta name="mobile-web-app-capable" content="yes" />
@@ -31,7 +36,7 @@ export default class MyDocument extends Document<IProps> {
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-          {/* Manifest.json */}
+          {/* Manifest */}
           <link href="/manifest.json" rel="manifest" crossOrigin="use-credentials" />
 
           {/* Facebook */}

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.digitalocean.com/tarrasque/client
+  repository: registry.digitalocean.com/tarrasque/server
   pullPolicy: Always
   tag: production
 
@@ -33,10 +33,12 @@ ingress:
   hosts:
     - host: cloud.tarrasque.app
       paths:
-        - path: /
+        - path: /api
+          pathType: Prefix
+        - path: /socket.io
           pathType: Prefix
   tls:
-    - secretName: tls-secret-client
+    - secretName: tls-secret-server
       hosts:
         - cloud.tarrasque.app
 
@@ -47,11 +49,41 @@ env:
     value: https://cloud.tarrasque.app
   - name: NODE_ENV
     value: production
+  - name: VERBOSE
+    value: "true"
+  - name: COOKIE_SECRET
+    value: ""
+  - name: JWT_ACCESS_TOKEN_NAME
+    value: Authentication
+  - name: JWT_ACCESS_TOKEN_SECRET
+    value: ""
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
     value: 5m
+  - name: JWT_REFRESH_TOKEN_NAME
+    value: Refresh
+  - name: JWT_REFRESH_TOKEN_SECRET
+    value: ""
+  - name: JWT_REFRESH_TOKEN_EXPIRATION_TIME
+    value: 7d
   - name: SENTRY_ENABLED
     value: "true"
   - name: SENTRY_DSN
+    value: ""
+  - name: STORAGE_PROVIDER
+    value: s3
+  - name: STORAGE_S3_BUCKET
+    value: ""
+  - name: STORAGE_S3_ACCESS_KEY_ID
+    value: ""
+  - name: STORAGE_S3_SECRET_ACCESS_KEY
+    value: ""
+  - name: STORAGE_S3_REGION
+    value: ""
+  - name: STORAGE_S3_ENDPOINT
+    value: ""
+  - name: STORAGE_S3_URL
+    value: ""
+  - name: FFMPEG_PATH
     value: ""
 
 resources: {}

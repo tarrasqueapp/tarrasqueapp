@@ -21,14 +21,14 @@
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.111",
     "@mui/material": "^5.10.17",
-    "@sentry/nextjs": "^7.24.2",
-    "@sentry/tracing": "^7.24.2",
+    "@sentry/nextjs": "^7.25.0",
+    "@sentry/tracing": "^7.25.0",
     "@tanstack/react-query": "^4.19.1",
     "@tanstack/react-query-devtools": "^4.19.1",
     "@uppy/core": "^3.0.4",
     "@uppy/tus": "^3.0.5",
     "axios": "^0.27.2",
-    "material-ui-popup-state": "^4.1.0",
+    "material-ui-popup-state": "^5.0.3",
     "mobx": "^6.7.0",
     "mobx-react-lite": "^3.4.0",
     "next": "^13.0.6",
@@ -39,15 +39,15 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.40.0",
     "react-hot-toast": "^2.4.0",
-    "react-hotkeys-hook": "^4.0.4",
+    "react-hotkeys-hook": "^4.0.6",
     "react-pixi-fiber": "^1.0.4",
     "socket.io-client": "^4.5.4",
     "use-local-storage": "^2.3.6",
-    "zod": "^3.19.1"
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",
-    "@types/node": "^18.11.11",
+    "@types/node": "^18.11.13",
     "@types/react": "^18.0.26",
     "typescript": "^4.9.4"
   }

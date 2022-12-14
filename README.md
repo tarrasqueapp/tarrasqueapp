@@ -56,29 +56,13 @@ Browse the database using the Prisma Studio.
 
 # Kubernetes
 
-Create a secret for the registry:
+Install `client`:
 
-    doctl registry kubernetes-manifest | kubectl apply -f -
+    helm upgrade -i client ./helm/client -n production-client --create-namespace
 
-Create a secret for Cloudflare:
+Install `server`:
 
-    kubectl create secret generic cloudflare-api-token-secret --from-literal="api-token=<CLOUDFLARE_API_TOKEN>" -n cert-manager
-
-Delete deployments
-
-    helm delete cert-manager -n cert-manager
-    helm delete ingress-nginx -n ingress-nginx
-    helm delete client -n client
-
-    kubectl delete namespace cert-manager
-    kubectl delete namespace ingress-nginx
-    kubectl delete namespace client
-
-Install helm charts:
-
-    helm upgrade -i cert-manager ./helm/cert-manager -n cert-manager --create-namespace
-    helm upgrade -i ingress-nginx ./helm/ingress-nginx -n ingress-nginx --create-namespace
-    helm upgrade -i client ./helm/client -n client --create-namespace
+    helm upgrade -i server ./helm/server -n production-server --create-namespace
 
 # PWA Assets
 
@@ -87,3 +71,21 @@ PWA assets are generated from the `packages/client/public/images/logo.svg` file 
 Run the following command to generate the PWA assets:
 
     ./bin/generate-pwa-assets.sh
+
+## Useful commands
+
+Check for helm chart updates:
+
+    helm repo update
+
+Update helm chart dependencies:
+
+    helm dependency update ./helm/client
+
+Delete deployments
+
+    helm delete client -n production-client
+    helm delete server -n production-server
+
+    kubectl delete namespace production-client
+    kubectl delete namespace production-server
