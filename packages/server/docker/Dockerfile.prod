@@ -34,12 +34,13 @@ COPY packages/server/prisma prisma
 
 RUN yarn install --pure-lockfile --production
 
-USER node
-
 COPY --from=builder --chown=node:node /app/dist ./dist
 COPY --from=builder --chown=node:node /app/src ./src
+COPY --from=builder --chown=node:node /app/prisma ./prisma
 
 RUN yarn prisma generate
+
+USER node
 
 COPY package.json /home/node/
 RUN jq -r .version /home/node/package.json > /home/node/.version
