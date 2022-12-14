@@ -6,7 +6,7 @@ image:
   tag: production
 
 imagePullSecrets:
-  - name: registry
+  - name: tarrasque
 nameOverride: ""
 fullnameOverride: ""
 
