@@ -57,26 +57,26 @@ jobs:
           file: ${{ env.DOCKERFILE }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
-            HOST="https://${{ inputs.ENVIRONMENT_URL }}"
-            NODE_ENV="${{ secrets.NODE_ENV }}"
-            VERBOSE="${{ secrets.VERBOSE }}"
-            COOKIE_SECRET="${{ secrets.COOKIE_SECRET }}"
-            JWT_ACCESS_TOKEN_NAME="${{ secrets.JWT_ACCESS_TOKEN_NAME }}"
-            JWT_ACCESS_TOKEN_SECRET="${{ secrets.JWT_ACCESS_TOKEN_SECRET }}"
-            JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}"
-            JWT_REFRESH_TOKEN_NAME="${{ secrets.JWT_REFRESH_TOKEN_NAME }}"
-            JWT_REFRESH_TOKEN_SECRET="${{ secrets.JWT_REFRESH_TOKEN_SECRET }}"
-            JWT_REFRESH_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}"
-            SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}"
-            SENTRY_DSN="${{ secrets.SENTRY_DSN }}"
-            STORAGE_PROVIDER="${{ secrets.STORAGE_PROVIDER }}"
-            STORAGE_S3_BUCKET="${{ secrets.STORAGE_S3_BUCKET }}"
-            STORAGE_S3_ACCESS_KEY_ID="${{ secrets.STORAGE_S3_ACCESS_KEY_ID }}"
-            STORAGE_S3_SECRET_ACCESS_KEY="${{ secrets.STORAGE_S3_SECRET_ACCESS_KEY }}"
-            STORAGE_S3_REGION="${{ secrets.STORAGE_S3_REGION }}"
-            STORAGE_S3_ENDPOINT="${{ secrets.STORAGE_S3_ENDPOINT }}"
-            STORAGE_S3_URL="${{ secrets.STORAGE_S3_URL }}"
-            FFMPEG_PATH="${{ secrets.FFMPEG_PATH }}"
+            HOST=https://${{ inputs.ENVIRONMENT_URL }}
+            NODE_ENV=${{ secrets.NODE_ENV }}
+            VERBOSE=${{ secrets.VERBOSE }}
+            COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
+            JWT_ACCESS_TOKEN_NAME=${{ secrets.JWT_ACCESS_TOKEN_NAME }}
+            JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
+            JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
+            JWT_REFRESH_TOKEN_NAME=${{ secrets.JWT_REFRESH_TOKEN_NAME }}
+            JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
+            JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}
+            SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            STORAGE_PROVIDER=${{ secrets.STORAGE_PROVIDER }}
+            STORAGE_S3_BUCKET=${{ secrets.STORAGE_S3_BUCKET }}
+            STORAGE_S3_ACCESS_KEY_ID=${{ secrets.STORAGE_S3_ACCESS_KEY_ID }}
+            STORAGE_S3_SECRET_ACCESS_KEY=${{ secrets.STORAGE_S3_SECRET_ACCESS_KEY }}
+            STORAGE_S3_REGION=${{ secrets.STORAGE_S3_REGION }}
+            STORAGE_S3_ENDPOINT=${{ secrets.STORAGE_S3_ENDPOINT }}
+            STORAGE_S3_URL=${{ secrets.STORAGE_S3_URL }}
+            FFMPEG_PATH=${{ secrets.FFMPEG_PATH }}
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max

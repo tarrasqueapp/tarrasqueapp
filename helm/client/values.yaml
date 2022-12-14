@@ -44,11 +44,11 @@ env:
   - name: VERSION
     value: "1.0.0"
   - name: HOST
-    value: https://cloud.tarrasque.app
+    value: "https://cloud.tarrasque.app"
   - name: NODE_ENV
-    value: production
+    value: "production"
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
-    value: 5m
+    value: "5m"
   - name: SENTRY_ENABLED
     value: "true"
   - name: SENTRY_DSN

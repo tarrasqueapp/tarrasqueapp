@@ -49,10 +49,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- range $name, $value := .Values.env }}
+          {{- range $name, $value := .Values.env }}
             - name: {{ $name }}
-              value: {{ $value }}
-            {{- end }}
+              value: {{ $value | quote }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
