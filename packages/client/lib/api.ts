@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+import { config } from './config';
+
 export const api = axios.create({
-  baseURL: typeof window !== 'undefined' ? '' : `http://server:3000`,
+  baseURL: typeof window !== 'undefined' ? '' : config.SERVER_URL,
 });
 
 // Always return a readable error message

@@ -58,6 +58,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
             HOST=https://${{ inputs.ENVIRONMENT_URL }}
+            SERVER_URL=${{ secrets.SERVER_URL }}
             NODE_ENV=${{ secrets.NODE_ENV }}
             JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
             SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
@@ -78,6 +79,7 @@ jobs:
           helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
             --set image.tag=${{ inputs.ENVIRONMENT }} \
             --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
+            --set env.SERVER_URL="${{ secrets.SERVER_URL }}" \
             --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
             --set env.JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" \
             --set env.SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}" \
