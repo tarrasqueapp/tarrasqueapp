@@ -20,7 +20,7 @@ jobs:
       KUBE_NAMESPACE: staging-server
       HELM_ARGS: |
         --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-staging" \
-        --set ingress.hosts[0].host="staging-cloud.tarrasque.app",ingress.hosts[0].paths[0].path="/api",ingress.hosts[0].paths[0].pathType="Prefix",ingress.hosts[0].paths[1].path="/socket.io",ingress.hosts[0].paths[1].pathType="Prefix" \
+        --set ingress.hosts[0].host="staging-cloud.tarrasque.app",ingress.hosts[0].paths[0].path="/api(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix",ingress.hosts[0].paths[1].path="/socket.io(/|$)(.*)",ingress.hosts[0].paths[1].pathType="Prefix" \
         --set ingress.tls[0].secretName="tls-secret-server",ingress.tls[0].hosts[0]="staging-cloud.tarrasque.app" \
 
     secrets: inherit
