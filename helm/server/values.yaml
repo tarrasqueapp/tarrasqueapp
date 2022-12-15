@@ -30,13 +30,13 @@ ingress:
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
   hosts:
     - host: cloud.tarrasque.app
       paths:
-        - path: /api(/|$)(.*)
+        - path: /api
           pathType: Prefix
-        - path: /socket.io(/|$)(.*)
+        - path: /socket.io
           pathType: Prefix
   tls:
     - secretName: tls-secret-server
