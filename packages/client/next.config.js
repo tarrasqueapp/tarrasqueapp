@@ -7,7 +7,6 @@ const nextConfig = {
     VERSION: process.env.VERSION,
     // URL
     HOST: process.env.HOST,
-    SERVER_URL: process.env.SERVER_URL,
     // Authentication
     JWT_ACCESS_TOKEN_EXPIRATION_TIME: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
     // Sentry
