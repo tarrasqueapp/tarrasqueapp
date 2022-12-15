@@ -15,7 +15,9 @@ serviceAccount:
   annotations: {}
   name: ""
 
-podAnnotations: {}
+podAnnotations:
+  # Key to store randomized chart Id to force redeployment
+  randomChartId: ''
 
 podSecurityContext: {}
 
@@ -33,7 +35,7 @@ ingress:
   hosts:
     - host: cloud.tarrasque.app
       paths:
-        - path: /
+        - path: /()(.*)
           pathType: Prefix
   tls:
     - secretName: tls-secret-client
