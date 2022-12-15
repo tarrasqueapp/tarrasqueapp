@@ -33,7 +33,7 @@ ingress:
   hosts:
     - host: cloud.tarrasque.app
       paths:
-        - path: /()(.*)
+        - path: /
           pathType: Prefix
   tls:
     - secretName: tls-secret-client
