@@ -33,9 +33,9 @@ ingress:
   hosts:
     - host: cloud.tarrasque.app
       paths:
-        - path: /api
+        - path: /api(/|$)(.*)
           pathType: Prefix
-        - path: /socket.io
+        - path: /socket.io(/|$)(.*)
           pathType: Prefix
   tls:
     - secretName: tls-secret-server

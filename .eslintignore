@@ -18,6 +18,7 @@ build
 dist
 tsconfig.tsbuildinfo
 
-### Custom ###
+# Custom
 /data
+/helm
 packages/client/.sentryclirc

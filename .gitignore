@@ -18,6 +18,6 @@ build
 dist
 tsconfig.tsbuildinfo
 
-### Custom ###
+# Custom
 /data
 packages/client/.sentryclirc
