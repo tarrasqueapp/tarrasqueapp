@@ -34,7 +34,7 @@ export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
       </Typography>
 
       <Typography paragraph>
-        Tarrasque is a free, mobile-friendly, and open-source virtual tabletop for playing Dungeons &amp; Dragons.
+        Tarrasque is a free, open-source, and mobile-friendly virtual tabletop for playing Dungeons &amp; Dragons.
       </Typography>
 
       <Typography paragraph>Ready to get started? First, {`let's`} initialize the database.</Typography>

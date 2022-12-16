@@ -51,6 +51,8 @@ env:
     value: "1.0.0"
   - name: HOST
     value: "https://cloud.tarrasque.app"
+  - name: LANDING_URL
+    value: "https://tarrasque.app"
   - name: NODE_ENV
     value: "production"
   - name: VERBOSE
@@ -86,6 +88,8 @@ env:
   - name: STORAGE_S3_ENDPOINT
     value: ""
   - name: STORAGE_S3_URL
+    value: ""
+  - name: DATABASE_URL
     value: ""
   - name: FFMPEG_PATH
     value: ""

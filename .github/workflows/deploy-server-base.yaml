@@ -58,6 +58,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
             HOST=https://${{ inputs.ENVIRONMENT_URL }}
+            LANDING_URL=${{ secrets.LANDING_URL }}
             NODE_ENV=${{ secrets.NODE_ENV }}
             VERBOSE=${{ secrets.VERBOSE }}
             COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
@@ -76,6 +77,7 @@ jobs:
             STORAGE_S3_REGION=${{ secrets.STORAGE_S3_REGION }}
             STORAGE_S3_ENDPOINT=${{ secrets.STORAGE_S3_ENDPOINT }}
             STORAGE_S3_URL=${{ secrets.STORAGE_S3_URL }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
             FFMPEG_PATH=${{ secrets.FFMPEG_PATH }}
           push: true
           cache-from: type=gha
@@ -89,6 +91,7 @@ jobs:
           helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
             --set image.tag="${{ inputs.ENVIRONMENT }}" \
             --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
+            --set env.LANDING_URL="${{ secrets.LANDING_URL }}" \
             --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
             --set env.VERBOSE="${{ secrets.VERBOSE }}" \
             --set env.COOKIE_SECRET="${{ secrets.COOKIE_SECRET }}" \
@@ -107,6 +110,7 @@ jobs:
             --set env.STORAGE_S3_REGION="${{ secrets.STORAGE_S3_REGION }}" \
             --set env.STORAGE_S3_ENDPOINT="${{ secrets.STORAGE_S3_ENDPOINT }}" \
             --set env.STORAGE_S3_URL="${{ secrets.STORAGE_S3_URL }}" \
+            --set env.DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --set env.FFMPEG_PATH="${{ secrets.FFMPEG_PATH }}" \
             ${{ inputs.HELM_ARGS }}
 

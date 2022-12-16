@@ -1,6 +1,7 @@
 export const config = {
   VERSION: process.env.VERSION ?? '',
   HOST: process.env.HOST ?? 'http://localhost',
+  LANDING_URL: process.env.LANDING_URL ?? 'http://localhost:3000',
   NODE_ENV: process.env.NODE_ENV ?? 'development',
   VERBOSE: process.env.VERBOSE === 'true',
   COOKIE_SECRET: process.env.COOKIE_SECRET ?? '',
@@ -19,5 +20,6 @@ export const config = {
   STORAGE_S3_REGION: process.env.STORAGE_S3_REGION ?? '',
   STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT ?? '',
   STORAGE_S3_URL: process.env.STORAGE_S3_URL ?? '',
+  DATABASE_URL: process.env.DATABASE_URL ?? 'postgresql://tarrasque:tarrasque@postgres:5432/tarrasque?schema=public',
   FFMPEG_PATH: process.env.FFMPEG_PATH ?? 'ffmpeg',
 };
