@@ -1,7 +1,6 @@
 export const config = {
   VERSION: process.env.VERSION ?? '',
   HOST: process.env.HOST ?? 'http://localhost',
-  LANDING_URL: process.env.LANDING_URL ?? 'http://localhost:3000',
   NODE_ENV: process.env.NODE_ENV ?? 'development',
   VERBOSE: process.env.VERBOSE === 'true',
   COOKIE_SECRET: process.env.COOKIE_SECRET ?? '',

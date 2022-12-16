@@ -6,6 +6,7 @@ import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampai
 import { useGetSetup } from '../../hooks/data/setup/useGetSetup';
 import { useResetSetup } from '../../hooks/data/setup/useResetSetup';
 import { useGetRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
+import { AppNavigation } from '../../lib/navigation';
 import { SetupStep } from '../../lib/types';
 import { CreateCampaign } from './CreateCampaign';
 import { CreateDatabase } from './CreateDatabase';
@@ -27,7 +28,7 @@ export const Setup: React.FC = () => {
     if (!data) return;
     // Redirect to the home page if the setup is already completed
     if (data.completed) {
-      router.push('/');
+      router.push(AppNavigation.Home);
     }
     // Set active step depending on setup progress
     setActiveStep(data.step - 1);

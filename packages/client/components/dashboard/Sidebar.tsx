@@ -14,6 +14,7 @@ import { observer } from 'mobx-react-lite';
 import NextLink from 'next/link';
 import { useCallback } from 'react';
 
+import { AppNavigation } from '../../lib/navigation';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 
@@ -54,7 +55,7 @@ export const Sidebar: React.FC = observer(() => {
         </List>
 
         <List>
-          <NextLink href="/sign-out" passHref legacyBehavior>
+          <NextLink href={AppNavigation.SignOut} passHref legacyBehavior>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>

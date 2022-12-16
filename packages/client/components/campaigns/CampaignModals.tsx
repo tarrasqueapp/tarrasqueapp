@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Alert } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
 import { useDeleteCampaign } from '../../hooks/data/campaigns/useDeleteCampaign';
@@ -33,11 +33,11 @@ export const CampaignModals: React.FC = observer(() => {
           setTimeout(() => store.campaigns.setSelectedCampaign(null), 100);
         }}
       >
+        <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>
+          This action cannot be undone.
+        </Alert>
         You&apos;re about to delete the campaign &quot;<strong>{store.campaigns.selectedCampaign?.name}</strong>&quot;
-        and all of its maps, characters, and associated data.{' '}
-        <Typography color="error" component="span">
-          This cannot be undone.
-        </Typography>
+        and all of its maps, characters, and associated data.
       </ConfirmModal>
     </>
   );

@@ -13,6 +13,7 @@ import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
 import { useProtectedRoute } from '../hooks/useProtectedRoute';
 import { Gradient } from '../lib/colors';
+import { AppNavigation } from '../lib/navigation';
 import { Role } from '../lib/types';
 import { store } from '../store';
 
@@ -24,13 +25,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!setup) return { props: {} };
 
   // Redirect to the setup page if the setup is not completed
-  if (!setup.completed) return { props: {}, redirect: { destination: '/setup' } };
+  if (!setup.completed) return { props: {}, redirect: { destination: AppNavigation.Setup } };
 
   // Redirect to the sign-in page if the user is not signed in
   try {
     await getUser({ withCredentials: true, headers: { Cookie: context.req.headers.cookie || '' } });
   } catch (err) {
-    return { props: {}, redirect: { destination: '/sign-in' } };
+    return { props: {}, redirect: { destination: AppNavigation.SignIn } };
   }
 
   return { props: {} };
@@ -44,7 +45,7 @@ const DashboardPage: NextPage = observer(() => {
   if (!user) {
     return (
       <Center>
-        <CircularProgress disableShrink color="secondary" />
+        <CircularProgress disableShrink />
       </Center>
     );
   }

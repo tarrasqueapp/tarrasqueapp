@@ -18,6 +18,7 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 
+import { AppNavigation } from '../../lib/navigation';
 import { CampaignInterface, MapInterface } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
@@ -35,7 +36,12 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
     <Card sx={{ position: 'relative', width, height }}>
       {map ? (
         <>
-          <NextLink href="/map/[mapId]" as={`/map/${map?.id}`} passHref legacyBehavior>
+          <NextLink
+            href={`${AppNavigation.Map}/[mapId]`}
+            as={`${AppNavigation.Map}/${map?.id}`}
+            passHref
+            legacyBehavior
+          >
             <CardActionArea sx={{ position: 'static' }}>
               <CardMedia>
                 <Box

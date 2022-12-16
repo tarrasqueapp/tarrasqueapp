@@ -35,6 +35,7 @@ export const MapNew: React.FC<IMapNewProps> = ({ campaign }) => {
           store.maps.setModal(MapModal.CreateUpdate);
         }}
         sx={{
+          borderRadius: '10px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

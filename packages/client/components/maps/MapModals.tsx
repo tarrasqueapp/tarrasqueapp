@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Alert } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
 import { useDeleteMap } from '../../hooks/data/maps/useDeleteMap';
@@ -40,10 +40,10 @@ export const MapModals: React.FC = observer(() => {
           }, 100);
         }}
       >
+        <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>
+          This action cannot be undone.
+        </Alert>
         You&apos;re about to delete the map &quot;<strong>{store.maps.selectedMap?.name}</strong>&quot;.{' '}
-        <Typography color="error" component="span">
-          This cannot be undone.
-        </Typography>
       </ConfirmModal>
     </>
   );

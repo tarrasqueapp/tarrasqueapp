@@ -44,14 +44,14 @@ export default class MyDocument extends Document<IProps> {
           <meta property="og:url" content={config.HOST} />
           <meta property="og:title" content="Tarrasque App" />
           <meta property="og:description" content="Tarrasque App" />
-          <meta property="og:image" content={`${config.HOST}/images/og.jpg`} />
+          <meta property="og:image" content={`${config.HOST}/images/icons/apple-splash-1334-750.jpg`} />
 
           {/* Twitter */}
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content={config.HOST} />
           <meta property="twitter:title" content="Tarrasque App" />
           <meta property="twitter:description" content="Tarrasque App" />
-          <meta property="twitter:image" content={`${config.HOST}/images/og.jpg`} />
+          <meta property="twitter:image" content={`${config.HOST}/images/icons/apple-splash-1334-750.jpg`} />
 
           {/* Favicon */}
           <link rel="icon" type="image/png" sizes="196x196" href="/images/icons/favicon-196.png" />

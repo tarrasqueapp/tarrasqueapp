@@ -49,6 +49,8 @@ env:
     value: "1.0.0"
   - name: HOST
     value: "https://cloud.tarrasque.app"
+  - name: LANDING_URL
+    value: "https://tarrasque.app"
   - name: NODE_ENV
     value: "production"
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME

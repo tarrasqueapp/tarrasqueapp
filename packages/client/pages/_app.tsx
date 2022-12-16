@@ -10,7 +10,6 @@ import { Toaster } from 'react-hot-toast';
 import { Layout } from '../components/Layout';
 import createEmotionCache from '../lib/createEmotionCache';
 import { theme } from '../lib/theme';
-import '../styles/fonts.css';
 import '../styles/globals.css';
 
 // Show a toast message when an error occurs

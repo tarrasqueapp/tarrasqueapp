@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { Overlay } from '../../components/overlay/Overlay';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
+import { AppNavigation } from '../../lib/navigation';
 
 export async function getServerSideProps() {
   // Get the setup data from the database
@@ -13,7 +14,7 @@ export async function getServerSideProps() {
   if (!setup) return { props: {} };
 
   // Redirect to the setup page if the setup is not completed
-  if (!setup.completed) return { redirect: { destination: '/setup' } };
+  if (!setup.completed) return { redirect: { destination: AppNavigation.Setup } };
 
   return { props: {} };
 }

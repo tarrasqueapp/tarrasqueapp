@@ -58,7 +58,6 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
             HOST=https://${{ inputs.ENVIRONMENT_URL }}
-            LANDING_URL=${{ secrets.LANDING_URL }}
             NODE_ENV=${{ secrets.NODE_ENV }}
             VERBOSE=${{ secrets.VERBOSE }}
             COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
@@ -91,7 +90,6 @@ jobs:
           helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
             --set image.tag="${{ inputs.ENVIRONMENT }}" \
             --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
-            --set env.LANDING_URL="${{ secrets.LANDING_URL }}" \
             --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
             --set env.VERBOSE="${{ secrets.VERBOSE }}" \
             --set env.COOKIE_SECRET="${{ secrets.COOKIE_SECRET }}" \

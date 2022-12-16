@@ -4,17 +4,18 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 import { Center } from '../../components/common/Center';
+import { AppNavigation } from '../../lib/navigation';
 
 const MapIndexPage: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/dashboard');
+    router.push(AppNavigation.Dashboard);
   }, []);
 
   return (
     <Center>
-      <CircularProgress disableShrink color="secondary" />
+      <CircularProgress disableShrink />
     </Center>
   );
 };

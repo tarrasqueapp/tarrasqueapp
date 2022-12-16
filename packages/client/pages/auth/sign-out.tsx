@@ -3,8 +3,9 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-import { Center } from '../components/common/Center';
-import { useSignOut } from '../hooks/data/users/useSignOut';
+import { Center } from '../../components/common/Center';
+import { useSignOut } from '../../hooks/data/users/useSignOut';
+import { AppNavigation } from '../../lib/navigation';
 
 const SignOutPage: NextPage = () => {
   const signOut = useSignOut();
@@ -17,12 +18,12 @@ const SignOutPage: NextPage = () => {
       signOut.mutate();
     } catch (err) {}
 
-    router.push('/sign-in');
+    router.push(AppNavigation.SignIn);
   }, []);
 
   return (
     <Center>
-      <CircularProgress disableShrink color="secondary" />
+      <CircularProgress disableShrink />
     </Center>
   );
 };
