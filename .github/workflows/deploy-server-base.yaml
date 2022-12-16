@@ -111,4 +111,4 @@ jobs:
             ${{ inputs.HELM_ARGS }}
 
       - name: Verify deployment
-        run: kubectl rollout status deployment/${{ env.KUBE_DEPLOYMENT }} --namespace ${{ inputs.KUBE_NAMESPACE }} --timeout 1m
+        run: kubectl rollout status deployment/${{ env.KUBE_DEPLOYMENT }} --namespace ${{ inputs.KUBE_NAMESPACE }} --timeout 2m

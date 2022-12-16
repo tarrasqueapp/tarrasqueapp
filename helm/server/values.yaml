@@ -16,8 +16,8 @@ serviceAccount:
   name: ""
 
 podAnnotations:
-  # Key to store randomized chart Id to force redeployment
-  randomChartId: ''
+  # Key to store randomized chart id to force redeployment
+  randomChartId: ""
 
 podSecurityContext: {}
 

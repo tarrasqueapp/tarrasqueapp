@@ -16,8 +16,8 @@ serviceAccount:
   name: ""
 
 podAnnotations:
-  # Key to store randomized chart Id to force redeployment
-  randomChartId: ''
+  # Key to store randomized chart id to force redeployment
+  randomChartId: ""
 
 podSecurityContext: {}
 
@@ -49,8 +49,6 @@ env:
     value: "1.0.0"
   - name: HOST
     value: "https://cloud.tarrasque.app"
-  - name: SERVER_URL
-    value: "http://server.production-server.svc.cluster.local:3000"
   - name: NODE_ENV
     value: "production"
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME

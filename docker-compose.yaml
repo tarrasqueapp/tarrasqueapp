@@ -15,7 +15,6 @@ services:
     build:
       args:
         - HOST=${HOST}
-        - SERVER_URL=${SERVER_URL}
         - NODE_ENV=${NODE_ENV}
         - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
         - SENTRY_ENABLED=${SENTRY_ENABLED}

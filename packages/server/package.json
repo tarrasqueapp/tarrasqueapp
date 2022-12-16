@@ -20,8 +20,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.229.0",
-    "@aws-sdk/lib-storage": "^3.229.0",
+    "@aws-sdk/client-s3": "^3.231.0",
+    "@aws-sdk/lib-storage": "^3.231.0",
     "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^9.2.1",
     "@nestjs/jwt": "^9.0.0",
@@ -32,7 +32,7 @@
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/websockets": "^9.2.1",
     "@prisma/client": "^4.7.1",
-    "@sentry/node": "^7.25.0",
+    "@sentry/node": "^7.27.0",
     "argon2": "^0.30.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -47,7 +47,7 @@
     "prisma": "^4.7.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.6.0",
+    "rxjs": "^7.8.0",
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
@@ -55,10 +55,10 @@
     "@nestjs/schematics": "^9.0.3",
     "@types/cookie-parser": "^1.4.3",
     "@types/cron": "^2.0.0",
-    "@types/express": "^4.17.14",
+    "@types/express": "^4.17.15",
     "@types/fs-extra": "^9.0.13",
-    "@types/node": "^18.11.13",
-    "@types/passport-jwt": "^3.0.7",
+    "@types/node": "^18.11.16",
+    "@types/passport-jwt": "^3.0.8",
     "@types/passport-local": "^1.0.34",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
