@@ -17,12 +17,10 @@ on:
         type: string
 
 env:
-  CLUSTER_NAME: tarrasqueapp-cluster
   DOCKERFILE: packages/client/docker/Dockerfile.prod
   HELM_CHART: client
   IMAGE_NAME: client
   KUBE_DEPLOYMENT: client
-  REGISTRY: registry.digitalocean.com/tarrasque
 
 jobs:
   deploy-client:
@@ -55,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           file: ${{ env.DOCKERFILE }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
+          tags: ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
             HOST=https://${{ inputs.ENVIRONMENT_URL }}
             LANDING_URL=${{ secrets.LANDING_URL }}
@@ -72,11 +70,12 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME}}
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.KUBE_CLUSTER }}
 
       - name: Deploy to DigitalOcean Kubernetes
         run: |
           helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
+            --set image.repository=${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }} \
             --set image.tag=${{ inputs.ENVIRONMENT }} \
             --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
             --set env.LANDING_URL="${{ secrets.LANDING_URL }}" \

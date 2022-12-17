@@ -70,7 +70,7 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
               background: 'rgba(0, 0, 0, 0.65)',
             }}
           >
-            <Typography variant="body2" sx={{ wordBreak: 'break-all', mr: 0.5 }}>
+            <Typography variant="body2" sx={{ wordBreak: 'break-word', mr: 0.5 }}>
               {map.name}
             </Typography>
 

@@ -26,11 +26,11 @@ export class StorageService implements OnModuleInit {
         // Create S3 client
         this.logger.verbose(`📂 Setting up S3 client`);
         this.s3 = new S3({
-          endpoint: config.STORAGE_S3_ENDPOINT,
-          region: config.STORAGE_S3_REGION,
+          endpoint: config.AWS_S3_ENDPOINT,
+          region: config.AWS_REGION,
           credentials: {
-            accessKeyId: config.STORAGE_S3_ACCESS_KEY_ID,
-            secretAccessKey: config.STORAGE_S3_SECRET_ACCESS_KEY,
+            accessKeyId: config.AWS_ACCESS_KEY_ID,
+            secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
           },
         });
         break;
@@ -102,7 +102,7 @@ export class StorageService implements OnModuleInit {
       const upload = new Upload({
         client: this.s3,
         params: {
-          Bucket: config.STORAGE_S3_BUCKET,
+          Bucket: config.AWS_S3_BUCKET,
           Key: `uploads/${key}`,
           Body: body,
           ContentType: contentType,
@@ -120,7 +120,7 @@ export class StorageService implements OnModuleInit {
 
       // Return public file URL
       this.logger.debug(`✅️ Uploaded file "${key}" to S3`);
-      return `${config.STORAGE_S3_URL}/uploads/${key}`;
+      return `${config.AWS_S3_URL}/uploads/${key}`;
     } catch (error) {
       this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);
@@ -184,7 +184,7 @@ export class StorageService implements OnModuleInit {
     this.logger.verbose(`📂 Deleting file "${key} from S3`);
     try {
       // Remove file from S3
-      await this.s3.send(new DeleteObjectCommand({ Bucket: config.STORAGE_S3_BUCKET, Key: `uploads/${key}` }));
+      await this.s3.send(new DeleteObjectCommand({ Bucket: config.AWS_S3_BUCKET, Key: `uploads/${key}` }));
 
       this.logger.debug(`✅️ Deleted file "${key}" from S3`);
     } catch (error) {

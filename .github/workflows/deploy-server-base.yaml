@@ -17,12 +17,10 @@ on:
         type: string
 
 env:
-  CLUSTER_NAME: tarrasqueapp-cluster
   DOCKERFILE: packages/server/docker/Dockerfile.prod
   HELM_CHART: server
   IMAGE_NAME: server
   KUBE_DEPLOYMENT: server
-  REGISTRY: registry.digitalocean.com/tarrasque
 
 jobs:
   deploy-server:
@@ -55,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           file: ${{ env.DOCKERFILE }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
+          tags: ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
             HOST=https://${{ inputs.ENVIRONMENT_URL }}
             NODE_ENV=${{ secrets.NODE_ENV }}
@@ -70,12 +68,12 @@ jobs:
             SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             STORAGE_PROVIDER=${{ secrets.STORAGE_PROVIDER }}
-            STORAGE_S3_BUCKET=${{ secrets.STORAGE_S3_BUCKET }}
-            STORAGE_S3_ACCESS_KEY_ID=${{ secrets.STORAGE_S3_ACCESS_KEY_ID }}
-            STORAGE_S3_SECRET_ACCESS_KEY=${{ secrets.STORAGE_S3_SECRET_ACCESS_KEY }}
-            STORAGE_S3_REGION=${{ secrets.STORAGE_S3_REGION }}
-            STORAGE_S3_ENDPOINT=${{ secrets.STORAGE_S3_ENDPOINT }}
-            STORAGE_S3_URL=${{ secrets.STORAGE_S3_URL }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AWS_S3_ENDPOINT=${{ secrets.AWS_S3_ENDPOINT }}
+            AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+            AWS_S3_URL=${{ secrets.AWS_S3_URL }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             FFMPEG_PATH=${{ secrets.FFMPEG_PATH }}
           push: true
@@ -83,11 +81,12 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME}}
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.KUBE_CLUSTER }}
 
       - name: Deploy to DigitalOcean Kubernetes
         run: |
           helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
+            --set image.repository="${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set image.tag="${{ inputs.ENVIRONMENT }}" \
             --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
             --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
@@ -102,12 +101,12 @@ jobs:
             --set env.SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}" \
             --set env.SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
             --set env.STORAGE_PROVIDER="${{ secrets.STORAGE_PROVIDER }}" \
-            --set env.STORAGE_S3_BUCKET="${{ secrets.STORAGE_S3_BUCKET }}" \
-            --set env.STORAGE_S3_ACCESS_KEY_ID="${{ secrets.STORAGE_S3_ACCESS_KEY_ID }}" \
-            --set env.STORAGE_S3_SECRET_ACCESS_KEY="${{ secrets.STORAGE_S3_SECRET_ACCESS_KEY }}" \
-            --set env.STORAGE_S3_REGION="${{ secrets.STORAGE_S3_REGION }}" \
-            --set env.STORAGE_S3_ENDPOINT="${{ secrets.STORAGE_S3_ENDPOINT }}" \
-            --set env.STORAGE_S3_URL="${{ secrets.STORAGE_S3_URL }}" \
+            --set env.AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            --set env.AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            --set env.AWS_REGION="${{ secrets.AWS_REGION }}" \
+            --set env.AWS_S3_ENDPOINT="${{ secrets.AWS_S3_ENDPOINT }}" \
+            --set env.AWS_S3_BUCKET="${{ secrets.AWS_S3_BUCKET }}" \
+            --set env.AWS_S3_URL="${{ secrets.AWS_S3_URL }}" \
             --set env.DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --set env.FFMPEG_PATH="${{ secrets.FFMPEG_PATH }}" \
             ${{ inputs.HELM_ARGS }}

@@ -82,18 +82,8 @@ services:
     env_file:
       - ./.env
 
-  redis:
-    container_name: redis
-    image: redis:6-alpine
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - server_network
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-
-  tus:
-    container_name: tus
+  tusd:
+    container_name: tusd
     image: tusproject/tusd
     restart: unless-stopped
     security_opt:

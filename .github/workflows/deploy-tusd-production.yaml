@@ -1,0 +1,25 @@
+name: '[PRODUCTION] Deploy tusd'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-tusd*.yaml'
+      - 'helm/tusd/**'
+
+jobs:
+  deploy-tusd:
+    uses: ./.github/workflows/deploy-tusd-base.yaml
+
+    with:
+      ENVIRONMENT: production
+      ENVIRONMENT_URL: cloud.tarrasque.app
+      KUBE_NAMESPACE: production-tusd
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-production" \
+        --set ingress.hosts[0].host="cloud.tarrasque.app",ingress.hosts[0].paths[0].path="/tus/files(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-tusd",ingress.tls[0].hosts[0]="cloud.tarrasque.app" \
+
+    secrets: inherit

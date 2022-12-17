@@ -1,0 +1,25 @@
+name: '[STAGING] Deploy tusd'
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - '.github/workflows/deploy-tusd*.yaml'
+      - 'helm/tusd/**'
+
+jobs:
+  deploy-tusd:
+    uses: ./.github/workflows/deploy-tusd-base.yaml
+
+    with:
+      ENVIRONMENT: staging
+      ENVIRONMENT_URL: staging-cloud.tarrasque.app
+      KUBE_NAMESPACE: staging-tusd
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-staging" \
+        --set ingress.hosts[0].host="staging-cloud.tarrasque.app",ingress.hosts[0].paths[0].path="/tus/files(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-tusd",ingress.tls[0].hosts[0]="staging-cloud.tarrasque.app" \
+
+    secrets: inherit

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.digitalocean.com/tarrasque/server
+  repository:
   pullPolicy: Always
   tag: production
 
@@ -75,17 +75,17 @@ env:
     value: ""
   - name: STORAGE_PROVIDER
     value: "s3"
-  - name: STORAGE_S3_BUCKET
+  - name: AWS_ACCESS_KEY_ID
     value: ""
-  - name: STORAGE_S3_ACCESS_KEY_ID
+  - name: AWS_SECRET_ACCESS_KEY
     value: ""
-  - name: STORAGE_S3_SECRET_ACCESS_KEY
+  - name: AWS_REGION
     value: ""
-  - name: STORAGE_S3_REGION
+  - name: AWS_S3_ENDPOINT
     value: ""
-  - name: STORAGE_S3_ENDPOINT
+  - name: AWS_S3_BUCKET
     value: ""
-  - name: STORAGE_S3_URL
+  - name: AWS_S3_URL
     value: ""
   - name: DATABASE_URL
     value: ""

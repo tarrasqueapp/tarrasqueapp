@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.digitalocean.com/tarrasque/client
+  repository:
   pullPolicy: Always
   tag: production
 
