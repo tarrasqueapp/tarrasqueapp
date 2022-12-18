@@ -5,12 +5,21 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import Router from 'next/router';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 import { Toaster } from 'react-hot-toast';
 
 import { Layout } from '../components/Layout';
 import createEmotionCache from '../lib/createEmotionCache';
 import { theme } from '../lib/theme';
 import '../styles/globals.css';
+
+NProgress.configure({ showSpinner: false });
+
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 // Show a toast message when an error occurs
 const queryClient = new QueryClient({

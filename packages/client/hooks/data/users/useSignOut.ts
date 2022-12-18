@@ -20,6 +20,9 @@ export function useSignOut() {
   const queryClient = useQueryClient();
 
   return useMutation(() => signOut(), {
+    onMutate: () => {
+      queryClient.cancelQueries();
+    },
     onSuccess: () => {
       setTimeout(() => queryClient.clear(), 100);
     },

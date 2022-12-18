@@ -57,7 +57,7 @@
     "@types/cron": "^2.0.0",
     "@types/express": "^4.17.15",
     "@types/fs-extra": "^9.0.13",
-    "@types/node": "^18.11.16",
+    "@types/node": "^18.11.17",
     "@types/passport-jwt": "^3.0.8",
     "@types/passport-local": "^1.0.34",
     "ts-loader": "^9.4.2",

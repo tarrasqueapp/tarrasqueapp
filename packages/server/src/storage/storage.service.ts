@@ -95,7 +95,7 @@ export class StorageService implements OnModuleInit {
       case StorageProviderEnum.S3:
         // Get all files in the temp path that are older than an hour
         const list = await this.s3.send(new ListObjectsCommand({ Bucket: config.AWS_S3_BUCKET, Prefix: this.tmpPath }));
-        const keys = list.Contents.map((item) => item.Key);
+        const keys = list.Contents?.map((item) => item.Key);
 
         for (const key of keys) {
           const stats = await this.s3.send(new HeadObjectCommand({ Bucket: config.AWS_S3_BUCKET, Key: key }));
