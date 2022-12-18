@@ -273,10 +273,10 @@ export class StorageService implements OnModuleInit {
     this.logger.verbose(`📂 Uploading file "${filePath} to local storage`);
     try {
       // Get proceeding directories
-      const directories = filePath.split('/').slice(0, -1).join('/');
+      const directory = filePath.split('/').slice(0, -1).join('/');
 
       // Ensure upload directory exists
-      await fs.ensureDir(directories);
+      await fs.ensureDir(directory);
 
       // Write file to disk
       await fs.writeFile(filePath, body);
@@ -354,18 +354,18 @@ export class StorageService implements OnModuleInit {
     this.logger.verbose(`📂 Deleting file "${filePath} from local storage`);
     try {
       // Get proceeding directories
-      const directories = filePath.split('/').slice(0, -1).join('/');
+      const directory = filePath.split('/').slice(0, -1).join('/');
 
       // Ensure upload directory exists
-      await fs.ensureDir(directories);
+      await fs.ensureDir(directory);
 
       // Remove file from disk
       await fs.remove(filePath);
 
       // Remove directory if empty
-      if ((await fs.readdir(directories)).length === 0) {
+      if ((await fs.readdir(directory)).length === 0 && directory !== this.uploadPath && directory !== this.tmpPath) {
         try {
-          await fs.remove(directories);
+          await fs.remove(directory);
         } catch (e) {}
       }
 
