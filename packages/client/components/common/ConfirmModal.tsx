@@ -1,14 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Theme,
-  useMediaQuery,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 
 export interface IConfirmModalProps {
@@ -37,9 +28,7 @@ export const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, onConfirm, on
     <Dialog fullScreen={fullScreen} open={open} onClose={onClose}>
       <DialogTitle>{title || 'Are you sure?'}</DialogTitle>
 
-      <DialogContent>
-        <DialogContentText>{children || 'This cannot be undone.'}</DialogContentText>
-      </DialogContent>
+      <DialogContent>{children || 'This cannot be undone.'}</DialogContent>
 
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

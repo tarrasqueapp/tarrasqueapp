@@ -72,8 +72,12 @@ export class MapsController {
         const media = await this.mediaService.deleteMedia(data.mediaId);
         // Delete the files from the storage
         await Promise.all([
-          this.storageService.delete(`${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`),
-          this.storageService.delete(`${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`),
+          this.storageService.delete(
+            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
+          ),
+          this.storageService.delete(
+            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
+          ),
         ]);
       } catch (e) {
         // If the new media doesn't exist, delete the mediaId from the data
@@ -97,8 +101,12 @@ export class MapsController {
     const media = await this.mediaService.deleteMedia(map.mediaId);
     // Delete the files from the storage
     await Promise.all([
-      this.storageService.delete(`${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`),
-      this.storageService.delete(`${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`),
+      this.storageService.delete(
+        `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
+      ),
+      this.storageService.delete(
+        `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
+      ),
     ]);
     // Return the map
     return map;

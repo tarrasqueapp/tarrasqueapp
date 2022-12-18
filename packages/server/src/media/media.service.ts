@@ -4,7 +4,6 @@ import { stat } from 'fs-extra';
 import { PrismaService } from 'nestjs-prisma';
 
 import { config } from '../config';
-import { TEMP_PATH } from '../storage/tmp.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { MediaEntity } from './entities/media.entity';
 
@@ -87,21 +86,19 @@ export class MediaService {
 
   /**
    * Generate a thumbnail for a media item
-   * @param fileName - The temporary file name
+   * @param filePath - The temporary file's path
+   * @param thumbnailPath - The generated thumbnail's path
    * @returns Thumbnail path
    */
-  async generateThumbnail(fileName: string): Promise<unknown> {
-    this.logger.verbose(`📂 Generating thumbnail for file "${fileName}"`);
+  async generateThumbnail(filePath: string, thumbnailPath: string): Promise<unknown> {
+    this.logger.verbose(`📂 Generating thumbnail for file "${filePath}"`);
 
     // Check that the file exists
-    const filePath = `${TEMP_PATH}/${fileName}`;
     if (!(await stat(filePath))) {
       throw new NotFoundException(`File "${filePath}" not found`);
     }
 
     const height = -1;
-
-    const thumbnailPath = `${filePath}.${THUMBNAIL_FILENAME}`;
 
     const args = [
       '-y',
@@ -138,7 +135,7 @@ export class MediaService {
       });
 
       ffmpeg.on('close', (data) => {
-        this.logger.debug(`✅️ Generated thumbnail for file "${fileName}"`);
+        this.logger.debug(`✅️ Generated thumbnail for file "${filePath}"`);
         resolve(data);
       });
     });

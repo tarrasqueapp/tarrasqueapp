@@ -82,7 +82,7 @@ services:
     env_file:
       - ./.env
 
-  tusd:
+  tusd-local:
     container_name: tusd
     image: tusproject/tusd
     restart: unless-stopped
@@ -90,9 +90,21 @@ services:
       - no-new-privileges:true
     networks:
       - nginx_network
-    command: -behind-proxy -upload-dir=/tmp/uploads -base-path=/tus/files
+    command: -behind-proxy -base-path=/tus/files -upload-dir=/tmp/uploads
     volumes:
       - ./data/tmp:/tmp/uploads
+
+  tusd-s3:
+    container_name: tusd
+    image: tusproject/tusd
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - nginx_network
+    command: -behind-proxy -base-path=/tus/files -s3-bucket=${AWS_S3_BUCKET} -s3-endpoint=${AWS_S3_ENDPOINT} -s3-object-prefix=tmp/
+    env_file:
+      - ./.env
 
 networks:
   server_network:

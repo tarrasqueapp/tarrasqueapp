@@ -102,8 +102,12 @@ export class CampaignsController {
 
         // Delete the files from the storage
         await Promise.all([
-          this.storageService.delete(`${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`),
-          this.storageService.delete(`${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`),
+          this.storageService.delete(
+            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
+          ),
+          this.storageService.delete(
+            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
+          ),
         ]);
 
         // Return the deleted map

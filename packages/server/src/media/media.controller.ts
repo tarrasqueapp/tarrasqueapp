@@ -2,9 +2,11 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import cuid from 'cuid';
+import * as fs from 'fs-extra';
 
+import { config } from '../config';
+import { StorageProviderEnum } from '../storage/storage-provider.enum';
 import { StorageService } from '../storage/storage.service';
-import { TmpService } from '../storage/tmp.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { RoleGuard } from '../users/guards/role.guard';
@@ -16,11 +18,7 @@ import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from './media.ser
 @ApiTags('media')
 @Controller('media')
 export class MediaController {
-  constructor(
-    private readonly mediaService: MediaService,
-    private readonly storageService: StorageService,
-    private readonly tmpService: TmpService,
-  ) {}
+  constructor(private readonly mediaService: MediaService, private readonly storageService: StorageService) {}
 
   /**
    * Create a new media item
@@ -32,21 +30,38 @@ export class MediaController {
     // Pre-generate id to use for the file name
     const id = cuid();
 
-    // Generate a thumbnail
-    await this.mediaService.generateThumbnail(data.name);
-    const thumbnailName = `${data.name}.${THUMBNAIL_FILENAME}`;
+    // Get the file from the tusd upload location
+    const file = await this.storageService.getFile(`${this.storageService.tmpPath}/${data.name}`);
 
-    // Get the file and thumbnail from the temp path
-    const [file, thumbnail] = await Promise.all([
-      this.tmpService.getFile(data.name),
-      this.tmpService.getFile(thumbnailName),
-    ]);
+    // Write the file to the temp path if using S3 so we can generate a thumbnail
+    if (config.STORAGE_PROVIDER === StorageProviderEnum.S3) {
+      await fs.writeFile(`${this.storageService.tmpPathLocal}/${data.name}`, file);
+    }
 
-    // Upload the file and thumbnail to the storage
-    const [url, thumbnailUrl] = await Promise.all([
-      this.storageService.upload(`${user.id}/${id}/${ORIGINAL_FILENAME}.${data.extension}`, file, data.type),
-      this.storageService.upload(`${user.id}/${id}/${THUMBNAIL_FILENAME}`, thumbnail, 'image/webp'),
-    ]);
+    // Generate thumbnail
+    await this.mediaService.generateThumbnail(
+      `${this.storageService.tmpPathLocal}/${data.name}`,
+      `${this.storageService.tmpPathLocal}/${data.name}.${THUMBNAIL_FILENAME}`,
+    );
+
+    // Get the thumbnail from the temp path
+    const thumbnail = await this.storageService.getFileLocal(
+      `${this.storageService.tmpPathLocal}/${data.name}.${THUMBNAIL_FILENAME}`,
+    );
+
+    // Move the file from the temp path to the upload path
+    const url = await this.storageService.moveFile(
+      `${this.storageService.tmpPath}/${data.name}`,
+      `${this.storageService.uploadPath}/${user.id}/${id}/${ORIGINAL_FILENAME}.${data.extension}`,
+      data.type,
+    );
+
+    // Upload the thumbnail to the storage
+    const thumbnailUrl = await this.storageService.upload(
+      `${this.storageService.uploadPath}/${user.id}/${id}/${THUMBNAIL_FILENAME}`,
+      thumbnail,
+      'image/webp',
+    );
 
     // Create the media
     const media = await this.mediaService.createMedia(
@@ -64,8 +79,9 @@ export class MediaController {
     );
 
     // Delete the temporary files
-    this.tmpService.deleteFile(data.name);
-    this.tmpService.deleteFile(thumbnailName);
+    this.storageService.delete(`${this.storageService.tmpPath}/${data.name}.info`);
+    this.storageService.deleteLocal(`${this.storageService.tmpPathLocal}/${data.name}`);
+    this.storageService.deleteLocal(`${this.storageService.tmpPathLocal}/${data.name}.${THUMBNAIL_FILENAME}`);
 
     return media;
   }

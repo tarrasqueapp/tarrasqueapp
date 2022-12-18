@@ -40,6 +40,7 @@ spec:
             - "-base-path=/tus/files"
             - "-s3-bucket={{ .Values.env.AWS_S3_BUCKET }}"
             - "-s3-endpoint={{ .Values.env.AWS_S3_ENDPOINT }}"
+            - "-s3-object-prefix=tmp/"
           ports:
             - name: http
               containerPort: 1080

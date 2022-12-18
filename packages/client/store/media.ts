@@ -24,8 +24,11 @@ class MediaStore {
       return;
     }
 
+    // Remove the host from the upload URL to get the file name
+    const name = uppyFile.uploadURL.replace(`${config.HOST}/tus/files/`, '').split('+')[0];
+
     let file: FileInterface = {
-      name: uppyFile.uploadURL.replace(`${config.HOST}/tus/files/`, ''),
+      name,
       type: uppyFile.type,
       extension: uppyFile.extension,
       size: uppyFile.size,

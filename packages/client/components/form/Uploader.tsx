@@ -1,5 +1,5 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
-import { Box, Button, CircularProgress, IconButton, Typography, alpha } from '@mui/material';
+import { Box, Button, CircularProgress, IconButton, Typography, alpha, circularProgressClasses } from '@mui/material';
 import Uppy, { UploadResult } from '@uppy/core';
 import Tus from '@uppy/tus';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -67,7 +67,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
     }
 
     // Check if the value is a media object
-    if (typeof value === 'object' && 'url' in value) {
+    if (typeof value === 'object' && 'thumbnailUrl' in value) {
       const file = await store.media.urlToFile(value.thumbnailUrl);
       setFile({ name: file.name, type: file.type, extension: '', size: file.size, data: file });
       setPreview(value.thumbnailUrl);
@@ -240,7 +240,16 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
           color="success"
           variant="determinate"
           value={progress}
-          sx={{ position: 'absolute', top: 4, right: 4, zIndex: 1, pointerEvents: 'none' }}
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            zIndex: 1,
+            pointerEvents: 'none',
+            [`&.${circularProgressClasses.root}`]: {
+              color: '#00ff00',
+            },
+          }}
         />
       )}
 
