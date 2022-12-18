@@ -30,14 +30,17 @@ export class StorageService implements OnModuleInit {
    * Validate storage provider, ensure upload path exists, and configure S3 client
    */
   async onModuleInit() {
+    // Set paths
+    this.tmpPath = this.tmpPathLocal;
+    // Ensure paths exist
+    await fs.ensureDir(this.tmpPath);
+
     switch (config.STORAGE_PROVIDER) {
       case StorageProviderEnum.LOCAL:
         // Set paths
         this.uploadPath = this.uploadPathLocal;
-        this.tmpPath = this.tmpPathLocal;
         // Ensure paths exist
         await fs.ensureDir(this.uploadPath);
-        await fs.ensureDir(this.tmpPath);
         break;
 
       case StorageProviderEnum.S3:
