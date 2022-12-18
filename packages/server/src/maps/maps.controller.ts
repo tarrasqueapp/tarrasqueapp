@@ -69,7 +69,8 @@ export class MapsController {
         // Check that the new media exists
         await this.mediaService.getMedia(data.mediaId);
         // Delete the old media
-        const media = await this.mediaService.deleteMedia(data.mediaId);
+        const map = await this.mapsService.getMap(mapId);
+        const media = await this.mediaService.deleteMedia(map.mediaId);
         // Delete the files from the storage
         await Promise.all([
           this.storageService.delete(
