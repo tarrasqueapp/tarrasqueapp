@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { $, YAML, argv, cd, echo, fs, path } from 'zx';
+import { $, argv, cd, echo, fs, path } from 'zx';
 
 import { appPath, pluginsPath } from '../../helpers.mjs';
 
@@ -37,8 +37,8 @@ async function main() {
   }
 
   // Read YAML file
-  const pluginYaml = await fs.readFile(`${temporaryPluginPath}/tarrasque.yaml`);
-  const plugin = YAML.parse(pluginYaml.toString());
+  const pluginFile = await fs.readFile(`${temporaryPluginPath}/tarrasque.json`);
+  const plugin = JSON.parse(pluginFile.toString());
 
   // Check that the plugin doesn't already exist
   if (await fs.pathExists(`${pluginsPath}/${plugin.id}`)) {

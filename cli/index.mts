@@ -1,5 +1,5 @@
 #!/usr/bin/env npx ts-node --esm
-import { YAML, argv, cd, echo, fs, globby } from 'zx';
+import { argv, cd, echo, fs, globby } from 'zx';
 
 import { appPath, commandsPath, pluginsPath } from './helpers.mjs';
 
@@ -37,10 +37,10 @@ async function main() {
   }
 
   // Get all plugin commands
-  const plugins = await globby([`${pluginsPath}/*/tarrasque.yaml`]);
-  for (const yaml of plugins) {
-    const pluginYaml = await fs.readFile(yaml);
-    const plugin = YAML.parse(pluginYaml.toString());
+  const plugins = await globby([`${pluginsPath}/*/tarrasque.json`]);
+  for (const pluginPath of plugins) {
+    const pluginFile = await fs.readFile(pluginPath);
+    const plugin = JSON.parse(pluginFile.toString());
     if (!plugin.cli?.command || !plugin.cli?.entrypoint) continue;
     commands[plugin.cli.command] = () => import(`${pluginsPath}/${plugin.id}/${plugin.cli.entrypoint}`);
   }

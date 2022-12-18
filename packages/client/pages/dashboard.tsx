@@ -5,7 +5,6 @@ import type { GetServerSideProps, NextPage } from 'next';
 import { CampaignModals } from '../components/campaigns/CampaignModals';
 import { Center } from '../components/common/Center';
 import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
-import { Footer } from '../components/dashboard/Footer';
 import { Sidebar } from '../components/dashboard/Sidebar';
 import { TopBar } from '../components/dashboard/TopBar';
 import { MapModals } from '../components/maps/MapModals';
@@ -71,8 +70,6 @@ const DashboardPage: NextPage = observer(() => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 0 auto' }}>
             <CampaignAccordions />
           </Box>
-
-          <Footer />
         </Box>
 
         <CampaignModals />

@@ -2,18 +2,21 @@ import { Add, ExitToApp } from '@mui/icons-material';
 import {
   Box,
   Drawer,
+  Link,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Theme,
+  Typography,
   useMediaQuery,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import NextLink from 'next/link';
 import { useCallback } from 'react';
 
+import { config } from '../../lib/config';
 import { AppNavigation } from '../../lib/navigation';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
@@ -31,8 +34,24 @@ export const Sidebar: React.FC = observer(() => {
       variant={isMobile ? 'temporary' : 'permanent'}
       anchor="left"
     >
-      <Box sx={{ py: 2, textAlign: 'center' }}>
+      <Box sx={{ py: 2, textAlign: 'center', position: 'relative' }}>
         <img src="/images/logo.svg" alt="Logo" width="150" />
+
+        <Link href={`${config.LANDING_URL}/changelog`} target="_blank" rel="noopener noreferrer">
+          <Typography
+            variant="h5"
+            sx={{
+              fontSize: '11px !important',
+              color: 'text.secondary',
+              position: 'absolute',
+              bottom: 15,
+              left: '50%',
+              transform: 'translate(-50%)',
+            }}
+          >
+            {config.VERSION}
+          </Typography>
+        </Link>
       </Box>
 
       <Box
