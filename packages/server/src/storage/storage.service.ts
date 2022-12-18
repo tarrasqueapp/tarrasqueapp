@@ -366,7 +366,11 @@ export class StorageService implements OnModuleInit {
       await fs.remove(filePath);
 
       // Remove directory if empty
-      if ((await fs.readdir(directory)).length === 0 && directory !== this.uploadPath && directory !== this.tmpPath) {
+      if (
+        (await fs.readdir(directory)).length === 0 &&
+        directory !== this.uploadPathLocal &&
+        directory !== this.tmpPathLocal
+      ) {
         try {
           await fs.remove(directory);
         } catch (e) {}
