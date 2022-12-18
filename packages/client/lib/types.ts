@@ -271,12 +271,3 @@ export interface TokenInterface {
   nonPlayerCharacter?: NonPlayerCharacterInterface;
   nonPlayerCharacterId?: string;
 }
-
-export interface PluginInterface {
-  id: string;
-  name: string;
-  url: string;
-  // DateTime
-  createdAt: string;
-  updatedAt: string;
-}

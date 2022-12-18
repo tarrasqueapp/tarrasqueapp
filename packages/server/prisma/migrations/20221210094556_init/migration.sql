@@ -215,17 +215,6 @@ CREATE TABLE "Token" (
 );
 
 -- CreateTable
-CREATE TABLE "Plugin" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Plugin_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "_CampaignPlayers" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL

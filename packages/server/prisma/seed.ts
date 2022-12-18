@@ -50,9 +50,6 @@ async function main() {
     console.debug('📂 Deleting all refresh tokens...');
     await prisma.refreshToken.deleteMany({});
 
-    console.debug('📂 Deleting all plugins...');
-    await prisma.plugin.deleteMany({});
-
     console.debug('📂 Deleting all users...');
     await prisma.user.deleteMany({});
 
@@ -195,14 +192,6 @@ async function main() {
         createdBy: { connect: { id: userId } },
         map: { connect: { id: mapId } },
         playerCharacter: { connect: { id: playerCharacterId } },
-      },
-    });
-
-    console.debug('📂 Creating new plugin...');
-    await prisma.plugin.create({
-      data: {
-        name: 'Example Plugin',
-        url: 'https://github.com/tarrasqueapp/tarrasque-example-plugin',
       },
     });
 

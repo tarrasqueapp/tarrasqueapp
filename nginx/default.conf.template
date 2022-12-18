@@ -69,11 +69,6 @@ server {
         proxy_pass http://tusd:1080;
     }
 
-    location /plugins {
-        alias /plugins;
-        autoindex on;
-    }
-
     location /uploads {
         alias /uploads;
         autoindex on;
