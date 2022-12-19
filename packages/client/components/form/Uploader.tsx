@@ -11,25 +11,33 @@ import { FileInterface, MediaInterface } from '../../lib/types';
 import { store } from '../../store';
 
 export interface UploaderProps {
-  value?: string | FileInterface | MediaInterface;
+  value?: FileInterface | MediaInterface | null;
   allowedFileTypes?: string[] | null;
   onChange?: (file?: FileInterface | null) => void;
+  onUploading?: (uploading: boolean) => void;
 }
 
-export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onChange }) => {
+export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onChange, onUploading }) => {
   const [file, setFile] = useState<FileInterface | null>(null);
   const [preview, setPreview] = useState('');
   const [progress, setProgress] = useState(0);
   const [progressVisible, setProgressVisible] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   // Setup Uppy
   const uppy = useMemo(() => {
     return new Uppy({ restrictions: { allowedFileTypes, maxNumberOfFiles: 1 }, autoProceed: false })
       .use(Tus, { chunkSize: 1e6, endpoint: '/tus/files/' })
+      .on('file-added', () => {
+        setUploading(true);
+        onUploading?.(true);
+      })
       .on('progress', (p) => progress !== p && setProgress(p))
       .on('error', () => {
         setProgress(0);
         onChange?.(null);
+        setUploading(false);
+        onUploading?.(false);
       })
       .on('complete', async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
         if (!result.successful.length) return;
@@ -37,6 +45,8 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
         const file = await store.media.convertUppyToFile(uppyFile);
         setProgress(100);
         onChange?.(file);
+        setUploading(false);
+        onUploading?.(false);
       });
   }, [onChange]);
 
@@ -44,11 +54,11 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   useEffect(() => {
     setProgressVisible(true);
     setTimeout(() => {
-      if (progress === 100) {
+      if (progress === 100 && !uploading) {
         setProgressVisible(false);
       }
     }, 1000);
-  }, [progress]);
+  }, [progress, uploading]);
 
   // Set the preview image when a file is passed in
   useEffectAsync(async () => {
@@ -68,17 +78,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
 
     // Check if the value is a media object
     if (typeof value === 'object' && 'thumbnailUrl' in value) {
-      const file = await store.media.urlToFile(value.thumbnailUrl);
-      setFile({ name: file.name, type: file.type, extension: '', size: file.size, data: file });
       setPreview(value.thumbnailUrl);
-      return;
-    }
-
-    // Check if the value is a string
-    if (typeof value === 'string') {
-      const file = await store.media.urlToFile(value);
-      setFile({ name: file.name, type: file.type, extension: '', size: file.size, data: file });
-      setPreview(store.media.isMedia(file) ? value : '');
       return;
     }
   }, [value]);
@@ -159,6 +159,8 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
   const dashLength = '30px';
   const borderWidth = '2px';
 
+  const hasMedia = Boolean(file || preview);
+
   return (
     <Box sx={{ position: 'relative' }}>
       <Button
@@ -191,33 +193,31 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
         >
           <input {...getInputProps()} />
 
-          {file ? (
+          {preview ? (
             <>
-              {preview ? (
-                <>
-                  {store.media.isImage(file) && (
-                    <Box
-                      component="img"
-                      src={preview}
-                      alt="Preview"
-                      sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
-                    />
-                  )}
+              {(!file || (file && store.media.isImage(file))) && (
+                <Box
+                  component="img"
+                  src={preview}
+                  alt="Preview"
+                  sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                />
+              )}
 
-                  {store.media.isVideo(file) && (
-                    <Box
-                      component="video"
-                      controls
-                      src={preview}
-                      sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
-                    />
-                  )}
-                </>
-              ) : (
-                file.name
+              {file && store.media.isVideo(file) && (
+                <Box
+                  component="video"
+                  controls
+                  src={preview}
+                  sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                />
               )}
             </>
           ) : (
+            file?.name
+          )}
+
+          {!hasMedia && (
             <>
               <CloudUpload fontSize="large" htmlColor={Color.BrownLight} sx={{ mt: -2 }} />
 
@@ -253,7 +253,7 @@ export const Uploader: React.FC<UploaderProps> = ({ value, allowedFileTypes, onC
         />
       )}
 
-      {file && (
+      {hasMedia && (
         <IconButton
           onClick={handleDelete}
           sx={{

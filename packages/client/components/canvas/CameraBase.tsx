@@ -88,6 +88,13 @@ export const CameraBase = CustomPIXIComponent<Viewport, ICameraBaseProps>(
         clearTimeout(longPressTimer);
       });
 
+      // Don't handle long press events on the viewport if pinching
+      viewport.on('pinch-start', () => {
+        clicks = 0;
+        pressed = false;
+        clearTimeout(longPressTimer);
+      });
+
       props.onLoad?.(viewport);
 
       return viewport;

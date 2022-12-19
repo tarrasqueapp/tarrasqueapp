@@ -1,13 +1,13 @@
 import { Add, ExitToApp } from '@mui/icons-material';
 import {
   Box,
-  Drawer,
   Link,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  SwipeableDrawer,
   Theme,
   Typography,
   useMediaQuery,
@@ -26,10 +26,11 @@ export const Sidebar: React.FC = observer(() => {
   const ref = useCallback((node: HTMLDivElement) => store.dashboard.setSidebar(node), []);
 
   return (
-    <Drawer
+    <SwipeableDrawer
       ref={ref}
       sx={{ width: 250, '& .MuiDrawer-paper': { width: 250 } }}
       open={store.dashboard.sidebarOpen}
+      onOpen={() => store.dashboard.toggleSidebar(true)}
       onClose={() => store.dashboard.toggleSidebar(false)}
       variant={isMobile ? 'temporary' : 'permanent'}
       anchor="left"
@@ -86,6 +87,6 @@ export const Sidebar: React.FC = observer(() => {
           </NextLink>
         </List>
       </Box>
-    </Drawer>
+    </SwipeableDrawer>
   );
 });

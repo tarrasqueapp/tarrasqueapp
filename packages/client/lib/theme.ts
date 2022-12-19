@@ -69,7 +69,7 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 0,
-          background: alpha(Color.BlackLight, 0.9),
+          background: alpha(Color.BlackLight, 0.8),
           boxShadow: 'none',
           borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
         },
@@ -90,7 +90,7 @@ export let theme = createTheme({
         paper: {
           borderRadius: 0,
           boxSizing: 'border-box',
-          background: alpha(Color.BlackLight, 0.9),
+          background: alpha(Color.BlackLight, 0.8),
         },
       },
     },
