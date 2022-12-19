@@ -45,12 +45,12 @@ export const Sidebar: React.FC = observer(() => {
               fontSize: '11px !important',
               color: 'text.secondary',
               position: 'absolute',
-              bottom: 15,
+              bottom: 0,
               left: '50%',
               transform: 'translate(-50%)',
             }}
           >
-            {config.VERSION}
+            v{config.VERSION}
           </Typography>
         </Link>
       </Box>
