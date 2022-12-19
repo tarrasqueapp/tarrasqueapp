@@ -1,8 +1,8 @@
 import { config } from '../lib/config';
 
 export class EnvironmentUtils {
-  static HostProduction = 'https://cloud.tarrasque.app';
-  static HostStaging = 'https://staging-cloud.tarrasque.app';
+  static HostProduction = 'https://tarrasque.app';
+  static HostStaging = 'https://staging.tarrasque.app';
   static HostLocal = 'http://localhost';
 
   /**
