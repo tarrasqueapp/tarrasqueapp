@@ -37,7 +37,7 @@ export const Sidebar: React.FC = observer(() => {
       <Box sx={{ py: 2, textAlign: 'center', position: 'relative' }}>
         <img src="/images/logo.svg" alt="Logo" width="150" />
 
-        <Link href={`${config.LANDING_URL}/changelog`} target="_blank" rel="noopener noreferrer">
+        <Link href="https://tarrasque.app/changelog" target="_blank" rel="noopener noreferrer">
           <Typography
             variant="h5"
             sx={{

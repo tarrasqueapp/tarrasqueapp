@@ -15,11 +15,8 @@ services:
     build:
       args:
         - HOST=${HOST}
-        - LANDING_URL=${LANDING_URL}
         - NODE_ENV=${NODE_ENV}
         - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
-        - SENTRY_ENABLED=${SENTRY_ENABLED}
-        - SENTRY_DSN=${SENTRY_DSN}
     env_file:
       - ./.env
 

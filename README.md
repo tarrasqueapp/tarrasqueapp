@@ -53,39 +53,3 @@ Create migrations from your Prisma schema, apply them to the database, and gener
 Browse the database using the Prisma Studio.
 
     yarn server prisma studio
-
-# Kubernetes
-
-Install `client`:
-
-    helm upgrade -i client ./helm/client -n production-client --create-namespace
-
-Install `server`:
-
-    helm upgrade -i server ./helm/server -n production-server --create-namespace
-
-# PWA Assets
-
-PWA assets are generated from the `packages/client/public/images/logo.svg` file and are used for the PWA manifest, splash screen, and icons.
-
-Run the following command to generate the PWA assets:
-
-    ./bin/generate-pwa-assets.sh
-
-## Useful commands
-
-Check for helm chart updates:
-
-    helm repo update
-
-Update helm chart dependencies:
-
-    helm dependency update ./helm/client
-
-Delete deployments
-
-    helm delete client -n production-client
-    helm delete server -n production-server
-
-    kubectl delete namespace production-client
-    kubectl delete namespace production-server

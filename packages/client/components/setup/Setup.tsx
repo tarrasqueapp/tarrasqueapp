@@ -26,9 +26,9 @@ export const Setup: React.FC = () => {
 
   useEffect(() => {
     if (!data) return;
-    // Redirect to the home page if the setup is already completed
+    // Redirect to the sign in page if the setup is already completed
     if (data.completed) {
-      router.push(AppNavigation.Home);
+      router.push(AppNavigation.SignIn);
     }
     // Set active step depending on setup progress
     setActiveStep(data.step - 1);

@@ -2,7 +2,6 @@ import { LogLevel, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as Sentry from '@sentry/node';
 import cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
@@ -37,9 +36,6 @@ async function bootstrap() {
 
   // Cookie parser
   app.use(cookieParser(config.COOKIE_SECRET));
-
-  // Setup Sentry
-  Sentry.init({ dsn: config.SENTRY_DSN, enabled: config.SENTRY_ENABLED });
 
   // Setup swagger
   const swaggerConfig = new DocumentBuilder()

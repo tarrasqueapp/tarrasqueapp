@@ -20,5 +20,3 @@ tsconfig.tsbuildinfo
 
 # Custom
 /data
-/helm
-packages/client/.sentryclirc

@@ -23,6 +23,4 @@ logs
 
 # Custom
 /data
-/helm
-packages/client/.sentryclirc
 packages/server/prisma/seed.ts

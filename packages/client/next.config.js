@@ -1,5 +1,3 @@
-const { withSentryConfig } = require('@sentry/nextjs');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
@@ -7,12 +5,8 @@ const nextConfig = {
     VERSION: process.env.VERSION,
     // URL
     HOST: process.env.HOST,
-    LANDING_URL: process.env.LANDING_URL,
     // Authentication
     JWT_ACCESS_TOKEN_EXPIRATION_TIME: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-    // Sentry
-    SENTRY_ENABLED: process.env.SENTRY_ENABLED,
-    SENTRY_DSN: process.env.SENTRY_DSN,
   },
   webpack(config) {
     config.module.rules.push({
@@ -25,8 +19,4 @@ const nextConfig = {
   },
 };
 
-const sentryWebpackPluginOptions = {
-  silent: true,
-};
-
-module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+module.exports = nextConfig;
