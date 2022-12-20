@@ -1,55 +1,55 @@
 # Tarrasque App
 
-## Setup
+Tarrasque App is a free and open-source virtual tabletop software for playing Dungeons & Dragons. It allows you to create and manage your own campaigns, maps, and characters, and provides a simple and intuitive interface for playing D&D online or in-person.
 
-Run the following commands to install the dependencies for Tarrasque App, as well the CLI helper for running Tarrasque App commands:
+## Requirements
+
+- [Node.js](https://nodejs.org/en/) (v14.17.0 or higher)
+- [Yarn](https://yarnpkg.com/) (v1.22.10 or higher)
+- [Docker](https://www.docker.com/) (v20.10.7 or higher)
+- [Docker Compose](https://docs.docker.com/compose/) (v1.29.2 or higher)
+
+## Installation
+
+To install Tarrasque App, run the following commands to install the dependencies and set up the environment variables:
 
     ./bin/setup.sh
+    cp .env.example .env
 
-### Install dependencies
+Then, edit the `.env` file to set the necessary environment variables.
 
-This will run `yarn` on each workspace.
+## Running the Server
 
-    tarrasque install
-
-### Set environment variables
-
-There's a `.env.example` file in the root folder. Copy `.env.example` to `.env` and set the variables as needed.
-
-## Usage
-
-### Run development server
-
-To start the Docker development server, run:
+To start the development server, run:
 
     tarrasque docker up
 
-You can then access the development server at `http://localhost`.
+This will start the server at `http://localhost`.
 
-### Run production server
-
-To start the Docker production server, run:
+To start the production server, run:
 
     tarrasque docker up --prod
 
-You can then access the production server at `http://localhost`.
+This will start the production server at `http://localhost`.
 
-## Database
+## Database Management
 
-### Create database
-
-Push the Prisma schema state to the database.
+To create the database, run:
 
     yarn server prisma db push
 
-### Migrate database
-
-Create migrations from your Prisma schema, apply them to the database, and generate artifacts.
+To create a database migration, run:
 
     yarn server prisma migrate dev --name <migration-name>
 
-### Browse database
-
-Browse the database using the Prisma Studio.
+To browse the database using Prisma Studio, run:
 
     yarn server prisma studio
+
+## Contributing
+
+Contributions are welcome! Please see the [CONTRIBUTING](CONTRIBUTING.md) file for more information. If you have any questions, feel free to reach out to us on [Discord](https://tarrasque.app/discord). We'd love to hear from you! 😊
+
+## License
+
+Tarrasque App is licensed under the GNU Affero General Public License. See the [LICENSE](LICENSE) file for more information.
