@@ -6,35 +6,35 @@ labels: ''
 assignees: ''
 ---
 
-**Describe the bug**
+### Description
+
 A clear and concise description of what the bug is.
 
-**To Reproduce**
-Steps to reproduce the behavior:
+### Steps to reproduce
 
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+### Expected behavior
+
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+### Actual behavior
+
+A clear and concise description of what actually happened.
+
+### Screenshots
+
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+### Environment
 
-- OS: [e.g. iOS]
-- Browser [e.g. chrome, safari]
-- Version [e.g. 22]
+- Operating system: (e.g. iOS, Windows)
+- Browser: (e.g. Chrome, Safari)
+- Tarrasque App version: (e.g. v1.0.0)
 
-**Smartphone (please complete the following information):**
+### Additional context
 
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+Any additional context or information that you think would be helpful in understanding and fixing the bug.
