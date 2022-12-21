@@ -23,6 +23,10 @@ async function bootstrap() {
   // Trust nginx proxy
   app.set('trust proxy', true);
 
+  // Add /api prefix to all routes
+  const apiPath = 'api';
+  app.setGlobalPrefix(apiPath);
+
   // Validate all requests
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
@@ -45,7 +49,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup(apiPath, app, document);
 
   // Start server
   await app.listen(3000);

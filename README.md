@@ -38,6 +38,10 @@ To create the database, run:
 
     yarn server prisma db push
 
+To generate the Prisma client types, run:
+
+    yarn server prisma generate
+
 To create a database migration, run:
 
     yarn server prisma migrate dev --name <migration-name>
