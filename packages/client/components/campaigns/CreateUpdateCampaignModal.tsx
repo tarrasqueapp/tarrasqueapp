@@ -1,10 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import * as yup from 'yup';
 
 import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
 import { useUpdateCampaign } from '../../hooks/data/campaigns/useUpdateCampaign';
@@ -14,13 +14,13 @@ import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 
-interface ICreateUpdateCampaignModalProps {
+interface CreateUpdateCampaignModalProps {
   open: boolean;
   onClose: () => void;
   campaign: CampaignInterface | null;
 }
 
-export const CreateUpdateCampaignModal: React.FC<ICreateUpdateCampaignModalProps> = observer(
+export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps> = observer(
   ({ open, onClose, campaign }) => {
     const createCampaign = useCreateCampaign();
     const updateCampaign = useUpdateCampaign();
@@ -28,15 +28,17 @@ export const CreateUpdateCampaignModal: React.FC<ICreateUpdateCampaignModalProps
     const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
     // Setup form validation schema
-    const schema = z.object({
-      name: ValidateUtils.Name,
-    });
-    type Schema = z.infer<typeof schema>;
+    const schema = yup
+      .object({
+        name: ValidateUtils.Name,
+      })
+      .required();
+    type Schema = yup.InferType<typeof schema>;
 
     // Setup form
     const methods = useForm<Schema>({
       mode: 'onChange',
-      resolver: zodResolver(schema),
+      resolver: yupResolver(schema),
       defaultValues: campaign || new CampaignFactory(),
     });
     const {

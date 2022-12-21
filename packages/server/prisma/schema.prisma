@@ -76,22 +76,22 @@ model Campaign {
 }
 
 model Map {
-  id          String   @id @default(cuid())
-  name        String
+  id              String   @id @default(cuid())
+  name            String
   // DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
   // Tokens
-  tokens      Token[]  @relation("MapTokens")
+  tokens          Token[]  @relation("MapTokens")
   // Media
-  media       Media?   @relation("MapMedia", fields: [mediaId], references: [id])
-  mediaId     String?
+  media           Media[]  @relation("MapMedia")
+  selectedMediaId String?
   // Campaign
-  campaign    Campaign @relation("CampaignMaps", fields: [campaignId], references: [id])
-  campaignId  String
+  campaign        Campaign @relation("CampaignMaps", fields: [campaignId], references: [id])
+  campaignId      String
   // Created by
-  createdBy   User     @relation("UserMaps", fields: [createdById], references: [id])
-  createdById String
+  createdBy       User     @relation("UserMaps", fields: [createdById], references: [id])
+  createdById     String
 }
 
 model Movement {
@@ -196,79 +196,80 @@ model Currencies {
 }
 
 model PlayerCharacter {
-  id           String      @id @default(cuid())
-  name         String
-  size         String      @default("Medium")
-  alignment    String      @default("Neutral")
+  id              String      @id @default(cuid())
+  name            String
+  size            String      @default("Medium")
+  alignment       String      @default("Neutral")
   // DateTime
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @default(now()) @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @default(now()) @updatedAt
   // Armor Class
-  armorClass   ArmorClass? @relation("PlayerCharacterArmorClass")
+  armorClass      ArmorClass? @relation("PlayerCharacterArmorClass")
   // Hit Points
-  hitPoints    HitPoints?  @relation("PlayerCharacterHitPoints")
+  hitPoints       HitPoints?  @relation("PlayerCharacterHitPoints")
   // Movement
-  movement     Movement?   @relation("PlayerCharacterMovement")
+  movement        Movement?   @relation("PlayerCharacterMovement")
   // Senses
-  senses       Senses?     @relation("PlayerCharacterSenses")
+  senses          Senses?     @relation("PlayerCharacterSenses")
   // Currencies
-  currencies   Currencies? @relation("PlayerCharacterCurrencies")
+  currencies      Currencies? @relation("PlayerCharacterCurrencies")
   // Abilities
-  abilities    Ability[]   @relation("PlayerCharacterAbilities")
+  abilities       Ability[]   @relation("PlayerCharacterAbilities")
   // Skills
-  skills       Skill[]     @relation("PlayerCharacterSkills")
+  skills          Skill[]     @relation("PlayerCharacterSkills")
   // Tokens
-  tokens       Token[]     @relation("PlayerCharacterTokens")
+  tokens          Token[]     @relation("PlayerCharacterTokens")
   // Media
-  media        Media?      @relation("PlayerCharacterMedia", fields: [mediaId], references: [id])
-  mediaId      String?
+  media           Media[]     @relation("PlayerCharacterMedia")
+  selectedMediaId String?
   // Created by
-  createdBy    User        @relation("CreatedPlayerCharacters", fields: [createdById], references: [id])
-  createdById  String
+  createdBy       User        @relation("CreatedPlayerCharacters", fields: [createdById], references: [id])
+  createdById     String
   // Controlled by
-  controlledBy User[]      @relation("ControlledPlayerCharacters")
+  controlledBy    User[]      @relation("ControlledPlayerCharacters")
   // Campaign
-  campaign     Campaign    @relation("CampaignPlayerCharacters", fields: [campaignId], references: [id])
-  campaignId   String
+  campaign        Campaign    @relation("CampaignPlayerCharacters", fields: [campaignId], references: [id])
+  campaignId      String
 }
 
 model NonPlayerCharacter {
-  id           String      @id @default(cuid())
-  name         String
-  size         String      @default("Medium")
-  alignment    String      @default("Neutral")
+  id              String      @id @default(cuid())
+  name            String
+  size            String      @default("Medium")
+  alignment       String      @default("Neutral")
   // DateTime
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @default(now()) @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @default(now()) @updatedAt
   // Armor Class
-  armorClass   ArmorClass? @relation("NonPlayerCharacterArmorClass")
+  armorClass      ArmorClass? @relation("NonPlayerCharacterArmorClass")
   // Hit Points
-  hitPoints    HitPoints?  @relation("NonPlayerCharacterHitPoints")
+  hitPoints       HitPoints?  @relation("NonPlayerCharacterHitPoints")
   // Movement
-  movement     Movement?   @relation("NonPlayerCharacterMovement")
+  movement        Movement?   @relation("NonPlayerCharacterMovement")
   // Senses
-  senses       Senses?     @relation("NonPlayerCharacterSenses")
+  senses          Senses?     @relation("NonPlayerCharacterSenses")
   // Abilities
-  abilities    Ability[]   @relation("NonPlayerCharacterAbilities")
+  abilities       Ability[]   @relation("NonPlayerCharacterAbilities")
   // Skills
-  skills       Skill[]     @relation("NonPlayerCharacterSkills")
+  skills          Skill[]     @relation("NonPlayerCharacterSkills")
   // Tokens
-  tokens       Token[]     @relation("NonPlayerCharacterTokens")
+  tokens          Token[]     @relation("NonPlayerCharacterTokens")
   // Media
-  media        Media?      @relation("NonPlayerCharacterMedia", fields: [mediaId], references: [id])
-  mediaId      String?
+  media           Media[]     @relation("NonPlayerCharacterMedia")
+  selectedMediaId String?
   // Created by
-  createdBy    User        @relation("CreatedNonPlayerCharacters", fields: [createdById], references: [id])
-  createdById  String
+  createdBy       User        @relation("CreatedNonPlayerCharacters", fields: [createdById], references: [id])
+  createdById     String
   // Controlled by
-  controlledBy User[]      @relation("ControlledNonPlayerCharacters")
+  controlledBy    User[]      @relation("ControlledNonPlayerCharacters")
   // Campaign
-  campaign     Campaign    @relation("CampaignNonPlayerCharacters", fields: [campaignId], references: [id])
-  campaignId   String
+  campaign        Campaign    @relation("CampaignNonPlayerCharacters", fields: [campaignId], references: [id])
+  campaignId      String
 }
 
 model Media {
   id                  String               @id @default(cuid())
+  name                String
   url                 String
   thumbnailUrl        String
   width               Int

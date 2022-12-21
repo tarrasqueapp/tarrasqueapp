@@ -8,6 +8,7 @@ export class MapEntity extends MapBaseEntity {
   // Tokens
   @ValidateNested({ each: true })
   tokens: TokenBaseEntity[];
+
   // Campaign
   @ValidateNested()
   campaign: CampaignBaseEntity;

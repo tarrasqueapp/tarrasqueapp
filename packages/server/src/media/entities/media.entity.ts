@@ -6,6 +6,9 @@ export class MediaEntity implements Media {
   id: string;
 
   @IsString()
+  name: string;
+
+  @IsString()
   url: string;
 
   @IsString()

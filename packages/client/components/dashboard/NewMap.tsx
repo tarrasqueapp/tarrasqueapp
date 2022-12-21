@@ -6,11 +6,11 @@ import { CampaignInterface } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 
-interface IMapNewProps {
+interface NewMapProps {
   campaign: CampaignInterface | null;
 }
 
-export const MapNew: React.FC<IMapNewProps> = ({ campaign }) => {
+export const NewMap: React.FC<NewMapProps> = ({ campaign }) => {
   const borderColor = Color.BrownDark;
   const spacing = '20px';
   const dashLength = '30px';

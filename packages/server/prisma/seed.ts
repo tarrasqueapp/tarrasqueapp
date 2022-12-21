@@ -88,6 +88,7 @@ async function main() {
         name: 'Example Map',
         media: {
           create: {
+            name: 'map.webp',
             url: 'https://cdn.tarrasque.app/sample/map.webp',
             thumbnailUrl: 'https://cdn.tarrasque.app/sample/map.webp',
             width: 2450,
@@ -116,6 +117,7 @@ async function main() {
         currencies: { create: { gold: 30, silver: 10 } },
         media: {
           create: {
+            name: 'token.webp',
             url: 'https://cdn.tarrasque.app/sample/token.webp',
             thumbnailUrl: 'https://cdn.tarrasque.app/sample/token.webp',
             width: 280,

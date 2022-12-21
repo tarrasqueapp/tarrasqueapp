@@ -6,8 +6,12 @@ export class UpdateMapDto {
   name?: string;
 
   @IsOptional()
+  @IsString({ each: true })
+  mediaIds?: string[];
+
+  @IsOptional()
   @IsString()
-  mediaId?: string;
+  selectedMediaId?: string;
 
   @IsOptional()
   @IsString()

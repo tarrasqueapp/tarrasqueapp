@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-interface IWindowSize {
+interface WindowSize {
   width: number;
   height: number;
   orientation?: Screen['orientation'];
@@ -15,7 +15,7 @@ function getWindowSize() {
     return { width: 0, height: 0 };
   }
 
-  const size: IWindowSize = {
+  const size: WindowSize = {
     width: window.innerWidth,
     height: window.innerHeight,
   };

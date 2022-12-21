@@ -1,29 +1,36 @@
-import { z } from 'zod';
+import * as yup from 'yup';
 
 export class ValidateUtils {
-  static Name = z.string().min(1);
+  static Name = yup.string().min(1).required();
 
-  static Email = z.string().min(1).email();
+  static Email = yup.string().min(1).email().required();
 
-  static Password = z.string().min(8);
+  static Password = yup.string().min(8).required();
 
-  static File = z.object({
-    name: z.string().min(1),
-    type: z.string().min(1),
-    extension: z.string().min(1),
-    size: z.number().min(0),
-    width: z.number().min(0),
-    height: z.number().min(0),
-  });
+  static UppyFile = yup
+    .object({
+      id: yup.string().min(1).required(),
+      name: yup.string().min(1).required(),
+      type: yup.string().min(1).required(),
+      extension: yup.string().min(1).required(),
+      size: yup.number().min(0).required(),
+      uploadURL: yup.string().min(1).required(),
+      data: yup.mixed().required(),
+      isRemote: yup.boolean().required(),
+      meta: yup.object({ name: yup.string().min(1).required() }).required(),
+    })
+    .required();
 
-  static Media = z.object({
-    id: z.string().min(1),
-    url: z.string().min(1),
-    thumbnailUrl: z.string().min(1),
-    width: z.number().min(0),
-    height: z.number().min(0),
-    size: z.number().min(0),
-    format: z.string().min(1),
-    extension: z.string().min(1),
-  });
+  static Media = yup
+    .object({
+      id: yup.string().min(1).required(),
+      url: yup.string().min(1).required(),
+      thumbnailUrl: yup.string().min(1).required(),
+      width: yup.number().min(0).required(),
+      height: yup.number().min(0).required(),
+      size: yup.number().min(0).required(),
+      format: yup.string().min(1).required(),
+      extension: yup.string().min(1).required(),
+    })
+    .required();
 }

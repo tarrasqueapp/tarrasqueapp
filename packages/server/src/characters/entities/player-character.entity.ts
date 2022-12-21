@@ -8,6 +8,7 @@ export class PlayerCharacterEntity extends PlayerCharacterBaseEntity {
   // Created by
   @ValidateNested()
   createdBy: UserEntity;
+
   // Campaign
   @ValidateNested()
   campaign: CampaignEntity;

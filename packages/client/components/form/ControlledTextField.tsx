@@ -2,11 +2,11 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-type IProps = TextFieldProps & {
+type ControlledTextFieldProps = TextFieldProps & {
   name: string;
 };
 
-export const ControlledTextField: React.FC<IProps> = ({ name, ...props }) => {
+export const ControlledTextField: React.FC<ControlledTextFieldProps> = ({ name, ...props }) => {
   const {
     control,
     formState: { errors },

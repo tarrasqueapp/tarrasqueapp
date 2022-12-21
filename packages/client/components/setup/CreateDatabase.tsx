@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form';
 
 import { useCreateDatabase } from '../../hooks/data/setup/useCreateDatabase';
 
-interface IProps {
+interface CreateDatabaseProps {
   onSubmit: () => void;
 }
 
-export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
+export const CreateDatabase: React.FC<CreateDatabaseProps> = ({ onSubmit }) => {
   const createDatabase = useCreateDatabase();
 
   // Setup form
@@ -29,7 +29,7 @@ export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <Typography variant="h1" align="center" gutterBottom>
+      <Typography variant="h3" gutterBottom sx={{ py: 2 }}>
         Welcome to Tarrasque App
       </Typography>
 
@@ -43,7 +43,7 @@ export const CreateDatabase: React.FC<IProps> = ({ onSubmit }) => {
         Continue
       </LoadingButton>
 
-      <Typography variant="caption" component="div">
+      <Typography variant="caption" component="div" sx={{ mt: 1 }}>
         This might take a couple minutes
       </Typography>
     </form>

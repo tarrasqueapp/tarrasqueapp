@@ -77,6 +77,8 @@ export class SetupController {
       res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);
     }
 
+    // Delete all media
+    await this.prisma.media.deleteMany({});
     // Delete all maps
     await this.prisma.map.deleteMany({});
     // Delete all campaigns

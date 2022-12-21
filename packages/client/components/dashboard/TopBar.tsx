@@ -1,6 +1,7 @@
 import { Menu } from '@mui/icons-material';
-import { AppBar, Box, IconButton, Theme, Toolbar, useMediaQuery } from '@mui/material';
+import { AppBar, Box, IconButton, Link, Theme, Toolbar, Typography, useMediaQuery } from '@mui/material';
 
+import { config } from '../../lib/config';
 import { store } from '../../store';
 
 export const TopBar: React.FC = () => {
@@ -10,7 +11,7 @@ export const TopBar: React.FC = () => {
 
   return (
     <AppBar position="sticky">
-      <Toolbar>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         <IconButton onClick={() => store.dashboard.toggleSidebar()}>
           <Menu />
         </IconButton>
@@ -26,6 +27,12 @@ export const TopBar: React.FC = () => {
             transform: 'translateX(-50%)',
           }}
         />
+
+        <Link href="https://tarrasque.app/changelog" target="_blank" rel="noopener noreferrer">
+          <Typography variant="h5" sx={{ fontSize: '11px !important', color: 'text.secondary' }}>
+            v{config.VERSION}
+          </Typography>
+        </Link>
       </Toolbar>
     </AppBar>
   );

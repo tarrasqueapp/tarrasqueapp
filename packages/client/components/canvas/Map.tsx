@@ -1,7 +1,7 @@
 import { Camera } from './Camera';
 import { MapMedia } from './MapMedia';
 
-export interface IMapProps {
+export interface MapProps {
   mapId: string;
   width: number;
   height: number;
@@ -9,7 +9,7 @@ export interface IMapProps {
   children?: React.ReactNode;
 }
 
-export const Map: React.FC<IMapProps> = ({ mapId, width, height, url, children }) => {
+export const Map: React.FC<MapProps> = ({ mapId, width, height, url, children }) => {
   return (
     <Camera mapId={mapId} width={width} height={height}>
       <MapMedia url={url} />

@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateMapDto } from './dto/create-map.dto';
@@ -23,7 +24,7 @@ export class MapsService {
       // Get the maps
       const maps = await this.prisma.map.findMany({
         where: { campaignId },
-        include: { media: true },
+        include: { media: { orderBy: { updatedAt: 'desc' } } },
         orderBy: { updatedAt: 'desc' },
       });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
@@ -47,7 +48,7 @@ export class MapsService {
         where: { id: mapId },
         include: {
           tokens: true,
-          media: true,
+          media: { orderBy: { updatedAt: 'desc' } },
           campaign: true,
         },
       });
@@ -56,6 +57,24 @@ export class MapsService {
     } catch (error) {
       this.logger.error(`🚨 Map "${mapId}" not found`);
       throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Get all maps that match the given criteria
+   * @param query - The query
+   * @returns The maps
+   */
+  async getMaps(query: Prisma.MapFindManyArgs): Promise<MapBaseEntity[]> {
+    this.logger.verbose(`📂 Getting maps`);
+    try {
+      // Get the maps
+      const maps = await this.prisma.map.findMany({ ...query, include: { media: { orderBy: { updatedAt: 'desc' } } } });
+      this.logger.debug(`✅️ Found ${maps.length} maps`);
+      return maps;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -89,11 +108,12 @@ export class MapsService {
       const map = await this.prisma.map.create({
         data: {
           name: data.name,
-          media: { connect: { id: data.mediaId } },
+          media: { connect: data.mediaIds.map((id) => ({ id })) },
+          selectedMediaId: data.selectedMediaId || data.mediaIds[0],
           campaign: { connect: { id: data.campaignId } },
           createdBy: { connect: { id: createdById } },
         },
-        include: { media: true },
+        include: { media: { orderBy: { updatedAt: 'desc' } } },
       });
       this.logger.debug(`✅️ Created map "${data.name}"`);
       return map;
@@ -125,12 +145,13 @@ export class MapsService {
               createdBy: { connect: { id: map.createdById } },
             })),
           },
-          media: { connect: { id: map.media.id } },
+          media: { connect: map.media.map((media) => ({ id: media.id })) },
+          selectedMediaId: map.selectedMediaId,
           campaign: { connect: { id: map.campaign.id } },
           createdBy: { connect: { id: map.createdById } },
         },
         include: {
-          media: true,
+          media: { orderBy: { updatedAt: 'desc' } },
         },
       });
       this.logger.debug(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
@@ -155,10 +176,11 @@ export class MapsService {
         where: { id: mapId },
         data: {
           name: data.name,
-          ...(data.mediaId && { media: { connect: { id: data.mediaId } } }),
+          ...(data.mediaIds && { media: { connect: data.mediaIds.map((id) => ({ id })) } }),
+          ...(data.selectedMediaId && { selectedMediaId: data.selectedMediaId }),
           campaign: { connect: { id: data.campaignId } },
         },
-        include: { media: true },
+        include: { media: { orderBy: { updatedAt: 'desc' } } },
       });
       this.logger.debug(`✅️ Updated map "${mapId}"`);
       return map;
@@ -177,7 +199,10 @@ export class MapsService {
     this.logger.verbose(`📂 Deleting map "${mapId}"`);
     try {
       // Delete the map
-      const map = await this.prisma.map.delete({ where: { id: mapId }, include: { media: true } });
+      const map = await this.prisma.map.delete({
+        where: { id: mapId },
+        include: { media: { orderBy: { updatedAt: 'desc' } } },
+      });
       this.logger.debug(`✅️ Deleted map "${mapId}"`);
       return map;
     } catch (error) {

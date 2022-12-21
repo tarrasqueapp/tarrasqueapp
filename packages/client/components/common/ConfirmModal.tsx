@@ -2,7 +2,7 @@ import { LoadingButton } from '@mui/lab';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 
-export interface IConfirmModalProps {
+export interface ConfirmModalProps {
   open: boolean;
   onConfirm: () => void | Promise<void>;
   onClose: () => void;
@@ -10,7 +10,7 @@ export interface IConfirmModalProps {
   children?: React.ReactNode;
 }
 
-export const ConfirmModal: React.FC<IConfirmModalProps> = ({ open, onConfirm, onClose, title, children }) => {
+export const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onConfirm, onClose, title, children }) => {
   const [loading, setLoading] = useState(false);
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 

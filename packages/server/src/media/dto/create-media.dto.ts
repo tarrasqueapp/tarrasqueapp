@@ -5,6 +5,9 @@ export class CreateMediaDto {
   id: string;
 
   @IsString()
+  name: string;
+
+  @IsString()
   url: string;
 
   @IsString()

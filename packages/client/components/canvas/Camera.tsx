@@ -9,14 +9,14 @@ import { store } from '../../store';
 import { SelectTool, Tool } from '../../store/toolbar';
 import { CameraBase } from './CameraBase';
 
-interface ICameraProps {
+interface CameraProps {
   mapId: string;
   width: number;
   height: number;
   children?: React.ReactNode;
 }
 
-export const Camera: React.FC<ICameraProps> = observer(({ mapId, width, height, children }) => {
+export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, children }) => {
   const app = usePixiApp();
   const windowSize = useWindowSize();
 

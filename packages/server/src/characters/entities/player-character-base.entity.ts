@@ -25,11 +25,11 @@ export class PlayerCharacterBaseEntity implements PlayerCharacter {
   updatedAt: Date;
 
   // Media
-  @ValidateNested()
-  media: MediaEntity;
+  @ValidateNested({ each: true })
+  media: MediaEntity[];
 
   @IsString()
-  mediaId: string | null;
+  selectedMediaId: string;
 
   // Created by
   @IsString()

@@ -47,6 +47,7 @@ export class MediaService {
       const media = await this.prisma.media.create({
         data: {
           id: data.id,
+          name: data.name,
           url: data.url,
           thumbnailUrl: data.thumbnailUrl,
           width: data.width,

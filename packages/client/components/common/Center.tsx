@@ -2,11 +2,11 @@ import { Box } from '@mui/material';
 
 import { Gradient } from '../../lib/colors';
 
-interface IProps {
+interface CenterProps {
   children: React.ReactNode;
 }
 
-export const Center: React.FC<IProps> = ({ children }) => {
+export const Center: React.FC<CenterProps> = ({ children }) => {
   return (
     <Box
       sx={{

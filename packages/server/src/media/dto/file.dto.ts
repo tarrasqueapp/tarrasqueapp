@@ -1,6 +1,9 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class FileDto {
+  @IsString()
+  id: string;
+
   @IsString()
   name: string;
 
@@ -11,11 +14,13 @@ export class FileDto {
   extension: string;
 
   @IsNumber()
-  width: number;
-
-  @IsNumber()
-  height: number;
-
-  @IsNumber()
   size: number;
+
+  @IsOptional()
+  @IsNumber()
+  width?: number;
+
+  @IsOptional()
+  @IsNumber()
+  height?: number;
 }

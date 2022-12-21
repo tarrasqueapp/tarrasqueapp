@@ -1,10 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box } from '@mui/material';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { z } from 'zod';
+import * as yup from 'yup';
 
 import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -14,14 +14,16 @@ export const SignIn: React.FC = () => {
   const signIn = useSignIn();
 
   // Setup form validation schema
-  const schema = z.object({
-    email: ValidateUtils.Email,
-    password: ValidateUtils.Password,
-  });
-  type Schema = z.infer<typeof schema>;
+  const schema = yup
+    .object({
+      email: ValidateUtils.Email,
+      password: ValidateUtils.Password,
+    })
+    .required();
+  type Schema = yup.InferType<typeof schema>;
 
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
+  const methods = useForm<Schema>({ mode: 'onChange', resolver: yupResolver(schema) });
   const {
     handleSubmit,
     formState: { isSubmitting },

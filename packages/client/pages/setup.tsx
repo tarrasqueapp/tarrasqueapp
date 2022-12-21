@@ -9,12 +9,12 @@ const SetupPage: NextPage = () => {
   return (
     <Center>
       <Container maxWidth="xs">
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: 2 }}>
           <Box sx={{ textAlign: 'center', mb: 2 }}>
             <img src="/images/logo.svg" alt="Logo" width="150" />
           </Box>
 
-          <Paper sx={{ p: 1, width: '100%' }}>
+          <Paper sx={{ p: 1, width: '100%', background: 'rgba(0, 0, 0, 0.4)' }}>
             <Setup />
           </Paper>
         </Box>

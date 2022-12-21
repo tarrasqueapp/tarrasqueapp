@@ -26,7 +26,7 @@ import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
 import { MapCard } from './MapCard';
-import { MapNew } from './MapNew';
+import { NewMap } from './NewMap';
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
   ({ theme }) => ({
@@ -54,13 +54,13 @@ const AccordionDetails = styled(MuiAccordionDetails)({
   borderTop: '1px solid rgba(0, 0, 0, 0.125)',
 });
 
-export interface ICampaignAccordionProps {
+export interface CampaignAccordionProps {
   expanded?: boolean;
   onToggle?: (expanded: boolean) => void;
   campaign?: CampaignInterface;
 }
 
-export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded, onToggle, campaign }) => {
+export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, onToggle, campaign }) => {
   const { data: maps } = useGetCampaignMaps(campaign?.id);
 
   return (
@@ -138,7 +138,7 @@ export const CampaignAccordion: React.FC<ICampaignAccordionProps> = ({ expanded,
             gap: 3,
           }}
         >
-          <MapNew campaign={campaign || null} />
+          <NewMap campaign={campaign || null} />
 
           {maps ? (
             maps?.map((map) => <MapCard key={map.id} map={map} campaign={campaign} />)

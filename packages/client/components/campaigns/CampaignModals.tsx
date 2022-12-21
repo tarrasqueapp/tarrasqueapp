@@ -16,7 +16,7 @@ export const CampaignModals: React.FC = observer(() => {
         open={store.campaigns.modal === CampaignModal.CreateUpdate}
         onClose={() => {
           store.campaigns.setModal(null);
-          setTimeout(() => store.campaigns.setSelectedCampaign(null), 100);
+          setTimeout(() => store.campaigns.setSelectedCampaign(null), 500);
         }}
         campaign={store.campaigns.selectedCampaign}
       />
@@ -30,7 +30,7 @@ export const CampaignModals: React.FC = observer(() => {
         }}
         onClose={() => {
           store.campaigns.setModal(null);
-          setTimeout(() => store.campaigns.setSelectedCampaign(null), 100);
+          setTimeout(() => store.campaigns.setSelectedCampaign(null), 500);
         }}
       >
         <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>

@@ -1,6 +1,5 @@
 import { UploadedUppyFile, UppyFile } from '@uppy/core';
 import { makeAutoObservable } from 'mobx';
-import toast from 'react-hot-toast';
 
 import { config } from '../lib/config';
 import { DimensionsInterface, FileInterface } from '../lib/types';
@@ -11,6 +10,15 @@ class MediaStore {
   }
 
   /**
+   * Get the file name from the upload URL
+   * @param url - The upload URL
+   * @returns The file name
+   */
+  getFileNameFromUploadUrl(url: string): string {
+    return url.replace(`${config.HOST}/tus/files/`, '').split('+')[0];
+  }
+
+  /**
    * Convert an Uppy file to a FileInterface
    * @param uppyFile - The Uppy file to convert
    * @returns The converted file
@@ -18,21 +26,15 @@ class MediaStore {
    */
   async convertUppyToFile(
     uppyFile: UploadedUppyFile<Record<string, unknown>, Record<string, unknown>>,
-  ): Promise<FileInterface | undefined> {
-    if (!uppyFile.type) {
-      toast.error('Unknown file type');
-      return;
-    }
-
-    // Remove the host from the upload URL to get the file name
-    const name = uppyFile.uploadURL.replace(`${config.HOST}/tus/files/`, '').split('+')[0];
+  ): Promise<FileInterface> {
+    const id = this.getFileNameFromUploadUrl(uppyFile.uploadURL);
 
     let file: FileInterface = {
-      name,
-      type: uppyFile.type,
+      id,
+      name: uppyFile.name,
+      type: uppyFile.type!,
       extension: uppyFile.extension,
       size: uppyFile.size,
-      data: uppyFile.data,
     };
 
     // Get the dimensions if the file is an image or a video
@@ -45,6 +47,24 @@ class MediaStore {
     }
 
     return file;
+  }
+
+  /**
+   * Convert bytes to a human readable string
+   * @param bytes - The bytes to convert
+   * @param decimals - The number of decimals
+   * @returns The human readable string
+   */
+  formatBytes(bytes: number, decimals = 2) {
+    if (bytes === 0) return '0 B';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
   /**
@@ -65,27 +85,6 @@ class MediaStore {
   isVideo(file?: FileInterface | File | Blob | UppyFile): boolean {
     if (!file) return false;
     return file.type?.startsWith('video/') || false;
-  }
-
-  /**
-   * Check if file is a media item
-   * @param file - The file to check
-   * @returns If the file is a media item
-   */
-  isMedia(file?: FileInterface | File | Blob | UppyFile): boolean {
-    if (!file) return false;
-    return this.isImage(file) || this.isVideo(file);
-  }
-
-  /**
-   * Convert a URL to a File
-   * @param url - The url of the file
-   * @returns The file blob
-   */
-  async urlToFile(url: string): Promise<File> {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new File([blob], 'file', { type: response.headers.get('content-type') || undefined });
   }
 
   /**

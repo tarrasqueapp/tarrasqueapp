@@ -35,7 +35,7 @@ export const Sidebar: React.FC = observer(() => {
       variant={isMobile ? 'temporary' : 'permanent'}
       anchor="left"
     >
-      <Box sx={{ py: 2, textAlign: 'center', position: 'relative' }}>
+      <Box sx={{ py: 3, textAlign: 'center', position: 'relative' }}>
         <img src="/images/logo.svg" alt="Logo" width="150" />
 
         <Link href="https://tarrasque.app/changelog" target="_blank" rel="noopener noreferrer">
@@ -45,15 +45,18 @@ export const Sidebar: React.FC = observer(() => {
               fontSize: '11px !important',
               color: 'text.secondary',
               position: 'absolute',
-              bottom: 0,
-              left: '50%',
-              transform: 'translate(-50%)',
+              bottom: 20,
+              left: '40%',
             }}
           >
             v{config.VERSION}
           </Typography>
         </Link>
       </Box>
+
+      <Typography variant="h5" color="primary.light" align="center" sx={{ mt: -2, mb: 2 }}>
+        Tarrasque App
+      </Typography>
 
       <Box
         sx={{

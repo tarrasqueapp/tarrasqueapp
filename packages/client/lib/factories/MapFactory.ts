@@ -1,8 +1,9 @@
-import { FileInterface, MapInterface } from '../types';
+import { MapInterface, MediaInterface } from '../types';
 
 export class MapFactory implements Partial<MapInterface> {
   name = '';
-  file = null as unknown as FileInterface;
+  media = [] as MediaInterface[];
+  selectedMediaId = '';
 
   /**
    * Generate new map

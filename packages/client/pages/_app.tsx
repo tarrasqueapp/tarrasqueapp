@@ -35,11 +35,11 @@ const queryClient = new QueryClient({
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-type IProps = AppProps & {
+type MyAppProps = AppProps & {
   emotionCache: EmotionCache;
 };
 
-const MyApp: React.FC<IProps> = ({ Component, pageProps, emotionCache = clientSideEmotionCache }) => {
+const MyApp: React.FC<MyAppProps> = ({ Component, pageProps, emotionCache = clientSideEmotionCache }) => {
   return (
     <CacheProvider value={emotionCache}>
       <Head>

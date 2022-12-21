@@ -1,14 +1,14 @@
 import * as PIXI from 'pixi.js';
 import { CustomPIXIComponent } from 'react-pixi-fiber';
 
-interface IGridBaseProps {
+interface GridBaseProps {
   width: number;
   height: number;
   size: number;
   color: number;
 }
 
-export const GridBase = CustomPIXIComponent<PIXI.Graphics, IGridBaseProps>(
+export const GridBase = CustomPIXIComponent<PIXI.Graphics, GridBaseProps>(
   {
     customDisplayObject: () => new PIXI.Graphics(),
     customApplyProps: (instance, oldProps, newProps) => {

@@ -13,7 +13,7 @@ The `client` package is a frontend web application built with the following tech
 The `client` package uses [MUI](https://mui.com/) for the interface, and the following packages for form management and schema validation:
 
 - [react-hook-form](https://react-hook-form.com/): A performance-focused library for managing forms in React.
-- [zod](https://zod.dev/): A schema validation library for TypeScript.
+- [yup](https://www.npmjs.com/package/yup): Dead simple Object schema validation.
 
 HTTP requests are handled with the following packages:
 

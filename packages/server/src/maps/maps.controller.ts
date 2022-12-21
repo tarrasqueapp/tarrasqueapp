@@ -63,28 +63,46 @@ export class MapsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
   async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
+    // Get the current map
+    const map = await this.mapsService.getMap(mapId);
+
     // Check if media is being updated
-    if (data.mediaId) {
-      try {
-        // Check that the new media exists
-        await this.mediaService.getMedia(data.mediaId);
-        // Delete the old media
-        const map = await this.mapsService.getMap(mapId);
-        const media = await this.mediaService.deleteMedia(map.mediaId);
-        // Delete the files from the storage
-        await Promise.all([
+    if (data.mediaIds) {
+      // Find media that have been removed from the map
+      const removedMedia = map.media.filter((media) => !data.mediaIds.includes(media.id));
+
+      // Loop through all media items and delete them if they are not used by any other map
+      for (const media of removedMedia) {
+        // Get all maps that use the media item
+        const maps = await this.mapsService.getMaps({ where: { media: { some: { id: media.id } } } });
+
+        if (maps.length === 1) {
+          // Delete the media item from the database and its files from the storage
+          this.mediaService.deleteMedia(media.id);
           this.storageService.delete(
             `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
-          ),
+          );
           this.storageService.delete(
             `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
-          ),
-        ]);
-      } catch (e) {
-        // If the new media doesn't exist, delete the mediaId from the data
-        delete data.mediaId;
+          );
+        }
+      }
+
+      // Find media that have been added to the map
+      const addedMedia = data.mediaIds.filter((mediaId) => !map.media.map((media) => media.id).includes(mediaId));
+
+      // Loop through all media items and check if they exist
+      for (const mediaId of addedMedia) {
+        try {
+          // Check that the new media exists
+          await this.mediaService.getMedia(mediaId);
+        } catch (e) {
+          // If the new media doesn't exist, delete its id from the map
+          data.mediaIds = data.mediaIds.filter((id) => id !== mediaId);
+        }
       }
     }
+
     // Update the map
     return this.mapsService.updateMap(mapId, data);
   }
@@ -97,18 +115,28 @@ export class MapsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
   async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
-    // Delete the map and the media item from the database
+    // Delete the map from the database
     const map = await this.mapsService.deleteMap(mapId);
-    const media = await this.mediaService.deleteMedia(map.mediaId);
-    // Delete the files from the storage
-    await Promise.all([
-      this.storageService.delete(
-        `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
-      ),
-      this.storageService.delete(
-        `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
-      ),
-    ]);
+
+    // Loop through all media items and delete them if they are not used by any other map
+    for (const media of map.media) {
+      // Get all maps that use the media item
+      const maps = await this.mapsService.getMaps({ where: { media: { some: { id: media.id } } } });
+
+      if (maps.length === 0) {
+        // Delete the media item from the database and its files from the storage
+        await Promise.all([
+          this.mediaService.deleteMedia(media.id),
+          this.storageService.delete(
+            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
+          ),
+          this.storageService.delete(
+            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
+          ),
+        ]);
+      }
+    }
+
     // Return the map
     return map;
   }

@@ -52,8 +52,9 @@ export interface MapInterface {
   createdAt: string;
   updatedAt: string;
   // Media
-  media: MediaInterface;
-  mediaId: string;
+  media: MediaInterface[];
+  mediaIds: string[];
+  selectedMediaId: string;
   // Campaign
   campaign: CampaignInterface;
   campaignId: string;
@@ -170,8 +171,8 @@ export interface PlayerCharacterInterface {
   // Tokens
   tokens: TokenInterface[];
   // Media
-  media: MediaInterface;
-  mediaId: string;
+  media: MediaInterface[];
+  mediaIds: string[];
   // Created by
   createdBy: UserInterface;
   createdById: string;
@@ -205,8 +206,8 @@ export interface NonPlayerCharacterInterface {
   // Tokens
   tokens: TokenInterface[];
   // Media
-  media: MediaInterface;
-  mediaId: string;
+  media: MediaInterface[];
+  mediaIds: string[];
   // Created by
   createdBy: UserInterface;
   createdById: string;
@@ -223,17 +224,18 @@ export interface DimensionsInterface {
 }
 
 export interface FileInterface {
+  id: string;
   name: string;
   type: string;
   extension: string;
   size: number;
-  data: File | Blob;
   width?: number;
   height?: number;
 }
 
 export interface MediaInterface {
   id: string;
+  name: string;
   url: string;
   thumbnailUrl: string;
   width: number;

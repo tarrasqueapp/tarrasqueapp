@@ -19,7 +19,7 @@ export const MapModals: React.FC = observer(() => {
           setTimeout(() => {
             store.maps.setSelectedMap(null);
             store.campaigns.setSelectedCampaign(null);
-          }, 100);
+          }, 500);
         }}
         map={store.maps.selectedMap}
         campaign={store.campaigns.selectedCampaign}
@@ -37,7 +37,7 @@ export const MapModals: React.FC = observer(() => {
           setTimeout(() => {
             store.maps.setSelectedMap(null);
             store.campaigns.setSelectedCampaign(null);
-          }, 100);
+          }, 500);
         }}
       >
         <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>

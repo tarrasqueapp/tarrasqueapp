@@ -1,9 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box } from '@mui/material';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import * as yup from 'yup';
 
 import { useCreateSetupUser } from '../../hooks/data/setup/useCreateSetupUser';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
@@ -12,25 +12,27 @@ import { SetupStep } from '../../lib/types';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 
-interface IProps {
+interface CreateUserProps {
   onSubmit: () => void;
 }
 
-export const CreateUser: React.FC<IProps> = ({ onSubmit }) => {
+export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
   const createSetupUser = useCreateSetupUser();
   const signIn = useSignIn();
   const updateSetup = useUpdateSetup();
 
   // Setup form validation schema
-  const schema = z.object({
-    name: ValidateUtils.Name,
-    email: ValidateUtils.Email,
-    password: ValidateUtils.Password,
-  });
-  type Schema = z.infer<typeof schema>;
+  const schema = yup
+    .object({
+      name: ValidateUtils.Name,
+      email: ValidateUtils.Email,
+      password: ValidateUtils.Password,
+    })
+    .required();
+  type Schema = yup.InferType<typeof schema>;
 
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
+  const methods = useForm<Schema>({ mode: 'onChange', resolver: yupResolver(schema) });
   const {
     handleSubmit,
     formState: { isSubmitting, isValid },

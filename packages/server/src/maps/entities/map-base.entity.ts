@@ -18,11 +18,11 @@ export class MapBaseEntity implements Map {
   updatedAt: Date;
 
   // Media
-  @ValidateNested()
-  media: MediaEntity;
+  @ValidateNested({ each: true })
+  media: MediaEntity[];
 
   @IsString()
-  mediaId: string | null;
+  selectedMediaId: string;
 
   // Campaign
   @IsString()

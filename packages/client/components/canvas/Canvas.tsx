@@ -49,6 +49,8 @@ const Canvas: React.FC = observer(() => {
 
   if (!map) return null;
 
+  const media = map.media.find((media) => media.id === map.selectedMediaId)!;
+
   return (
     <Stage
       options={{
@@ -58,8 +60,8 @@ const Canvas: React.FC = observer(() => {
         antialias: true,
       }}
     >
-      <Map mapId={map.id} width={map.media.width} height={map.media.height} url={map.media.url}>
-        <Grid width={map.media.width} height={map.media.height} />
+      <Map mapId={map.id} width={media.width} height={media.height} url={media.url}>
+        <Grid width={media.width} height={media.height} />
         <Token url="https://cdn.tarrasque.app/sample/token.webp" x={70} y={70} width={70} height={70} />
       </Map>
     </Stage>

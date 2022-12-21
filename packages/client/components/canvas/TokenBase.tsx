@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { useState } from 'react';
 import { Sprite } from 'react-pixi-fiber';
 
-interface ITokenBaseProps {
+interface TokenBaseProps {
   src: string;
   x: number;
   y: number;
@@ -10,7 +10,7 @@ interface ITokenBaseProps {
   height: number;
 }
 
-export const TokenBase: React.FC<ITokenBaseProps> = ({ src, x, y, width, height }) => {
+export const TokenBase: React.FC<TokenBaseProps> = ({ src, x, y, width, height }) => {
   const [moving, setMoving] = useState(false);
 
   return (

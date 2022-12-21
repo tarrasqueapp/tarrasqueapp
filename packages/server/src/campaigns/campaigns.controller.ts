@@ -96,22 +96,30 @@ export class CampaignsController {
     // Delete all campaign maps and their media items
     await Promise.all(
       maps.map(async (map) => {
-        // Delete the map and the media item from the database
-        const mapDeleted = await this.mapsService.deleteMap(map.id);
-        const media = await this.mediaService.deleteMedia(map.mediaId);
+        // Delete the map from the database
+        const deletedMap = await this.mapsService.deleteMap(map.id);
 
-        // Delete the files from the storage
-        await Promise.all([
-          this.storageService.delete(
-            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
-          ),
-          this.storageService.delete(
-            `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
-          ),
-        ]);
+        // Loop through all media items and delete them if they are not used by any other map
+        for (const media of deletedMap.media) {
+          // Get all maps that use the media item
+          const maps = await this.mapsService.getMaps({ where: { media: { some: { id: media.id } } } });
+
+          if (maps.length === 0) {
+            // Delete the media item from the database and its files from the storage
+            await Promise.all([
+              this.mediaService.deleteMedia(media.id),
+              this.storageService.delete(
+                `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${ORIGINAL_FILENAME}.${media.extension}`,
+              ),
+              this.storageService.delete(
+                `${this.storageService.uploadPath}/${media.createdById}/${media.id}/${THUMBNAIL_FILENAME}`,
+              ),
+            ]);
+          }
+        }
 
         // Return the deleted map
-        return mapDeleted;
+        return deletedMap;
       }),
     );
 

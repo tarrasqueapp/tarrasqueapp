@@ -51,7 +51,7 @@ CREATE TABLE "Map" (
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "mediaId" TEXT,
+    "selectedMediaId" TEXT,
     "campaignId" TEXT NOT NULL,
     "createdById" TEXT NOT NULL,
 
@@ -158,7 +158,7 @@ CREATE TABLE "PlayerCharacter" (
     "alignment" TEXT NOT NULL DEFAULT 'Neutral',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "mediaId" TEXT,
+    "selectedMediaId" TEXT,
     "createdById" TEXT NOT NULL,
     "campaignId" TEXT NOT NULL,
 
@@ -173,7 +173,7 @@ CREATE TABLE "NonPlayerCharacter" (
     "alignment" TEXT NOT NULL DEFAULT 'Neutral',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "mediaId" TEXT,
+    "selectedMediaId" TEXT,
     "createdById" TEXT NOT NULL,
     "campaignId" TEXT NOT NULL,
 
@@ -183,6 +183,7 @@ CREATE TABLE "NonPlayerCharacter" (
 -- CreateTable
 CREATE TABLE "Media" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "thumbnailUrl" TEXT NOT NULL,
     "width" INTEGER NOT NULL,
@@ -221,6 +222,12 @@ CREATE TABLE "_CampaignPlayers" (
 );
 
 -- CreateTable
+CREATE TABLE "_MapMedia" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_ControlledPlayerCharacters" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -228,6 +235,18 @@ CREATE TABLE "_ControlledPlayerCharacters" (
 
 -- CreateTable
 CREATE TABLE "_ControlledNonPlayerCharacters" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_PlayerCharacterMedia" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_NonPlayerCharacterMedia" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -272,6 +291,12 @@ CREATE UNIQUE INDEX "_CampaignPlayers_AB_unique" ON "_CampaignPlayers"("A", "B")
 CREATE INDEX "_CampaignPlayers_B_index" ON "_CampaignPlayers"("B");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "_MapMedia_AB_unique" ON "_MapMedia"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_MapMedia_B_index" ON "_MapMedia"("B");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_ControlledPlayerCharacters_AB_unique" ON "_ControlledPlayerCharacters"("A", "B");
 
 -- CreateIndex
@@ -283,14 +308,23 @@ CREATE UNIQUE INDEX "_ControlledNonPlayerCharacters_AB_unique" ON "_ControlledNo
 -- CreateIndex
 CREATE INDEX "_ControlledNonPlayerCharacters_B_index" ON "_ControlledNonPlayerCharacters"("B");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_PlayerCharacterMedia_AB_unique" ON "_PlayerCharacterMedia"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_PlayerCharacterMedia_B_index" ON "_PlayerCharacterMedia"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_NonPlayerCharacterMedia_AB_unique" ON "_NonPlayerCharacterMedia"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_NonPlayerCharacterMedia_B_index" ON "_NonPlayerCharacterMedia"("B");
+
 -- AddForeignKey
 ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Map" ADD CONSTRAINT "Map_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Map" ADD CONSTRAINT "Map_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -341,16 +375,10 @@ ALTER TABLE "Skill" ADD CONSTRAINT "Skill_nonPlayerCharacterId_fkey" FOREIGN KEY
 ALTER TABLE "Currencies" ADD CONSTRAINT "Currencies_playerCharacterId_fkey" FOREIGN KEY ("playerCharacterId") REFERENCES "PlayerCharacter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PlayerCharacter" ADD CONSTRAINT "PlayerCharacter_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "NonPlayerCharacter" ADD CONSTRAINT "NonPlayerCharacter_mediaId_fkey" FOREIGN KEY ("mediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "NonPlayerCharacter" ADD CONSTRAINT "NonPlayerCharacter_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -380,6 +408,12 @@ ALTER TABLE "_CampaignPlayers" ADD CONSTRAINT "_CampaignPlayers_A_fkey" FOREIGN 
 ALTER TABLE "_CampaignPlayers" ADD CONSTRAINT "_CampaignPlayers_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "_MapMedia" ADD CONSTRAINT "_MapMedia_A_fkey" FOREIGN KEY ("A") REFERENCES "Map"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_MapMedia" ADD CONSTRAINT "_MapMedia_B_fkey" FOREIGN KEY ("B") REFERENCES "Media"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "_ControlledPlayerCharacters" ADD CONSTRAINT "_ControlledPlayerCharacters_A_fkey" FOREIGN KEY ("A") REFERENCES "PlayerCharacter"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -390,3 +424,15 @@ ALTER TABLE "_ControlledNonPlayerCharacters" ADD CONSTRAINT "_ControlledNonPlaye
 
 -- AddForeignKey
 ALTER TABLE "_ControlledNonPlayerCharacters" ADD CONSTRAINT "_ControlledNonPlayerCharacters_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PlayerCharacterMedia" ADD CONSTRAINT "_PlayerCharacterMedia_A_fkey" FOREIGN KEY ("A") REFERENCES "Media"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PlayerCharacterMedia" ADD CONSTRAINT "_PlayerCharacterMedia_B_fkey" FOREIGN KEY ("B") REFERENCES "PlayerCharacter"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_NonPlayerCharacterMedia" ADD CONSTRAINT "_NonPlayerCharacterMedia_A_fkey" FOREIGN KEY ("A") REFERENCES "Media"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_NonPlayerCharacterMedia" ADD CONSTRAINT "_NonPlayerCharacterMedia_B_fkey" FOREIGN KEY ("B") REFERENCES "NonPlayerCharacter"("id") ON DELETE CASCADE ON UPDATE CASCADE;

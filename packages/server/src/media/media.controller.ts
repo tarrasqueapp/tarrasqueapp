@@ -31,27 +31,27 @@ export class MediaController {
     const id = cuid();
 
     // Get the file from the tusd upload location
-    const file = await this.storageService.getFile(`${this.storageService.tmpPath}/${data.name}`);
+    const file = await this.storageService.getFile(`${this.storageService.tmpPath}/${data.id}`);
 
     // Write the file to the temp path if using S3 so we can generate a thumbnail
     if (config.STORAGE_PROVIDER === StorageProviderEnum.S3) {
-      await fs.writeFile(`${this.storageService.tmpPathLocal}/${data.name}`, file);
+      await fs.writeFile(`${this.storageService.tmpPathLocal}/${data.id}`, file);
     }
 
     // Generate thumbnail
     await this.mediaService.generateThumbnail(
-      `${this.storageService.tmpPathLocal}/${data.name}`,
-      `${this.storageService.tmpPathLocal}/${data.name}.${THUMBNAIL_FILENAME}`,
+      `${this.storageService.tmpPathLocal}/${data.id}`,
+      `${this.storageService.tmpPathLocal}/${data.id}.${THUMBNAIL_FILENAME}`,
     );
 
     // Get the thumbnail from the temp path
     const thumbnail = await this.storageService.getFileLocal(
-      `${this.storageService.tmpPathLocal}/${data.name}.${THUMBNAIL_FILENAME}`,
+      `${this.storageService.tmpPathLocal}/${data.id}.${THUMBNAIL_FILENAME}`,
     );
 
     // Move the file from the temp path to the upload path
     const url = await this.storageService.moveFile(
-      `${this.storageService.tmpPath}/${data.name}`,
+      `${this.storageService.tmpPath}/${data.id}`,
       `${this.storageService.uploadPath}/${user.id}/${id}/${ORIGINAL_FILENAME}.${data.extension}`,
       data.type,
     );
@@ -67,6 +67,7 @@ export class MediaController {
     const media = await this.mediaService.createMedia(
       {
         id,
+        name: data.name,
         url,
         thumbnailUrl,
         width: data.width,
@@ -79,9 +80,9 @@ export class MediaController {
     );
 
     // Delete the temporary files
-    this.storageService.delete(`${this.storageService.tmpPath}/${data.name}.info`);
-    this.storageService.deleteLocal(`${this.storageService.tmpPathLocal}/${data.name}`);
-    this.storageService.deleteLocal(`${this.storageService.tmpPathLocal}/${data.name}.${THUMBNAIL_FILENAME}`);
+    this.storageService.delete(`${this.storageService.tmpPath}/${data.id}.info`);
+    this.storageService.deleteLocal(`${this.storageService.tmpPathLocal}/${data.id}`);
+    this.storageService.deleteLocal(`${this.storageService.tmpPathLocal}/${data.id}.${THUMBNAIL_FILENAME}`);
 
     return media;
   }

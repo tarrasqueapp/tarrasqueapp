@@ -6,11 +6,11 @@ import { Color } from '../lib/colors';
 import { config } from '../lib/config';
 import createEmotionCache from '../lib/createEmotionCache';
 
-type IProps = DocumentProps & {
+type MyDocumentProps = DocumentProps & {
   emotionStyleTags: React.ReactNode;
 };
 
-export default class MyDocument extends Document<IProps> {
+export default class MyDocument extends Document<MyDocumentProps> {
   render() {
     return (
       <Html lang="en">

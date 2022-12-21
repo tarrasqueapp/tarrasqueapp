@@ -6,12 +6,12 @@ import { Color } from '../../lib/colors';
 import { HotkeysUtils } from '../../utils/HotkeyUtils';
 import { GridBase } from './GridBase';
 
-interface IGridProps {
+interface GridProps {
   width: number;
   height: number;
 }
 
-export const Grid: React.FC<IGridProps> = ({ width, height }) => {
+export const Grid: React.FC<GridProps> = ({ width, height }) => {
   const [visible, setVisible] = useState(true);
 
   // Register hotkey

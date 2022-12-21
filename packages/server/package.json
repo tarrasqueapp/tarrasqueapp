@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "repository": "https://github.com/tarrasqueapp/tarrasqueapp",
   "author": "Richard Solomou <richard@tarrasque.app>",
   "license": "AGPL-3.0-or-later",
@@ -20,8 +20,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.234.0",
-    "@aws-sdk/lib-storage": "^3.234.0",
+    "@aws-sdk/client-s3": "^3.235.0",
+    "@aws-sdk/lib-storage": "^3.235.0",
     "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^9.2.1",
     "@nestjs/jwt": "^9.0.0",
@@ -31,7 +31,7 @@
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/websockets": "^9.2.1",
-    "@prisma/client": "^4.7.1",
+    "@prisma/client": "^4.8.0",
     "argon2": "^0.30.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -43,7 +43,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "prisma": "^4.7.1",
+    "prisma": "^4.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.0",

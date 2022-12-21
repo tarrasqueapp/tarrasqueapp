@@ -23,14 +23,16 @@ import { CampaignInterface, MapInterface } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 
-interface IMapCardProps {
+interface MapCardProps {
   map?: MapInterface;
   campaign?: CampaignInterface;
 }
 
-export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
+export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
   const width = 250;
   const height = 200;
+
+  const thumbnailUrl = map?.media.find((media) => media.id === map.selectedMediaId)?.thumbnailUrl;
 
   return (
     <Card sx={{ position: 'relative', width, height }}>
@@ -46,7 +48,7 @@ export const MapCard: React.FC<IMapCardProps> = ({ map, campaign }) => {
               <CardMedia>
                 <Box
                   component="img"
-                  src={map.media.thumbnailUrl}
+                  src={thumbnailUrl}
                   sx={{
                     width: '100%',
                     height: '100%',

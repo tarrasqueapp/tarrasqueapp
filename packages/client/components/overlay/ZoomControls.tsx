@@ -36,9 +36,10 @@ export const ZoomControls: React.FC = observer(() => {
   function handleFitScreen(event: React.MouseEvent<HTMLElement, MouseEvent> | KeyboardEvent) {
     event.preventDefault();
     if (!map) return;
+    const media = map.media.find((media) => media.id === map.selectedMediaId)!;
     store.pixi.viewport.animate({
-      position: { x: map.media.width / 2, y: map.media.height / 2 },
-      scale: Math.min(window.innerWidth / map.media.width, window.innerHeight / map.media.height),
+      position: { x: media.width / 2, y: media.height / 2 },
+      scale: Math.min(window.innerWidth / media.width, window.innerHeight / media.height),
       time: 100,
     });
   }

@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import React from 'react';
 import { CustomPIXIComponent } from 'react-pixi-fiber';
 
-interface ICameraBaseProps extends IViewportOptions {
+interface CameraBaseProps extends IViewportOptions {
   onLoad?: (viewport: Viewport) => void;
   onBeforeSingleClick?: (event: PIXI.InteractionEvent) => void;
   onSingleClick?: (event: PIXI.InteractionEvent) => void;
@@ -14,7 +14,7 @@ interface ICameraBaseProps extends IViewportOptions {
   children?: React.ReactNode;
 }
 
-export const CameraBase = CustomPIXIComponent<Viewport, ICameraBaseProps>(
+export const CameraBase = CustomPIXIComponent<Viewport, CameraBaseProps>(
   {
     customDisplayObject: (props) => {
       // Initialize the viewport with some default options and the provided props
