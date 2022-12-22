@@ -1,6 +1,7 @@
 import { Box, CircularProgress } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import type { GetServerSideProps, NextPage } from 'next';
+import Head from 'next/head';
 
 import { CampaignModals } from '../components/campaigns/CampaignModals';
 import { Center } from '../components/common/Center';
@@ -50,32 +51,38 @@ const DashboardPage: NextPage = observer(() => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', background: Gradient.Linear }}>
-      <TopBar />
+    <>
+      <Head>
+        <title>Dashboard · Tarrasque App</title>
+      </Head>
 
-      <Box sx={{ display: 'flex', flex: '1 0 auto' }}>
-        <Sidebar />
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', background: Gradient.Linear }}>
+        <TopBar />
 
-        <Box
-          component="main"
-          sx={{
-            width: `calc(100% - ${store.dashboard.sidebar?.clientWidth || 0}px)`,
-            display: 'flex',
-            flexDirection: 'column',
-            flex: '1 0 auto',
-            transition: 'padding 0.3s ease',
-            p: { xs: 1, sm: 2, md: 3 },
-          }}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 0 auto' }}>
-            <CampaignAccordions />
+        <Box sx={{ display: 'flex', flex: '1 0 auto' }}>
+          <Sidebar />
+
+          <Box
+            component="main"
+            sx={{
+              width: `calc(100% - ${store.dashboard.sidebar?.clientWidth || 0}px)`,
+              display: 'flex',
+              flexDirection: 'column',
+              flex: '1 0 auto',
+              transition: 'padding 0.3s ease',
+              p: { xs: 1, sm: 2, md: 3 },
+            }}
+          >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 0 auto' }}>
+              <CampaignAccordions />
+            </Box>
           </Box>
-        </Box>
 
-        <CampaignModals />
-        <MapModals />
+          <CampaignModals />
+          <MapModals />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 });
 

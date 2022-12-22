@@ -66,7 +66,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
   return (
     <Accordion expanded={campaign ? expanded : true} onChange={(event, expanded) => onToggle?.(expanded)}>
       <AccordionSummary>
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
           <Typography variant="h3">
             {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 300)} />}
           </Typography>

@@ -3,6 +3,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import React from 'react';
 
 import { Center } from '../../components/common/Center';
+import { Logo } from '../../components/common/Logo';
 import { SignIn } from '../../components/setup/SignIn';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { getUser } from '../../hooks/data/users/useGetUser';
@@ -37,7 +38,7 @@ const SignInPage: NextPage = () => {
       <Container maxWidth="xs">
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <img src="/images/logo.svg" alt="Logo" width="150" />
+            <Logo size={150} />
           </Box>
 
           <Paper sx={{ p: 2, width: '100%' }}>

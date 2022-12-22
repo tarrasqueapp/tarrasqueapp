@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import React from 'react';
 
 import { Center } from '../components/common/Center';
+import { Logo } from '../components/common/Logo';
 import { NextButton } from '../components/common/NextButton';
 import { AppNavigation } from '../lib/navigation';
 
@@ -12,7 +13,7 @@ const NotFound: NextPage = () => {
       <Container maxWidth="sm">
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <img src="/images/logo.svg" alt="Logo" width="150" />
+            <Logo size={150} />
           </Box>
 
           <Paper sx={{ p: 4, background: 'rgba(0, 0, 0, 0.2)' }}>

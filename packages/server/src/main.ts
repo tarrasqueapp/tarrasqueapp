@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
-import { AppModule } from './app.module';
+import { AppModule } from './app/app.module';
 import { config } from './config';
 
 async function bootstrap() {
@@ -17,7 +17,7 @@ async function bootstrap() {
       config.NODE_ENV !== 'production' && 'debug',
       config.NODE_ENV !== 'production' && config.VERBOSE && 'verbose',
     ].filter(Boolean) as LogLevel[],
-    cors: { origin: config.HOST, credentials: true },
+    cors: { origin: false, credentials: true },
   });
 
   // Trust nginx proxy

@@ -1,8 +1,10 @@
 import { Box } from '@mui/material';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { Overlay } from '../../components/overlay/Overlay';
+import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { AppNavigation } from '../../lib/navigation';
 
@@ -22,11 +24,19 @@ export async function getServerSideProps() {
 const Canvas = dynamic(() => import('../../components/canvas/Canvas'), { ssr: false });
 
 const MapId: NextPage = () => {
+  const { data: map } = useGetCurrentMap();
+
   return (
-    <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
-      <Canvas />
-      <Overlay />
-    </Box>
+    <>
+      <Head>
+        <title>{map ? `${map.name} · Tarrasque App` : 'Tarrasque App'}</title>
+      </Head>
+
+      <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
+        <Canvas />
+        <Overlay />
+      </Box>
+    </>
   );
 };
 
