@@ -17,7 +17,7 @@ async function bootstrap() {
       config.NODE_ENV !== 'production' && 'debug',
       config.NODE_ENV !== 'production' && config.VERBOSE && 'verbose',
     ].filter(Boolean) as LogLevel[],
-    cors: false,
+    cors: { origin: '*', credentials: false },
   });
 
   // Trust nginx proxy

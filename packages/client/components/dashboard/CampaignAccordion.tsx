@@ -99,10 +99,11 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
                       <MoreHoriz />
                     </IconButton>
                   </Tooltip>
+
                   <Popover
                     {...bindPopover(popupState)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                   >
                     <MenuList>
                       <MenuItem
@@ -114,7 +115,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
                         }}
                       >
                         <ListItemIcon>
-                          <Delete fontSize="small" />
+                          <Delete />
                         </ListItemIcon>
                         <ListItemText>Delete</ListItemText>
                       </MenuItem>
@@ -138,8 +139,6 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
             gap: 3,
           }}
         >
-          <NewMap campaign={campaign || null} />
-
           {maps ? (
             maps?.map((map) => <MapCard key={map.id} map={map} campaign={campaign} />)
           ) : (
@@ -149,6 +148,8 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
               ))}
             </>
           )}
+
+          <NewMap campaign={campaign || null} />
         </Box>
       </AccordionDetails>
     </Accordion>

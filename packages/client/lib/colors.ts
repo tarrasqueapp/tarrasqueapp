@@ -18,13 +18,13 @@ export enum Color {
   GreyLight = '#dadada',
   GreyDark = '#acacac',
   // Blue
-  Blue = '#4281A4',
+  Blue = '#3688f4',
   // Red
-  Red = '#ac4c2a',
+  Red = '#f44336',
   // Orange
-  Orange = '#FDC03C',
+  Orange = '#f9cb25',
   // Green
-  Green = '#547E52',
+  Green = '#36f443',
 }
 
 export const Gradient = {

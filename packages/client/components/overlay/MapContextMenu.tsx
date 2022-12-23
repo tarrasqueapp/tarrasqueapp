@@ -54,7 +54,7 @@ export const MapContextMenu: React.FC = observer(() => {
             <MenuList>
               <MenuItem onClick={handlePingLocation} sx={{ width }}>
                 <ListItemIcon>
-                  <GpsFixed fontSize="small" />
+                  <GpsFixed />
                 </ListItemIcon>
                 <ListItemText primary="Ping Location" />
                 <ListItemSecondaryAction>

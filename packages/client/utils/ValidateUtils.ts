@@ -1,11 +1,15 @@
 import * as yup from 'yup';
 
 export class ValidateUtils {
-  static Name = yup.string().min(1).required();
+  static Name = yup.string().trim().required('Name is required');
 
-  static Email = yup.string().min(1).email().required();
+  static Email = yup.string().lowercase().trim().email('Invalid email address').required('Email is required');
 
-  static Password = yup.string().min(8).required();
+  static Password = yup
+    .string()
+    .trim()
+    .min(8, 'Password must have at least 8 characters')
+    .required('Password is required');
 
   static UppyFile = yup
     .object({

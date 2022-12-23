@@ -1,6 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Close } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Theme,
+  useMediaQuery,
+} from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -146,7 +157,13 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
             onSubmit={handleSubmit(handleSubmitForm)}
             style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
           >
-            <DialogTitle>{map ? 'Update Map' : 'Create Map'}</DialogTitle>
+            <DialogTitle>
+              <span>{map ? 'Update Map' : 'Create Map'}</span>
+
+              <IconButton onClick={onClose}>
+                <Close />
+              </IconButton>
+            </DialogTitle>
 
             <DialogContent>
               <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />

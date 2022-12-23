@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Paper, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material';
+import { Box, CircularProgress, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
@@ -111,12 +111,6 @@ export const Setup: React.FC = () => {
           </Step>
         ))}
       </Stepper>
-
-      {activeStep === steps.length && (
-        <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-        </Paper>
-      )}
     </>
   );
 };

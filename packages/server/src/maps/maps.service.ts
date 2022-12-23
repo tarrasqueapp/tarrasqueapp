@@ -25,7 +25,6 @@ export class MapsService {
       const maps = await this.prisma.map.findMany({
         where: { campaignId },
         include: { media: { orderBy: { updatedAt: 'desc' } } },
-        orderBy: { updatedAt: 'desc' },
       });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
       return maps;

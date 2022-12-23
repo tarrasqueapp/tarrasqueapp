@@ -84,6 +84,7 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
                       <MoreHoriz />
                     </IconButton>
                   </Tooltip>
+
                   <Popover
                     {...bindPopover(popupState)}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
@@ -100,7 +101,7 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
                         }}
                       >
                         <ListItemIcon>
-                          <Edit fontSize="small" />
+                          <Edit />
                         </ListItemIcon>
                         <ListItemText>Update</ListItemText>
                       </MenuItem>
@@ -115,7 +116,7 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
                         }}
                       >
                         <ListItemIcon>
-                          <Delete fontSize="small" />
+                          <Delete />
                         </ListItemIcon>
                         <ListItemText>Delete</ListItemText>
                       </MenuItem>

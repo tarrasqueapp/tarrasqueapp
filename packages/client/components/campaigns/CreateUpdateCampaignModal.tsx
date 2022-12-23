@@ -1,6 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Close } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Theme,
+  useMediaQuery,
+} from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -74,7 +84,13 @@ export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps>
             onSubmit={handleSubmit(handleSubmitForm)}
             style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
           >
-            <DialogTitle>{campaign ? 'Update Campaign' : 'Create Campaign'}</DialogTitle>
+            <DialogTitle>
+              <span>{campaign ? 'Update Campaign' : 'Create Campaign'}</span>
+
+              <IconButton onClick={onClose}>
+                <Close />
+              </IconButton>
+            </DialogTitle>
 
             <DialogContent>
               <ControlledTextField size="small" name="name" label="Name" autoFocus fullWidth />

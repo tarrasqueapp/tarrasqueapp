@@ -1,5 +1,15 @@
+import { Close } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, useMediaQuery } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Theme,
+  useMediaQuery,
+} from '@mui/material';
 import React, { useState } from 'react';
 
 export interface ConfirmModalProps {
@@ -26,7 +36,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onConfirm, onC
 
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={onClose}>
-      <DialogTitle>{title || 'Are you sure?'}</DialogTitle>
+      <DialogTitle>
+        <span>{title || 'Are you sure?'}</span>
+
+        <IconButton onClick={onClose}>
+          <Close />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent>{children || 'This cannot be undone.'}</DialogContent>
 

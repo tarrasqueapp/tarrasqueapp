@@ -147,6 +147,9 @@ export let theme = createTheme({
     MuiDialogTitle: {
       styleOverrides: {
         root: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           fontWeight: 'bold',
         },
       },
