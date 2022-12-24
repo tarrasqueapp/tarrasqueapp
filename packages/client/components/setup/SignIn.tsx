@@ -47,8 +47,8 @@ export const SignIn: React.FC = () => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <ControlledTextField size="small" name="email" label="Email" sx={{ m: 1 }} autoFocus />
-          <ControlledTextField size="small" name="password" label="Password" type="password" sx={{ m: 1 }} />
+          <ControlledTextField name="email" label="Email" sx={{ m: 1 }} autoFocus />
+          <ControlledTextField name="password" label="Password" type="password" sx={{ m: 1 }} />
         </Box>
 
         <Box sx={{ textAlign: 'center' }}>

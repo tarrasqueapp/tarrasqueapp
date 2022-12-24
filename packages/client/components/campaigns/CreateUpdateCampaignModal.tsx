@@ -93,7 +93,7 @@ export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps>
             </DialogTitle>
 
             <DialogContent>
-              <ControlledTextField size="small" name="name" label="Name" autoFocus fullWidth />
+              <ControlledTextField name="name" label="Name" autoFocus fullWidth />
             </DialogContent>
 
             <DialogActions>

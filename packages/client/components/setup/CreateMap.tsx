@@ -86,7 +86,7 @@ export const CreateMap: React.FC<CreateMapProps> = ({ campaignId, onSubmit, onRe
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus />
+          <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus />
 
           <Box sx={{ my: 1 }}>
             <ControlledUploader

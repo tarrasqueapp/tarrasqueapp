@@ -166,7 +166,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
             </DialogTitle>
 
             <DialogContent>
-              <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
+              <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
 
               <Box sx={{ my: 1 }}>
                 <ControlledUploader

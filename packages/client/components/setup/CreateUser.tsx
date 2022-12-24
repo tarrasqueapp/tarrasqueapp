@@ -53,9 +53,9 @@ export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus />
-          <ControlledTextField size="small" name="email" label="Email" sx={{ my: 1 }} />
-          <ControlledTextField size="small" name="password" label="Password" type="password" sx={{ my: 1 }} />
+          <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus />
+          <ControlledTextField name="email" label="Email" sx={{ my: 1 }} />
+          <ControlledTextField name="password" label="Password" type="password" sx={{ my: 1 }} />
         </Box>
 
         <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit" sx={{ mt: 2 }}>

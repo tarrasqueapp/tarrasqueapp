@@ -50,7 +50,7 @@ export const CreateCampaign: React.FC<CreateCampaignProps> = ({ onSubmit, onRese
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <ControlledTextField size="small" name="name" label="Name" sx={{ my: 1 }} autoFocus />
+          <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus />
         </Box>
 
         <Box sx={{ mt: 2 }}>
