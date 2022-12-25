@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { api } from '../../../lib/api';
 import { UserInterface } from '../../../lib/types';
@@ -18,5 +18,5 @@ export async function getUser(config?: AxiosRequestConfig) {
  * @returns User query
  */
 export function useGetUser() {
-  return useQuery([`auth`], () => getUser());
+  return useQuery<UserInterface, AxiosResponse>([`auth`], () => getUser());
 }

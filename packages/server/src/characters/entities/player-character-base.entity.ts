@@ -2,7 +2,7 @@ import { PlayerCharacter } from '@prisma/client';
 import { IsDateString, IsString, ValidateNested } from 'class-validator';
 
 import { MediaEntity } from '../../media/entities/media.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserBaseEntity } from '../../users/entities/user-base.entity';
 
 export class PlayerCharacterBaseEntity implements PlayerCharacter {
   @IsString()
@@ -37,7 +37,7 @@ export class PlayerCharacterBaseEntity implements PlayerCharacter {
 
   // Controlled by
   @ValidateNested({ each: true })
-  controlledBy: UserEntity[];
+  controlledBy: UserBaseEntity[];
 
   // Campaign
   @IsString()

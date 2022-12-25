@@ -18,7 +18,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
 import { UserEntity } from './entities/user.entity';
 
-export const USER_SAFE_FIELDS = excludeFields(Prisma.UserScalarFieldEnum, ['password']);
+export const USER_SAFE_FIELDS = excludeFields({ ...Prisma.UserScalarFieldEnum, avatar: 'avatar' }, ['password']);
 
 @Injectable()
 export class UsersService {
@@ -135,7 +135,7 @@ export class UsersService {
       const hashedPassword = await argon2.hash(data.password);
       // Create the user
       const user = await this.prisma.user.create({
-        data: { ...data, password: hashedPassword },
+        data: { ...data, displayName: data.name.split(' ')[0], password: hashedPassword },
         select: USER_SAFE_FIELDS,
       });
       this.logger.debug(`✅️ Created user "${data.email}"`);
@@ -156,7 +156,16 @@ export class UsersService {
     this.logger.verbose(`📂 Updating user "${userId}"`);
     try {
       // Update the user
-      const user = await this.prisma.user.update({ where: { id: userId }, data, select: USER_SAFE_FIELDS });
+      const user = await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          name: data.name,
+          displayName: data.displayName,
+          avatarId: data.avatarId,
+          ...(data.password && { password: await argon2.hash(data.password) }),
+        },
+        select: USER_SAFE_FIELDS,
+      });
       this.logger.debug(`✅️ Updated user "${userId}"`);
       return user;
     } catch (error) {

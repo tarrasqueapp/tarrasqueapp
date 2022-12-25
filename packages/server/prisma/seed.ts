@@ -64,6 +64,7 @@ async function main() {
       data: {
         id: userId,
         name: 'Richard',
+        displayName: 'Richard',
         email: 'richard@tarrasque.app',
         roles: [Role.USER, Role.ADMIN],
         password: await argon2.hash('password'),

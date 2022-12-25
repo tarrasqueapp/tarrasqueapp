@@ -1,21 +1,18 @@
 import { Box, CircularProgress } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 
-import { CampaignModals } from '../components/campaigns/CampaignModals';
 import { Center } from '../components/common/Center';
-import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
+import { DashboardModals } from '../components/dashboard/DashboardModals';
+import { Main } from '../components/dashboard/Main';
 import { Sidebar } from '../components/dashboard/Sidebar';
 import { TopBar } from '../components/dashboard/TopBar';
-import { MapModals } from '../components/maps/MapModals';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
 import { useProtectedRoute } from '../hooks/useProtectedRoute';
 import { Gradient } from '../lib/colors';
 import { AppNavigation } from '../lib/navigation';
 import { Role } from '../lib/types';
-import { store } from '../store';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
@@ -37,12 +34,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: {} };
 };
 
-const DashboardPage: NextPage = observer(() => {
-  const { data: user } = useGetUser();
+const DashboardPage: NextPage = () => {
+  const { isLoading } = useGetUser();
 
   useProtectedRoute(Role.USER);
 
-  if (!user) {
+  if (isLoading) {
     return (
       <Center>
         <CircularProgress disableShrink />
@@ -62,28 +59,13 @@ const DashboardPage: NextPage = observer(() => {
         <Box sx={{ display: 'flex', flex: '1 0 auto' }}>
           <Sidebar />
 
-          <Box
-            component="main"
-            sx={{
-              width: `calc(100% - ${store.dashboard.sidebar?.clientWidth || 0}px)`,
-              display: 'flex',
-              flexDirection: 'column',
-              flex: '1 0 auto',
-              transition: 'padding 0.3s ease',
-              p: { xs: 1, sm: 2, md: 3 },
-            }}
-          >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 0 auto' }}>
-              <CampaignAccordions />
-            </Box>
-          </Box>
-
-          <CampaignModals />
-          <MapModals />
+          <Main />
         </Box>
       </Box>
+
+      <DashboardModals />
     </>
   );
-});
+};
 
 export default DashboardPage;

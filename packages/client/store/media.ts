@@ -2,7 +2,14 @@ import { UploadedUppyFile, UppyFile } from '@uppy/core';
 import { makeAutoObservable } from 'mobx';
 
 import { config } from '../lib/config';
-import { DimensionsInterface, FileInterface } from '../lib/types';
+import { DimensionsInterface, FileInterface, MediaInterface } from '../lib/types';
+
+export type UploadingFile = UppyFile<Record<string, unknown>, Record<string, unknown>> & {
+  progress?: { percentage: number };
+  uploadURL?: string;
+};
+
+export type UploadedFile = UploadedUppyFile<Record<string, unknown>, Record<string, unknown>>;
 
 class MediaStore {
   constructor() {
@@ -24,9 +31,7 @@ class MediaStore {
    * @returns The converted file
    * @throws Error
    */
-  async convertUppyToFile(
-    uppyFile: UploadedUppyFile<Record<string, unknown>, Record<string, unknown>>,
-  ): Promise<FileInterface> {
+  async convertUppyToFile(uppyFile: UploadedFile): Promise<FileInterface> {
     const id = this.getFileNameFromUploadUrl(uppyFile.uploadURL);
 
     let file: FileInterface = {
@@ -50,6 +55,53 @@ class MediaStore {
   }
 
   /**
+   * Check if file is an image
+   * @param file - The file to check
+   * @returns If the file is an image
+   */
+  isImage(file?: FileInterface | UploadingFile): boolean {
+    if (!file) return false;
+    return file.type?.startsWith('image/') || false;
+  }
+
+  /**
+   * Check if file is a video
+   * @param file - The file to check
+   * @returns If the file is a video
+   */
+  isVideo(file?: FileInterface | UploadingFile): boolean {
+    if (!file) return false;
+    return file.type?.startsWith('video/') || false;
+  }
+
+  /**
+   * Check if file is an uploaded Uppy file
+   * @param file - The file to check
+   * @returns If the file is an uploaded Uppy file
+   */
+  isUploadedFile(file: unknown): file is UploadedFile {
+    return (file as UploadingFile)?.uploadURL !== undefined;
+  }
+
+  /**
+   * Check if file is an Uppy file that may currently be uploading
+   * @param file - The file to check
+   * @returns If the file is an uploading Uppy file
+   */
+  isUploadingFile(file: unknown): file is UploadingFile {
+    return (file as UploadingFile)?.data !== undefined;
+  }
+
+  /**
+   * Check if file is of MediaInterface
+   * @param file - The file to check
+   * @returns If the file is of MediaInterface
+   */
+  isMedia(file: unknown): file is MediaInterface {
+    return (file as MediaInterface)?.thumbnailUrl !== undefined;
+  }
+
+  /**
    * Convert bytes to a human readable string
    * @param bytes - The bytes to convert
    * @param decimals - The number of decimals
@@ -65,26 +117,6 @@ class MediaStore {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
-  /**
-   * Check if file is an image
-   * @param file - The file to check
-   * @returns If the file is an image
-   */
-  isImage(file?: FileInterface | File | Blob | UppyFile): boolean {
-    if (!file) return false;
-    return file.type?.startsWith('image/') || false;
-  }
-
-  /**
-   * Check if file is a video
-   * @param file - The file to check
-   * @returns If the file is a video
-   */
-  isVideo(file?: FileInterface | File | Blob | UppyFile): boolean {
-    if (!file) return false;
-    return file.type?.startsWith('video/') || false;
   }
 
   /**

@@ -10,15 +10,19 @@ export class CampaignEntity extends CampaignBaseEntity {
   // Maps
   @ValidateNested({ each: true })
   maps: MapBaseEntity[];
+
   // Players
   @ValidateNested({ each: true })
   players: UserEntity[];
+
   // Player Characters
   @ValidateNested({ each: true })
   playerCharacters: PlayerCharacterBaseEntity[];
+
   // Non Player Characters
   @ValidateNested({ each: true })
   nonPlayerCharacters: NonPlayerCharacterBaseEntity[];
+
   // Created by
   @ValidateNested()
   createdBy: UserEntity;

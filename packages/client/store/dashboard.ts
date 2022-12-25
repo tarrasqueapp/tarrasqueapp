@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx';
 class DashboardStore {
   sidebar = null as unknown as HTMLDivElement;
   sidebarOpen = false;
+  settingsModalOpen = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -25,6 +26,18 @@ class DashboardStore {
       this.sidebarOpen = open;
     } else {
       this.sidebarOpen = !this.sidebarOpen;
+    }
+  }
+
+  /**
+   * Toggle settings modal open state
+   * @param open - The open state
+   */
+  toggleSettingsModal(open?: boolean) {
+    if (open !== undefined) {
+      this.settingsModalOpen = open;
+    } else {
+      this.settingsModalOpen = !this.settingsModalOpen;
     }
   }
 }

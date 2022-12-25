@@ -20,6 +20,6 @@ export function useGetUserCampaigns() {
   const queryClient = useQueryClient();
 
   return useQuery([`campaigns`], () => getUserCampaigns(), {
-    enabled: Boolean(queryClient.getQueryData([`auth/refresh`])),
+    enabled: Boolean(queryClient.getQueryData([`auth`])),
   });
 }

@@ -1,23 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Role, User } from '@prisma/client';
-import { IsDateString, IsEmail, IsEnum, IsString } from 'class-validator';
+import { ValidateNested } from 'class-validator';
 
-export class UserEntity implements Omit<User, 'password'> {
-  @IsString()
-  id: string;
-  @IsString()
-  name: string;
+import { MediaEntity } from '../../media/entities/media.entity';
+import { UserBaseEntity } from './user-base.entity';
 
-  @IsEmail()
-  email: string;
-
-  @IsEnum(Role, { each: true })
-  @ApiProperty({ enum: Role, isArray: true })
-  roles: Role[];
-
-  // DateTime
-  @IsDateString()
-  createdAt: Date;
-  @IsDateString()
-  updatedAt: Date;
+export class UserEntity extends UserBaseEntity {
+  // Avatar
+  @ValidateNested()
+  avatar: MediaEntity;
 }

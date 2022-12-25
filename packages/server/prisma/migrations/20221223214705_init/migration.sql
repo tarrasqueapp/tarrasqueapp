@@ -14,9 +14,11 @@ CREATE TABLE "Setup" (
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "displayName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "roles" "Role"[] DEFAULT ARRAY['USER']::"Role"[],
+    "avatarId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -319,6 +321,9 @@ CREATE UNIQUE INDEX "_NonPlayerCharacterMedia_AB_unique" ON "_NonPlayerCharacter
 
 -- CreateIndex
 CREATE INDEX "_NonPlayerCharacterMedia_B_index" ON "_NonPlayerCharacterMedia"("B");
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_avatarId_fkey" FOREIGN KEY ("avatarId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

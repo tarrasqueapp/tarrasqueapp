@@ -1,8 +1,12 @@
-import { Add, ExitToApp } from '@mui/icons-material';
+import { Add, Logout, Settings, UnfoldMore } from '@mui/icons-material';
 import {
+  Avatar,
   Box,
+  Collapse,
+  Divider,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -13,8 +17,9 @@ import {
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import NextLink from 'next/link';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
+import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { AppNavigation } from '../../lib/navigation';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
@@ -22,6 +27,10 @@ import { Logo } from '../common/Logo';
 import { Version } from './Version';
 
 export const Sidebar: React.FC = observer(() => {
+  const { data: user } = useGetUser();
+
+  const [userExpanded, setUserExpanded] = useState(false);
+
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const ref = useCallback((node: HTMLDivElement) => store.dashboard.setSidebar(node), []);
 
@@ -64,18 +73,52 @@ export const Sidebar: React.FC = observer(() => {
           </ListItem>
         </List>
 
-        <List>
-          <NextLink href={AppNavigation.SignOut} passHref legacyBehavior>
-            <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <ExitToApp />
-                </ListItemIcon>
-                <ListItemText primary="Sign out" />
-              </ListItemButton>
-            </ListItem>
-          </NextLink>
-        </List>
+        <Box>
+          <Divider />
+
+          <Collapse in={userExpanded}>
+            <List disablePadding>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => store.dashboard.toggleSettingsModal()}>
+                  <ListItemIcon>
+                    <Settings />
+                  </ListItemIcon>
+                  <ListItemText primary="Settings" />
+                </ListItemButton>
+              </ListItem>
+
+              <NextLink href={AppNavigation.SignOut} passHref legacyBehavior>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <Logout />
+                    </ListItemIcon>
+                    <ListItemText primary="Sign out" />
+                  </ListItemButton>
+                </ListItem>
+              </NextLink>
+            </List>
+
+            <Divider />
+          </Collapse>
+
+          <ListItem
+            disablePadding
+            secondaryAction={
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <UnfoldMore />
+              </Box>
+            }
+          >
+            <ListItemButton onClick={() => setUserExpanded(!userExpanded)}>
+              <ListItemAvatar>
+                <Avatar src={user?.avatar?.thumbnailUrl} />
+              </ListItemAvatar>
+
+              <ListItemText primary={user?.name} />
+            </ListItemButton>
+          </ListItem>
+        </Box>
       </Box>
     </SwipeableDrawer>
   );

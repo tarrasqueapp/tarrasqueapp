@@ -20,8 +20,12 @@ export enum Role {
 export interface UserInterface {
   id: string;
   name: string;
+  displayName: string;
   email: string;
   roles: Role[];
+  // Avatar
+  avatar?: MediaInterface;
+  avatarId?: string;
   // DateTime
   createdAt: string;
   updatedAt: string;

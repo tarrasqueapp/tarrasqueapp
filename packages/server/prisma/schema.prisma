@@ -21,9 +21,14 @@ enum Role {
 model User {
   id                            String               @id @default(cuid())
   name                          String
+  displayName                   String
   email                         String               @unique
   password                      String
   roles                         Role[]               @default([USER])
+  // Avatar
+  avatar                        Media?               @relation("UserAvatar", fields: [avatarId], references: [id])
+  avatarId                      String?
+  // Refresh Tokens
   refreshTokens                 RefreshToken[]       @relation("UserRefreshTokens")
   // DateTime
   createdAt                     DateTime             @default(now())
@@ -280,6 +285,8 @@ model Media {
   // DateTime
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @default(now()) @updatedAt
+  // Avatars
+  user                User[]               @relation("UserAvatar")
   // Maps
   maps                Map[]                @relation("MapMedia")
   // Player Characters

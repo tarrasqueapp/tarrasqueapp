@@ -1,11 +1,14 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Request, Response } from 'express';
 
 import { config } from '../config';
+import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
+import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -16,7 +19,12 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+    private readonly mediaService: MediaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   /**
    * Return the user's profile
@@ -25,8 +33,31 @@ export class AuthController {
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  authenticate(@User() user: UserEntity): UserEntity {
+  getUser(@User() user: UserEntity): UserEntity {
     return user;
+  }
+
+  /**
+   * Update the current user
+   */
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: UserEntity })
+  updateUser(@User() user: UserEntity, @Body() data: UpdateUserDto): Promise<UserEntity> {
+    if (!data.avatarId && user.avatar) {
+      // Delete the media item from the database and its files from the storage
+      this.mediaService.deleteMedia(user.avatar.id);
+      this.storageService.delete(
+        `${this.storageService.uploadPath}/${user.id}/${user.avatar.id}/${ORIGINAL_FILENAME}.${user.avatar.extension}`,
+      );
+      this.storageService.delete(
+        `${this.storageService.uploadPath}/${user.id}/${user.avatar.id}/${THUMBNAIL_FILENAME}`,
+      );
+    }
+
+    // Update the user
+    return this.usersService.updateUser(user.id, data);
   }
 
   /**
