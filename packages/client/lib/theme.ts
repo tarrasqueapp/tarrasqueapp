@@ -164,6 +164,43 @@ export let theme = createTheme({
         },
       },
     },
+    // Accordion
+    MuiAccordion: {
+      defaultProps: {
+        disableGutters: true,
+        elevation: 0,
+        square: true,
+      },
+      styleOverrides: {
+        root: {
+          border: `1px solid rgba(255, 255, 255, 0.12)`,
+          '&:before': {
+            display: 'none',
+          },
+          boxShadow: 'none',
+          background: 'rgba(0, 0, 0, 0.5)',
+        },
+      },
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px 10px',
+          '&.Mui-expanded': {
+            borderRadius: '10px 10px 0 0',
+          },
+          backgroundColor: 'rgba(0, 0, 0, 0.03)',
+        },
+      },
+    },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+          borderTop: '1px solid rgba(0, 0, 0, 0.125)',
+        },
+      },
+    },
   },
 });
 

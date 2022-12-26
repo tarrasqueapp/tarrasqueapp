@@ -1,22 +1,19 @@
 import { Delete, Edit, ExpandMore, MoreHoriz } from '@mui/icons-material';
 import {
+  Accordion,
   AccordionActions,
-  AccordionProps,
-  AccordionSummaryProps,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   IconButton,
   ListItemIcon,
   ListItemText,
   MenuItem,
   MenuList,
-  Accordion as MuiAccordion,
-  AccordionDetails as MuiAccordionDetails,
-  AccordionSummary as MuiAccordionSummary,
   Popover,
   Skeleton,
   Tooltip,
   Typography,
-  styled,
 } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 
@@ -27,32 +24,6 @@ import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
 import { MapCard } from './MapCard';
 import { NewMap } from './NewMap';
-
-const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
-  ({ theme }) => ({
-    border: `1px solid ${theme.palette.divider}`,
-    '&:before': {
-      display: 'none',
-    },
-    boxShadow: 'none',
-    background: 'rgba(0, 0, 0, 0.5)',
-  }),
-);
-
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary expandIcon={<ExpandMore />} {...props} />
-))({
-  borderRadius: '10px 10px',
-  '&.Mui-expanded': {
-    borderRadius: '10px 10px 0 0',
-  },
-  backgroundColor: 'rgba(0, 0, 0, 0.03)',
-});
-
-const AccordionDetails = styled(MuiAccordionDetails)({
-  padding: 0,
-  borderTop: '1px solid rgba(0, 0, 0, 0.125)',
-});
 
 export interface CampaignAccordionProps {
   expanded?: boolean;
@@ -65,7 +36,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
 
   return (
     <Accordion expanded={campaign ? expanded : true} onChange={(event, expanded) => onToggle?.(expanded)}>
-      <AccordionSummary>
+      <AccordionSummary expandIcon={<ExpandMore />}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
           <Typography variant="h3">
             {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 300)} />}

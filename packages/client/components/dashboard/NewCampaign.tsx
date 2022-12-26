@@ -12,7 +12,7 @@ export const NewCampaign: React.FC = () => {
         store.campaigns.setModal(CampaignModal.CreateUpdate);
       }}
       sx={{
-        height: 300,
+        height: 200,
         borderRadius: '10px',
         display: 'flex',
         flexDirection: 'column',
