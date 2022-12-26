@@ -4,5 +4,6 @@ export enum AppNavigation {
   Map = '/map',
   Setup = '/setup',
   SignIn = '/auth/sign-in',
+  SignUp = '/auth/sign-up',
   SignOut = '/auth/sign-out',
 }

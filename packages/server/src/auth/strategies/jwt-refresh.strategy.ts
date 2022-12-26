@@ -18,6 +18,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
         },
       ]),
       secretOrKey: config.JWT_REFRESH_TOKEN_SECRET,
+      ignoreExpiration: true,
       passReqToCallback: true,
     });
   }

@@ -2,6 +2,7 @@ import useLocalStorage from 'use-local-storage';
 
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { CampaignAccordion } from './CampaignAccordion';
+import { NewCampaign } from './NewCampaign';
 
 export const CampaignAccordions: React.FC = () => {
   const { data: campaigns } = useGetUserCampaigns();
@@ -46,6 +47,8 @@ export const CampaignAccordions: React.FC = () => {
           ))}
         </>
       )}
+
+      <NewCampaign />
     </>
   );
 };

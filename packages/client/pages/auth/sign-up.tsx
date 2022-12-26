@@ -2,7 +2,7 @@ import { Box, Container, Paper, Typography } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
 import React from 'react';
 
-import { SignIn } from '../../components/auth/SignIn';
+import { SignUp } from '../../components/auth/SignUp';
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: {} };
 };
 
-const SignInPage: NextPage = () => {
+const SignUpPage: NextPage = () => {
   return (
     <Center>
       <Container maxWidth="xs">
@@ -42,15 +42,15 @@ const SignInPage: NextPage = () => {
           </Box>
 
           <Typography variant="h3" align="center" sx={{ mt: 1, mb: 3 }}>
-            Sign in
+            Sign up
           </Typography>
 
           <Paper sx={{ p: 2, width: '100%' }}>
-            <SignIn />
+            <SignUp />
           </Paper>
 
           <Typography variant="body2" align="center" sx={{ mt: 4 }}>
-            Don&apos;t have an account? <NextLink href={AppNavigation.SignUp}>Sign up</NextLink>
+            Already have an account? <NextLink href={AppNavigation.SignIn}>Sign in</NextLink>
           </Typography>
         </Box>
       </Container>
@@ -58,4 +58,4 @@ const SignInPage: NextPage = () => {
   );
 };
 
-export default SignInPage;
+export default SignUpPage;

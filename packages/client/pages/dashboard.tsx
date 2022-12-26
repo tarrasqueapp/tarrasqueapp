@@ -8,11 +8,10 @@ import { Main } from '../components/dashboard/Main';
 import { Sidebar } from '../components/dashboard/Sidebar';
 import { TopBar } from '../components/dashboard/TopBar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
-import { getUser, useGetUser } from '../hooks/data/users/useGetUser';
-import { useProtectedRoute } from '../hooks/useProtectedRoute';
+import { checkRefreshToken } from '../hooks/data/users/useGetRefreshToken';
+import { useGetUser } from '../hooks/data/users/useGetUser';
 import { Gradient } from '../lib/colors';
 import { AppNavigation } from '../lib/navigation';
-import { Role } from '../lib/types';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
@@ -26,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // Redirect to the sign-in page if the user is not signed in
   try {
-    await getUser({ withCredentials: true, headers: { Cookie: context.req.headers.cookie || '' } });
+    await checkRefreshToken({ withCredentials: true, headers: { Cookie: context.req.headers.cookie || '' } });
   } catch (err) {
     return { props: {}, redirect: { destination: AppNavigation.SignIn } };
   }
@@ -36,8 +35,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const DashboardPage: NextPage = () => {
   const { isLoading } = useGetUser();
-
-  useProtectedRoute(Role.USER);
 
   if (isLoading) {
     return (

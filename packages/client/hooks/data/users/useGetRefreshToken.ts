@@ -1,10 +1,19 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { api } from '../../../lib/api';
 import { config } from '../../../lib/config';
 import { UserInterface } from '../../../lib/types';
 import { DateTimeUtils } from '../../../utils/DateTimeUtils';
+
+/**
+ * Send a request to get the updated refresh token
+ * @returns The user data
+ */
+export async function checkRefreshToken(config?: AxiosRequestConfig) {
+  const { data } = await api.get<UserInterface>(`/api/auth/check-refresh-token`, config);
+  return data;
+}
 
 /**
  * Send a request to get the updated refresh token

@@ -11,18 +11,11 @@ export interface SetupInterface {
   completed: boolean;
 }
 
-export enum Role {
-  GUEST = 'GUEST',
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-}
-
 export interface UserInterface {
   id: string;
   name: string;
   displayName: string;
   email: string;
-  roles: Role[];
   // Avatar
   avatar?: MediaInterface;
   avatarId?: string;

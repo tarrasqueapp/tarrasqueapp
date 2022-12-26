@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 import { Request, Response } from 'express';
 
 import { config } from '../config';
@@ -61,7 +60,7 @@ export class AuthController {
   }
 
   /**
-   * Set new access token
+   * Set new refresh token
    */
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
@@ -86,12 +85,24 @@ export class AuthController {
   }
 
   /**
+   * Check if the refresh token is valid
+   */
+  @UseGuards(JwtRefreshGuard)
+  @Get('check-refresh-token')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: UserEntity })
+  async check(@User() user: UserEntity): Promise<UserEntity> {
+    return user;
+  }
+
+  /**
    * Register a new user
    */
   @Post('sign-up')
   @ApiOkResponse({ type: UserEntity })
-  signUp(@Body() data: CreateUserDto): Promise<UserEntity> {
-    return this.usersService.createUser({ ...data, roles: [Role.USER] });
+  async signUp(@Res({ passthrough: true }) res: Response, @Body() data: CreateUserDto): Promise<UserEntity> {
+    const user = await this.usersService.createUser(data);
+    return await this.signIn(res, user);
   }
 
   /**

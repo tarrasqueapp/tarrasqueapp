@@ -1,13 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CampaignRole, CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
 import { ConnectCampaignMapDto } from '../maps/dto/connect-campaign-map.dto';
 import { ConnectMapDto } from '../maps/dto/connect-map.dto';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
-import { RoleGuard } from '../users/guards/role.guard';
 import { CreateTokensDto } from './dto/create-tokens.dto';
 import { DeleteTokensDto } from './dto/delete-tokens.dto';
 import { UpdateTokensDto } from './dto/update-tokens.dto';
@@ -32,7 +31,7 @@ export class TokensController {
   /**
    * Create tokens on a map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.PLAYER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.PLAYER))
   @Post()
   @ApiBearerAuth()
   @ApiOkResponse({ type: [TokenEntity] })
@@ -47,7 +46,7 @@ export class TokensController {
   /**
    * Update tokens on a map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.PLAYER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.PLAYER))
   @Put()
   @ApiBearerAuth()
   @ApiOkResponse({ type: [TokenBaseEntity] })
@@ -58,7 +57,7 @@ export class TokensController {
   /**
    * Delete tokens on a map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.PLAYER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.PLAYER))
   @Delete()
   @ApiBearerAuth()
   @ApiOkResponse({ type: [TokenBaseEntity] })

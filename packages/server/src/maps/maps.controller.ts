@@ -1,13 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CampaignRole, CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
-import { RoleGuard } from '../users/guards/role.guard';
 import { ConnectMapDto } from './dto/connect-map.dto';
 import { CreateMapDto } from './dto/create-map.dto';
 import { UpdateMapDto } from './dto/update-map.dto';
@@ -36,7 +35,7 @@ export class MapsController {
   /**
    * Create a new map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
   @Post()
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
@@ -47,7 +46,7 @@ export class MapsController {
   /**
    * Duplicate a map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
   @Post(':mapId/duplicate')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
@@ -58,7 +57,7 @@ export class MapsController {
   /**
    * Update a map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
   @Put(':mapId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
@@ -110,7 +109,7 @@ export class MapsController {
   /**
    * Delete a map
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
   @Delete(':mapId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })

@@ -8,11 +8,11 @@ import { useResetSetup } from '../../hooks/data/setup/useResetSetup';
 import { useGetRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { AppNavigation } from '../../lib/navigation';
 import { SetupStep } from '../../lib/types';
+import { SignIn } from '../auth/SignIn';
 import { CreateCampaign } from './CreateCampaign';
 import { CreateDatabase } from './CreateDatabase';
 import { CreateMap } from './CreateMap';
 import { CreateUser } from './CreateUser';
-import { SignIn } from './SignIn';
 
 export const Setup: React.FC = () => {
   const { data, error, isLoading } = useGetSetup();

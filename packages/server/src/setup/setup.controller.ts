@@ -1,12 +1,9 @@
 import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 import { Request, Response } from 'express';
 import { PrismaService } from 'nestjs-prisma';
 
 import { config } from '../config';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { SetupDto } from './dto/setup.dto';
 import { SetupGuard } from './guards/setup.guard';
@@ -47,16 +44,6 @@ export class SetupController {
   async createDatabase(): Promise<void> {
     await this.setupService.createDatabase();
     await this.setupService.createSetup();
-  }
-
-  /**
-   * Create a user
-   */
-  @UseGuards(SetupGuard)
-  @Post('create-user')
-  @ApiOkResponse({ type: UserEntity })
-  async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
-    return await this.usersService.createUser({ ...data, roles: [Role.ADMIN, Role.USER] });
   }
 
   /**

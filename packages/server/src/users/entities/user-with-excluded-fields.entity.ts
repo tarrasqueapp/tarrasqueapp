@@ -1,6 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Role, User } from '@prisma/client';
-import { IsDateString, IsEmail, IsEnum, IsString, ValidateNested } from 'class-validator';
+import { User } from '@prisma/client';
+import { IsDateString, IsEmail, IsString, ValidateNested } from 'class-validator';
 
 import { RefreshTokenEntity } from './refresh-token-entity';
 
@@ -19,10 +18,6 @@ export class UserWithExcludedFieldsEntity implements User {
 
   @IsString()
   password: string;
-
-  @IsEnum(Role, { each: true })
-  @ApiProperty({ enum: Role, isArray: true })
-  roles: Role[];
 
   @IsString()
   avatarId: string;

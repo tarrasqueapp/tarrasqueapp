@@ -1,6 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Role, User } from '@prisma/client';
-import { IsDateString, IsEmail, IsEnum, IsString } from 'class-validator';
+import { User } from '@prisma/client';
+import { IsDateString, IsEmail, IsString } from 'class-validator';
 
 export class UserBaseEntity implements Omit<User, 'password'> {
   @IsString()
@@ -14,10 +13,6 @@ export class UserBaseEntity implements Omit<User, 'password'> {
 
   @IsEmail()
   email: string;
-
-  @IsEnum(Role, { each: true })
-  @ApiProperty({ enum: Role, isArray: true })
-  roles: Role[];
 
   // Avatar
   @IsString()

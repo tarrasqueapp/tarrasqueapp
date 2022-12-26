@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { MapBaseEntity } from '../maps/entities/map-base.entity';
 import { MapEntity } from '../maps/entities/map.entity';
 import { MapsService } from '../maps/maps.service';
@@ -9,7 +9,6 @@ import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/me
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
-import { RoleGuard } from '../users/guards/role.guard';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
@@ -31,7 +30,7 @@ export class CampaignsController {
   /**
    * Get all campaigns the user belongs to
    */
-  @UseGuards(RoleGuard(Role.USER))
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiBearerAuth()
   @ApiOkResponse({ type: [CampaignEntity] })
@@ -60,7 +59,7 @@ export class CampaignsController {
   /**
    * Create a new campaign
    */
-  @UseGuards(RoleGuard(Role.USER))
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
@@ -71,7 +70,7 @@ export class CampaignsController {
   /**
    * Update a campaign
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
   @Put(':campaignId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
@@ -85,7 +84,7 @@ export class CampaignsController {
   /**
    * Delete a campaign
    */
-  @UseGuards(RoleGuard(Role.USER), CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
   @Delete(':campaignId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })

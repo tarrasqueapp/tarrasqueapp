@@ -5,9 +5,8 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { useCreateSetupUser } from '../../hooks/data/setup/useCreateSetupUser';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
-import { useSignIn } from '../../hooks/data/users/useSignIn';
+import { useSignUp } from '../../hooks/data/users/useSignUp';
 import { SetupStep } from '../../lib/types';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -17,8 +16,7 @@ interface CreateUserProps {
 }
 
 export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
-  const createSetupUser = useCreateSetupUser();
-  const signIn = useSignIn();
+  const signUp = useSignUp();
   const updateSetup = useUpdateSetup();
 
   // Setup form validation schema
@@ -43,8 +41,7 @@ export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
    * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
-    await createSetupUser.mutateAsync(values);
-    await signIn.mutateAsync(values);
+    await signUp.mutateAsync(values);
     await updateSetup.mutateAsync({ step: SetupStep.CAMPAIGN });
     onSubmit();
   }

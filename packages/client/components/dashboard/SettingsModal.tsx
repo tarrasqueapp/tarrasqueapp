@@ -61,7 +61,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
             is: (password: string) => password && password.length > 0,
             then: yup.string().min(8, 'Password must have at least 8 characters'),
           }),
-        passwordConfirm: yup
+        confirmPassword: yup
           .string()
           .trim()
           .when('password', {
@@ -82,7 +82,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
   const methods = useForm<Schema>({
     mode: 'onChange',
     resolver: yupResolver(schema),
-    defaultValues: { ...user, password: '', passwordConfirm: '' },
+    defaultValues: { ...user, password: '', confirmPassword: '' },
   });
   const {
     handleSubmit,
@@ -92,7 +92,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
 
   // Reset the form when the map changes
   useEffect(() => {
-    reset({ ...user, password: '', passwordConfirm: '' });
+    reset({ ...user, password: '', confirmPassword: '' });
   }, [user, reset, store.dashboard.settingsModalOpen]);
 
   /**
@@ -180,7 +180,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
 
               <Grid item xs={12} sm={6}>
                 <ControlledPasswordField
-                  name="passwordConfirm"
+                  name="confirmPassword"
                   label="Confirm New Password"
                   autoComplete="new-password"
                   fullWidth

@@ -1,20 +1,19 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 import cuid from 'cuid';
 import * as fs from 'fs-extra';
 
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { config } from '../config';
 import { StorageProviderEnum } from '../storage/storage-provider.enum';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
-import { RoleGuard } from '../users/guards/role.guard';
 import { FileDto } from './dto/file.dto';
 import { MediaEntity } from './entities/media.entity';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from './media.service';
 
-@UseGuards(RoleGuard(Role.USER))
+@UseGuards(JwtAuthGuard)
 @ApiTags('media')
 @Controller('media')
 export class MediaController {

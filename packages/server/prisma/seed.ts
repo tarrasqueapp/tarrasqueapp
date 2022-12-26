@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import argon2 from 'argon2';
 import cuid from 'cuid';
 
@@ -66,7 +66,6 @@ async function main() {
         name: 'Richard',
         displayName: 'Richard',
         email: 'richard@tarrasque.app',
-        roles: [Role.USER, Role.ADMIN],
         password: await argon2.hash('password'),
       },
     });
