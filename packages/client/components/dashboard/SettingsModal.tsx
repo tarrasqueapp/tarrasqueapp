@@ -11,7 +11,6 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  TextField,
   Theme,
   Tooltip,
   Typography,
@@ -167,7 +166,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
               </Grid>
             </Grid>
 
-            <TextField label="Email" sx={{ my: 1 }} value={user?.email} fullWidth required disabled />
+            <ControlledTextField name="email" label="Email" sx={{ my: 1 }} fullWidth required />
 
             <Typography variant="h5" sx={{ mt: 4 }}>
               Change Password

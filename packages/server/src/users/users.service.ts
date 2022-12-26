@@ -161,6 +161,7 @@ export class UsersService {
         data: {
           name: data.name,
           displayName: data.displayName,
+          email: data.email,
           avatarId: data.avatarId,
           ...(data.password && { password: await argon2.hash(data.password) }),
         },
