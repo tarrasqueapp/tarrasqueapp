@@ -109,6 +109,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
     await updateUser.mutateAsync({
       name: values.name,
       displayName: values.displayName,
+      email: values.email,
       avatarId: values.avatar?.id,
       ...(values.password && { password: values.password }),
     });
