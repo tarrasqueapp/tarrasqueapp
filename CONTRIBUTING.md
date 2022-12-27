@@ -9,7 +9,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 > - Star the project
 > - Tweet about it
 > - Refer to this project in your project's README
-> - Mention the project at local meetups and tell your friends/colleagues
+> - Mention the project to your friends
 
 ## Table of Contents
 
@@ -18,11 +18,12 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 - [I Want To Contribute](#i-want-to-contribute)
   - [Reporting Bugs](#reporting-bugs)
   - [Suggesting Enhancements](#suggesting-enhancements)
+  - [Your First Code Contribution](#your-first-code-contribution)
 
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[Tarrasque App Code of Conduct](https://github.com/tarrasqueapp/tarrasqueapp/blob/master/CODE_OF_CONDUCT.md).
+[Tarrasque App Code of Conduct](https://github.com/tarrasqueapp/tarrasqueapp/blob/main/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to <contact@tarrasque.app>.
 
@@ -121,6 +122,23 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/tarras
 - **Explain why this enhancement would be useful** to most Tarrasque App users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
+
+### Your First Code Contribution
+
+Unsure where to begin contributing to Tarrasque App? You can start by looking through these `good first issue` and `help wanted` issues:
+
+- ["Good first issue" issues](https://github.com/tarrasqueapp/tarrasqueapp/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) - issues which should only require a few lines of code, and a test or two.
+- ["Help wanted" issues](https://github.com/tarrasqueapp/tarrasqueapp/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) - issues which should be a bit more involved than `good first issue` issues.
+
+We welcome pull requests from the community. If you are interested in fixing a bug or implementing a new feature, please follow these steps:
+
+1. Fork the repository and create a new branch.
+2. Make your changes and write tests to ensure they work as expected.
+3. Update the documentation if necessary.
+4. Run the tests and ensure they all pass.
+5. Submit a pull request, explaining your changes and why they are necessary.
+
+Before you begin working on a pull request, it is a good idea to [open an issue](https://github.com/tarrasqueapp/tarrasqueapp/issues/new) to discuss the problem or feature with the maintainers. This helps ensure that your work is aligned with the project's goals and roadmap.
 
 ## Attribution
 
