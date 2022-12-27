@@ -1,7 +1,8 @@
-import { Badge, Link, Tooltip, Typography, badgeClasses } from '@mui/material';
+import { Badge, Tooltip, Typography, badgeClasses } from '@mui/material';
 
 import { useGetLiveVersion } from '../../hooks/useGetLiveVersion';
 import { config } from '../../lib/config';
+import { ExternalLink } from '../common/ExternalLink';
 
 export const Version: React.FC = () => {
   const { data: liveVersion } = useGetLiveVersion();
@@ -16,11 +17,11 @@ export const Version: React.FC = () => {
         color="info"
         sx={{ [`& .${badgeClasses.badge}`]: { right: -6, top: 6 } }}
       >
-        <Link href="https://tarrasque.app/changelog" target="_blank" rel="noopener noreferrer" color="text.secondary">
+        <ExternalLink href="https://tarrasque.app/changelog" color="text.secondary">
           <Typography align="center" variant="h5" sx={{ fontSize: '11px !important' }}>
             v{config.VERSION}
           </Typography>
-        </Link>
+        </ExternalLink>
       </Badge>
     </Tooltip>
   );
