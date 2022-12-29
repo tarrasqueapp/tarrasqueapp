@@ -24,7 +24,8 @@ export let theme = createTheme({
     h2: { fontFamily: recursive.style.fontFamily, fontSize: 34, lineHeight: 0.94, fontWeight: 400 },
     h3: { fontFamily: recursive.style.fontFamily, fontSize: 24, lineHeight: 1.1 },
     h4: { fontFamily: recursive.style.fontFamily, fontSize: 20, lineHeight: 1.16 },
-    h5: { fontFamily: recursive.style.fontFamily, fontSize: 16, lineHeight: 1.28 },
+    h5: { fontFamily: recursive.style.fontFamily, fontSize: 18, lineHeight: 1.28 },
+    h6: { fontFamily: recursive.style.fontFamily, fontSize: 16, lineHeight: 1.28 },
     body1: { lineHeight: 1.5 },
     body2: { fontSize: 15, lineHeight: 1.28 },
     caption: { fontSize: 15, lineHeight: 1.28, color: Color.Grey },
@@ -147,10 +148,10 @@ export let theme = createTheme({
     MuiDialogTitle: {
       styleOverrides: {
         root: {
+          fontSize: 24,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          fontWeight: 'bold',
         },
       },
     },

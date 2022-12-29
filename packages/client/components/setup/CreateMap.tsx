@@ -10,9 +10,10 @@ import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
 import { SetupStep } from '../../lib/types';
 import { store } from '../../store';
+import { UploadedFile } from '../../store/media';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
-import { ControlledUploader } from '../form/ControlledUploader';
+import { ControlledMediaUploader } from '../form/MediaUploader/ControlledMediaUploader';
 
 interface CreateMapProps {
   campaignId: string | undefined;
@@ -30,8 +31,14 @@ export const CreateMap: React.FC<CreateMapProps> = ({ campaignId, onSubmit, onRe
   const schema = yup
     .object({
       name: ValidateUtils.Name,
-      files: yup.array(ValidateUtils.UppyFile).min(1).required(),
-      selectedMediaId: yup.string(),
+      media: yup
+        .mixed()
+        .test('isUppyFileOrMedia', 'Invalid media', (value) => {
+          if (!value || !Array.isArray(value) || !value.length) return false;
+          return value.every((file) => store.media.isUploadedFile(file) || store.media.isMedia(file));
+        })
+        .required(),
+      selectedMediaId: yup.string().required(),
     })
     .required();
   type Schema = yup.InferType<typeof schema>;
@@ -52,14 +59,16 @@ export const CreateMap: React.FC<CreateMapProps> = ({ campaignId, onSubmit, onRe
   async function handleSubmitForm(values: Schema) {
     // Create new media
     const media = await Promise.all(
-      values.files.map(async (uppyFile) => {
-        const file = await store.media.convertUppyToFile(uppyFile);
-        const media = await createMedia.mutateAsync(file);
-        if (file.id === values.selectedMediaId) {
-          values.selectedMediaId = media.id;
-        }
-        return media;
-      }),
+      values.media
+        .filter((file: UploadedFile) => store.media.isUploadedFile(file))
+        .map(async (uppyFile: UploadedFile) => {
+          const file = await store.media.convertUppyToFile(uppyFile);
+          const media = await createMedia.mutateAsync(file);
+          if (values.selectedMediaId === uppyFile.id) {
+            values.selectedMediaId = media.id;
+          }
+          return media;
+        }),
     );
     // Create map
     await createMap.mutateAsync({
@@ -72,15 +81,14 @@ export const CreateMap: React.FC<CreateMapProps> = ({ campaignId, onSubmit, onRe
     onSubmit();
   }
 
-  const files = watch('files');
+  const media = watch('media');
+  const selectedMediaId = watch('selectedMediaId');
   useEffect(() => {
-    // Only run there is no media
-    if (!files?.length) return;
-    const lastFile = files[files.length - 1];
-    if (!lastFile.uploadURL) return;
-    const fileName = store.media.getFileNameFromUploadUrl(lastFile.uploadURL);
-    setValue('selectedMediaId', fileName, { shouldValidate: true });
-  }, [files]);
+    if (selectedMediaId || !media?.length) return;
+    const firstMedia = media[media.length - 1];
+    if (!firstMedia) return;
+    setValue('selectedMediaId', firstMedia.id, { shouldValidate: true });
+  }, [media]);
 
   return (
     <FormProvider {...methods}>
@@ -89,19 +97,10 @@ export const CreateMap: React.FC<CreateMapProps> = ({ campaignId, onSubmit, onRe
           <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus />
 
           <Box sx={{ my: 1 }}>
-            <ControlledUploader
-              name="files"
-              allowedFileTypes={['image/*', 'video/*']}
-              multiple
-              FileListProps={{
-                selectable: true,
-                selectedFileId: watch('selectedMediaId'),
-                onSelect: (file) => {
-                  if (!file.uploadURL) return;
-                  const fileName = store.media.getFileNameFromUploadUrl(file.uploadURL);
-                  setValue('selectedMediaId', fileName, { shouldValidate: true });
-                },
-              }}
+            <ControlledMediaUploader
+              name="media"
+              selectedMediaId={selectedMediaId}
+              onSelect={(file) => setValue('selectedMediaId', file?.id, { shouldValidate: true })}
             />
           </Box>
         </Box>

@@ -25,8 +25,8 @@ export class TokensService {
       const tokens = await this.prisma.token.findMany({
         where: { id: { in: tokenIds } },
         include: {
-          playerCharacter: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
-          nonPlayerCharacter: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
+          playerCharacter: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacter: { include: { controlledBy: true, media: true } },
         },
       });
       this.logger.verbose(`📂 Found ${tokens.length} tokens"`);
@@ -49,8 +49,8 @@ export class TokensService {
       const tokens = await this.prisma.token.findMany({
         where: { mapId },
         include: {
-          playerCharacter: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
-          nonPlayerCharacter: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
+          playerCharacter: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacter: { include: { controlledBy: true, media: true } },
         },
       });
       this.logger.verbose(`📂 Found ${tokens.length} tokens for map "${mapId}"`);
@@ -75,8 +75,8 @@ export class TokensService {
       const token = await this.prisma.token.create({
         data: { ...data, mapId, createdById },
         include: {
-          playerCharacter: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
-          nonPlayerCharacter: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
+          playerCharacter: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacter: { include: { controlledBy: true, media: true } },
         },
       });
       this.logger.debug(`✅️ Created token "${token.id}"`);

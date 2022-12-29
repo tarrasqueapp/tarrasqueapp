@@ -166,7 +166,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) 
             {store.media.isUploadingFile(file) && (
               <>
                 {store.media.isUploadedFile(file) ? (
-                  <Box component="img" src={file.uploadURL} width={200} height={200} />
+                  <Box component="img" src={file.uploadURL} height={200} />
                 ) : (
                   <Box>
                     {file.progress && (
@@ -181,7 +181,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) 
             )}
 
             {store.media.isMedia(file) && (
-              <>{file.thumbnailUrl && <Box component="img" src={file.thumbnailUrl} width={200} height={200} />}</>
+              <>{file.thumbnailUrl && <Box component="img" src={file.thumbnailUrl} height={200} />}</>
             )}
 
             {!file && (

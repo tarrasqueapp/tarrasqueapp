@@ -134,16 +134,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
 
           <DialogContent>
             <Box sx={{ my: 1, mx: 'auto', width: 200 }}>
-              <Typography variant="h5" align="center" sx={{ mb: 1 }}>
+              <Typography variant="h6" align="center" sx={{ mb: 1 }}>
                 Avatar
               </Typography>
 
               <ControlledImageUploader name="avatar" />
             </Box>
 
-            <Typography variant="h5">Account</Typography>
+            <Typography variant="h6">Account</Typography>
 
-            <Grid container spacing={2} alignItems="flex-start" sx={{ mt: -1 }}>
+            <Grid container spacing={2} alignItems="flex-start" sx={{ mt: -2 }}>
               <Grid item xs={12} sm={6}>
                 <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth required />
               </Grid>
@@ -169,7 +169,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
 
             <ControlledTextField name="email" label="Email" sx={{ my: 1 }} fullWidth required />
 
-            <Typography variant="h5" sx={{ mt: 4 }}>
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Change Password
             </Typography>
 

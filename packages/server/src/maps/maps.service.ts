@@ -24,7 +24,7 @@ export class MapsService {
       // Get the maps
       const maps = await this.prisma.map.findMany({
         where: { campaignId },
-        include: { media: { orderBy: { updatedAt: 'desc' } } },
+        include: { media: true },
       });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
       return maps;
@@ -47,7 +47,7 @@ export class MapsService {
         where: { id: mapId },
         include: {
           tokens: true,
-          media: { orderBy: { updatedAt: 'desc' } },
+          media: true,
           campaign: true,
         },
       });
@@ -68,7 +68,7 @@ export class MapsService {
     this.logger.verbose(`📂 Getting maps`);
     try {
       // Get the maps
-      const maps = await this.prisma.map.findMany({ ...query, include: { media: { orderBy: { updatedAt: 'desc' } } } });
+      const maps = await this.prisma.map.findMany({ ...query, include: { media: true } });
       this.logger.debug(`✅️ Found ${maps.length} maps`);
       return maps;
     } catch (error) {
@@ -112,7 +112,7 @@ export class MapsService {
           campaign: { connect: { id: data.campaignId } },
           createdBy: { connect: { id: createdById } },
         },
-        include: { media: { orderBy: { updatedAt: 'desc' } } },
+        include: { media: true },
       });
       this.logger.debug(`✅️ Created map "${data.name}"`);
       return map;
@@ -150,7 +150,7 @@ export class MapsService {
           createdBy: { connect: { id: map.createdById } },
         },
         include: {
-          media: { orderBy: { updatedAt: 'desc' } },
+          media: true,
         },
       });
       this.logger.debug(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
@@ -179,7 +179,7 @@ export class MapsService {
           ...(data.selectedMediaId && { selectedMediaId: data.selectedMediaId }),
           campaign: { connect: { id: data.campaignId } },
         },
-        include: { media: { orderBy: { updatedAt: 'desc' } } },
+        include: { media: true },
       });
       this.logger.debug(`✅️ Updated map "${mapId}"`);
       return map;
@@ -200,7 +200,7 @@ export class MapsService {
       // Delete the map
       const map = await this.prisma.map.delete({
         where: { id: mapId },
-        include: { media: { orderBy: { updatedAt: 'desc' } } },
+        include: { media: true },
       });
       this.logger.debug(`✅️ Deleted map "${mapId}"`);
       return map;

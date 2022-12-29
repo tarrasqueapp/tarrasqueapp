@@ -20,8 +20,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.238.0",
-    "@aws-sdk/lib-storage": "^3.238.0",
+    "@aws-sdk/client-s3": "^3.241.0",
+    "@aws-sdk/lib-storage": "^3.241.0",
     "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^9.2.1",
     "@nestjs/jwt": "^9.0.0",
@@ -50,7 +50,7 @@
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.1.7",
+    "@nestjs/cli": "^9.1.8",
     "@nestjs/schematics": "^9.0.4",
     "@types/cookie-parser": "^1.4.3",
     "@types/cron": "^2.0.0",

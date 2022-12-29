@@ -23,11 +23,10 @@ import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { MapFactory } from '../../lib/factories/MapFactory';
 import { CampaignInterface, MapInterface, MediaInterface } from '../../lib/types';
 import { store } from '../../store';
+import { UploadedFile } from '../../store/media';
 import { ValidateUtils } from '../../utils/ValidateUtils';
-import { UploadedMedia } from '../common/UploadedMedia';
 import { ControlledTextField } from '../form/ControlledTextField';
-import { ControlledUploader } from '../form/ControlledUploader';
-import { FileUpload } from '../form/Uploader/Uploader';
+import { ControlledMediaUploader } from '../form/MediaUploader/ControlledMediaUploader';
 
 interface CreateUpdateMapModalProps {
   open: boolean;
@@ -48,18 +47,14 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
     const schema = yup
       .object({
         name: ValidateUtils.Name,
-        files: yup
-          .array(ValidateUtils.UppyFile)
-          .min(map ? 0 : 1)
-          .required(),
         media: yup
-          .array(ValidateUtils.Media)
-          .when('files', {
-            is: (files: FileUpload[]) => !files?.length,
-            then: yup.array().min(1),
+          .mixed()
+          .test('isUppyFileOrMedia', 'Invalid media', (value) => {
+            if (!value || !Array.isArray(value) || !value.length) return false;
+            return value.every((file) => store.media.isUploadedFile(file) || store.media.isMedia(file));
           })
           .required(),
-        selectedMediaId: yup.string(),
+        selectedMediaId: yup.string().required(),
       })
       .required();
     type Schema = yup.InferType<typeof schema>;
@@ -92,17 +87,19 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
 
       if (map) {
         // Get existing media
-        const existingMedia = values.media || [];
+        const existingMedia = values.media.filter((media: MediaInterface) => store.media.isMedia(media));
         // Find new files that needs to be created as media
         const newMedia = await Promise.all(
-          values.files.map(async (uppyFile) => {
-            const file = await store.media.convertUppyToFile(uppyFile);
-            const media = await createMedia.mutateAsync(file);
-            if (file.id === values.selectedMediaId) {
-              values.selectedMediaId = media.id;
-            }
-            return media;
-          }),
+          values.media
+            .filter((file: UploadedFile) => store.media.isUploadedFile(file))
+            .map(async (uppyFile: UploadedFile) => {
+              const file = await store.media.convertUppyToFile(uppyFile);
+              const media = await createMedia.mutateAsync(file);
+              if (values.selectedMediaId === uppyFile.id) {
+                values.selectedMediaId = media.id;
+              }
+              return media;
+            }),
         );
         // Merge existing and new media
         const media = [...existingMedia, ...newMedia] as MediaInterface[];
@@ -120,14 +117,16 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
 
       // Create new media
       const media = await Promise.all(
-        values.files.map(async (uppyFile) => {
-          const file = await store.media.convertUppyToFile(uppyFile);
-          const media = await createMedia.mutateAsync(file);
-          if (file.id === values.selectedMediaId) {
-            values.selectedMediaId = media.id;
-          }
-          return media;
-        }),
+        values.media
+          .filter((file: UploadedFile) => store.media.isUploadedFile(file))
+          .map(async (uppyFile: UploadedFile) => {
+            const file = await store.media.convertUppyToFile(uppyFile);
+            const media = await createMedia.mutateAsync(file);
+            if (values.selectedMediaId === uppyFile.id) {
+              values.selectedMediaId = media.id;
+            }
+            return media;
+          }),
       );
       // Create map
       await createMap.mutateAsync({
@@ -139,16 +138,14 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
       onClose();
     }
 
-    const files = watch('files');
     const media = watch('media');
+    const selectedMediaId = watch('selectedMediaId');
     useEffect(() => {
-      // Only run there is no media
-      if (!files?.length || media?.length) return;
-      const lastFile = files[files.length - 1];
-      if (!lastFile.uploadURL) return;
-      const fileName = store.media.getFileNameFromUploadUrl(lastFile.uploadURL);
-      setValue('selectedMediaId', fileName, { shouldValidate: true });
-    }, [files, media]);
+      if (selectedMediaId || !media?.length) return;
+      const firstMedia = media[media.length - 1];
+      if (!firstMedia) return;
+      setValue('selectedMediaId', firstMedia.id, { shouldValidate: true });
+    }, [media]);
 
     return (
       <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
@@ -169,35 +166,12 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
               <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
 
               <Box sx={{ my: 1 }}>
-                <ControlledUploader
-                  name="files"
-                  allowedFileTypes={['image/*', 'video/*']}
-                  multiple
-                  FileListProps={{
-                    selectable: true,
-                    selectedFileId: watch('selectedMediaId'),
-                    onSelect: (file) => {
-                      if (!file.uploadURL) return;
-                      const fileName = store.media.getFileNameFromUploadUrl(file.uploadURL);
-                      setValue('selectedMediaId', fileName, { shouldValidate: true });
-                    },
-                  }}
+                <ControlledMediaUploader
+                  name="media"
+                  selectedMediaId={selectedMediaId}
+                  onSelect={(file) => setValue('selectedMediaId', file?.id, { shouldValidate: true })}
                 />
               </Box>
-
-              <UploadedMedia
-                media={watch('media') as MediaInterface[]}
-                selectedMediaId={watch('selectedMediaId')}
-                onSelect={(media) => setValue('selectedMediaId', media.id, { shouldValidate: true })}
-                onDelete={(media) => {
-                  const existingMedia = watch('media') as MediaInterface[];
-                  setValue(
-                    'media',
-                    existingMedia.filter((existingMedia) => existingMedia.id !== media.id),
-                    { shouldValidate: true },
-                  );
-                }}
-              />
             </DialogContent>
 
             <DialogActions>

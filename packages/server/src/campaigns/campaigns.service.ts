@@ -25,10 +25,10 @@ export class CampaignsService {
       const campaigns = await this.prisma.campaign.findMany({
         where: { OR: [{ createdById: userId }, { players: { some: { id: userId } } }] },
         include: {
-          maps: { include: { media: { orderBy: { updatedAt: 'desc' } } } },
+          maps: { include: { media: true } },
           players: { select: USER_SAFE_FIELDS },
-          playerCharacters: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
-          nonPlayerCharacters: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
+          playerCharacters: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
         },
       });
@@ -52,10 +52,10 @@ export class CampaignsService {
       const campaign = await this.prisma.campaign.findUniqueOrThrow({
         where: { id: campaignId },
         include: {
-          maps: { include: { media: { orderBy: { updatedAt: 'desc' } } } },
+          maps: { include: { media: true } },
           players: { select: USER_SAFE_FIELDS },
-          playerCharacters: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
-          nonPlayerCharacters: { include: { controlledBy: true, media: { orderBy: { updatedAt: 'desc' } } } },
+          playerCharacters: { include: { controlledBy: true, media: true } },
+          nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
         },
       });

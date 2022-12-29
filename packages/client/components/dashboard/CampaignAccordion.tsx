@@ -39,7 +39,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
           <Typography variant="h3">
-            {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 300)} />}
+            {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 200)} />}
           </Typography>
 
           <Typography variant="caption">

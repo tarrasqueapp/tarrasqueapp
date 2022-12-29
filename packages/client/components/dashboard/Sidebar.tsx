@@ -47,7 +47,7 @@ export const Sidebar: React.FC = observer(() => {
       <Box sx={{ py: 2, textAlign: 'center' }}>
         <Logo size={150} />
 
-        <Typography variant="h5" color="primary.light" align="center" sx={{ mb: -1 }}>
+        <Typography variant="h6" color="primary.light" align="center" sx={{ mb: -1 }}>
           Tarrasque App
         </Typography>
 
