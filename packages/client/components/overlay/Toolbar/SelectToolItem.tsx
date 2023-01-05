@@ -1,5 +1,5 @@
 import { SelectAll, TouchApp } from '@mui/icons-material';
-import { Fade, Popper, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { Fade, Popper, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { observer } from 'mobx-react-lite';
 import { useCallback } from 'react';
@@ -66,7 +66,7 @@ export const SelectToolItem: React.FC = observer(() => {
         <Popper {...bindPopper(popupState)} placement="right" transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <ToggleButtonGroup size="small" sx={{ background: Color.BlackLight, ml: 0.5 }}>
+              <ToggleButtonGroup size="small" sx={{ background: alpha(Color.BlackLight, 0.9), ml: 0.5 }}>
                 <SingleSelectTool
                   selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
                 />

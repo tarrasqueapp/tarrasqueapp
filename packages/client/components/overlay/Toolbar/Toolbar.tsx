@@ -1,5 +1,5 @@
 import { Brush, Category, PushPin, SquareFoot } from '@mui/icons-material';
-import { Box, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
 import { Color } from '../../../lib/colors';
@@ -17,7 +17,7 @@ export const Toolbar: React.FC = observer(() => {
         value={store.toolbar.tool}
         onChange={(event, newTool) => newTool && store.toolbar.setTool(newTool)}
         orientation="vertical"
-        sx={{ background: Color.BlackLight }}
+        sx={{ background: alpha(Color.BlackLight, 0.9) }}
       >
         <SelectToolItem />
 

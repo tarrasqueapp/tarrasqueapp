@@ -1,5 +1,5 @@
 import { Add, FitScreen, Fullscreen, FullscreenExit, Remove } from '@mui/icons-material';
-import { Box, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -51,7 +51,7 @@ export const ZoomControls: React.FC = observer(() => {
 
   return (
     <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
-      <ToggleButtonGroup orientation="vertical" sx={{ background: Color.BlackLight }}>
+      <ToggleButtonGroup orientation="vertical" sx={{ background: alpha(Color.BlackLight, 0.9) }}>
         <Tooltip title="Zoom In" placement="left">
           <ToggleButton value="zoom-in" size="small" onClick={handleZoomIn}>
             <Add />

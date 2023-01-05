@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 
+import { BottomBar } from './BottomBar';
 import { MapContextMenu } from './MapContextMenu';
 import { Toolbar } from './Toolbar/Toolbar';
 import { ZoomControls } from './ZoomControls';
@@ -10,6 +11,7 @@ export const Overlay: React.FC = () => {
       <MapContextMenu />
       <Toolbar />
       <ZoomControls />
+      <BottomBar />
     </Box>
   );
 };
