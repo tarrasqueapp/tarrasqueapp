@@ -2,7 +2,6 @@ import { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
@@ -54,7 +53,6 @@ const MyApp: React.FC<MyAppProps> = ({ Component, pageProps, emotionCache = clie
             <Component {...pageProps} />
             <Toaster />
           </Layout>
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>

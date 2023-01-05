@@ -1,5 +1,6 @@
-import { CanActivate, ExecutionContext, Inject, Type, mixin } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Logger, Type, mixin } from '@nestjs/common';
 
+import { MapsService } from '../../maps/maps.service';
 import { CampaignsService } from '../campaigns.service';
 
 export enum CampaignRole {
@@ -9,15 +10,27 @@ export enum CampaignRole {
 
 export const CampaignRoleGuard = (campaignRole: CampaignRole): Type<CanActivate> => {
   class CampaignRoleGuardMixin implements CanActivate {
-    constructor(@Inject(CampaignsService) private readonly campaignsService: CampaignsService) {}
+    private logger: Logger = new Logger(CampaignRoleGuardMixin.name);
+
+    constructor(
+      @Inject(CampaignsService) private readonly campaignsService: CampaignsService,
+      @Inject(MapsService) private readonly mapsService: MapsService,
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const request = context.switchToHttp().getRequest();
 
-      const campaignId = request.params.campaignId || request.body.campaignId;
+      let campaignId = request.params.campaignId || request.body.campaignId;
+      const mapId = request.params.mapId || request.body.mapId;
       const user = request.user;
 
-      if (!user || !campaignId) return false;
+      if (!user || !campaignId) {
+        if (mapId) {
+          const map = await this.mapsService.getMap(mapId);
+          if (!map) return false;
+          campaignId = map.campaignId;
+        }
+      }
 
       const campaign = await this.campaignsService.getCampaign(campaignId);
       if (!campaign) return false;

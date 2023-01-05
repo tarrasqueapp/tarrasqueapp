@@ -1,10 +1,11 @@
-import { Delete, Edit, MoreHoriz } from '@mui/icons-material';
+import { Delete, Edit, FileCopy, MoreHoriz } from '@mui/icons-material';
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
+  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -17,7 +18,9 @@ import {
 } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
+import { useState } from 'react';
 
+import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
 import { AppNavigation } from '../../lib/navigation';
 import { CampaignInterface, MapInterface } from '../../lib/types';
 import { store } from '../../store';
@@ -29,6 +32,10 @@ interface MapCardProps {
 }
 
 export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
+  const duplicateMap = useDuplicateMap();
+
+  const [duplicating, setDuplicating] = useState(false);
+
   const width = 250;
   const height = 200;
 
@@ -104,6 +111,22 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
                           <Edit />
                         </ListItemIcon>
                         <ListItemText>Update</ListItemText>
+                      </MenuItem>
+
+                      <MenuItem
+                        disabled={duplicating}
+                        onClick={async () => {
+                          if (!map) return;
+                          setDuplicating(true);
+                          await duplicateMap.mutateAsync(map);
+                          setDuplicating(false);
+                          popupState.close();
+                        }}
+                      >
+                        <ListItemIcon>
+                          {duplicating ? <CircularProgress size={25.71} disableShrink /> : <FileCopy />}
+                        </ListItemIcon>
+                        <ListItemText>Duplicate</ListItemText>
                       </MenuItem>
 
                       <MenuItem

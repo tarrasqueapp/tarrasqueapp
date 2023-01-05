@@ -61,6 +61,4 @@ The `server` package implements authentication using the following packages:
 
 The `server` package uses [argon2](https://www.npmjs.com/package/argon2) for password hashing. The `server` also includes support for JSON Web Tokens (JWTs) with [@nestjs/jwt](https://www.npmjs.com/package/@nestjs/jwt).
 
-Additionally, the `server` package uses [@nestjs/swagger](https://www.npmjs.com/package/@nestjs/swagger) for generating API documentation using the [Swagger
-
-The `server` package uses [@nestjs/swagger](https://www.npmjs.com/package/@nestjs/swagger) for generating API documentation using the [Swagger](https://swagger.io/) specification. It also uses [cuid](https://www.npmjs.com/package/cuid) for generating collision-resistant ids.
+Additionally, the `server` package uses [@nestjs/swagger](https://www.npmjs.com/package/@nestjs/swagger) for generating API documentation using the [Swagger](https://swagger.io/) specification. It also uses [cuid](https://www.npmjs.com/package/cuid) for generating collision-resistant ids.
