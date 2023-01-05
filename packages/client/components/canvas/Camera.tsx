@@ -1,8 +1,9 @@
 import { observer } from 'mobx-react-lite';
 import { Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePixiApp } from 'react-pixi-fiber';
+import useLocalStorage from 'use-local-storage';
 
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { store } from '../../store';
@@ -20,15 +21,30 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
   const app = usePixiApp();
   const windowSize = useWindowSize();
 
+  // Get the camera position from local storage
+  const [position, setPosition] = useLocalStorage(`map-position-${mapId}`, {
+    x: width / 2,
+    y: height / 2,
+    scale: Math.min(windowSize.width / width, windowSize.height / height),
+  });
+
+  const [mounted, setMounted] = useState(false);
+
   // Center the viewport on the map when it is first rendered
   useEffect(() => {
+    if (mounted) return;
+
     store.pixi.viewport.animate({
-      position: { x: width / 2, y: height / 2 },
-      // Scale the viewport to fit the map within the current window dimensions
-      scale: Math.min(window.innerWidth / width, window.innerHeight / height),
+      position: {
+        x: position.x,
+        y: position.y,
+      },
+      scale: position.scale,
       time: 0,
     });
-  }, [width, height]);
+
+    setMounted(true);
+  }, [position]);
 
   useEffect(() => {
     /**
@@ -98,6 +114,19 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
     store.map.setContextMenuVisible(true);
   }
 
+  /**
+   * Update the camera position state when the viewport is moved
+   * @param viewport - The viewport instance
+   */
+  function handleMove(viewport: Viewport) {
+    const newPosition = {
+      x: viewport.center.x,
+      y: viewport.center.y,
+      scale: (viewport.scale.x + viewport.scale.y) / 2,
+    };
+    setPosition(newPosition);
+  }
+
   return (
     <CameraBase
       worldWidth={width}
@@ -111,6 +140,7 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
       onSingleClick={handleSingleClick}
       onDoubleClick={handleDoubleClick}
       onRightClick={handleRightClick}
+      onMove={handleMove}
       isTrackpad={store.app.isTrackpad}
       pressToDrag={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
     >

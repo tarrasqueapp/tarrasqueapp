@@ -9,6 +9,7 @@ interface CameraBaseProps extends IViewportOptions {
   onSingleClick?: (event: PIXI.InteractionEvent) => void;
   onDoubleClick?: (event: PIXI.InteractionEvent) => void;
   onRightClick?: (event: PIXI.InteractionEvent) => void;
+  onMove?: (viewport: Viewport) => void;
   isTrackpad?: boolean;
   pressToDrag?: boolean;
   children?: React.ReactNode;
@@ -93,6 +94,16 @@ export const CameraBase = CustomPIXIComponent<Viewport, CameraBaseProps>(
         clicks = 0;
         pressed = false;
         clearTimeout(longPressTimer);
+      });
+
+      // Update local state when the viewport is moved
+      viewport.on('moved-end', (event) => {
+        props.onMove?.(event);
+      });
+
+      // Update local state when the viewport is zoomed
+      viewport.on('zoomed-end', (event) => {
+        props.onMove?.(event);
       });
 
       props.onLoad?.(viewport);
