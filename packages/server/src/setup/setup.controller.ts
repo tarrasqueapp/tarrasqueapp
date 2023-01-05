@@ -3,7 +3,6 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { PrismaService } from 'nestjs-prisma';
 
-import { config } from '../config';
 import { UsersService } from '../users/users.service';
 import { SetupDto } from './dto/setup.dto';
 import { SetupGuard } from './guards/setup.guard';
@@ -56,12 +55,12 @@ export class SetupController {
     const setup = await this.setupService.getSetup();
     if (setup.step > SetupStep.USER) {
       // Get current refresh token
-      const refreshToken = req.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
+      const refreshToken = req.signedCookies?.Refresh;
       // Delete refresh token
       await this.usersService.removeRefreshToken(refreshToken);
       // Set cookies
-      res.clearCookie(config.JWT_ACCESS_TOKEN_NAME);
-      res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);
+      res.clearCookie('Access');
+      res.clearCookie('Refresh');
     }
 
     // Delete all media

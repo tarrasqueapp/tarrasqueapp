@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from '@nestjs/c
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-import { config } from '../config';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
@@ -72,15 +71,15 @@ export class AuthController {
     @User() user: UserEntity,
   ): Promise<UserEntity> {
     // Get current refresh token
-    const currentRefreshToken = req.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
+    const currentRefreshToken = req.signedCookies?.Refresh;
     // Generate access and refresh tokens based on user
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = this.authService.generateRefreshToken(user.id);
     // Set refresh token
     await this.usersService.updateRefreshToken(currentRefreshToken, refreshToken);
     // Set cookies
-    res.cookie(config.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(config.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie('Access', accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie('Refresh', refreshToken, { httpOnly: true, signed: true, path: '/' });
     return user;
   }
 
@@ -118,8 +117,8 @@ export class AuthController {
     // Set refresh token
     await this.usersService.createRefreshToken(user.id, refreshToken);
     // Set cookies
-    res.cookie(config.JWT_ACCESS_TOKEN_NAME, accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie(config.JWT_REFRESH_TOKEN_NAME, refreshToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie('Access', accessToken, { httpOnly: true, signed: true, path: '/' });
+    res.cookie('Refresh', refreshToken, { httpOnly: true, signed: true, path: '/' });
 
     return user;
   }
@@ -133,10 +132,10 @@ export class AuthController {
   @ApiOkResponse({ type: null })
   signOut(@Req() req: Request, @Res({ passthrough: true }) res: Response): void {
     // Get current refresh token
-    const refreshToken = req.signedCookies?.[config.JWT_REFRESH_TOKEN_NAME];
+    const refreshToken = req.signedCookies?.Refresh;
     // Set cookies
-    res.clearCookie(config.JWT_ACCESS_TOKEN_NAME);
-    res.clearCookie(config.JWT_REFRESH_TOKEN_NAME);
+    res.clearCookie('Access');
+    res.clearCookie('Refresh');
     // Delete refresh token
     this.usersService.removeRefreshToken(refreshToken);
   }
