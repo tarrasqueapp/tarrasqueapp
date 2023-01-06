@@ -68,12 +68,12 @@ export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps>
      */
     async function handleSubmitForm(values: Schema) {
       if (campaign) {
-        await updateCampaign.mutateAsync({ ...values, id: campaign.id });
+        updateCampaign.mutate({ ...values, id: campaign.id });
         onClose();
         return;
       }
 
-      await createCampaign.mutateAsync(values);
+      createCampaign.mutate(values);
       onClose();
     }
 

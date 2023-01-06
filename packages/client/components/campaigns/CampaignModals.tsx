@@ -26,7 +26,7 @@ export const CampaignModals: React.FC = observer(() => {
         open={store.campaigns.modal === CampaignModal.Delete}
         onConfirm={async () => {
           if (!store.campaigns.selectedCampaign) return;
-          await deleteCampaign.mutateAsync(store.campaigns.selectedCampaign);
+          deleteCampaign.mutate(store.campaigns.selectedCampaign);
         }}
         onClose={() => {
           store.campaigns.setModal(null);

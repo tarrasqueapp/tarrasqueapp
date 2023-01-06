@@ -23,7 +23,6 @@ export function useDuplicateMap() {
   return useMutation(duplicateMap, {
     onSuccess: (map) => {
       queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
-      queryClient.invalidateQueries([`maps`]);
     },
   });
 }

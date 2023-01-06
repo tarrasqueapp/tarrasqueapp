@@ -30,7 +30,7 @@ export const MapModals: React.FC = observer(() => {
         open={store.maps.modal === MapModal.Delete}
         onConfirm={async () => {
           if (!store.maps.selectedMap) return;
-          await deleteMap.mutateAsync(store.maps.selectedMap);
+          deleteMap.mutate(store.maps.selectedMap);
         }}
         onClose={() => {
           store.maps.setModal(null);

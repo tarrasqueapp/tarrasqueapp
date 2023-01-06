@@ -23,7 +23,6 @@ export function useCreateMap() {
   return useMutation(createMap, {
     onSuccess: (map) => {
       queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
-      queryClient.invalidateQueries([`maps`]);
     },
   });
 }
