@@ -25,6 +25,8 @@ export interface UserInterface {
   // Campaigns
   createdCampaigns: CampaignInterface[];
   playerCampaigns: CampaignInterface[];
+  // Order of campaigns
+  campaignOrder: string[];
 }
 
 export interface CampaignInterface {

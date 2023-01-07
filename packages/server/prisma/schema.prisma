@@ -42,6 +42,8 @@ model User {
   // Non Player Characters
   createdNonPlayerCharacters    NonPlayerCharacter[] @relation("CreatedNonPlayerCharacters")
   controlledNonPlayerCharacters NonPlayerCharacter[] @relation("ControlledNonPlayerCharacters")
+  // Order of user campaigns
+  campaignOrder                 String[]             @default([])
 }
 
 model RefreshToken {

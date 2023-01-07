@@ -24,4 +24,8 @@ export class UserBaseEntity implements Omit<User, 'password'> {
 
   @IsDateString()
   updatedAt: Date;
+
+  // Order of user campaigns
+  @IsString({ each: true })
+  campaignOrder: string[];
 }

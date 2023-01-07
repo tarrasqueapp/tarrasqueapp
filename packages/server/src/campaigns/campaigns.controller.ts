@@ -12,6 +12,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { ReordersCampaignsDto } from './dto/reorder-campaigns.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
@@ -124,5 +125,16 @@ export class CampaignsController {
 
     // Delete the campaign
     return await this.campaignsService.deleteCampaign(campaignId);
+  }
+
+  /**
+   * Reorder campaigns
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('reorder')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [CampaignEntity] })
+  reorderCampaigns(@Body() { campaignIds }: ReordersCampaignsDto, @User() user: UserEntity): Promise<CampaignEntity[]> {
+    return this.campaignsService.reorderCampaigns(campaignIds, user.id);
   }
 }

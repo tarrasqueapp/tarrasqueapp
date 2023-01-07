@@ -17,6 +17,7 @@ CREATE TABLE "User" (
     "avatarId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "campaignOrder" TEXT[] DEFAULT ARRAY[]::TEXT[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

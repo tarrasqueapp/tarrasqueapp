@@ -31,4 +31,8 @@ export class UserWithExcludedFieldsEntity implements User {
 
   @IsDateString()
   updatedAt: Date;
+
+  // Order of user campaigns
+  @IsString({ each: true })
+  campaignOrder: string[];
 }

@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Delete, Edit, ExpandMore, MoreHoriz } from '@mui/icons-material';
 import {
   Accordion,
@@ -34,8 +36,25 @@ export interface CampaignAccordionProps {
 export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, onToggle, campaign }) => {
   const { data: maps } = useGetCampaignMaps(campaign?.id);
 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: campaign?.id || '',
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    ...(isDragging && { opacity: 0.5 }),
+  };
+
   return (
-    <Accordion expanded={campaign ? expanded : true} onChange={(event, expanded) => onToggle?.(expanded)}>
+    <Accordion
+      expanded={campaign ? (isDragging ? false : expanded) : true}
+      onChange={(event, expanded) => onToggle?.(expanded)}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
           <Typography variant="h3">

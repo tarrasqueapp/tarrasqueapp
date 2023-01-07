@@ -31,7 +31,22 @@ export class CampaignsService {
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
         },
+        orderBy: { createdAt: 'asc' },
       });
+      // Get the user
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      // Sort the campaigns by the user's campaign order
+      campaigns.sort((a, b) => {
+        const aOrder = user.campaignOrder.findIndex((campaignId) => campaignId === a.id);
+        const bOrder = user.campaignOrder.findIndex((campaignId) => campaignId === b.id);
+        // If the user has no campaign order or the campaign is not in the order, sort by creation date
+        if (aOrder === -1 || bOrder === -1) {
+          return a.createdAt.getTime() - b.createdAt.getTime();
+        }
+        // Sort by the user's campaign order
+        return aOrder - bOrder;
+      });
+
       this.logger.debug(`✅️ Found ${campaigns.length} campaigns for user "${userId}"`);
       return campaigns;
     } catch (error) {
@@ -148,6 +163,26 @@ export class CampaignsService {
     } catch (error) {
       this.logger.error(`🚨 Campaign "${campaignId}" not found`);
       throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Reorder campaigns
+   * @param campaignIds - The campaign ids
+   * @param userId - The user's id
+   * @returns The updated campaigns in the new order
+   */
+  async reorderCampaigns(campaignIds: string[], userId: string): Promise<CampaignEntity[]> {
+    this.logger.verbose(`📂 Reordering campaigns for user "${userId}"`);
+    try {
+      // Update the user's campaign order
+      await this.prisma.user.update({ where: { id: userId }, data: { campaignOrder: campaignIds } });
+      this.logger.debug(`✅️ Reordered campaigns for user "${userId}"`);
+      // Return the campaigns in the new order
+      return this.getUserCampaigns(userId);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
+import { MapFactory } from '../../lib/factories/MapFactory';
 import { SetupStep } from '../../lib/types';
 import { store } from '../../store';
 import { UploadedFile } from '../../store/media';
@@ -44,7 +45,7 @@ export const CreateMap: React.FC<CreateMapProps> = ({ campaignId, onSubmit, onRe
   type Schema = yup.InferType<typeof schema>;
 
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: yupResolver(schema) });
+  const methods = useForm<Schema>({ mode: 'onChange', resolver: yupResolver(schema), defaultValues: new MapFactory() });
   const {
     handleSubmit,
     formState: { isSubmitting, isValid },

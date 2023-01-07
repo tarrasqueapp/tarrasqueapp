@@ -13,6 +13,8 @@
     "ncu": "ncu"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.0.7",
+    "@dnd-kit/sortable": "^7.0.2",
     "@emotion/cache": "^11.10.5",
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
