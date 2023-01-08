@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Delete, Edit, FileCopy, MoreHoriz } from '@mui/icons-material';
 import {
   Box,
@@ -35,14 +37,21 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
   const duplicateMap = useDuplicateMap();
 
   const [duplicating, setDuplicating] = useState(false);
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: map?.id || '' });
 
   const width = 250;
   const height = 200;
 
   const thumbnailUrl = map?.media.find((media) => media.id === map.selectedMediaId)?.thumbnailUrl;
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    ...(isDragging && { opacity: 0.5 }),
+  };
+
   return (
-    <Card sx={{ position: 'relative', width, height }}>
+    <Card sx={{ position: 'relative', width, height }} ref={setNodeRef} style={style} {...attributes} {...listeners}>
       {map ? (
         <>
           <NextLink

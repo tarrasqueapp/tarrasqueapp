@@ -27,10 +27,10 @@ export function useReorderCampaigns() {
       await queryClient.cancelQueries([`campaigns`]);
       const previousCampaigns = queryClient.getQueryData<CampaignInterface[]>([`campaigns`]);
       // Sort the campaigns based on the user's campaign order
-      queryClient.setQueryData([`campaigns`], (old: CampaignInterface[] = []) =>
-        old.sort((a, b) => {
-          const aOrder = campaignOrder!.findIndex((campaignId) => campaignId === a.id);
-          const bOrder = campaignOrder!.findIndex((campaignId) => campaignId === b.id);
+      queryClient.setQueryData([`campaigns`], (campaigns: CampaignInterface[] = []) =>
+        campaigns.sort((a, b) => {
+          const aOrder = campaignOrder.findIndex((campaignId) => campaignId === a.id);
+          const bOrder = campaignOrder.findIndex((campaignId) => campaignId === b.id);
           // If the user has no campaign order or the campaign is not in the order, sort by creation date
           if (aOrder === -1 || bOrder === -1) {
             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();

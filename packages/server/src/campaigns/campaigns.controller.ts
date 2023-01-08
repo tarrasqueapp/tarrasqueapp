@@ -12,7 +12,8 @@ import { UserEntity } from '../users/entities/user.entity';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
-import { ReordersCampaignsDto } from './dto/reorder-campaigns.dto';
+import { ReorderCampaignsDto } from './dto/reorder-campaigns.dto';
+import { ReorderMapsDto } from './dto/reorder-maps.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
@@ -134,7 +135,21 @@ export class CampaignsController {
   @Post('reorder')
   @ApiBearerAuth()
   @ApiOkResponse({ type: [CampaignEntity] })
-  reorderCampaigns(@Body() { campaignIds }: ReordersCampaignsDto, @User() user: UserEntity): Promise<CampaignEntity[]> {
+  reorderCampaigns(@Body() { campaignIds }: ReorderCampaignsDto, @User() user: UserEntity): Promise<CampaignEntity[]> {
     return this.campaignsService.reorderCampaigns(campaignIds, user.id);
+  }
+
+  /**
+   * Reorder maps
+   */
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @Post(':campaignId/maps/reorder')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [MapBaseEntity] })
+  reorderMaps(
+    @Param() { campaignId }: ConnectCampaignDto,
+    @Body() { mapIds }: ReorderMapsDto,
+  ): Promise<MapBaseEntity[]> {
+    return this.mapsService.reorderMaps(campaignId, mapIds);
   }
 }

@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class ReorderCampaignsDto {
+export class ReorderMapsDto {
   @IsString({ each: true })
-  campaignIds: string[];
+  mapIds: string[];
 }

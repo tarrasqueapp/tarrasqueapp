@@ -1,5 +1,5 @@
 import { Map } from '@prisma/client';
-import { IsDateString, IsString, ValidateNested } from 'class-validator';
+import { IsDateString, IsNumber, IsString, ValidateNested } from 'class-validator';
 
 import { MediaEntity } from '../../media/entities/media.entity';
 
@@ -9,6 +9,9 @@ export class MapBaseEntity implements Map {
 
   @IsString()
   name: string;
+
+  @IsNumber()
+  order: number;
 
   // DateTime
   @IsDateString()

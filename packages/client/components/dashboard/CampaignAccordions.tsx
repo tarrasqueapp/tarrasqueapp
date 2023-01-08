@@ -1,14 +1,18 @@
 import {
   DndContext,
+  DragEndEvent,
+  DragOverEvent,
   DragOverlay,
+  DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from 'use-local-storage';
 
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
@@ -20,15 +24,24 @@ export const CampaignAccordions: React.FC = () => {
   const { data: campaigns } = useGetUserCampaigns();
   const reorderCampaigns = useReorderCampaigns();
 
+  // Expand/collapse
   const [collapsedCampaigns, setCollapsedCampaigns] = useLocalStorage<string[]>('campaigns-collapsed', []);
-  const [activeId, setActiveId] = useState<string | number | null>(null);
 
+  // Drag and drop
+  const [activeId, setActiveId] = useState<string | number | null>(null);
+  const [orderedCampaignIds, setOrderedCampaignIds] = useState<string[]>([]);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { delay: 500, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
+
+  // Set initial order of campaign ids and update when campaigns change
+  useEffect(() => {
+    if (!campaigns) return;
+    setOrderedCampaignIds(campaigns.map((campaign) => campaign.id));
+  }, [campaigns]);
 
   /**
    * Handle toggling the expanded state of a campaign
@@ -50,34 +63,70 @@ export const CampaignAccordions: React.FC = () => {
     setCollapsedCampaigns(newCollapsedCampaigns);
   }
 
+  /**
+   * Set active campaign id for drag and drop
+   * @param event - Drag start event
+   */
+  function handleDragStart(event: DragStartEvent) {
+    const activeId = event.active.id as string;
+    setActiveId(activeId);
+  }
+
+  /**
+   * Update order of campaign ids when campaign is dragged over another campaign
+   * @param event - Drag over event
+   */
+  function handleDragOver(event: DragOverEvent) {
+    if (!campaigns || !event.over) return;
+
+    const activeId = event.active.id as string;
+    const overId = event.over.id as string;
+
+    if (event.active.id !== event.over.id) {
+      const oldIndex = orderedCampaignIds.indexOf(activeId);
+      const newIndex = orderedCampaignIds.indexOf(overId);
+
+      // Update order of campaign ids
+      setOrderedCampaignIds((orderedCampaignIds) => {
+        const newMapIds = [...orderedCampaignIds];
+        newMapIds.splice(oldIndex, 1);
+        newMapIds.splice(newIndex, 0, activeId);
+        return newMapIds;
+      });
+    }
+  }
+
+  /**
+   * Send request to reorder campaigns if order has changed after drag end
+   * @param event - Drag end event
+   */
+  function handleDragEnd(event: DragEndEvent) {
+    if (!campaigns || !event.over) return;
+
+    // Check if order has changed
+    if (orderedCampaignIds.some((campaignId, index) => campaignId !== campaigns[index].id)) {
+      reorderCampaigns.mutate(orderedCampaignIds);
+    }
+  }
+
   return (
     <>
       <DndContext
         sensors={sensors}
+        modifiers={[restrictToParentElement]}
         collisionDetection={closestCenter}
-        onDragStart={(event) => {
-          if (event.active.id) setActiveId(event.active.id);
-        }}
-        onDragEnd={(event) => {
-          if (event.active.id) setActiveId(null);
-
-          if (event.over && event.active.id !== event.over.id) {
-            const campaignOrder = campaigns?.map((campaign) => campaign.id) || [];
-            const oldIndex = campaignOrder.indexOf(event.active.id as string);
-            const newIndex = campaignOrder.indexOf(event.over.id as string);
-            campaignOrder.splice(newIndex, 0, campaignOrder.splice(oldIndex, 1)[0]);
-            reorderCampaigns.mutate(campaignOrder);
-          }
-        }}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
       >
-        <SortableContext items={campaigns || []} strategy={verticalListSortingStrategy}>
+        <SortableContext items={orderedCampaignIds} strategy={verticalListSortingStrategy}>
           {campaigns ? (
-            campaigns?.map((campaign) => (
+            orderedCampaignIds?.map((campaignId) => (
               <CampaignAccordion
-                key={campaign.id}
-                campaign={campaign}
-                expanded={!collapsedCampaigns.includes(campaign.id)}
-                onToggle={(expanded) => handleToggle(campaign.id, expanded)}
+                key={campaignId}
+                campaign={campaigns?.find((campaign) => campaign.id === campaignId)}
+                expanded={!collapsedCampaigns.includes(campaignId)}
+                onToggle={(expanded) => handleToggle(campaignId, expanded)}
               />
             ))
           ) : (
@@ -89,7 +138,7 @@ export const CampaignAccordions: React.FC = () => {
           )}
         </SortableContext>
 
-        <DragOverlay>
+        <DragOverlay modifiers={[restrictToParentElement]}>
           {activeId ? (
             <CampaignAccordion key={activeId} campaign={campaigns?.find((campaign) => campaign.id === activeId)} />
           ) : null}

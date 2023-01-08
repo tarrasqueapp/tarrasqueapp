@@ -25,6 +25,7 @@ export class MapsService {
       const maps = await this.prisma.map.findMany({
         where: { campaignId },
         include: { media: true },
+        orderBy: { order: 'asc' },
       });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
       return maps;
@@ -68,7 +69,7 @@ export class MapsService {
     this.logger.verbose(`📂 Getting maps`);
     try {
       // Get the maps
-      const maps = await this.prisma.map.findMany({ ...query, include: { media: true } });
+      const maps = await this.prisma.map.findMany({ ...query, include: { media: true }, orderBy: { order: 'asc' } });
       this.logger.debug(`✅️ Found ${maps.length} maps`);
       return maps;
     } catch (error) {
@@ -207,6 +208,32 @@ export class MapsService {
     } catch (error) {
       this.logger.error(`🚨 Map "${mapId}" not found`);
       throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Reorder maps for a campaign
+   * @param campaignId - The campaign id
+   * @param mapIds - The map ids
+   * @returns The updated maps in the new order
+   */
+  async reorderMaps(campaignId: string, mapIds: string[]): Promise<MapBaseEntity[]> {
+    this.logger.verbose(`📂 Reordering maps for campaign "${campaignId}"`);
+    try {
+      // Update the map order
+      await this.prisma.$transaction(
+        mapIds.map((id, index) =>
+          this.prisma.map.update({
+            where: { id },
+            data: { order: index },
+          }),
+        ),
+      );
+      // Return the maps in the new order
+      return this.getCampaignMaps(campaignId);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

@@ -48,6 +48,7 @@ CREATE TABLE "Campaign" (
 CREATE TABLE "Map" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "order" SERIAL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "selectedMediaId" TEXT,
