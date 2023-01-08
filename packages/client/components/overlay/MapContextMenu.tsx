@@ -1,15 +1,5 @@
 import { GpsFixed } from '@mui/icons-material';
-import {
-  Chip,
-  Fade,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Paper,
-  Popper,
-} from '@mui/material';
+import { Chip, Fade, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
@@ -57,9 +47,7 @@ export const MapContextMenu: React.FC = observer(() => {
                   <GpsFixed />
                 </ListItemIcon>
                 <ListItemText primary="Ping Location" />
-                <ListItemSecondaryAction>
-                  <Chip label="DBL" />
-                </ListItemSecondaryAction>
+                <Chip label="DBL" size="small" sx={{ ml: 1 }} />
               </MenuItem>
             </MenuList>
           </Paper>

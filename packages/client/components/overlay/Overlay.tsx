@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-import { BottomBar } from './BottomBar';
+import { BottomBar } from './BottomBar/BottomBar';
 import { MapContextMenu } from './MapContextMenu';
 import { Toolbar } from './Toolbar/Toolbar';
 import { ZoomControls } from './ZoomControls';

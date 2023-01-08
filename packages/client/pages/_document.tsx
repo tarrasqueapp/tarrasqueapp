@@ -22,9 +22,7 @@ export default class MyDocument extends Document<MyDocumentProps> {
           <meta name="description" content="Tarrasque App" />
           <meta name="keywords" content="Tarrasque App" />
 
-          {/* Don't index on staging environment */}
-          {/* {!EnvironmentUtils.isProduction() && <meta name="robots" content="noindex,nofollow" />} */}
-          {/* TODO: Change on launch */}
+          {/* Robots */}
           <meta name="robots" content="noindex,nofollow" />
 
           {/* Android */}

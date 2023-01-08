@@ -31,7 +31,7 @@ export class HotkeysUtils {
   static Monsters = 'm';
   static Spells = 's';
   static DiceRoller = 'd';
-  static KeyboardShortcuts = 'k';
+  static Shortcuts = 'k';
   static Undo = `${META_KEY}+z`;
   static Redo = `${META_KEY}+shift+z`;
   static Bold = `${META_KEY}+b`;
