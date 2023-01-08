@@ -9,17 +9,21 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  MenuItem,
   Theme,
   useMediaQuery,
 } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
 import { useUpdateMap } from '../../hooks/data/maps/useUpdateMap';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
+import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { MapFactory } from '../../lib/factories/MapFactory';
 import { CampaignInterface, MapInterface, MediaInterface } from '../../lib/types';
 import { store } from '../../store';
@@ -37,9 +41,15 @@ interface CreateUpdateMapModalProps {
 
 export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observer(
   ({ open, onClose, map, campaign }) => {
+    const { data: campaigns } = useGetUserCampaigns();
+    const { data: user } = useGetUser();
     const createMap = useCreateMap();
     const createMedia = useCreateMedia();
     const updateMap = useUpdateMap();
+    const queryClient = useQueryClient();
+
+    // Get campaigns where the user is a GM
+    const gmCampaigns = campaigns?.filter((campaign) => campaign.createdById === user?.id) || [];
 
     const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -47,6 +57,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
     const schema = yup
       .object({
         name: ValidateUtils.Name,
+        campaignId: yup.string().required(),
         media: yup
           .mixed()
           .test('isUppyFileOrMedia', 'Invalid media', (value) => {
@@ -107,10 +118,13 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
         await updateMap.mutateAsync({
           name: values.name,
           id: map.id,
-          campaignId: campaign.id,
+          campaignId: values.campaignId,
           ...(media.length > 0 && { mediaIds: media.map((media) => media.id) }),
           selectedMediaId: values.selectedMediaId,
         });
+        if (values.campaignId !== map.campaignId) {
+          queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
+        }
         onClose();
         return;
       }
@@ -131,8 +145,8 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
       // Create map
       await createMap.mutateAsync({
         name: values.name,
-        mediaIds: media.map((media) => media.id),
         campaignId: campaign.id,
+        mediaIds: media.map((media) => media.id),
         selectedMediaId: values.selectedMediaId,
       });
       onClose();
@@ -164,6 +178,16 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
 
             <DialogContent>
               <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
+
+              {map && (
+                <ControlledTextField name="campaignId" label="Campaign" sx={{ my: 1 }} fullWidth select>
+                  {gmCampaigns.map((campaign) => (
+                    <MenuItem key={campaign.id} value={campaign.id}>
+                      {campaign.name}
+                    </MenuItem>
+                  ))}
+                </ControlledTextField>
+              )}
 
               <Box sx={{ my: 1 }}>
                 <ControlledMediaUploader

@@ -2,6 +2,7 @@ import { MapInterface, MediaInterface } from '../types';
 
 export class MapFactory implements Partial<MapInterface> {
   name = '';
+  campaignId = '';
   media = [] as MediaInterface[];
   selectedMediaId = '';
 
