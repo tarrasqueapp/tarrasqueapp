@@ -1,6 +1,7 @@
 import { Add, FitScreen, Fullscreen, FullscreenExit, Remove } from '@mui/icons-material';
 import { Box, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
 import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
@@ -10,6 +11,8 @@ import { HotkeysUtils } from '../../utils/HotkeyUtils';
 
 export const ZoomControls: React.FC = observer(() => {
   const { data: map } = useGetCurrentMap();
+
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   /**
    * Handle zooming in with the mouse wheel
@@ -44,10 +47,38 @@ export const ZoomControls: React.FC = observer(() => {
     });
   }
 
+  /**
+   * Toggle full screen mode.
+   */
+  function handleFullScreen() {
+    if (isFullScreen) {
+      document.exitFullscreen();
+      setIsFullScreen(false);
+    } else {
+      document.documentElement.requestFullscreen();
+      setIsFullScreen(true);
+    }
+  }
+
+  /**
+   * Listen for full screen change and update the state.
+   */
+  function handleFullScreenChange() {
+    setIsFullScreen(document.fullscreenElement !== null);
+  }
+
   // Register hotkeys
   useHotkeys(HotkeysUtils.ZoomIn, handleZoomIn, [handleZoomIn]);
   useHotkeys(HotkeysUtils.ZoomOut, handleZoomOut, {}, [handleZoomOut]);
   useHotkeys(HotkeysUtils.ZoomToFit, handleFitScreen, {}, [handleFitScreen]);
+
+  // Listen for full screen change
+  useEffect(() => {
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullScreenChange);
+    };
+  }, []);
 
   return (
     <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
@@ -71,13 +102,8 @@ export const ZoomControls: React.FC = observer(() => {
         </Tooltip>
 
         <Tooltip title="Full Screen" placement="left">
-          <ToggleButton
-            value="full-screen"
-            size="small"
-            selected={store.app.fullScreen}
-            onChange={() => store.app.toggleFullScreen()}
-          >
-            {store.app.fullScreen ? <FullscreenExit /> : <Fullscreen />}
+          <ToggleButton value="full-screen" size="small" selected={isFullScreen} onChange={() => handleFullScreen()}>
+            {isFullScreen ? <FullscreenExit /> : <Fullscreen />}
           </ToggleButton>
         </Tooltip>
       </ToggleButtonGroup>
