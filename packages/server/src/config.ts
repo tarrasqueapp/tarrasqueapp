@@ -16,4 +16,9 @@ export const config = {
   AWS_S3_BUCKET: process.env.AWS_S3_BUCKET ?? '',
   AWS_S3_URL: process.env.AWS_S3_URL ?? '',
   DATABASE_URL: process.env.DATABASE_URL ?? 'postgresql://tarrasque:tarrasque@postgres:5432/tarrasque?schema=public',
+  SMTP_HOST: process.env.SMTP_HOST ?? '',
+  SMTP_PORT: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
+  SMTP_USERNAME: process.env.SMTP_USERNAME ?? '',
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD ?? '',
+  SMTP_FROM: process.env.SMTP_FROM ?? '',
 };

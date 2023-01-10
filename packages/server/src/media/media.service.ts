@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { spawn } from 'child_process';
-import { stat } from 'fs-extra';
+import fs from 'fs-extra';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateMediaDto } from './dto/create-media.dto';
@@ -94,7 +94,7 @@ export class MediaService {
     this.logger.verbose(`📂 Generating thumbnail for file "${filePath}"`);
 
     // Check that the file exists
-    if (!(await stat(filePath))) {
+    if (!(await fs.stat(filePath))) {
       throw new NotFoundException(`File "${filePath}" not found`);
     }
 

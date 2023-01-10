@@ -57,7 +57,10 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
     const schema = yup
       .object({
         name: ValidateUtils.Name,
-        campaignId: yup.string().required(),
+        campaignId: yup.string().when('campaign', {
+          is: (campaign: CampaignInterface | null) => Boolean(campaign),
+          then: yup.string().required(),
+        }),
         media: yup
           .mixed()
           .test('isUppyFileOrMedia', 'Invalid media', (value) => {

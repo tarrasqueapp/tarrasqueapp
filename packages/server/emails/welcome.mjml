@@ -1,0 +1,75 @@
+<mjml>
+  <mj-head>
+    <mj-title>Welcome to Tarrasque App</mj-title>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text
+        font-weight="400"
+        font-size="16px"
+        color="#637381"
+        line-height="24px"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      ></mj-text>
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#E7E7E7" width="600px">
+    <mj-section full-width="full-width">
+      <mj-column width="100%">
+        <mj-image href="https://tarrasque.app" src="cid:logo" alt="" align="center" width="100px" />
+
+        <mj-text align="center" letter-spacing="1px">Tarrasque App</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-wrapper padding-top="0" padding-bottom="0">
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px" border-radius="10px">
+        <mj-column width="100%">
+          <mj-text>
+            <h2>Welcome {{name}}!</h2>
+          </mj-text>
+
+          <mj-text>
+            Thanks for signing up to Tarrasque App, the free & open-source virtual tabletop for Dungeons & Dragons.
+            We're thrilled to have you on board!
+          </mj-text>
+
+          <mj-text>
+            Need immediate help getting started? Check out the
+            <a href="https://tarrasque.app/docs" style="color: #9b7d65"> documentation</a> and join the community on
+            <a href="https://tarrasque.app/discord" style="color: #9b7d65">Discord</a>! There's also a
+            <a href="https://tarrasque.app/roadmap" style="color: #9b7d65">roadmap</a> where you can see what's
+            currently being worked on.
+          </mj-text>
+
+          <mj-text>Ready to start playing?</mj-text>
+
+          <mj-button
+            background-color="#9b7d65"
+            align="center"
+            font-size="17px"
+            font-weight="bold"
+            href="{{dashboardUrl}}"
+            width="300px"
+            border-radius="90px"
+          >
+            Go to your dashboard
+          </mj-button>
+
+          <mj-text>
+            Enjoy!
+            <br />
+            The Tarrasque App Team
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <mj-wrapper full-width="full-width">
+      <mj-section>
+        <mj-column width="100%">
+          <mj-text font-size="11px" align="center"> &copy; Tronite Ltd. All rights reserved. </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

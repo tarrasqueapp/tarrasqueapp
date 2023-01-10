@@ -1,0 +1,70 @@
+<mjml>
+  <mj-head>
+    <mj-title>Verify email</mj-title>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text
+        font-weight="400"
+        font-size="16px"
+        color="#637381"
+        line-height="24px"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      ></mj-text>
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#E7E7E7" width="600px">
+    <mj-section full-width="full-width">
+      <mj-column width="100%">
+        <mj-image href="https://tarrasque.app" src="cid:logo" alt="" align="center" width="100px" />
+
+        <mj-text align="center" letter-spacing="1px">Tarrasque App</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-wrapper padding-top="0" padding-bottom="0">
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px" border-radius="10px">
+        <mj-column width="100%">
+          <mj-text>
+            <h2>Hi {{name}},</h2>
+          </mj-text>
+
+          <mj-text>
+            Your account has been successfully created! To verify your email address and complete your account creation,
+            please click the verification button below. <strong>This link is only valid for the next 24 hours</strong>.
+          </mj-text>
+
+          <mj-button
+            background-color="#9b7d65"
+            align="center"
+            font-size="17px"
+            font-weight="bold"
+            href="{{verifyUrl}}"
+            width="300px"
+            border-radius="90px"
+          >
+            Verify your email
+          </mj-button>
+
+          <mj-text>
+            If you did not make an account with Tarrasque App, please ignore this email or
+            <a href="mailto:support@tarrasque.app" style="color: #9b7d65">contact support</a> if you have questions.
+          </mj-text>
+
+          <mj-text>
+            Thanks,
+            <br />
+            The Tarrasque App Team
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <mj-wrapper full-width="full-width">
+      <mj-section>
+        <mj-column width="100%">
+          <mj-text font-size="11px" align="center"> &copy; Tronite Ltd. All rights reserved. </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

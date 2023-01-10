@@ -59,6 +59,12 @@ The `server` package implements authentication using the following packages:
 - [Passport JWT](https://www.npmjs.com/package/passport-jwt): A Passport strategy for authenticating with a JSON Web Token.
 - [Passport Local](https://www.npmjs.com/package/passport-local): A Passport strategy for authenticating with a username and password.
 
+The `server` package implements email functionality using the following packages:
+
+- [mjml](https://mjml.io/): A markup language designed to reduce the pain of coding a responsive email.
+- [handlebars](https://handlebarsjs.com/): A simple templating language that keeps the view and the code separated like we all know they should be.
+- [nodemailer](https://nodemailer.com/): A module for Node.js applications to allow easy as cake email sending.
+
 The `server` package uses [argon2](https://www.npmjs.com/package/argon2) for password hashing. The `server` also includes support for JSON Web Tokens (JWTs) with [@nestjs/jwt](https://www.npmjs.com/package/@nestjs/jwt).
 
 Additionally, the `server` package uses [@nestjs/swagger](https://www.npmjs.com/package/@nestjs/swagger) for generating API documentation using the [Swagger](https://swagger.io/) specification. It also uses [cuid](https://www.npmjs.com/package/cuid) for generating collision-resistant ids.

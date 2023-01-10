@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import cuid from 'cuid';
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { config } from '../config';
