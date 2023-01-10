@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import fs from 'fs-extra';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
@@ -22,6 +22,8 @@ const transporter = nodemailer.createTransport({
 
 @Injectable()
 export class EmailService {
+  private logger: Logger = new Logger(EmailService.name);
+
   /**
    * Send an email
    * @param sendEmailDto - email data
@@ -51,6 +53,7 @@ export class EmailService {
    * @returns sent email
    */
   async sendResetPasswordEmail(sendResetPasswordEmailDto: SendResetPasswordEmailDto) {
+    this.logger.verbose(`📂 Sending reset password email to "${sendResetPasswordEmailDto.to}"`);
     // Get contents of reset-password.mjml
     const mjml = await fs.readFile(path.join('emails', 'reset-password.mjml'), 'utf8');
     // Compile mjml with handlebars
@@ -63,11 +66,13 @@ export class EmailService {
       }),
     );
     // Send email
-    return this.sendEmail({
+    const email = await this.sendEmail({
       to: sendResetPasswordEmailDto.to,
       subject: 'Reset password',
       html,
     });
+    this.logger.verbose(`✅️ Sent reset password email to "${sendResetPasswordEmailDto.to}"`);
+    return email;
   }
 
   /**
@@ -76,6 +81,7 @@ export class EmailService {
    * @returns sent email
    */
   async sendVerifyEmail(sendVerifyEmailDto: SendVerifyEmailDto) {
+    this.logger.verbose(`📂 Sending verify email to "${sendVerifyEmailDto.to}"`);
     // Get contents of verify-email.mjml
     const mjml = await fs.readFile(path.join('emails', 'verify-email.mjml'), 'utf8');
     // Compile mjml with handlebars
@@ -88,11 +94,13 @@ export class EmailService {
       }),
     );
     // Send email
-    return this.sendEmail({
+    const email = await this.sendEmail({
       to: sendVerifyEmailDto.to,
       subject: 'Verify email',
       html,
     });
+    this.logger.verbose(`✅️ Sent verify email to "${sendVerifyEmailDto.to}"`);
+    return email;
   }
 
   /**
@@ -101,6 +109,7 @@ export class EmailService {
    * @returns sent email
    */
   async sendWelcomeEmail(sendWelcomeEmailDto: SendWelcomeEmailDto) {
+    this.logger.verbose(`📂 Sending welcome email to "${sendWelcomeEmailDto.to}"`);
     // Get contents of welcome.mjml
     const mjml = await fs.readFile(path.join('emails', 'welcome.mjml'), 'utf8');
     // Compile mjml with handlebars
@@ -113,10 +122,12 @@ export class EmailService {
       }),
     );
     // Send email
-    return this.sendEmail({
+    const email = await this.sendEmail({
       to: sendWelcomeEmailDto.to,
       subject: 'Welcome to Tarrasque App',
       html,
     });
+    this.logger.verbose(`✅️ Sent welcome email to "${sendWelcomeEmailDto.to}"`);
+    return email;
   }
 }
