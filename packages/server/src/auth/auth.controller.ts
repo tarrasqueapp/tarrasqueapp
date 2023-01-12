@@ -166,6 +166,8 @@ export class AuthController {
     const user = await this.usersService.updateUser(userId, { emailVerified: true });
     // Delete the token
     this.verifyEmailTokensService.deleteToken(data.token);
+    // Send the welcome email
+    this.emailService.sendWelcomeEmail({ name: user.name.split(' ')[0], to: user.email });
     // Sign in the user
     return await this.signIn(res, user);
   }
