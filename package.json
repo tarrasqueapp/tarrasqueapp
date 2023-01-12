@@ -20,7 +20,7 @@
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react": "^7.32.0",
     "prettier": "^2.8.2",
     "typescript": "^4.9.4",
     "zx": "^7.1.1"

@@ -6,6 +6,7 @@ import { UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to get the user
+ * @param config - Axios request config
  * @returns The user data
  */
 export async function getUser(config?: AxiosRequestConfig) {

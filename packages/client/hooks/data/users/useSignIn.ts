@@ -5,6 +5,7 @@ import { UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to sign in the user
+ * @param user - The user details
  * @returns The user details
  */
 async function signIn(user: Partial<UserInterface>) {

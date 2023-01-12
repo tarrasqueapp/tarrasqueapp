@@ -163,6 +163,7 @@ export class UsersService {
           displayName: data.displayName,
           email: data.email,
           avatarId: data.avatarId,
+          emailVerified: data.emailVerified,
           ...(data.password && { password: await argon2.hash(data.password) }),
         },
         select: USER_SAFE_FIELDS,

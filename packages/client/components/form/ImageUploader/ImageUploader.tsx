@@ -129,7 +129,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) 
     onChange?.(null);
   }
 
-  const borderColor = isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : 'rgba(255, 255, 255, 0.09)';
+  const borderColor = isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : 'rgba(0, 0, 0, 0.19)';
 
   return (
     <Box>
@@ -138,16 +138,22 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) 
           fullWidth
           sx={{
             m: 0.2,
-            p: 0,
+            p: 0.5,
             overflow: 'hidden',
             textTransform: 'none',
             color: Color.White,
             borderRadius: '50%',
-            border: `3px dashed ${borderColor}`,
+
+            background: 'rgba(255, 255, 255, 0.09)',
+            '&:hover': {
+              background: 'rgba(255, 255, 255, 0.13)',
+            },
           }}
         >
           <Box
             sx={{
+              borderRadius: '50%',
+              border: `3px dashed ${borderColor}`,
               display: 'flex',
               flexDirection: 'column',
               flex: '1 0 auto',

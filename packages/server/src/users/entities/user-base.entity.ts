@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { IsDateString, IsEmail, IsString } from 'class-validator';
+import { IsBoolean, IsDateString, IsEmail, IsString } from 'class-validator';
 
 export class UserBaseEntity implements Omit<User, 'password'> {
   @IsString()
@@ -13,6 +13,9 @@ export class UserBaseEntity implements Omit<User, 'password'> {
 
   @IsEmail()
   email: string;
+
+  @IsBoolean()
+  emailVerified: boolean;
 
   // Avatar
   @IsString()

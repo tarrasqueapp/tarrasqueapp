@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { IsDateString, IsEmail, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsDateString, IsEmail, IsString, ValidateNested } from 'class-validator';
 
 import { RefreshTokenEntity } from './refresh-token-entity';
 
@@ -15,6 +15,9 @@ export class UserWithExcludedFieldsEntity implements User {
 
   @IsEmail()
   email: string;
+
+  @IsBoolean()
+  emailVerified: boolean;
 
   @IsString()
   password: string;

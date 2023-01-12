@@ -18,6 +18,7 @@ model User {
   name                          String
   displayName                   String
   email                         String               @unique
+  emailVerified                 Boolean              @default(false)
   password                      String
   // Avatar
   avatar                        Media?               @relation("UserAvatar", fields: [avatarId], references: [id])
@@ -54,6 +55,24 @@ model RefreshToken {
   updatedAt DateTime @default(now()) @updatedAt
   // User
   user      User     @relation("UserRefreshTokens", fields: [userId], references: [id])
+  userId    String
+}
+
+model VerifyEmailToken {
+  id        String   @id @default(cuid())
+  value     String   @unique
+  // DateTime
+  createdAt DateTime @default(now())
+  // User
+  userId    String
+}
+
+model ResetPasswordToken {
+  id        String   @id @default(cuid())
+  value     String   @unique
+  // DateTime
+  createdAt DateTime @default(now())
+  // User
   userId    String
 }
 

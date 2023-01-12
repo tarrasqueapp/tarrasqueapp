@@ -8,6 +8,7 @@ import { DateTimeUtils } from '../../../utils/DateTimeUtils';
 
 /**
  * Send a request to get the updated refresh token
+ * @param config - Axios request config
  * @returns The user data
  */
 export async function checkRefreshToken(config?: AxiosRequestConfig) {

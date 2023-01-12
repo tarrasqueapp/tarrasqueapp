@@ -13,6 +13,7 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "displayName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "password" TEXT NOT NULL,
     "avatarId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -31,6 +32,26 @@ CREATE TABLE "RefreshToken" (
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "RefreshToken_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "VerifyEmailToken" (
+    "id" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "VerifyEmailToken_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ResetPasswordToken" (
+    "id" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "ResetPasswordToken_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -256,6 +277,12 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RefreshToken_value_key" ON "RefreshToken"("value");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerifyEmailToken_value_key" ON "VerifyEmailToken"("value");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ResetPasswordToken_value_key" ON "ResetPasswordToken"("value");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Movement_playerCharacterId_key" ON "Movement"("playerCharacterId");

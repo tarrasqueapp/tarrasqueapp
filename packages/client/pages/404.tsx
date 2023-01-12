@@ -16,7 +16,7 @@ const NotFound: NextPage = () => {
             <Logo size={150} />
           </Box>
 
-          <Paper sx={{ p: 4, background: 'rgba(0, 0, 0, 0.2)' }}>
+          <Paper sx={{ p: 4, background: 'rgba(0, 0, 0, 0.4)' }}>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h3" paragraph>
                 Can&apos;t find what you&apos;re looking for!

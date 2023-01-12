@@ -8,7 +8,6 @@ import { useResetSetup } from '../../hooks/data/setup/useResetSetup';
 import { useGetRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { AppNavigation } from '../../lib/navigation';
 import { SetupStep } from '../../lib/types';
-import { SignIn } from '../auth/SignIn';
 import { CreateCampaign } from './CreateCampaign';
 import { CreateDatabase } from './CreateDatabase';
 import { CreateMap } from './CreateMap';
@@ -32,6 +31,11 @@ export const Setup: React.FC = () => {
     }
     // Set active step depending on setup progress
     setActiveStep(data.step - 1);
+
+    // Redirect to the sign in page if the user has been created but the user is not logged in
+    if (data.step > SetupStep.USER && !refreshTokenData) {
+      router.push(AppNavigation.SignIn);
+    }
   }, [data]);
 
   // Show progress bar while loading
@@ -41,10 +45,6 @@ export const Setup: React.FC = () => {
         <CircularProgress disableShrink />
       </Box>
     );
-  }
-
-  if (data && data.step > SetupStep.USER && !refreshTokenData) {
-    return <SignIn />;
   }
 
   // Show error message if there is an error

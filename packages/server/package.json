@@ -58,7 +58,7 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/cron": "^2.0.0",
     "@types/express": "^4.17.15",
-    "@types/fs-extra": "^11.0.0",
+    "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.11.18",
     "@types/nodemailer": "^6.4.7",
     "@types/passport-jwt": "^3.0.8",

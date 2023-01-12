@@ -1,15 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AxiosRequestConfig } from 'axios';
 
 import { api } from '../../../lib/api';
 
 /**
  * Send a request to sign out the user
- * @param config - The request config
  * @returns The user data
  */
-async function signOut(config?: AxiosRequestConfig) {
-  const { data } = await api.post(`/api/auth/sign-out`, config);
+async function signOut() {
+  const { data } = await api.post<void>(`/api/auth/sign-out`);
   return data;
 }
 
@@ -19,7 +17,7 @@ async function signOut(config?: AxiosRequestConfig) {
 export function useSignOut() {
   const queryClient = useQueryClient();
 
-  return useMutation(() => signOut(), {
+  return useMutation(signOut, {
     onMutate: () => {
       queryClient.cancelQueries();
     },

@@ -1,7 +1,10 @@
-import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
+import { EmailService } from '../email/email.service';
+import { ResetPasswordTokensService } from '../generic-tokens/reset-password-tokens.service';
+import { VerifyEmailTokensService } from '../generic-tokens/verify-email-tokens.service';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
@@ -22,6 +25,9 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly mediaService: MediaService,
     private readonly storageService: StorageService,
+    private readonly verifyEmailTokensService: VerifyEmailTokensService,
+    private readonly resetPasswordTokensService: ResetPasswordTokensService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**
@@ -90,7 +96,7 @@ export class AuthController {
   @Get('check-refresh-token')
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  async check(@User() user: UserEntity): Promise<UserEntity> {
+  async checkRefreshToken(@User() user: UserEntity): Promise<UserEntity> {
     return user;
   }
 
@@ -98,10 +104,14 @@ export class AuthController {
    * Register a new user
    */
   @Post('sign-up')
-  @ApiOkResponse({ type: UserEntity })
-  async signUp(@Res({ passthrough: true }) res: Response, @Body() data: CreateUserDto): Promise<UserEntity> {
+  @ApiOkResponse({ type: null })
+  async signUp(@Body() data: CreateUserDto): Promise<void> {
+    // Create the user
     const user = await this.usersService.createUser(data);
-    return await this.signIn(res, user);
+    // Generate the verify email token
+    const token = await this.verifyEmailTokensService.createToken({ userId: user.id });
+    // Send the email
+    await this.emailService.sendVerifyEmail({ name: user.name.split(' ')[0], to: user.email, token: token.value });
   }
 
   /**
@@ -111,6 +121,10 @@ export class AuthController {
   @Post('sign-in')
   @ApiOkResponse({ type: UserEntity })
   async signIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
+    if (!user.emailVerified) {
+      throw new UnauthorizedException('Email not verified');
+    }
+
     // Generate access and refresh tokens based on user
     const accessToken = this.authService.generateAccessToken(user.id);
     const refreshToken = this.authService.generateRefreshToken(user.id);
@@ -138,5 +152,67 @@ export class AuthController {
     res.clearCookie('Refresh');
     // Delete refresh token
     this.usersService.removeRefreshToken(refreshToken);
+  }
+
+  /**
+   * Verify the user's email
+   */
+  @Post('verify-email')
+  @ApiOkResponse({ type: UserEntity })
+  async verifyEmail(@Res({ passthrough: true }) res: Response, @Body() data: { token: string }): Promise<UserEntity> {
+    // Decode the token
+    const { userId } = await this.verifyEmailTokensService.getToken(data.token);
+    // Update the user's emailVerified field
+    const user = await this.usersService.updateUser(userId, { emailVerified: true });
+    // Delete the token
+    this.verifyEmailTokensService.deleteToken(data.token);
+    // Sign in the user
+    return await this.signIn(res, user);
+  }
+
+  /**
+   * Forgot password
+   */
+  @Post('forgot-password')
+  @ApiOkResponse({ type: null })
+  async forgotPassword(@Body() data: { email: string }): Promise<void> {
+    try {
+      // Get the user
+      const user = await this.usersService.getUserByEmailWithExcludedFields(data.email);
+      // Create a token
+      const token = await this.resetPasswordTokensService.createToken({ userId: user.id });
+      // Send reset password email
+      this.emailService.sendResetPasswordEmail({ name: user.name.split(' ')[0], to: user.email, token: token.value });
+    } catch (e) {
+      // Ignore the error if the user doesn't exist
+    }
+  }
+
+  /**
+   * Check if the reset password token is valid
+   */
+  @Post('check-reset-password-token')
+  @ApiOkResponse({ type: null })
+  async checkResetPasswordToken(@Body() data: { token: string }): Promise<void> {
+    await this.resetPasswordTokensService.getToken(data.token);
+  }
+
+  /**
+   * Change the user's password
+   */
+  @Post('reset-password')
+  @ApiOkResponse({ type: UserEntity })
+  async resetPassword(
+    @Res({ passthrough: true }) res: Response,
+    @Body() data: { token: string; password: string },
+  ): Promise<UserEntity> {
+    // Decode the token
+    const { userId } = await this.resetPasswordTokensService.getToken(data.token);
+    // Update the user's password
+    const user = await this.usersService.updateUser(userId, { password: data.password });
+    // Delete the token
+    this.resetPasswordTokensService.deleteToken(data.token);
+    // Sign in the user
+    return await this.signIn(res, user);
   }
 }

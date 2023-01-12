@@ -12,10 +12,9 @@ import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
-import { ControlledTextField } from '../../components/form/ControlledTextField';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
-import { useSignUp } from '../../hooks/data/users/useSignUp';
+import { checkResetPasswordToken, useResetPassword } from '../../hooks/data/users/useResetPassword';
 import { AppNavigation } from '../../lib/navigation';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
@@ -38,11 +37,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (user) return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
   } catch (err) {}
 
-  return { props: {} };
+  // Get the token from the query string
+  const token = (context.query.token as string) || '';
+
+  // Check the reset password token
+  let valid = false;
+  try {
+    await checkResetPasswordToken(context.query.token as string);
+    valid = true;
+  } catch (err) {}
+
+  return { props: { token, valid } };
 };
 
-const SignUpPage: NextPage = () => {
-  const signUp = useSignUp();
+const ResetPasswordPage: NextPage<{ token: string; valid: boolean }> = ({ token, valid }) => {
+  const resetPassword = useResetPassword();
 
   const router = useRouter();
 
@@ -51,8 +60,6 @@ const SignUpPage: NextPage = () => {
     .object()
     .shape(
       {
-        name: ValidateUtils.Name,
-        email: ValidateUtils.Email,
         password: ValidateUtils.Password,
         confirmPassword: ValidateUtils.Password.oneOf([yup.ref('password')], 'Passwords must match'),
       },
@@ -74,7 +81,7 @@ const SignUpPage: NextPage = () => {
    */
   async function handleSubmitForm(values: Schema) {
     try {
-      await signUp.mutateAsync(values);
+      await resetPassword.mutateAsync({ token, ...values });
       router.push(AppNavigation.Dashboard);
     } catch (error: any) {
       toast.error(error.message);
@@ -90,29 +97,29 @@ const SignUpPage: NextPage = () => {
           </Box>
 
           <Typography variant="h3" align="center" sx={{ mt: 1, mb: 3 }}>
-            Sign up
+            Reset password
           </Typography>
 
           <Paper sx={{ p: 2, width: '100%', background: 'rgba(0, 0, 0, 0.4)' }}>
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(handleSubmitForm)}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', m: 1, gap: 2 }}>
-                  <ControlledTextField name="name" label="Name" autoFocus />
+            {!token && <Typography align="center">No token was provided</Typography>}
+            {token && !valid && <Typography align="center">Invalid token</Typography>}
+            {token && valid && (
+              <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(handleSubmitForm)}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', m: 1, gap: 2 }}>
+                    <ControlledPasswordField name="password" label="Password" />
 
-                  <ControlledTextField name="email" label="Email" />
+                    <ControlledPasswordField name="confirmPassword" label="Confirm Password" />
+                  </Box>
 
-                  <ControlledPasswordField name="password" label="Password" />
-
-                  <ControlledPasswordField name="confirmPassword" label="Confirm Password" />
-                </Box>
-
-                <Box sx={{ textAlign: 'center' }}>
-                  <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mt: 2, mb: 1 }}>
-                    Submit
-                  </LoadingButton>
-                </Box>
-              </form>
-            </FormProvider>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mt: 2, mb: 1 }}>
+                      Submit
+                    </LoadingButton>
+                  </Box>
+                </form>
+              </FormProvider>
+            )}
           </Paper>
 
           <Typography variant="body2" align="center" sx={{ mt: 4 }}>
@@ -124,4 +131,4 @@ const SignUpPage: NextPage = () => {
   );
 };
 
-export default SignUpPage;
+export default ResetPasswordPage;
