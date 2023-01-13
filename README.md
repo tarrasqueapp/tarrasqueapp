@@ -1,7 +1,7 @@
-<div align="center" style="margin-top: 2em;">
+<h1  align="center" style="margin-bottom: 0;">
   <a href="https://tarrasque.app" target="_blank"><img src="packages/client/public/images/logo.svg" width="150" /></a>
-  <h1 style="margin-bottom: 0;">Tarrasque App</h1>
-</div>
+  <p>Tarrasque App</p>
+</h1>
 
 > **Warning**
 > This project is in alpha and is not yet ready for public use. Please do not use this in production or with real data. We are not responsible for any data loss or other issues that may occur.
