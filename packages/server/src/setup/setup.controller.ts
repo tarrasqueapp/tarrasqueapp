@@ -72,9 +72,9 @@ export class SetupController {
     // Delete all refresh tokens
     await this.prisma.refreshToken.deleteMany({});
     // Delete all verify email tokens
-    await this.prisma.verifyEmailToken.deleteMany({});
+    await this.prisma.emailVerificationToken.deleteMany({});
     // Delete all reset password tokens
-    await this.prisma.resetPasswordToken.deleteMany({});
+    await this.prisma.passwordResetToken.deleteMany({});
     // Delete all users
     await this.prisma.user.deleteMany({});
     // Update setup

@@ -1,16 +1,16 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { ResetPasswordToken } from '@prisma/client';
+import { PasswordResetToken } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { config } from '../config';
 import { toMillisecondsFromString } from '../helpers';
-import { ResetPasswordDto } from './dto/reset-password.dto';
+import { PasswordResetDto } from './dto/password-reset.dto';
 import { GenericTokensService } from './generic-tokens.service';
 
 @Injectable()
-export class ResetPasswordTokensService {
-  private logger: Logger = new Logger(ResetPasswordTokensService.name);
+export class PasswordResetTokensService {
+  private logger: Logger = new Logger(PasswordResetTokensService.name);
 
   constructor(private prisma: PrismaService, private readonly genericTokensService: GenericTokensService) {}
 
@@ -19,11 +19,11 @@ export class ResetPasswordTokensService {
    * @param value - The token's value
    * @returns The token
    */
-  async getToken(value: string): Promise<ResetPasswordToken> {
+  async getToken(value: string): Promise<PasswordResetToken> {
     this.logger.verbose(`📂 Getting reset password token by value "${value}"`);
     try {
       // Ensure the token exists
-      const token = await this.prisma.resetPasswordToken.findUniqueOrThrow({ where: { value } });
+      const token = await this.prisma.passwordResetToken.findUniqueOrThrow({ where: { value } });
       this.logger.debug(`✅️ Found reset password token by value "${value}"`);
       // Return the  token
       return token;
@@ -38,13 +38,13 @@ export class ResetPasswordTokensService {
    * @param data - The token's data
    * @returns The created token
    */
-  async createToken(data: ResetPasswordDto): Promise<ResetPasswordToken> {
+  async createToken(data: PasswordResetDto): Promise<PasswordResetToken> {
     this.logger.verbose(`📂 Creating reset password token for user "${data.userId}"`);
     try {
       // Delete any existing tokens for the user
-      await this.prisma.resetPasswordToken.deleteMany({ where: { userId: data.userId } });
+      await this.prisma.passwordResetToken.deleteMany({ where: { userId: data.userId } });
       // Create the token
-      const token = await this.prisma.resetPasswordToken.create({
+      const token = await this.prisma.passwordResetToken.create({
         data: {
           value: this.genericTokensService.generateToken({ userId: data.userId }),
           userId: data.userId,
@@ -63,11 +63,11 @@ export class ResetPasswordTokensService {
    * @param value - The token's value
    * @returns Deleted token
    */
-  async deleteToken(value: string): Promise<ResetPasswordToken> {
+  async deleteToken(value: string): Promise<PasswordResetToken> {
     this.logger.verbose(`📂 Deleting reset password token by value "${value}"`);
     try {
       // Delete the token
-      const token = await this.prisma.resetPasswordToken.delete({ where: { value } });
+      const token = await this.prisma.passwordResetToken.delete({ where: { value } });
       this.logger.debug(`✅️ Deleted reset password token by value "${value}"`);
       return token;
     } catch (error) {
@@ -87,7 +87,7 @@ export class ResetPasswordTokensService {
     // Get the expiry date by subtracting the expiration time from the current date
     const expiryDate = new Date(Date.now() - expirationTime);
     // Delete the reset password tokens
-    await this.prisma.resetPasswordToken.deleteMany({ where: { createdAt: { lte: expiryDate } } });
+    await this.prisma.passwordResetToken.deleteMany({ where: { createdAt: { lte: expiryDate } } });
     this.logger.debug(`✅️ Removed old reset password tokens`);
   }
 }

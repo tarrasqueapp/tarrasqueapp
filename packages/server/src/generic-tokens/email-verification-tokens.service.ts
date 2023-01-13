@@ -1,16 +1,16 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { VerifyEmailToken } from '@prisma/client';
+import { EmailVerificationToken } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { config } from '../config';
 import { toMillisecondsFromString } from '../helpers';
-import { VerifyEmailDto } from './dto/verify-email.dto';
+import { EmailVerificationDto } from './dto/email-verification.dto';
 import { GenericTokensService } from './generic-tokens.service';
 
 @Injectable()
-export class VerifyEmailTokensService {
-  private logger: Logger = new Logger(VerifyEmailTokensService.name);
+export class EmailVerificationTokensService {
+  private logger: Logger = new Logger(EmailVerificationTokensService.name);
 
   constructor(private prisma: PrismaService, private readonly genericTokensService: GenericTokensService) {}
 
@@ -19,11 +19,11 @@ export class VerifyEmailTokensService {
    * @param value - The token's value
    * @returns The token
    */
-  async getToken(value: string): Promise<VerifyEmailToken> {
+  async getToken(value: string): Promise<EmailVerificationToken> {
     this.logger.verbose(`📂 Getting verify email token by value "${value}"`);
     try {
       // Ensure the token exists
-      const token = await this.prisma.verifyEmailToken.findUniqueOrThrow({ where: { value } });
+      const token = await this.prisma.emailVerificationToken.findUniqueOrThrow({ where: { value } });
       this.logger.debug(`✅️ Found verify email token by value "${value}"`);
       // Return the  token
       return token;
@@ -38,13 +38,13 @@ export class VerifyEmailTokensService {
    * @param data - The token's data
    * @returns The created token
    */
-  async createToken(data: VerifyEmailDto): Promise<VerifyEmailToken> {
+  async createToken(data: EmailVerificationDto): Promise<EmailVerificationToken> {
     this.logger.verbose(`📂 Creating verify email token for user "${data.userId}"`);
     try {
       // Delete any existing tokens for the user
-      await this.prisma.verifyEmailToken.deleteMany({ where: { userId: data.userId } });
+      await this.prisma.emailVerificationToken.deleteMany({ where: { userId: data.userId } });
       // Create the token
-      const token = await this.prisma.verifyEmailToken.create({
+      const token = await this.prisma.emailVerificationToken.create({
         data: {
           value: this.genericTokensService.generateToken({ userId: data.userId }),
           userId: data.userId,
@@ -63,11 +63,11 @@ export class VerifyEmailTokensService {
    * @param value - The token's value
    * @returns Deleted token
    */
-  async deleteToken(value: string): Promise<VerifyEmailToken> {
+  async deleteToken(value: string): Promise<EmailVerificationToken> {
     this.logger.verbose(`📂 Deleting verify email token by value "${value}"`);
     try {
       // Delete the token
-      const token = await this.prisma.verifyEmailToken.delete({ where: { value } });
+      const token = await this.prisma.emailVerificationToken.delete({ where: { value } });
       this.logger.debug(`✅️ Deleted verify email token by value "${value}"`);
       return token;
     } catch (error) {
@@ -87,7 +87,7 @@ export class VerifyEmailTokensService {
     // Get the expiry date by subtracting the expiration time from the current date
     const expiryDate = new Date(Date.now() - expirationTime);
     // Delete the verify email tokens
-    await this.prisma.verifyEmailToken.deleteMany({ where: { createdAt: { lte: expiryDate } } });
+    await this.prisma.emailVerificationToken.deleteMany({ where: { createdAt: { lte: expiryDate } } });
     this.logger.debug(`✅️ Removed old verify email tokens`);
   }
 }

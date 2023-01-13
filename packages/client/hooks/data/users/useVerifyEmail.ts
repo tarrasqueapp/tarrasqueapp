@@ -5,7 +5,7 @@ import { UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to verify the user's email
- * @param token - The verification token
+ * @param token - The email verification token
  * @returns The user details
  */
 export async function verifyEmail(token: string) {

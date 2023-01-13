@@ -3,8 +3,8 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { EmailService } from '../email/email.service';
-import { ResetPasswordTokensService } from '../generic-tokens/reset-password-tokens.service';
-import { VerifyEmailTokensService } from '../generic-tokens/verify-email-tokens.service';
+import { EmailVerificationTokensService } from '../generic-tokens/email-verification-tokens.service';
+import { PasswordResetTokensService } from '../generic-tokens/password-reset-tokens.service';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
@@ -25,8 +25,8 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly mediaService: MediaService,
     private readonly storageService: StorageService,
-    private readonly verifyEmailTokensService: VerifyEmailTokensService,
-    private readonly resetPasswordTokensService: ResetPasswordTokensService,
+    private readonly emailVerificationTokensService: EmailVerificationTokensService,
+    private readonly passwordResetTokensService: PasswordResetTokensService,
     private readonly emailService: EmailService,
   ) {}
 
@@ -109,9 +109,13 @@ export class AuthController {
     // Create the user
     const user = await this.usersService.createUser(data);
     // Generate the verify email token
-    const token = await this.verifyEmailTokensService.createToken({ userId: user.id });
+    const token = await this.emailVerificationTokensService.createToken({ userId: user.id });
     // Send the email
-    await this.emailService.sendVerifyEmail({ name: user.name.split(' ')[0], to: user.email, token: token.value });
+    await this.emailService.sendEmailVerificationEmail({
+      name: user.name.split(' ')[0],
+      to: user.email,
+      token: token.value,
+    });
   }
 
   /**
@@ -161,11 +165,11 @@ export class AuthController {
   @ApiOkResponse({ type: UserEntity })
   async verifyEmail(@Res({ passthrough: true }) res: Response, @Body() data: { token: string }): Promise<UserEntity> {
     // Decode the token
-    const { userId } = await this.verifyEmailTokensService.getToken(data.token);
+    const { userId } = await this.emailVerificationTokensService.getToken(data.token);
     // Update the user's emailVerified field
     const user = await this.usersService.updateUser(userId, { emailVerified: true });
     // Delete the token
-    this.verifyEmailTokensService.deleteToken(data.token);
+    this.emailVerificationTokensService.deleteToken(data.token);
     // Send the welcome email
     this.emailService.sendWelcomeEmail({ name: user.name.split(' ')[0], to: user.email });
     // Sign in the user
@@ -182,21 +186,21 @@ export class AuthController {
       // Get the user
       const user = await this.usersService.getUserByEmailWithExcludedFields(data.email);
       // Create a token
-      const token = await this.resetPasswordTokensService.createToken({ userId: user.id });
-      // Send reset password email
-      this.emailService.sendResetPasswordEmail({ name: user.name.split(' ')[0], to: user.email, token: token.value });
+      const token = await this.passwordResetTokensService.createToken({ userId: user.id });
+      // Send password reset email
+      this.emailService.sendPasswordResetEmail({ name: user.name.split(' ')[0], to: user.email, token: token.value });
     } catch (e) {
       // Ignore the error if the user doesn't exist
     }
   }
 
   /**
-   * Check if the reset password token is valid
+   * Check if the password reset token is valid
    */
-  @Post('check-reset-password-token')
+  @Post('check-password-reset-token')
   @ApiOkResponse({ type: null })
-  async checkResetPasswordToken(@Body() data: { token: string }): Promise<void> {
-    await this.resetPasswordTokensService.getToken(data.token);
+  async checkPasswordResetToken(@Body() data: { token: string }): Promise<void> {
+    await this.passwordResetTokensService.getToken(data.token);
   }
 
   /**
@@ -209,11 +213,11 @@ export class AuthController {
     @Body() data: { token: string; password: string },
   ): Promise<UserEntity> {
     // Decode the token
-    const { userId } = await this.resetPasswordTokensService.getToken(data.token);
+    const { userId } = await this.passwordResetTokensService.getToken(data.token);
     // Update the user's password
     const user = await this.usersService.updateUser(userId, { password: data.password });
     // Delete the token
-    this.resetPasswordTokensService.deleteToken(data.token);
+    this.passwordResetTokensService.deleteToken(data.token);
     // Sign in the user
     return await this.signIn(res, user);
   }

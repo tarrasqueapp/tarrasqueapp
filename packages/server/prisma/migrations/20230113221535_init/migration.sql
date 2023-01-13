@@ -35,23 +35,23 @@ CREATE TABLE "RefreshToken" (
 );
 
 -- CreateTable
-CREATE TABLE "VerifyEmailToken" (
+CREATE TABLE "EmailVerificationToken" (
     "id" TEXT NOT NULL,
     "value" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "VerifyEmailToken_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "EmailVerificationToken_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ResetPasswordToken" (
+CREATE TABLE "PasswordResetToken" (
     "id" TEXT NOT NULL,
     "value" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "ResetPasswordToken_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "PasswordResetToken_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -279,10 +279,10 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "RefreshToken_value_key" ON "RefreshToken"("value");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "VerifyEmailToken_value_key" ON "VerifyEmailToken"("value");
+CREATE UNIQUE INDEX "EmailVerificationToken_value_key" ON "EmailVerificationToken"("value");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ResetPasswordToken_value_key" ON "ResetPasswordToken"("value");
+CREATE UNIQUE INDEX "PasswordResetToken_value_key" ON "PasswordResetToken"("value");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Movement_playerCharacterId_key" ON "Movement"("playerCharacterId");

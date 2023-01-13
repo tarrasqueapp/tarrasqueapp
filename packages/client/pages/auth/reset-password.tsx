@@ -14,7 +14,7 @@ import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
-import { checkResetPasswordToken, useResetPassword } from '../../hooks/data/users/useResetPassword';
+import { checkPasswordResetToken, useResetPassword } from '../../hooks/data/users/useResetPassword';
 import { AppNavigation } from '../../lib/navigation';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Check the reset password token
   let valid = false;
   try {
-    await checkResetPasswordToken(context.query.token as string);
+    await checkPasswordResetToken(context.query.token as string);
     valid = true;
   } catch (err) {}
 

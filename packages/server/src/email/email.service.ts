@@ -6,9 +6,9 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 
 import { config } from '../config';
+import { SendEmailVerificationDto } from './dto/send-email-verification-email.dto';
 import { SendEmailDto } from './dto/send-email.dto';
-import { SendResetPasswordEmailDto } from './dto/send-reset-password-email.dto';
-import { SendVerifyEmailDto } from './dto/send-verify-email.dto';
+import { SendPasswordResetEmailDto } from './dto/send-password-reset-email.dto';
 import { SendWelcomeEmailDto } from './dto/send-welcome-email.dto';
 
 const transporter = nodemailer.createTransport({
@@ -31,7 +31,7 @@ export class EmailService {
    */
   async sendEmail(sendEmailDto: SendEmailDto) {
     const options = {
-      from: config.SMTP_FROM,
+      from: `Tarrasque App <${config.SMTP_FROM}>`,
       to: sendEmailDto.to,
       subject: sendEmailDto.subject,
       html: sendEmailDto.html,
@@ -48,12 +48,12 @@ export class EmailService {
   }
 
   /**
-   * Send a reset password email
-   * @param sendResetPasswordEmailDto - reset password email data
+   * Send a password reset email
+   * @param sendPasswordResetEmailDto - password reset email data
    * @returns sent email
    */
-  async sendResetPasswordEmail(sendResetPasswordEmailDto: SendResetPasswordEmailDto) {
-    this.logger.verbose(`📂 Sending reset password email to "${sendResetPasswordEmailDto.to}"`);
+  async sendPasswordResetEmail(sendPasswordResetEmailDto: SendPasswordResetEmailDto) {
+    this.logger.verbose(`📂 Sending password reset email to "${sendPasswordResetEmailDto.to}"`);
     // Get contents of reset-password.mjml
     const mjml = await fs.readFile(path.join('emails', 'reset-password.mjml'), 'utf8');
     // Compile mjml with handlebars
@@ -61,27 +61,27 @@ export class EmailService {
     // Compile mjml to html
     const { html } = mjml2html(
       template({
-        name: sendResetPasswordEmailDto.name,
-        resetPasswordUrl: `${config.HOST}/auth/reset-password?token=${sendResetPasswordEmailDto.token}`,
+        name: sendPasswordResetEmailDto.name,
+        resetPasswordUrl: `${config.HOST}/auth/reset-password?token=${sendPasswordResetEmailDto.token}`,
       }),
     );
     // Send email
     const email = await this.sendEmail({
-      to: sendResetPasswordEmailDto.to,
+      to: sendPasswordResetEmailDto.to,
       subject: 'Reset password',
       html,
     });
-    this.logger.verbose(`✅️ Sent reset password email to "${sendResetPasswordEmailDto.to}"`);
+    this.logger.verbose(`✅️ Sent password reset email to "${sendPasswordResetEmailDto.to}"`);
     return email;
   }
 
   /**
-   * Send a verify email
-   * @param sendVerifyEmailDto - verify email data
+   * Send an email verification email
+   * @param sendEmailVerificationDto - email verification email data
    * @returns sent email
    */
-  async sendVerifyEmail(sendVerifyEmailDto: SendVerifyEmailDto) {
-    this.logger.verbose(`📂 Sending verify email to "${sendVerifyEmailDto.to}"`);
+  async sendEmailVerificationEmail(sendEmailVerificationDto: SendEmailVerificationDto) {
+    this.logger.verbose(`📂 Sending email verification email to "${sendEmailVerificationDto.to}"`);
     // Get contents of verify-email.mjml
     const mjml = await fs.readFile(path.join('emails', 'verify-email.mjml'), 'utf8');
     // Compile mjml with handlebars
@@ -89,17 +89,17 @@ export class EmailService {
     // Compile mjml to html
     const { html } = mjml2html(
       template({
-        name: sendVerifyEmailDto.name,
-        verifyUrl: `${config.HOST}/auth/verify-email?token=${sendVerifyEmailDto.token}`,
+        name: sendEmailVerificationDto.name,
+        verifyUrl: `${config.HOST}/auth/verify-email?token=${sendEmailVerificationDto.token}`,
       }),
     );
     // Send email
     const email = await this.sendEmail({
-      to: sendVerifyEmailDto.to,
+      to: sendEmailVerificationDto.to,
       subject: 'Verify email',
       html,
     });
-    this.logger.verbose(`✅️ Sent verify email to "${sendVerifyEmailDto.to}"`);
+    this.logger.verbose(`✅️ Sent email verification email to "${sendEmailVerificationDto.to}"`);
     return email;
   }
 

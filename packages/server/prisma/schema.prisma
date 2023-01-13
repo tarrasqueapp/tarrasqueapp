@@ -58,7 +58,7 @@ model RefreshToken {
   userId    String
 }
 
-model VerifyEmailToken {
+model EmailVerificationToken {
   id        String   @id @default(cuid())
   value     String   @unique
   // DateTime
@@ -67,7 +67,7 @@ model VerifyEmailToken {
   userId    String
 }
 
-model ResetPasswordToken {
+model PasswordResetToken {
   id        String   @id @default(cuid())
   value     String   @unique
   // DateTime

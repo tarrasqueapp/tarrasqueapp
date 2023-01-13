@@ -3,9 +3,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { EmailService } from '../email/email.service';
+import { EmailVerificationTokensService } from '../generic-tokens/email-verification-tokens.service';
 import { GenericTokensService } from '../generic-tokens/generic-tokens.service';
-import { ResetPasswordTokensService } from '../generic-tokens/reset-password-tokens.service';
-import { VerifyEmailTokensService } from '../generic-tokens/verify-email-tokens.service';
+import { PasswordResetTokensService } from '../generic-tokens/password-reset-tokens.service';
 import { MediaService } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { UsersService } from '../users/users.service';
@@ -25,8 +25,8 @@ import { LocalStrategy } from './strategies/local.strategy';
     UsersService,
     MediaService,
     StorageService,
-    VerifyEmailTokensService,
-    ResetPasswordTokensService,
+    EmailVerificationTokensService,
+    PasswordResetTokensService,
     GenericTokensService,
     EmailService,
   ],
