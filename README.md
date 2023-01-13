@@ -1,4 +1,9 @@
-# Tarrasque App
+<div align="center">
+  <h1 align="center">
+    <a href="https://tarrasque.app"><img src="packages/client/public/images/logo.svg" width="150" /></a>
+    <p>Tarrasque App</p>
+  </h1>
+</div>
 
 Tarrasque App is a free and open-source virtual tabletop software for playing Dungeons & Dragons. It allows you to create and manage your own campaigns, maps, and characters, and provides a simple and intuitive interface for playing D&D online or in-person.
 

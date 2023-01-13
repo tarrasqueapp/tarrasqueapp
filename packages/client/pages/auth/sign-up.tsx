@@ -76,6 +76,7 @@ const SignUpPage: NextPage = () => {
     try {
       await signUp.mutateAsync(values);
       router.push(AppNavigation.Dashboard);
+      toast('Please check your inbox to verify your email', { icon: '📧' });
     } catch (error: any) {
       toast.error(error.message);
     }
