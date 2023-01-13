@@ -5,6 +5,7 @@ RUN apt-get update && apt-get -y install openssl jq
 WORKDIR /app
 
 COPY packages/server/package.json packages/server/yarn.lock ./
+COPY packages/server/emails emails
 COPY packages/server/prisma prisma
 
 RUN yarn install --pure-lockfile
@@ -30,6 +31,7 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 COPY packages/server/package.json packages/server/yarn.lock ./
+COPY packages/server/emails emails
 COPY packages/server/prisma prisma
 
 RUN yarn install --pure-lockfile --production
@@ -37,6 +39,7 @@ RUN yarn install --pure-lockfile --production
 COPY --from=builder --chown=node:node /app/dist ./dist
 COPY --from=builder --chown=node:node /app/src ./src
 COPY --from=builder --chown=node:node /app/prisma ./prisma
+COPY --from=builder --chown=node:node /app/emails ./emails
 
 RUN yarn prisma generate
 

@@ -68,8 +68,9 @@ export class SetupService {
   async createDatabase(): Promise<void> {
     this.logger.verbose(`📂 Creating database`);
     try {
-      // Run migrations
-      await execa('prisma', ['migrate', 'deploy']);
+      // Run migrations and log the output
+      const { stdout } = await execa('prisma', ['migrate', 'deploy']);
+      this.logger.debug(stdout);
       this.logger.debug('✅️ Database created');
     } catch (error) {
       this.logger.error(error.message);

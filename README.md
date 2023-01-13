@@ -1,4 +1,4 @@
-<h1  align="center" style="margin-bottom: 0;">
+<h1 align="center">
   <a href="https://tarrasque.app" target="_blank"><img src="packages/client/public/images/logo.svg" width="150" /></a>
   <p>Tarrasque App</p>
 </h1>

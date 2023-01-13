@@ -13,18 +13,16 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Delete, Edit, ExpandMore, MoreHoriz } from '@mui/icons-material';
+import { Delete, Edit, ExpandLess, ExpandMore, MoreHoriz, People } from '@mui/icons-material';
 import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
   Box,
+  Collapse,
   IconButton,
   ListItemIcon,
   ListItemText,
   MenuItem,
   MenuList,
+  Paper,
   Popover,
   Skeleton,
   Tooltip,
@@ -124,16 +122,12 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
   }
 
   return (
-    <Accordion
-      expanded={campaign ? (isDragging ? false : expanded) : true}
-      onChange={(event, expanded) => onToggle?.(expanded)}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
-      <AccordionSummary expandIcon={<ExpandMore />}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
+    <Paper sx={{ background: 'rgba(0, 0, 0, 0.4)' }} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Box
+        onClick={() => onToggle?.(!expanded)}
+        sx={{ display: 'flex', flexWrap: 'wrap', cursor: 'pointer', background: 'rgba(0, 0, 0, 0.1)', p: 2 }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: '1 0 auto' }}>
           <Typography variant="h3">
             {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 200)} />}
           </Typography>
@@ -144,58 +138,72 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
           </Typography>
         </Box>
 
-        <AccordionActions>
-          <Box sx={{ display: 'flex' }} onClick={(event) => event.stopPropagation()}>
-            <Tooltip title="Update">
-              <IconButton
-                onClick={() => {
-                  if (!campaign) return;
-                  store.campaigns.setSelectedCampaign(campaign);
-                  store.campaigns.setModal(CampaignModal.CreateUpdate);
-                }}
-              >
-                <Edit />
-              </IconButton>
-            </Tooltip>
+        <Box sx={{ display: 'flex' }} onClick={(event) => event.stopPropagation()}>
+          <Tooltip title="Update">
+            <IconButton
+              onClick={() => {
+                if (!campaign) return;
+                store.campaigns.setSelectedCampaign(campaign);
+                store.campaigns.setModal(CampaignModal.CreateUpdate);
+              }}
+            >
+              <Edit />
+            </IconButton>
+          </Tooltip>
 
-            <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
-              {(popupState) => (
-                <>
-                  <Tooltip title="More">
-                    <IconButton {...bindTrigger(popupState)}>
-                      <MoreHoriz />
-                    </IconButton>
-                  </Tooltip>
+          <Tooltip title="Members">
+            <IconButton
+              onClick={() => {
+                if (!campaign) return;
+                // store.campaigns.setSelectedCampaign(campaign);
+                // store.campaigns.setModal(CampaignModal.CreateUpdate);
+              }}
+            >
+              <People />
+            </IconButton>
+          </Tooltip>
 
-                  <Popover
-                    {...bindPopover(popupState)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                  >
-                    <MenuList>
-                      <MenuItem
-                        onClick={() => {
-                          if (!campaign) return;
-                          store.campaigns.setSelectedCampaign(campaign);
-                          store.campaigns.setModal(CampaignModal.Delete);
-                          popupState.close();
-                        }}
-                      >
-                        <ListItemIcon>
-                          <Delete />
-                        </ListItemIcon>
-                        <ListItemText>Delete</ListItemText>
-                      </MenuItem>
-                    </MenuList>
-                  </Popover>
-                </>
-              )}
-            </PopupState>
-          </Box>
-        </AccordionActions>
-      </AccordionSummary>
+          <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
+            {(popupState) => (
+              <>
+                <Tooltip title="More">
+                  <IconButton {...bindTrigger(popupState)}>
+                    <MoreHoriz />
+                  </IconButton>
+                </Tooltip>
 
-      <AccordionDetails>
+                <Popover
+                  {...bindPopover(popupState)}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                >
+                  <MenuList>
+                    <MenuItem
+                      onClick={() => {
+                        if (!campaign) return;
+                        store.campaigns.setSelectedCampaign(campaign);
+                        store.campaigns.setModal(CampaignModal.Delete);
+                        popupState.close();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Delete />
+                      </ListItemIcon>
+                      <ListItemText>Delete</ListItemText>
+                    </MenuItem>
+                  </MenuList>
+                </Popover>
+              </>
+            )}
+          </PopupState>
+
+          <Tooltip title={expanded ? 'Collapse' : 'Expand'}>
+            <IconButton onClick={() => onToggle?.(!expanded)}>{expanded ? <ExpandLess /> : <ExpandMore />}</IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+
+      <Collapse in={campaign ? (isDragging ? false : expanded) : true}>
         <Box
           sx={{
             display: 'flex',
@@ -235,7 +243,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
 
           <NewMap campaign={campaign || null} />
         </Box>
-      </AccordionDetails>
-    </Accordion>
+      </Collapse>
+    </Paper>
   );
 };
