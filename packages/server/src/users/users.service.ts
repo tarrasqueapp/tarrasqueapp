@@ -82,6 +82,27 @@ export class UsersService {
   }
 
   /**
+   * Get a user that matches the given email (without their password)
+   * @param email - The user's email
+   * @returns User
+   */
+  async getUserByEmail(email: string): Promise<UserEntity> {
+    this.logger.verbose(`📂 Getting user with email "${email}"`);
+    try {
+      // Get the user
+      const user = await this.prisma.user.findUniqueOrThrow({
+        where: { email },
+        select: USER_SAFE_FIELDS,
+      });
+      this.logger.debug(`✅️ Found user "${user.id}" with email "${email}"`);
+      return user;
+    } catch (error) {
+      this.logger.error(`🚨 User with email "${email}" not found`);
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
    * Get a user that matches the given id (without their password)
    * @param userId - The user's id
    * @returns User

@@ -16,9 +16,9 @@ CREATE TABLE "User" (
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "password" TEXT NOT NULL,
     "avatarId" TEXT,
+    "campaignOrder" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "campaignOrder" TEXT[] DEFAULT ARRAY[]::TEXT[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -42,6 +42,17 @@ CREATE TABLE "EmailVerificationToken" (
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "EmailVerificationToken_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "CampaignInviteToken" (
+    "id" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
+    "campaignId" TEXT NOT NULL,
+
+    CONSTRAINT "CampaignInviteToken_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -282,6 +293,9 @@ CREATE UNIQUE INDEX "RefreshToken_value_key" ON "RefreshToken"("value");
 CREATE UNIQUE INDEX "EmailVerificationToken_value_key" ON "EmailVerificationToken"("value");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "CampaignInviteToken_value_key" ON "CampaignInviteToken"("value");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "PasswordResetToken_value_key" ON "PasswordResetToken"("value");
 
 -- CreateIndex
@@ -352,6 +366,18 @@ ALTER TABLE "User" ADD CONSTRAINT "User_avatarId_fkey" FOREIGN KEY ("avatarId") 
 
 -- AddForeignKey
 ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EmailVerificationToken" ADD CONSTRAINT "EmailVerificationToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CampaignInviteToken" ADD CONSTRAINT "CampaignInviteToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CampaignInviteToken" ADD CONSTRAINT "CampaignInviteToken_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PasswordResetToken" ADD CONSTRAINT "PasswordResetToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
+import { CAMPAIGN_INVITE_TOKEN_SAFE_FIELDS } from '../generic-tokens/campaign-invite-tokens.service';
 import { USER_SAFE_FIELDS } from '../users/users.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
@@ -30,6 +31,7 @@ export class CampaignsService {
           playerCharacters: { include: { controlledBy: true, media: true } },
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
+          campaignInviteTokens: { select: CAMPAIGN_INVITE_TOKEN_SAFE_FIELDS },
         },
         orderBy: { createdAt: 'asc' },
       });
@@ -72,6 +74,7 @@ export class CampaignsService {
           playerCharacters: { include: { controlledBy: true, media: true } },
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
           createdBy: { select: USER_SAFE_FIELDS },
+          campaignInviteTokens: { select: CAMPAIGN_INVITE_TOKEN_SAFE_FIELDS },
         },
       });
       this.logger.debug(`✅️ Found campaign "${campaignId}"`);

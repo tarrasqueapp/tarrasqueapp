@@ -2,6 +2,7 @@ import { ValidateNested } from 'class-validator';
 
 import { NonPlayerCharacterBaseEntity } from '../../characters/entities/non-player-character-base.entity';
 import { PlayerCharacterBaseEntity } from '../../characters/entities/player-character-base.entity';
+import { CampaignInviteTokenEntity } from '../../generic-tokens/entities/campaign-invite-token.entity';
 import { MapBaseEntity } from '../../maps/entities/map-base.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { CampaignBaseEntity } from './campaign-base.entity';
@@ -26,4 +27,8 @@ export class CampaignEntity extends CampaignBaseEntity {
   // Created by
   @ValidateNested()
   createdBy: UserEntity;
+
+  // Invites
+  @ValidateNested({ each: true })
+  campaignInviteTokens: CampaignInviteTokenEntity[];
 }

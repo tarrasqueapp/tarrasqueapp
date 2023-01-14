@@ -184,7 +184,7 @@ export class AuthController {
   async forgotPassword(@Body() data: { email: string }): Promise<void> {
     try {
       // Get the user
-      const user = await this.usersService.getUserByEmailWithExcludedFields(data.email);
+      const user = await this.usersService.getUserByEmail(data.email);
       // Create a token
       const token = await this.passwordResetTokensService.createToken({ userId: user.id });
       // Send password reset email

@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
-import { AuthService } from '../auth/auth.service';
-import { CampaignsService } from '../campaigns/campaigns.service';
-import { MapsService } from '../maps/maps.service';
-import { UsersService } from '../users/users.service';
+import { UsersModule } from '../users/users.module';
 import { SetupController } from './setup.controller';
 import { SetupService } from './setup.service';
 
 @Module({
+  imports: [JwtModule.register({}), UsersModule],
   controllers: [SetupController],
-  providers: [SetupService, UsersService, CampaignsService, MapsService, AuthService],
-  imports: [JwtModule.register({})],
+  providers: [SetupService],
+  exports: [SetupService],
 })
 export class SetupModule {}

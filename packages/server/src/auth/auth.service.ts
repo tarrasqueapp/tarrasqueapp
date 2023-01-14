@@ -22,12 +22,12 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Logging in user "${email}"`);
     // Get the user
-    const userWithExcludedFields = await this.usersService.getUserByEmailWithExcludedFields(email);
+    const user = await this.usersService.getUserByEmailWithExcludedFields(email);
     // Throw an error if the password is wrong
-    await this.verifyPassword(userWithExcludedFields.password, password);
+    await this.verifyPassword(user.password, password);
     this.logger.debug(`✅️ Logged in user "${email}"`);
     // Return the user without the excluded fields
-    return await this.usersService.getUserById(userWithExcludedFields.id);
+    return await this.usersService.getUserById(user.id);
   }
 
   /**

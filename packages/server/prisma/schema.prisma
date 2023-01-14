@@ -14,37 +14,41 @@ model Setup {
 }
 
 model User {
-  id                            String               @id @default(cuid())
+  id                            String                   @id @default(cuid())
   name                          String
   displayName                   String
-  email                         String               @unique
-  emailVerified                 Boolean              @default(false)
+  email                         String                   @unique
+  emailVerified                 Boolean                  @default(false)
   password                      String
   // Avatar
-  avatar                        Media?               @relation("UserAvatar", fields: [avatarId], references: [id])
+  avatar                        Media?                   @relation("UserAvatar", fields: [avatarId], references: [id])
   avatarId                      String?
-  // Refresh Tokens
-  refreshTokens                 RefreshToken[]       @relation("UserRefreshTokens")
-  // DateTime
-  createdAt                     DateTime             @default(now())
-  updatedAt                     DateTime             @default(now()) @updatedAt
-  // Maps
-  maps                          Map[]                @relation("UserMaps")
-  // Tokens
-  tokens                        Token[]              @relation("UserTokens")
-  // Media
-  media                         Media[]              @relation("UserMedia")
-  // Campaigns
-  createdCampaigns              Campaign[]           @relation("UserCampaigns")
-  playerCampaigns               Campaign[]           @relation("CampaignPlayers")
-  // Player Characters
-  createdPlayerCharacters       PlayerCharacter[]    @relation("CreatedPlayerCharacters")
-  controlledPlayerCharacters    PlayerCharacter[]    @relation("ControlledPlayerCharacters")
-  // Non Player Characters
-  createdNonPlayerCharacters    NonPlayerCharacter[] @relation("CreatedNonPlayerCharacters")
-  controlledNonPlayerCharacters NonPlayerCharacter[] @relation("ControlledNonPlayerCharacters")
   // Order of user campaigns
-  campaignOrder                 String[]             @default([])
+  campaignOrder                 String[]                 @default([])
+  // DateTime
+  createdAt                     DateTime                 @default(now())
+  updatedAt                     DateTime                 @default(now()) @updatedAt
+  // Refresh Tokens
+  refreshTokens                 RefreshToken[]           @relation("UserRefreshTokens")
+  // Maps
+  maps                          Map[]                    @relation("UserMaps")
+  // Tokens
+  tokens                        Token[]                  @relation("UserTokens")
+  // Media
+  media                         Media[]                  @relation("UserMedia")
+  // Campaigns
+  createdCampaigns              Campaign[]               @relation("UserCampaigns")
+  playerCampaigns               Campaign[]               @relation("CampaignPlayers")
+  // Player Characters
+  createdPlayerCharacters       PlayerCharacter[]        @relation("CreatedPlayerCharacters")
+  controlledPlayerCharacters    PlayerCharacter[]        @relation("ControlledPlayerCharacters")
+  // Non Player Characters
+  createdNonPlayerCharacters    NonPlayerCharacter[]     @relation("CreatedNonPlayerCharacters")
+  controlledNonPlayerCharacters NonPlayerCharacter[]     @relation("ControlledNonPlayerCharacters")
+  // Generic tokens
+  emailVerificationTokens       EmailVerificationToken[] @relation("UserEmailVerificationTokens")
+  campaignInviteTokens          CampaignInviteToken[]    @relation("UserCampaignInviteTokens")
+  passwordResetTokens           PasswordResetToken[]     @relation("UserPasswordResetTokens")
 }
 
 model RefreshToken {
@@ -64,7 +68,21 @@ model EmailVerificationToken {
   // DateTime
   createdAt DateTime @default(now())
   // User
+  user      User     @relation("UserEmailVerificationTokens", fields: [userId], references: [id])
   userId    String
+}
+
+model CampaignInviteToken {
+  id         String   @id @default(cuid())
+  value      String   @unique
+  // DateTime
+  createdAt  DateTime @default(now())
+  // User
+  user       User?    @relation("UserCampaignInviteTokens", fields: [userId], references: [id])
+  userId     String?
+  // Campaign
+  campaign   Campaign @relation("CampaignInviteTokens", fields: [campaignId], references: [id])
+  campaignId String
 }
 
 model PasswordResetToken {
@@ -73,26 +91,29 @@ model PasswordResetToken {
   // DateTime
   createdAt DateTime @default(now())
   // User
+  user      User     @relation("UserPasswordResetTokens", fields: [userId], references: [id])
   userId    String
 }
 
 model Campaign {
-  id                  String               @id @default(cuid())
-  name                String
+  id                   String                @id @default(cuid())
+  name                 String
   // DateTime
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @default(now()) @updatedAt
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @default(now()) @updatedAt
   // Maps
-  maps                Map[]                @relation("CampaignMaps")
+  maps                 Map[]                 @relation("CampaignMaps")
   // Players
-  players             User[]               @relation("CampaignPlayers")
+  players              User[]                @relation("CampaignPlayers")
   // Player Characters
-  playerCharacters    PlayerCharacter[]    @relation("CampaignPlayerCharacters")
+  playerCharacters     PlayerCharacter[]     @relation("CampaignPlayerCharacters")
   // Non Player Characters
-  nonPlayerCharacters NonPlayerCharacter[] @relation("CampaignNonPlayerCharacters")
+  nonPlayerCharacters  NonPlayerCharacter[]  @relation("CampaignNonPlayerCharacters")
   // Created by
-  createdBy           User                 @relation("UserCampaigns", fields: [createdById], references: [id])
-  createdById         String
+  createdBy            User                  @relation("UserCampaigns", fields: [createdById], references: [id])
+  createdById          String
+  // Invites
+  campaignInviteTokens CampaignInviteToken[] @relation("CampaignInviteTokens")
 }
 
 model Map {
