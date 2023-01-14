@@ -8,12 +8,15 @@
 
 Tarrasque App is a free and open-source virtual tabletop software for playing Dungeons & Dragons. It allows you to create and manage your own campaigns, maps, and characters, and provides a simple and intuitive interface for playing D&D online or in-person.
 
+> **Note**
+> Tarrasque App is the official open-source successor to [Tarrasque.io](https://tarrasque.io) and is currently in pre-alpha. You can read the announcement regarding the new version [here](https://announcekit.app/tarrasque.io/changelog/tarrasque.io-is-going-open-source-3IZhu).
+
 ## Requirements
 
-- [Node.js](https://nodejs.org/en/) (v14.17.0 or higher)
-- [Yarn](https://yarnpkg.com/) (v1.22.10 or higher)
-- [Docker](https://docs.docker.com/get-docker/) (v20.10.7 or higher)
-- [Docker Compose](https://docs.docker.com/compose/) (v1.29.2 or higher)
+- [Node.js](https://nodejs.org/en/) (v18.12.1 or higher)
+- [Yarn](https://yarnpkg.com/) (v1.22.19 or higher)
+- [Docker](https://docs.docker.com/get-docker/) (v20.10.21 or higher)
+- [Docker Compose](https://docs.docker.com/compose/) (v2.13.0 or higher)
 
 ## Installation
 
