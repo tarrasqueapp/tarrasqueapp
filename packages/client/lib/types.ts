@@ -1,9 +1,7 @@
 export enum SetupStep {
   DATABASE = 1,
   USER = 2,
-  CAMPAIGN = 3,
-  MAP = 4,
-  COMPLETED = 5,
+  COMPLETED = 3,
 }
 
 export interface SetupInterface {
@@ -19,14 +17,24 @@ export interface UserInterface {
   // Avatar
   avatar?: MediaInterface;
   avatarId?: string;
+  // Order of campaigns
+  campaignOrder: string[];
   // DateTime
   createdAt: string;
   updatedAt: string;
-  // Campaigns
-  createdCampaigns: CampaignInterface[];
-  playerCampaigns: CampaignInterface[];
-  // Order of campaigns
-  campaignOrder: string[];
+}
+
+export interface CampaignInviteInterface {
+  id: string;
+  email: string;
+  // DateTime
+  createdAt: string;
+  // User
+  user?: UserInterface;
+  userId?: string;
+  // Campaign
+  campaignId: string;
+  campaign?: CampaignInterface;
 }
 
 export interface CampaignInterface {
@@ -35,13 +43,31 @@ export interface CampaignInterface {
   // DateTime
   createdAt: string;
   updatedAt: string;
-  // Maps
-  maps: MapInterface[];
-  // Players
-  players: UserInterface[];
+  // Members
+  members: CampaignMemberInterface[];
   // Created by
   createdBy: UserInterface;
   createdById: string;
+  // Invites
+  invites: CampaignInviteInterface[];
+}
+
+export enum CampaignMemberRole {
+  GAME_MASTER = 'GAME_MASTER',
+  PLAYER = 'PLAYER',
+}
+
+export interface CampaignMemberInterface {
+  id: string;
+  role: CampaignMemberRole;
+  // User
+  user: UserInterface;
+  userId: string;
+  // Campaign
+  campaignId: string;
+  // DateTime
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MapInterface {

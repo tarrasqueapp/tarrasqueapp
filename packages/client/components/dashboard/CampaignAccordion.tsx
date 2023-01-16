@@ -33,7 +33,8 @@ import { useEffect, useState } from 'react';
 
 import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
-import { CampaignInterface } from '../../lib/types';
+import { useGetUser } from '../../hooks/data/users/useGetUser';
+import { CampaignInterface, CampaignMemberRole } from '../../lib/types';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
@@ -47,6 +48,7 @@ export interface CampaignAccordionProps {
 }
 
 export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, onToggle, campaign }) => {
+  const { data: user } = useGetUser();
   const { data: maps } = useGetCampaignMaps(campaign?.id);
   const reorderMaps = useReorderMaps();
 
@@ -74,6 +76,10 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
     transition,
     ...(isDragging && { opacity: 0.5 }),
   };
+
+  const isGameMaster =
+    campaign?.createdById === user?.id ||
+    campaign?.members.some((member) => member.id === user?.id && member.role === CampaignMemberRole.GAME_MASTER);
 
   /**
    * Set active map id for drag and drop
@@ -122,10 +128,18 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
   }
 
   return (
-    <Paper sx={{ background: 'rgba(0, 0, 0, 0.4)' }} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <Paper sx={{ background: 'rgba(0, 0, 0, 0.4)', overflow: 'hidden' }} ref={setNodeRef} style={style} {...attributes}>
       <Box
         onClick={() => onToggle?.(!expanded)}
-        sx={{ display: 'flex', flexWrap: 'wrap', cursor: 'pointer', background: 'rgba(0, 0, 0, 0.1)', p: 2 }}
+        {...listeners}
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          cursor: 'pointer',
+          background: 'rgba(0, 0, 0, 0.1)',
+          p: 2,
+          overflow: 'hidden',
+        }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: '1 0 auto' }}>
           <Typography variant="h3">
@@ -140,36 +154,44 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
 
         <Box sx={{ display: 'flex' }} onClick={(event) => event.stopPropagation()}>
           <Tooltip title="Update">
-            <IconButton
-              onClick={() => {
-                if (!campaign) return;
-                store.campaigns.setSelectedCampaign(campaign);
-                store.campaigns.setModal(CampaignModal.CreateUpdate);
-              }}
-            >
-              <Edit />
-            </IconButton>
+            <span>
+              <IconButton
+                disabled={!isGameMaster}
+                onClick={() => {
+                  if (!campaign) return;
+                  store.campaigns.setSelectedCampaignId(campaign.id);
+                  store.campaigns.setModal(CampaignModal.CreateUpdate);
+                }}
+              >
+                <Edit />
+              </IconButton>
+            </span>
           </Tooltip>
 
           <Tooltip title="Members">
-            <IconButton
-              onClick={() => {
-                if (!campaign) return;
-                // store.campaigns.setSelectedCampaign(campaign);
-                // store.campaigns.setModal(CampaignModal.CreateUpdate);
-              }}
-            >
-              <People />
-            </IconButton>
+            <span>
+              <IconButton
+                disabled={!isGameMaster}
+                onClick={() => {
+                  if (!campaign) return;
+                  store.campaigns.setSelectedCampaignId(campaign.id);
+                  store.campaigns.setModal(CampaignModal.Members);
+                }}
+              >
+                <People />
+              </IconButton>
+            </span>
           </Tooltip>
 
           <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
             {(popupState) => (
               <>
                 <Tooltip title="More">
-                  <IconButton {...bindTrigger(popupState)}>
-                    <MoreHoriz />
-                  </IconButton>
+                  <span>
+                    <IconButton {...bindTrigger(popupState)} disabled={!isGameMaster}>
+                      <MoreHoriz />
+                    </IconButton>
+                  </span>
                 </Tooltip>
 
                 <Popover
@@ -181,7 +203,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
                     <MenuItem
                       onClick={() => {
                         if (!campaign) return;
-                        store.campaigns.setSelectedCampaign(campaign);
+                        store.campaigns.setSelectedCampaignId(campaign.id);
                         store.campaigns.setModal(CampaignModal.Delete);
                         popupState.close();
                       }}
@@ -241,7 +263,7 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
             </DragOverlay>
           </DndContext>
 
-          <NewMap campaign={campaign || null} />
+          {isGameMaster && <NewMap campaign={campaign || null} />}
         </Box>
       </Collapse>
     </Paper>

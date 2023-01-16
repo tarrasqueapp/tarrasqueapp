@@ -8,7 +8,7 @@
   "scripts": {
     "client": "cd packages/client && yarn",
     "server": "cd packages/server && yarn",
-    "lint": "eslint .",
+    "lint": "yarn client lint && yarn server lint",
     "ncu": "ncu"
   },
   "devDependencies": {
@@ -17,7 +17,7 @@
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.48.1",
     "dotenv": "^16.0.3",
-    "eslint": "^8.31.0",
+    "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.0",

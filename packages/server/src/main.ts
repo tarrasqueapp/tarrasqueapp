@@ -7,6 +7,7 @@ import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
 import { AppModule } from './app/app.module';
 import { config } from './config';
+import { serializeUser } from './users/users.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -33,6 +34,18 @@ async function bootstrap() {
   // Enable shutdown hook
   const prismaService: PrismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app);
+  // Prisma middleware to hide password before sending to client
+  prismaService.$use(async (params, next) => {
+    const result = await next(params);
+    if (params.model === 'User') {
+      if (['findUnique', 'findUniqueOrThrow', 'update'].includes(params.action)) {
+        return serializeUser(result);
+      } else if (['findMany'].includes(params.action)) {
+        return result.map(serializeUser);
+      }
+    }
+    return result;
+  });
 
   // Handle Prisma client exceptions
   const { httpAdapter } = app.get(HttpAdapterHost);

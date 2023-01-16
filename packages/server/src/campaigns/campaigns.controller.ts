@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CampaignMemberRole } from '@prisma/client';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { MapBaseEntity } from '../maps/entities/map-base.entity';
@@ -17,7 +18,7 @@ import { ReorderMapsDto } from './dto/reorder-maps.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
-import { CampaignRole, CampaignRoleGuard } from './guards/campaign-role.guard';
+import { CampaignRoleGuard } from './guards/campaign-role.guard';
 
 @ApiTags('campaigns')
 @Controller('campaigns')
@@ -72,7 +73,7 @@ export class CampaignsController {
   /**
    * Update a campaign
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Put(':campaignId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
@@ -86,7 +87,7 @@ export class CampaignsController {
   /**
    * Delete a campaign
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':campaignId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
@@ -142,7 +143,7 @@ export class CampaignsController {
   /**
    * Reorder maps
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post(':campaignId/maps/reorder')
   @ApiBearerAuth()
   @ApiOkResponse({ type: [MapBaseEntity] })

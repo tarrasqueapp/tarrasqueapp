@@ -20,15 +20,15 @@ export class EmailVerificationTokensService {
    * @returns The token
    */
   async getToken(value: string): Promise<EmailVerificationToken> {
-    this.logger.verbose(`📂 Getting verify email token by value "${value}"`);
+    this.logger.verbose(`📂 Getting email verification token by value "${value}"`);
     try {
       // Ensure the token exists
       const token = await this.prisma.emailVerificationToken.findUniqueOrThrow({ where: { value } });
-      this.logger.debug(`✅️ Found verify email token by value "${value}"`);
+      this.logger.debug(`✅️ Found email verification token by value "${value}"`);
       // Return the  token
       return token;
     } catch (error) {
-      this.logger.error(`🚨 Failed to get verify email token by value "${value}"`);
+      this.logger.error(`🚨 Failed to get email verification token by value "${value}"`);
       throw new NotFoundException(error.message);
     }
   }
@@ -39,7 +39,7 @@ export class EmailVerificationTokensService {
    * @returns The created token
    */
   async createToken(data: EmailVerificationDto): Promise<EmailVerificationToken> {
-    this.logger.verbose(`📂 Creating verify email token for user "${data.userId}"`);
+    this.logger.verbose(`📂 Creating email verification token for user "${data.userId}"`);
     try {
       // Delete any existing tokens for the user
       await this.prisma.emailVerificationToken.deleteMany({ where: { userId: data.userId } });
@@ -50,10 +50,10 @@ export class EmailVerificationTokensService {
           userId: data.userId,
         },
       });
-      this.logger.debug(`✅️ Created verify email token for user "${data.userId}"`);
+      this.logger.debug(`✅️ Created email verification token for user "${data.userId}"`);
       return token;
     } catch (error) {
-      this.logger.error(`🚨 Failed to create verify email token for user "${data.userId}"`);
+      this.logger.error(`🚨 Failed to create email verification token for user "${data.userId}"`);
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -64,14 +64,14 @@ export class EmailVerificationTokensService {
    * @returns Deleted token
    */
   async deleteToken(value: string): Promise<EmailVerificationToken> {
-    this.logger.verbose(`📂 Deleting verify email token by value "${value}"`);
+    this.logger.verbose(`📂 Deleting email verification token by value "${value}"`);
     try {
       // Delete the token
       const token = await this.prisma.emailVerificationToken.delete({ where: { value } });
-      this.logger.debug(`✅️ Deleted verify email token by value "${value}"`);
+      this.logger.debug(`✅️ Deleted email verification token by value "${value}"`);
       return token;
     } catch (error) {
-      this.logger.error(`🚨 Failed to delete verify email token by value "${value}"`);
+      this.logger.error(`🚨 Failed to delete email verification token by value "${value}"`);
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -81,13 +81,13 @@ export class EmailVerificationTokensService {
    */
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async removeOldTokens(): Promise<void> {
-    this.logger.verbose(`📂 Removing old verify email tokens`);
+    this.logger.verbose(`📂 Removing old email verification tokens`);
     // Convert the expiration time to milliseconds
     const expirationTime = toMillisecondsFromString(config.JWT_GENERIC_TOKEN_EXPIRATION_TIME);
     // Get the expiry date by subtracting the expiration time from the current date
     const expiryDate = new Date(Date.now() - expirationTime);
-    // Delete the verify email tokens
+    // Delete the email verification tokens
     await this.prisma.emailVerificationToken.deleteMany({ where: { createdAt: { lte: expiryDate } } });
-    this.logger.debug(`✅️ Removed old verify email tokens`);
+    this.logger.debug(`✅️ Removed old email verification tokens`);
   }
 }

@@ -38,7 +38,7 @@
             align="center"
             font-size="17px"
             font-weight="bold"
-            href="{{verifyUrl}}"
+            href="{{verifyEmailUrl}}"
             width="300px"
             border-radius="90px"
           >

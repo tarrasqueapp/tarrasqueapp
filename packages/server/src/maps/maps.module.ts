@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 
-import { CampaignsService } from '../campaigns/campaigns.service';
-import { MediaService } from '../media/media.service';
-import { StorageService } from '../storage/storage.service';
+import { CampaignsModule } from '../campaigns/campaigns.module';
+import { MediaModule } from '../media/media.module';
+import { StorageModule } from '../storage/storage.module';
 import { MapsController } from './maps.controller';
 import { MapsGateway } from './maps.gateway';
 import { MapsService } from './maps.service';
 
 @Module({
+  imports: [forwardRef(() => CampaignsModule), MediaModule, StorageModule],
   controllers: [MapsController],
-  providers: [CampaignsService, MediaService, StorageService, MapsService, MapsGateway],
+  providers: [MapsService, MapsGateway],
+  exports: [MapsService],
 })
 export class MapsModule {}

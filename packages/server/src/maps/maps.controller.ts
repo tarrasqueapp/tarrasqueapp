@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CampaignMemberRole } from '@prisma/client';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CampaignRole, CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
+import { CampaignRoleGuard } from '../campaigns/guards/campaign-role.guard';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
@@ -35,7 +36,7 @@ export class MapsController {
   /**
    * Create a new map
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post()
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
@@ -46,7 +47,7 @@ export class MapsController {
   /**
    * Duplicate a map
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post(':mapId/duplicate')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
@@ -57,7 +58,7 @@ export class MapsController {
   /**
    * Update a map
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Put(':mapId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })
@@ -109,7 +110,7 @@ export class MapsController {
   /**
    * Delete a map
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':mapId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: MapBaseEntity })

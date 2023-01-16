@@ -6,6 +6,8 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 
 import { config } from '../config';
+import { SendCampaignInviteExistingUserEmailDto } from './dto/send-campaign-invite-existing-user-email.dto';
+import { SendCampaignInviteNewUserEmailDto } from './dto/send-campaign-invite-new-user-email.dto';
 import { SendEmailVerificationDto } from './dto/send-email-verification-email.dto';
 import { SendEmailDto } from './dto/send-email.dto';
 import { SendPasswordResetEmailDto } from './dto/send-password-reset-email.dto';
@@ -90,7 +92,7 @@ export class EmailService {
     const { html } = mjml2html(
       template({
         name: sendEmailVerificationDto.name,
-        verifyUrl: `${config.HOST}/auth/verify-email?token=${sendEmailVerificationDto.token}`,
+        verifyEmailUrl: `${config.HOST}/auth/verify-email?token=${sendEmailVerificationDto.token}`,
       }),
     );
     // Send email
@@ -128,6 +130,65 @@ export class EmailService {
       html,
     });
     this.logger.verbose(`✅️ Sent welcome email to "${sendWelcomeEmailDto.to}"`);
+    return email;
+  }
+
+  /**
+   * Send a campaign invite email for a new user
+   * @param dto - campaign invite email data
+   * @returns sent email
+   */
+  async sendCampaignInviteNewUserEmail(dto: SendCampaignInviteNewUserEmailDto) {
+    this.logger.verbose(`📂 Sending campaign invite email to new user "${dto.to}"`);
+    // Get contents of campaign-invite-new-user.mjml
+    const mjml = await fs.readFile(path.join('emails', 'campaign-invite-new-user.mjml'), 'utf8');
+    // Compile mjml with handlebars
+    const template = compile(mjml);
+    // Compile mjml to html
+    const { html } = mjml2html(
+      template({
+        hostName: dto.hostName,
+        campaignName: dto.campaignName,
+        signUpUrl: `${config.HOST}/auth/sign-up?email=${dto.to}`,
+      }),
+    );
+    // Send email
+    const email = await this.sendEmail({
+      to: dto.to,
+      subject: `${dto.hostName} invited you to ${dto.campaignName} on Tarrasque App`,
+      html,
+    });
+    this.logger.verbose(`✅️ Sent campaign invite email to new user "${dto.to}"`);
+    return email;
+  }
+
+  /**
+   * Send a campaign invite email for an existing user
+   * @param dto - campaign invite email data
+   * @returns sent email
+   */
+  async sendCampaignInviteExistingUserEmail(dto: SendCampaignInviteExistingUserEmailDto) {
+    this.logger.verbose(`📂 Sending campaign invite email to existing user "${dto.to}"`);
+    // Get contents of campaign-invite-existing-user.mjml
+    const mjml = await fs.readFile(path.join('emails', 'campaign-invite-existing-user.mjml'), 'utf8');
+    // Compile mjml with handlebars
+    const template = compile(mjml);
+    // Compile mjml to html
+    const { html } = mjml2html(
+      template({
+        hostName: dto.hostName,
+        inviteeName: dto.inviteeName,
+        campaignName: dto.campaignName,
+        joinCampaignUrl: `${config.HOST}/dashboard?notifications`,
+      }),
+    );
+    // Send email
+    const email = await this.sendEmail({
+      to: dto.to,
+      subject: `${dto.hostName} invited you to ${dto.campaignName} on Tarrasque App`,
+      html,
+    });
+    this.logger.verbose(`✅️ Sent campaign invite email to existing user "${dto.to}"`);
     return email;
   }
 }

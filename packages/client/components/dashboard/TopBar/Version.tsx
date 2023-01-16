@@ -1,9 +1,9 @@
 import { Badge, Tooltip, Typography, badgeClasses } from '@mui/material';
 
-import { useGetLiveVersion } from '../../hooks/useGetLiveVersion';
-import { config } from '../../lib/config';
-import { ExternalNavigation } from '../../lib/navigation';
-import { ExternalLink } from '../common/ExternalLink';
+import { useGetLiveVersion } from '../../../hooks/useGetLiveVersion';
+import { config } from '../../../lib/config';
+import { ExternalNavigation } from '../../../lib/navigation';
+import { ExternalLink } from '../../common/ExternalLink';
 
 export const Version: React.FC = () => {
   const { data: liveVersion } = useGetLiveVersion();
@@ -19,7 +19,7 @@ export const Version: React.FC = () => {
         sx={{ [`& .${badgeClasses.badge}`]: { right: -6, top: 6 } }}
       >
         <ExternalLink href={ExternalNavigation.Changelog} color="text.secondary">
-          <Typography align="center" variant="h5" sx={{ fontSize: '11px !important' }}>
+          <Typography variant="h5" sx={{ fontSize: '11px !important' }}>
             v{config.VERSION}
           </Typography>
         </ExternalLink>

@@ -8,7 +8,7 @@ export const NewCampaign: React.FC = () => {
   return (
     <Button
       onClick={() => {
-        store.campaigns.setSelectedCampaign(null);
+        store.campaigns.setSelectedCampaignId(null);
         store.campaigns.setModal(CampaignModal.CreateUpdate);
       }}
       sx={{

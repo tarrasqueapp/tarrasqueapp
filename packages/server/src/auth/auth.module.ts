@@ -2,34 +2,32 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { EmailService } from '../email/email.service';
-import { EmailVerificationTokensService } from '../generic-tokens/email-verification-tokens.service';
-import { GenericTokensService } from '../generic-tokens/generic-tokens.service';
-import { PasswordResetTokensService } from '../generic-tokens/password-reset-tokens.service';
-import { MediaService } from '../media/media.service';
-import { StorageService } from '../storage/storage.service';
-import { UsersService } from '../users/users.service';
+import { CampaignsModule } from '../campaigns/campaigns.module';
+import { EmailModule } from '../email/email.module';
+import { GenericTokensModule } from '../generic-tokens/generic-tokens.module';
+import { MediaModule } from '../media/media.module';
+import { StorageModule } from '../storage/storage.module';
+import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { UserNotificationsController } from './user-notifications.controller';
 
 @Module({
-  imports: [PassportModule, JwtModule.register({})],
-  providers: [
-    AuthService,
-    LocalStrategy,
-    JwtStrategy,
-    JwtRefreshStrategy,
-    UsersService,
-    MediaService,
-    StorageService,
-    EmailVerificationTokensService,
-    PasswordResetTokensService,
-    GenericTokensService,
-    EmailService,
+  imports: [
+    PassportModule,
+    JwtModule.register({}),
+    UsersModule,
+    MediaModule,
+    StorageModule,
+    GenericTokensModule,
+    EmailModule,
+    CampaignsModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, UserNotificationsController],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

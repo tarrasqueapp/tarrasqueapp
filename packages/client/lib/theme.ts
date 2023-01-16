@@ -124,6 +124,7 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           [`& .${filledInputClasses.root}`]: {
+            overflow: 'hidden',
             '&::before, &::after': {
               border: 'none !important',
             },
@@ -156,6 +157,14 @@ export let theme = createTheme({
       },
     },
     // Lists
+    MuiListSubheader: {
+      styleOverrides: {
+        root: {
+          background: 'transparent',
+          fontWeight: 600,
+        },
+      },
+    },
     MuiListItemButton: {
       styleOverrides: {
         root: {
