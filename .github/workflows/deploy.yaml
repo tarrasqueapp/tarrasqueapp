@@ -1,8 +1,6 @@
 name: 'Deploy'
 
 on:
-  pull_request:
-    types: [opened]
   issue_comment:
     types: [created]
 
@@ -13,13 +11,14 @@ jobs:
     if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
-      - name: Checkout master
-        uses: actions/checkout@v3
+      - uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
 
-      - name: Checkout Pull Request
-        run: hub pr checkout ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: success()
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -69,13 +68,14 @@ jobs:
     if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
-      - name: Checkout master
-        uses: actions/checkout@v3
+      - uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
 
-      - name: Checkout Pull Request
-        run: hub pr checkout ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: success()
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -165,13 +165,14 @@ jobs:
     if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
-      - name: Checkout master
-        uses: actions/checkout@v3
+      - uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
 
-      - name: Checkout Pull Request
-        run: hub pr checkout ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: success()
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
