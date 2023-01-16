@@ -8,9 +8,17 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    if: contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: '/deploy'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
 
@@ -65,9 +73,17 @@ jobs:
   deploy-server:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    if: contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: '/deploy'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
 
@@ -162,9 +178,17 @@ jobs:
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    if: contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: '/deploy'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
 
