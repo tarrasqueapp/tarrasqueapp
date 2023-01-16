@@ -327,17 +327,17 @@ model Targeting {
 // about how they get computed
 // we wouldn't reallllly care, unless the character sheets are dynamic
 model Dnd5eStat {
-  id         String   @id @default(cuid())
-  name       String
-  shortName  String
-  score      Int      @default(10)
-  // modifier is a computed prop from score, it does not need to be stored here
-  save       Int
+  id                 String   @id @default(cuid())
+  name               String
+  shortName          String
+  score              Int      @default(10)
+  modifier           Int      @default(0)
+  save               Int
   // bonus or penalty, for tracking stat changes or non-score-derived modifier
-  adjustment Int      @default(0)
+  modifierAdjustment Int      @default(0)
   // attached to Dnd5eNpc
-  dnd5eNpc   Dnd5eNpc @relation("Dnd5eNpcStats", fields: [dnd5eNpcId], references: [id])
-  dnd5eNpcId String   @unique
+  dnd5eNpc           Dnd5eNpc @relation("Dnd5eNpcStats", fields: [dnd5eNpcId], references: [id])
+  dnd5eNpcId         String   @unique
   // or a Dnd5ePlayerCharacter
 }
 
