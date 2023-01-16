@@ -10,15 +10,9 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/deploy'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+    if: github.event.issue.pull_request && github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
+    steps:
       - name: Checkout master
         uses: actions/checkout@v3
 
@@ -67,15 +61,9 @@ jobs:
   deploy-server:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/deploy'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+    if: github.event.issue.pull_request && github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
+    steps:
       - name: Checkout master
         uses: actions/checkout@v3
 
@@ -164,15 +152,9 @@ jobs:
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/deploy'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+    if: github.event.issue.pull_request && github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
+    steps:
       - name: Checkout master
         uses: actions/checkout@v3
 
