@@ -537,6 +537,10 @@ model Dnd5eNpc {
   // mythicActions  DndMythicActions[]
   // Lair Actions?
   // lairActions  DndLairAction[]
+  // Spellcasting is a huge pain
+  // but probably worth it
+  // spellcasting needs to track traditional slots and innate spellcasting, I'll circle back to the
+  // datastructs for that in a bit
   // where does combat tracking info go? in here?
   // both of these should reset when the npc's turn starts in combat
   reactionUsed         Boolean                @default(false)
