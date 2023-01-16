@@ -17,6 +17,10 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 - [Yarn](https://yarnpkg.com/) (v1.22.19 or higher)
 - [Docker](https://docs.docker.com/get-docker/) (v20.10.21 or higher)
 - [Docker Compose](https://docs.docker.com/compose/) (v2.13.0 or higher)
+- Supported Platforms: MacOS, Linux, Windows with WSL 2
+
+### WSL Requirements
+Install Node and Yarn in your WSL 2 distribution, then install Docker Desktop and enable the [WSL 2 Backend](https://docs.docker.com/desktop/windows/wsl/) for your WSL 2 distribution.
 
 ## Installation
 
@@ -31,9 +35,9 @@ Then, edit the `.env` file to set the necessary environment variables.
 
 To start the development server, run:
 
-    tarrasque docker up
+    tarrasque docker up --db
 
-This will start the server at `http://localhost`.
+This will start the server and the local database service at `http://localhost`.
 
 To start the production server, run:
 

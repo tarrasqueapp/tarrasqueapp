@@ -1,4 +1,4 @@
-#!/usr/bin/env npx ts-node --esm
+#!/usr/bin/env -S npx ts-node --esm
 import { argv, cd, echo, fs, globby } from 'zx';
 
 import { appPath, commandsPath, pluginsPath } from './helpers.mjs';
