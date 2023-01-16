@@ -1,0 +1,115 @@
+replicaCount: 1
+
+image:
+  repository:
+  pullPolicy: Always
+  tag: sandbox
+
+imagePullSecrets:
+  - name: tarrasque
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  # Key to store randomized chart id to force redeployment
+  randomChartId: ""
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  hosts:
+    - host: sandbox.tarrasque.app
+      paths:
+        - path: /api(/|$)(.*)
+          pathType: Prefix
+        - path: /socket.io(/|$)(.*)
+          pathType: Prefix
+  tls:
+    - secretName: tls-secret-server
+      hosts:
+        - sandbox.tarrasque.app
+
+env:
+  - name: VERSION
+    value: "1.0.0"
+  - name: HOST
+    value: "https://sandbox.tarrasque.app"
+  - name: NODE_ENV
+    value: "production"
+  - name: VERBOSE
+    value: "true"
+  - name: COOKIE_SECRET
+    value: ""
+  - name: JWT_ACCESS_TOKEN_SECRET
+    value: ""
+  - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
+    value: "5m"
+  - name: JWT_REFRESH_TOKEN_SECRET
+    value: ""
+  - name: JWT_REFRESH_TOKEN_EXPIRATION_TIME
+    value: "7d"
+  - name: JWT_GENERIC_TOKEN_SECRET
+    value: ""
+  - name: JWT_GENERIC_TOKEN_EXPIRATION_TIME
+    value: "1d"
+  - name: SENTRY_ENABLED
+    value: "true"
+  - name: SENTRY_DSN
+    value: ""
+  - name: STORAGE_PROVIDER
+    value: "s3"
+  - name: AWS_ACCESS_KEY_ID
+    value: ""
+  - name: AWS_SECRET_ACCESS_KEY
+    value: ""
+  - name: AWS_REGION
+    value: ""
+  - name: AWS_S3_ENDPOINT
+    value: ""
+  - name: AWS_S3_BUCKET
+    value: ""
+  - name: AWS_S3_URL
+    value: ""
+  - name: DATABASE_URL
+    value: ""
+  - name: SMTP_HOST
+    value: ""
+  - name: SMTP_PORT
+    value: "587"
+  - name: SMTP_USERNAME
+    value: ""
+  - name: SMTP_PASSWORD
+    value: ""
+  - name: SMTP_FROM
+    value: ""
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
