@@ -10,7 +10,7 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
-    if: contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association)
+    if: github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'
 
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
@@ -69,7 +69,7 @@ jobs:
   deploy-server:
     runs-on: ubuntu-latest
 
-    if: contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association)
+    if: github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'
 
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
@@ -168,7 +168,7 @@ jobs:
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    if: contains('OWNER,MEMBER,COLLABORATOR', github.event.comment.author_association)
+    if: github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'
 
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
