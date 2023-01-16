@@ -1,6 +1,8 @@
 name: 'Deploy'
 
 on:
+  pull_request:
+    types: [opened]
   issue_comment:
     types: [created]
 
@@ -15,19 +17,21 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'
+    if: |
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/deploy' &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/deploy'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
+
+      - name: Set commit status as pending
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
+          context: Deploy
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -77,22 +81,32 @@ jobs:
       - name: Verify deployment
         run: kubectl rollout status deployment/client --namespace sandbox-client --timeout 2m
 
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+
   deploy-server:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'
+    if: |
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/deploy' &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/deploy'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
+
+      - name: Set commit status as pending
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
+          context: Deploy
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -182,22 +196,32 @@ jobs:
       - name: Verify deployment
         run: kubectl rollout status deployment/server --namespace sandbox-server --timeout 2m
 
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'COLLABORATOR'
+    if: |
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/deploy' &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/deploy'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
+
+      - name: Set commit status as pending
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
+          context: Deploy
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -227,3 +251,11 @@ jobs:
 
       - name: Verify deployment
         run: kubectl rollout status deployment/tusd --namespace sandbox-tusd --timeout 2m
+
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
