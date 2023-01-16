@@ -10,8 +10,6 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
-    if: github.event.comment.author_association == 'OWNER'
-
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
@@ -68,8 +66,6 @@ jobs:
 
   deploy-server:
     runs-on: ubuntu-latest
-
-    if: github.event.comment.author_association == 'OWNER'
 
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
@@ -167,8 +163,6 @@ jobs:
 
   deploy-tusd:
     runs-on: ubuntu-latest
-
-    if: github.event.comment.author_association == 'OWNER'
 
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
