@@ -5,6 +5,13 @@ on:
     types: [created]
 
 jobs:
+  # Print comment author to console
+  print-comment-author:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo ${{ github.event.comment.author_association }}
+
   deploy-client:
     runs-on: ubuntu-latest
 
