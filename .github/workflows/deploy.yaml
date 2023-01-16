@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo ${{ github.event.comment }}
+      - run: echo ${{ toJSON(github.event.comment) }}
 
   deploy-client:
     runs-on: ubuntu-latest
