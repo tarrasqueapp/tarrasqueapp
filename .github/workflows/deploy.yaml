@@ -10,7 +10,7 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
-    if: github.event.issue.pull_request && github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
       - name: Checkout master
@@ -61,7 +61,7 @@ jobs:
   deploy-server:
     runs-on: ubuntu-latest
 
-    if: github.event.issue.pull_request && github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
       - name: Checkout master
@@ -152,7 +152,7 @@ jobs:
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    if: github.event.issue.pull_request && github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    if: github.event.comment.body == '/deploy' && contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
 
     steps:
       - name: Checkout master
