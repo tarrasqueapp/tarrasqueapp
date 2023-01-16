@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Put, Req, Res, UnauthorizedException, UseG
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
+import { CampaignInvitesService } from '../campaigns/campaign-invites.service';
+import { CampaignsService } from '../campaigns/campaigns.service';
 import { EmailService } from '../email/email.service';
 import { EmailVerificationTokensService } from '../generic-tokens/email-verification-tokens.service';
 import { PasswordResetTokensService } from '../generic-tokens/password-reset-tokens.service';
@@ -27,7 +29,9 @@ export class AuthController {
     private readonly storageService: StorageService,
     private readonly emailVerificationTokensService: EmailVerificationTokensService,
     private readonly passwordResetTokensService: PasswordResetTokensService,
+    private readonly campaignInvitesService: CampaignInvitesService,
     private readonly emailService: EmailService,
+    private readonly campaignsService: CampaignsService,
   ) {}
 
   /**
@@ -111,11 +115,9 @@ export class AuthController {
     // Generate the verify email token
     const token = await this.emailVerificationTokensService.createToken({ userId: user.id });
     // Send the email
-    await this.emailService.sendEmailVerificationEmail({
-      name: user.name.split(' ')[0],
-      to: user.email,
-      token: token.value,
-    });
+    await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.value });
+    // Assign existing campaign invites to the new user
+    await this.campaignInvitesService.assignInvitesToUser(user.email, user.id);
   }
 
   /**
@@ -171,7 +173,9 @@ export class AuthController {
     // Delete the token
     this.emailVerificationTokensService.deleteToken(data.token);
     // Send the welcome email
-    this.emailService.sendWelcomeEmail({ name: user.name.split(' ')[0], to: user.email });
+    this.emailService.sendWelcomeEmail({ name: user.displayName, to: user.email });
+    // Create a campaign for the user
+    this.campaignsService.createCampaign({ name: `${user.displayName}'s Campaign` }, user.id);
     // Sign in the user
     return await this.signIn(res, user);
   }
@@ -188,7 +192,7 @@ export class AuthController {
       // Create a token
       const token = await this.passwordResetTokensService.createToken({ userId: user.id });
       // Send password reset email
-      this.emailService.sendPasswordResetEmail({ name: user.name.split(' ')[0], to: user.email, token: token.value });
+      this.emailService.sendPasswordResetEmail({ name: user.displayName, to: user.email, token: token.value });
     } catch (e) {
       // Ignore the error if the user doesn't exist
     }

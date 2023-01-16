@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { CampaignsModule } from '../campaigns/campaigns.module';
 import { EmailModule } from '../email/email.module';
 import { GenericTokensModule } from '../generic-tokens/generic-tokens.module';
 import { MediaModule } from '../media/media.module';
@@ -12,6 +13,7 @@ import { AuthService } from './auth.service';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { UserNotificationsController } from './user-notifications.controller';
 
 @Module({
   imports: [
@@ -22,8 +24,9 @@ import { LocalStrategy } from './strategies/local.strategy';
     StorageModule,
     GenericTokensModule,
     EmailModule,
+    CampaignsModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, UserNotificationsController],
   providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
   exports: [AuthService],
 })

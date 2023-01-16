@@ -15,7 +15,8 @@ export const NewMap: React.FC<NewMapProps> = ({ campaign }) => {
     <Button
       disabled={!campaign}
       onClick={() => {
-        store.campaigns.setSelectedCampaign(campaign);
+        if (!campaign) return;
+        store.campaigns.setSelectedCampaignId(campaign.id);
         store.maps.setModal(MapModal.CreateUpdate);
       }}
       sx={{

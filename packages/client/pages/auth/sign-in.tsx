@@ -17,7 +17,6 @@ import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { AppNavigation } from '../../lib/navigation';
-import { SetupStep } from '../../lib/types';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -28,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!setup) return { props: {} };
 
   // Redirect to the setup page if the setup is not completed
-  if (setup.step < SetupStep.USER) return { props: {}, redirect: { destination: AppNavigation.Setup } };
+  if (!setup.completed) return { props: {}, redirect: { destination: AppNavigation.Setup } };
 
   // Redirect to the dashboard page if the user is logged in
   try {

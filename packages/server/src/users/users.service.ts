@@ -7,18 +7,27 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Prisma } from '@prisma/client';
+import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
 import { config } from '../config';
-import { excludeFields, toMillisecondsFromString } from '../helpers';
+import { toMillisecondsFromString } from '../helpers';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
 import { UserEntity } from './entities/user.entity';
 
-export const USER_SAFE_FIELDS = excludeFields({ ...Prisma.UserScalarFieldEnum, avatar: 'avatar' }, ['password']);
+export function serializeUser(user: User) {
+  return Object.assign(user, {
+    // Hide password before sending to client
+    toJSON: () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...rest } = user;
+      return rest;
+    },
+  });
+}
 
 @Injectable()
 export class UsersService {
@@ -34,7 +43,7 @@ export class UsersService {
     this.logger.verbose(`📂 Getting users`);
     try {
       // Get the users
-      const users = await this.prisma.user.findMany({ select: USER_SAFE_FIELDS });
+      const users = await this.prisma.user.findMany({ include: { avatar: true } });
       this.logger.debug(`✅️ Found ${users.length} users`);
       return users;
     } catch (error) {
@@ -69,10 +78,7 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUniqueOrThrow({
-        where: { id: userId },
-        select: USER_SAFE_FIELDS,
-      });
+      const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId }, include: { avatar: true } });
       this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
     } catch (error) {
@@ -90,10 +96,7 @@ export class UsersService {
     this.logger.verbose(`📂 Getting user with email "${email}"`);
     try {
       // Get the user
-      const user = await this.prisma.user.findUniqueOrThrow({
-        where: { email },
-        select: USER_SAFE_FIELDS,
-      });
+      const user = await this.prisma.user.findUniqueOrThrow({ where: { email }, include: { avatar: true } });
       this.logger.debug(`✅️ Found user "${user.id}" with email "${email}"`);
       return user;
     } catch (error) {
@@ -157,7 +160,7 @@ export class UsersService {
       // Create the user
       const user = await this.prisma.user.create({
         data: { ...data, displayName: data.name.split(' ')[0], password: hashedPassword },
-        select: USER_SAFE_FIELDS,
+        include: { avatar: true },
       });
       this.logger.debug(`✅️ Created user "${data.email}"`);
       return user;
@@ -187,7 +190,7 @@ export class UsersService {
           emailVerified: data.emailVerified,
           ...(data.password && { password: await argon2.hash(data.password) }),
         },
-        select: USER_SAFE_FIELDS,
+        include: { avatar: true },
       });
       this.logger.debug(`✅️ Updated user "${userId}"`);
       return user;
@@ -206,7 +209,7 @@ export class UsersService {
     this.logger.verbose(`📂 Deleting user "${userId}"`);
     try {
       // Delete the user
-      const user = await this.prisma.user.delete({ where: { id: userId }, select: USER_SAFE_FIELDS });
+      const user = await this.prisma.user.delete({ where: { id: userId }, include: { avatar: true } });
       this.logger.debug(`✅️ Deleted user "${userId}"`);
       return user;
     } catch (error) {

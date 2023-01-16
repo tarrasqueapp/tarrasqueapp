@@ -1,14 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 
-import { CampaignInterface } from '../lib/types';
-
 export enum CampaignModal {
   CreateUpdate = 'create-update',
+  Members = 'members',
   Delete = 'delete',
 }
 
 class CampaignsStore {
-  selectedCampaign = null as unknown as CampaignInterface | null;
+  selectedCampaignId = null as unknown as string | null;
   modal = null as unknown as CampaignModal | null;
 
   constructor() {
@@ -17,10 +16,10 @@ class CampaignsStore {
 
   /**
    * Set the selected campaign to edit or remove
-   * @param campaign - The campaign to edit or remove
+   * @param campaignId - The campaign to edit or remove
    */
-  setSelectedCampaign(campaign: CampaignInterface | null) {
-    this.selectedCampaign = campaign;
+  setSelectedCampaignId(campaignId: string | null) {
+    this.selectedCampaignId = campaignId;
   }
 
   /**

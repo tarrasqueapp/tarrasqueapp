@@ -1,12 +1,11 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Container } from '@mui/material';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 
 import { Center } from '../components/common/Center';
+import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
 import { DashboardModals } from '../components/dashboard/DashboardModals';
-import { Main } from '../components/dashboard/Main';
-import { Sidebar } from '../components/dashboard/Sidebar';
-import { TopBar } from '../components/dashboard/TopBar';
+import { TopBar } from '../components/dashboard/TopBar/TopBar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 import { checkRefreshToken } from '../hooks/data/users/useGetRefreshToken';
 import { useGetUser } from '../hooks/data/users/useGetUser';
@@ -50,14 +49,25 @@ const DashboardPage: NextPage = () => {
         <title>Dashboard · Tarrasque App</title>
       </Head>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', background: Gradient.Linear }}>
+      <Box
+        component="main"
+        sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', background: Gradient.Linear }}
+      >
         <TopBar />
 
-        <Box sx={{ display: 'flex', flex: '1 0 auto' }}>
-          <Sidebar />
-
-          <Main />
-        </Box>
+        <Container
+          maxWidth="lg"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+            flex: '1 0 auto',
+            transition: 'padding 0.3s ease',
+            p: { xs: 1, sm: 2, md: 3 },
+          }}
+        >
+          <CampaignAccordions />
+        </Container>
       </Box>
 
       <DashboardModals />

@@ -16,7 +16,7 @@ export const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       {Boolean(isFetching || isMutating) && (
         <Tooltip title="Saving...">
-          <CircularProgress size={16} disableShrink sx={{ position: 'absolute', top: 4, right: 4 }} />
+          <CircularProgress size={16} disableShrink sx={{ position: 'absolute', bottom: 4, right: 4 }} />
         </Tooltip>
       )}
     </>

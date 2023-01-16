@@ -2,19 +2,15 @@ import { ValidateNested } from 'class-validator';
 
 import { NonPlayerCharacterBaseEntity } from '../../characters/entities/non-player-character-base.entity';
 import { PlayerCharacterBaseEntity } from '../../characters/entities/player-character-base.entity';
-import { CampaignInviteTokenEntity } from '../../generic-tokens/entities/campaign-invite-token.entity';
-import { MapBaseEntity } from '../../maps/entities/map-base.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { CampaignBaseEntity } from './campaign-base.entity';
+import { CampaignInviteEntity } from './campaign-invite.entity';
+import { CampaignMemberEntity } from './campaign-member.entity';
 
 export class CampaignEntity extends CampaignBaseEntity {
-  // Maps
+  // Members
   @ValidateNested({ each: true })
-  maps: MapBaseEntity[];
-
-  // Players
-  @ValidateNested({ each: true })
-  players: UserEntity[];
+  members: CampaignMemberEntity[];
 
   // Player Characters
   @ValidateNested({ each: true })
@@ -30,5 +26,5 @@ export class CampaignEntity extends CampaignBaseEntity {
 
   // Invites
   @ValidateNested({ each: true })
-  campaignInviteTokens: CampaignInviteTokenEntity[];
+  invites: CampaignInviteEntity[];
 }

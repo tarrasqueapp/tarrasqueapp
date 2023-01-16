@@ -1,6 +1,9 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class CampaignInviteDto {
+export class CreateCampaignInviteDto {
+  @IsString()
+  email: string;
+
   @IsOptional()
   @IsString()
   userId?: string;

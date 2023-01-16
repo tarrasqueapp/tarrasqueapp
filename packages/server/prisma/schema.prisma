@@ -37,8 +37,8 @@ model User {
   // Media
   media                         Media[]                  @relation("UserMedia")
   // Campaigns
-  createdCampaigns              Campaign[]               @relation("UserCampaigns")
-  playerCampaigns               Campaign[]               @relation("CampaignPlayers")
+  campaignsCreated              Campaign[]               @relation("UserCampaigns")
+  campaignsMember               CampaignMember[]         @relation("UserCampaignsMember")
   // Player Characters
   createdPlayerCharacters       PlayerCharacter[]        @relation("CreatedPlayerCharacters")
   controlledPlayerCharacters    PlayerCharacter[]        @relation("ControlledPlayerCharacters")
@@ -47,8 +47,8 @@ model User {
   controlledNonPlayerCharacters NonPlayerCharacter[]     @relation("ControlledNonPlayerCharacters")
   // Generic tokens
   emailVerificationTokens       EmailVerificationToken[] @relation("UserEmailVerificationTokens")
-  campaignInviteTokens          CampaignInviteToken[]    @relation("UserCampaignInviteTokens")
   passwordResetTokens           PasswordResetToken[]     @relation("UserPasswordResetTokens")
+  campaignInvites               CampaignInvite[]         @relation("UserCampaignInvites")
 }
 
 model RefreshToken {
@@ -72,19 +72,6 @@ model EmailVerificationToken {
   userId    String
 }
 
-model CampaignInviteToken {
-  id         String   @id @default(cuid())
-  value      String   @unique
-  // DateTime
-  createdAt  DateTime @default(now())
-  // User
-  user       User?    @relation("UserCampaignInviteTokens", fields: [userId], references: [id])
-  userId     String?
-  // Campaign
-  campaign   Campaign @relation("CampaignInviteTokens", fields: [campaignId], references: [id])
-  campaignId String
-}
-
 model PasswordResetToken {
   id        String   @id @default(cuid())
   value     String   @unique
@@ -95,25 +82,58 @@ model PasswordResetToken {
   userId    String
 }
 
-model Campaign {
-  id                   String                @id @default(cuid())
-  name                 String
+model CampaignInvite {
+  id         String   @id @default(cuid())
+  email      String
+  value      String   @unique
   // DateTime
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @default(now()) @updatedAt
+  createdAt  DateTime @default(now())
+  // User
+  user       User?    @relation("UserCampaignInvites", fields: [userId], references: [id])
+  userId     String?
+  // Campaign
+  campaign   Campaign @relation("CampaignInvites", fields: [campaignId], references: [id])
+  campaignId String
+}
+
+model Campaign {
+  id                  String               @id @default(cuid())
+  name                String
+  // DateTime
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
   // Maps
-  maps                 Map[]                 @relation("CampaignMaps")
-  // Players
-  players              User[]                @relation("CampaignPlayers")
+  maps                Map[]                @relation("CampaignMaps")
+  // Members
+  members             CampaignMember[]     @relation("CampaignMembers")
   // Player Characters
-  playerCharacters     PlayerCharacter[]     @relation("CampaignPlayerCharacters")
+  playerCharacters    PlayerCharacter[]    @relation("CampaignPlayerCharacters")
   // Non Player Characters
-  nonPlayerCharacters  NonPlayerCharacter[]  @relation("CampaignNonPlayerCharacters")
+  nonPlayerCharacters NonPlayerCharacter[] @relation("CampaignNonPlayerCharacters")
   // Created by
-  createdBy            User                  @relation("UserCampaigns", fields: [createdById], references: [id])
-  createdById          String
+  createdBy           User                 @relation("UserCampaigns", fields: [createdById], references: [id])
+  createdById         String
   // Invites
-  campaignInviteTokens CampaignInviteToken[] @relation("CampaignInviteTokens")
+  invites             CampaignInvite[]     @relation("CampaignInvites")
+}
+
+enum CampaignMemberRole {
+  GAME_MASTER
+  PLAYER
+}
+
+model CampaignMember {
+  id         String             @id @default(cuid())
+  role       CampaignMemberRole @default(PLAYER)
+  // User
+  user       User               @relation("UserCampaignsMember", fields: [userId], references: [id])
+  userId     String
+  // Campaign
+  campaign   Campaign           @relation("CampaignMembers", fields: [campaignId], references: [id])
+  campaignId String
+  // DateTime
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @default(now()) @updatedAt
 }
 
 model Map {

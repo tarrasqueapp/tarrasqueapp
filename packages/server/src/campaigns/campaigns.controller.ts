@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CampaignMemberRole } from '@prisma/client';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CampaignInviteTokensService } from '../generic-tokens/campaign-invite-tokens.service';
 import { MapBaseEntity } from '../maps/entities/map-base.entity';
 import { MapEntity } from '../maps/entities/map.entity';
 import { MapsService } from '../maps/maps.service';
@@ -10,17 +10,15 @@ import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/me
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
-import { InviteMemberDto } from './dto/invite-member.dto';
 import { ReorderCampaignsDto } from './dto/reorder-campaigns.dto';
 import { ReorderMapsDto } from './dto/reorder-maps.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
-import { CampaignRole, CampaignRoleGuard } from './guards/campaign-role.guard';
+import { CampaignRoleGuard } from './guards/campaign-role.guard';
 
 @ApiTags('campaigns')
 @Controller('campaigns')
@@ -30,8 +28,6 @@ export class CampaignsController {
     private readonly mapsService: MapsService,
     private readonly mediaService: MediaService,
     private readonly storageService: StorageService,
-    private readonly campaignInviteTokensService: CampaignInviteTokensService,
-    private readonly usersService: UsersService,
   ) {}
 
   /**
@@ -77,7 +73,7 @@ export class CampaignsController {
   /**
    * Update a campaign
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Put(':campaignId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
@@ -91,7 +87,7 @@ export class CampaignsController {
   /**
    * Delete a campaign
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':campaignId')
   @ApiBearerAuth()
   @ApiOkResponse({ type: CampaignBaseEntity })
@@ -147,7 +143,7 @@ export class CampaignsController {
   /**
    * Reorder maps
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
+  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post(':campaignId/maps/reorder')
   @ApiBearerAuth()
   @ApiOkResponse({ type: [MapBaseEntity] })
@@ -156,29 +152,5 @@ export class CampaignsController {
     @Body() { mapIds }: ReorderMapsDto,
   ): Promise<MapBaseEntity[]> {
     return this.mapsService.reorderMaps(campaignId, mapIds);
-  }
-
-  /**
-   * Invite a user to a campaign
-   */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignRole.OWNER))
-  @Post(':campaignId/invite')
-  @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
-  async inviteMember(
-    @Param() { campaignId }: ConnectCampaignDto,
-    @Body() { email }: InviteMemberDto,
-  ): Promise<CampaignBaseEntity> {
-    try {
-      // Check if the invited user already has an account
-      const user = await this.usersService.getUserByEmail(email);
-      // Create a token for the invited user
-      await this.campaignInviteTokensService.createToken({ userId: user.id, campaignId });
-    } catch (e) {
-      // Create a token for the invited user
-      await this.campaignInviteTokensService.createToken({ campaignId });
-    }
-
-    return this.campaignsService.getCampaign(campaignId);
   }
 }

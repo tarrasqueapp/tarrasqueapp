@@ -3,7 +3,6 @@ import { LoadingButton } from '@mui/lab';
 import { Box } from '@mui/material';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
@@ -43,8 +42,7 @@ export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
    */
   async function handleSubmitForm(values: Schema) {
     await signUp.mutateAsync(values);
-    await updateSetup.mutateAsync({ step: SetupStep.CAMPAIGN });
-    toast('Please check your inbox to verify your email', { icon: '📧' });
+    await updateSetup.mutateAsync({ step: SetupStep.COMPLETED, completed: true });
     onSubmit();
   }
 
@@ -59,7 +57,13 @@ export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
           <ControlledTextField name="password" label="Password" type="password" sx={{ my: 1 }} />
         </Box>
 
-        <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit" sx={{ mt: 2 }}>
+        <LoadingButton
+          loading={isSubmitting}
+          disabled={!isValid}
+          variant="contained"
+          type="submit"
+          sx={{ mt: 2, mb: 1 }}
+        >
           Continue
         </LoadingButton>
       </form>

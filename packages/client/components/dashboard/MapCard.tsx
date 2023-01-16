@@ -23,8 +23,9 @@ import NextLink from 'next/link';
 import { useState } from 'react';
 
 import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
+import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { AppNavigation } from '../../lib/navigation';
-import { CampaignInterface, MapInterface } from '../../lib/types';
+import { CampaignInterface, CampaignMemberRole, MapInterface } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 
@@ -34,15 +35,11 @@ interface MapCardProps {
 }
 
 export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
+  const { data: user } = useGetUser();
   const duplicateMap = useDuplicateMap();
 
   const [duplicating, setDuplicating] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: map?.id || '' });
-
-  const width = 250;
-  const height = 200;
-
-  const thumbnailUrl = map?.media.find((media) => media.id === map.selectedMediaId)?.thumbnailUrl;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -50,8 +47,23 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
     ...(isDragging && { opacity: 0.5 }),
   };
 
+  const isGameMaster =
+    campaign?.createdById === user?.id ||
+    campaign?.members.some((member) => member.id === user?.id && member.role === CampaignMemberRole.GAME_MASTER);
+
+  const width = 250;
+  const height = 200;
+
+  const thumbnailUrl = map?.media.find((media) => media.id === map.selectedMediaId)?.thumbnailUrl;
+
   return (
-    <Card sx={{ position: 'relative', width, height }} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <Card
+      sx={{ position: 'relative', width, height }}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...(isGameMaster && listeners)}
+    >
       {map ? (
         <>
           <NextLink
@@ -96,9 +108,11 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
               {(popupState) => (
                 <>
                   <Tooltip title="More">
-                    <IconButton {...bindTrigger(popupState)}>
-                      <MoreHoriz />
-                    </IconButton>
+                    <span>
+                      <IconButton {...bindTrigger(popupState)} disabled={!isGameMaster}>
+                        <MoreHoriz />
+                      </IconButton>
+                    </span>
                   </Tooltip>
 
                   <Popover
@@ -110,8 +124,8 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
                       <MenuItem
                         onClick={() => {
                           if (!map || !campaign) return;
-                          store.campaigns.setSelectedCampaign(campaign);
-                          store.maps.setSelectedMap(map);
+                          store.campaigns.setSelectedCampaignId(campaign.id);
+                          store.maps.setSelectedMapId(map.id);
                           store.maps.setModal(MapModal.CreateUpdate);
                           popupState.close();
                         }}
@@ -141,8 +155,8 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
                       <MenuItem
                         onClick={() => {
                           if (!map || !campaign) return;
-                          store.campaigns.setSelectedCampaign(campaign);
-                          store.maps.setSelectedMap(map);
+                          store.campaigns.setSelectedCampaignId(campaign.id);
+                          store.maps.setSelectedMapId(map.id);
                           store.maps.setModal(MapModal.Delete);
                           popupState.close();
                         }}

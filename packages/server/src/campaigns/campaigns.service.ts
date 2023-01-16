@@ -1,8 +1,7 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
-import { CAMPAIGN_INVITE_TOKEN_SAFE_FIELDS } from '../generic-tokens/campaign-invite-tokens.service';
-import { USER_SAFE_FIELDS } from '../users/users.service';
+import { CAMPAIGN_INVITE_SAFE_FIELDS } from './campaign-invites.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignBaseEntity } from './entities/campaign-base.entity';
@@ -24,14 +23,13 @@ export class CampaignsService {
     try {
       // User must be the creator of the campaign or a player
       const campaigns = await this.prisma.campaign.findMany({
-        where: { OR: [{ createdById: userId }, { players: { some: { id: userId } } }] },
+        where: { OR: [{ createdById: userId }, { members: { some: { userId } } }] },
         include: {
-          maps: { include: { media: true }, orderBy: { order: 'asc' } },
-          players: { select: USER_SAFE_FIELDS },
+          members: { include: { user: { include: { avatar: true } } } },
           playerCharacters: { include: { controlledBy: true, media: true } },
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
-          createdBy: { select: USER_SAFE_FIELDS },
-          campaignInviteTokens: { select: CAMPAIGN_INVITE_TOKEN_SAFE_FIELDS },
+          createdBy: { include: { avatar: true } },
+          invites: { select: CAMPAIGN_INVITE_SAFE_FIELDS },
         },
         orderBy: { createdAt: 'asc' },
       });
@@ -69,12 +67,11 @@ export class CampaignsService {
       const campaign = await this.prisma.campaign.findUniqueOrThrow({
         where: { id: campaignId },
         include: {
-          maps: { include: { media: true }, orderBy: { order: 'asc' } },
-          players: { select: USER_SAFE_FIELDS },
+          members: { include: { user: { include: { avatar: true } } } },
           playerCharacters: { include: { controlledBy: true, media: true } },
           nonPlayerCharacters: { include: { controlledBy: true, media: true } },
-          createdBy: { select: USER_SAFE_FIELDS },
-          campaignInviteTokens: { select: CAMPAIGN_INVITE_TOKEN_SAFE_FIELDS },
+          createdBy: { include: { avatar: true } },
+          invites: { select: CAMPAIGN_INVITE_SAFE_FIELDS },
         },
       });
       this.logger.debug(`✅️ Found campaign "${campaignId}"`);
@@ -140,7 +137,7 @@ export class CampaignsService {
         where: { id: campaignId },
         data: {
           name: data.name,
-          players: { connect: data.players },
+          members: { connect: data.members },
         },
       });
       this.logger.debug(`✅️ Updated campaign "${campaignId}"`);

@@ -2,44 +2,29 @@ import { Box, CircularProgress, Step, StepContent, StepLabel, Stepper, Typograph
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useGetSetup } from '../../hooks/data/setup/useGetSetup';
-import { useResetSetup } from '../../hooks/data/setup/useResetSetup';
-import { useGetRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { AppNavigation } from '../../lib/navigation';
-import { SetupStep } from '../../lib/types';
-import { CreateCampaign } from './CreateCampaign';
 import { CreateDatabase } from './CreateDatabase';
-import { CreateMap } from './CreateMap';
 import { CreateUser } from './CreateUser';
 
 export const Setup: React.FC = () => {
   const { data, error, isLoading } = useGetSetup();
-  const { data: campaigns } = useGetUserCampaigns();
-  const { data: refreshTokenData, isLoading: isLoadingRefreshToken } = useGetRefreshToken();
-  const resetSetup = useResetSetup();
 
   const [activeStep, setActiveStep] = useState(0);
-  const [isResetting, setIsResetting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (!data) return;
     // Redirect to the sign in page if the setup is already completed
     if (data.completed) {
-      router.push(AppNavigation.SignIn);
+      router.push(AppNavigation.VerifyEmail);
     }
     // Set active step depending on setup progress
     setActiveStep(data.step - 1);
-
-    // Redirect to the sign in page if the user has been created but the user is not logged in
-    if (data.step > SetupStep.USER && !refreshTokenData) {
-      router.push(AppNavigation.SignIn);
-    }
   }, [data]);
 
   // Show progress bar while loading
-  if (isLoading || data?.completed || isLoadingRefreshToken) {
+  if (isLoading || data?.completed) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
         <CircularProgress disableShrink />
@@ -64,16 +49,6 @@ export const Setup: React.FC = () => {
     setActiveStep(activeStep + 1);
   }
 
-  /**
-   * Reset the setup and go to the first step
-   */
-  async function handleReset() {
-    setIsResetting(true);
-    await resetSetup.mutateAsync();
-    setActiveStep(1);
-    setIsResetting(false);
-  }
-
   // Setup wizard steps
   const steps = [
     {
@@ -83,21 +58,6 @@ export const Setup: React.FC = () => {
     {
       label: 'Create a user',
       content: <CreateUser onSubmit={handleNext} />,
-    },
-    {
-      label: 'Create a campaign',
-      content: <CreateCampaign onSubmit={handleNext} onReset={handleReset} isResetting={isResetting} />,
-    },
-    {
-      label: 'Create a map',
-      content: (
-        <CreateMap
-          campaignId={campaigns?.[0]?.id}
-          onSubmit={handleNext}
-          onReset={handleReset}
-          isResetting={isResetting}
-        />
-      ),
     },
   ];
 

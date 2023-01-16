@@ -35,8 +35,8 @@ import { ControlledMediaUploader } from '../form/MediaUploader/ControlledMediaUp
 interface CreateUpdateMapModalProps {
   open: boolean;
   onClose: () => void;
-  map: MapInterface | null;
-  campaign: CampaignInterface | null;
+  map: MapInterface | undefined;
+  campaign: CampaignInterface | undefined;
 }
 
 export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observer(
@@ -58,7 +58,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
       .object({
         name: ValidateUtils.Name,
         campaignId: yup.string().when('campaign', {
-          is: (campaign: CampaignInterface | null) => Boolean(campaign),
+          is: (campaign: CampaignInterface | undefined) => Boolean(campaign),
           then: yup.string().required(),
         }),
         media: yup
