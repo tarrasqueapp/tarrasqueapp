@@ -1,14 +1,10 @@
 import { CanActivate, ExecutionContext, Inject, Logger, Type, mixin } from '@nestjs/common';
+import { CampaignMemberRole } from '@prisma/client';
 
 import { MapsService } from '../../maps/maps.service';
 import { CampaignsService } from '../campaigns.service';
 
-export enum CampaignRole {
-  OWNER = 'owner',
-  PLAYER = 'player',
-}
-
-export const CampaignRoleGuard = (campaignRole: CampaignRole): Type<CanActivate> => {
+export const CampaignRoleGuard = (campaignRole: CampaignMemberRole): Type<CanActivate> => {
   class CampaignRoleGuardMixin implements CanActivate {
     private logger: Logger = new Logger(CampaignRoleGuardMixin.name);
 
@@ -35,14 +31,18 @@ export const CampaignRoleGuard = (campaignRole: CampaignRole): Type<CanActivate>
       const campaign = await this.campaignsService.getCampaign(campaignId);
       if (!campaign) return false;
 
-      const isOwner = campaign.createdById === user.id;
-      const isPlayer = campaign.players.some((player) => player.id === user.id);
+      const isGameMaster =
+        campaign.createdById === user.id ||
+        campaign.members.some((member) => member.userId === user.id && member.role === CampaignMemberRole.GAME_MASTER);
+      const isPlayer = campaign.members.some(
+        (member) => member.userId === user.id && member.role === CampaignMemberRole.PLAYER,
+      );
 
       switch (campaignRole) {
-        case CampaignRole.OWNER:
-          return isOwner;
-        case CampaignRole.PLAYER:
-          return isPlayer || isOwner;
+        case CampaignMemberRole.GAME_MASTER:
+          return isGameMaster;
+        case CampaignMemberRole.PLAYER:
+          return isPlayer || isGameMaster;
         default:
           return false;
       }

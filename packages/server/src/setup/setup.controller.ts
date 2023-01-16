@@ -1,22 +1,14 @@
-import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
-import { PrismaService } from 'nestjs-prisma';
 
-import { UsersService } from '../users/users.service';
 import { SetupDto } from './dto/setup.dto';
 import { SetupGuard } from './guards/setup.guard';
-import { SetupStep } from './setup-step.enum';
 import { SetupService } from './setup.service';
 
 @ApiTags('setup')
 @Controller('setup')
 export class SetupController {
-  constructor(
-    private prisma: PrismaService,
-    private readonly setupService: SetupService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly setupService: SetupService) {}
 
   /**
    * Get the setup progress
@@ -43,41 +35,5 @@ export class SetupController {
   async createDatabase(): Promise<void> {
     await this.setupService.createDatabase();
     await this.setupService.createSetup();
-  }
-
-  /**
-   * Reset the setup process
-   */
-  @UseGuards(SetupGuard)
-  @Post('reset')
-  @ApiOkResponse({ type: SetupDto })
-  async reset(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<SetupDto> {
-    const setup = await this.setupService.getSetup();
-    if (setup.step > SetupStep.USER) {
-      // Get current refresh token
-      const refreshToken = req.signedCookies?.Refresh;
-      // Delete refresh token
-      await this.usersService.removeRefreshToken(refreshToken);
-      // Set cookies
-      res.clearCookie('Access');
-      res.clearCookie('Refresh');
-    }
-
-    // Delete all media
-    await this.prisma.media.deleteMany({});
-    // Delete all maps
-    await this.prisma.map.deleteMany({});
-    // Delete all campaigns
-    await this.prisma.campaign.deleteMany({});
-    // Delete all refresh tokens
-    await this.prisma.refreshToken.deleteMany({});
-    // Delete all verify email tokens
-    await this.prisma.emailVerificationToken.deleteMany({});
-    // Delete all reset password tokens
-    await this.prisma.passwordResetToken.deleteMany({});
-    // Delete all users
-    await this.prisma.user.deleteMany({});
-    // Update setup
-    return this.setupService.updateSetup({ step: SetupStep.USER, completed: false });
   }
 }

@@ -1,0 +1,70 @@
+<mjml>
+  <mj-head>
+    <mj-title>Campaign invite</mj-title>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text
+        font-weight="400"
+        font-size="16px"
+        color="#637381"
+        line-height="24px"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      ></mj-text>
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#E7E7E7" width="600px">
+    <mj-section full-width="full-width">
+      <mj-column width="100%">
+        <mj-image href="https://tarrasque.app" src="cid:logo" alt="" align="center" width="100px" />
+
+        <mj-text align="center" letter-spacing="1px">Tarrasque App</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-wrapper padding-top="0" padding-bottom="0">
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px" border-radius="10px">
+        <mj-column width="100%">
+          <mj-text>
+            <h2>Hi!</h2>
+          </mj-text>
+
+          <mj-text>
+            {{hostName}} has invited you to use Tarrasque App to play with them on "{{campaignName}}". Use the button
+            below to set up your account and get started:
+          </mj-text>
+
+          <mj-button
+            background-color="#9b7d65"
+            align="center"
+            font-size="17px"
+            font-weight="bold"
+            href="{{signUpUrl}}"
+            width="300px"
+            border-radius="90px"
+          >
+            Create account
+          </mj-button>
+
+          <mj-text>
+            Welcome abord,
+            <br />
+            The Tarrasque App Team
+          </mj-text>
+
+          <mj-text>
+            <strong>P.S.:</strong> Need help getting started? Check out our
+            <a href="https://tarrasque.app/docs" style="color: #9b7d65">documentation</a>.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <mj-wrapper full-width="full-width">
+      <mj-section>
+        <mj-column width="100%">
+          <mj-text font-size="11px" align="center"> &copy; Tronite Ltd. All rights reserved. </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

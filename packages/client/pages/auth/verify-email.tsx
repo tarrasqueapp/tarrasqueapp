@@ -1,12 +1,14 @@
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, Paper, Typography } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextButton } from '../../components/common/NextButton';
 import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
-import { verifyEmail } from '../../hooks/data/users/useVerifyEmail';
+import { useVerifyEmail } from '../../hooks/data/users/useVerifyEmail';
+import { useEffectAsync } from '../../hooks/useEffectAsync';
 import { AppNavigation } from '../../lib/navigation';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -22,17 +24,35 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the token from the query string
   const token = (context.query.token as string) || '';
 
-  // Verify the user's email address
-  let valid = false;
-  try {
-    await verifyEmail(token);
-    valid = true;
-  } catch (err) {}
-
-  return { props: { token, valid } };
+  return { props: { token } };
 };
 
-const VerifyEmailPage: NextPage<{ token: string; valid: boolean }> = ({ token, valid }) => {
+const VerifyEmailPage: NextPage<{ token: string }> = ({ token }) => {
+  const verifyEmail = useVerifyEmail();
+
+  const [loading, setLoading] = useState(false);
+  const [valid, setValid] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!token || !valid) return;
+    setTimeout(() => {
+      router.push(AppNavigation.Dashboard);
+    });
+  }, [token, valid]);
+
+  useEffectAsync(async () => {
+    if (!token) return;
+    try {
+      setLoading(true);
+      await verifyEmail.mutateAsync(token);
+      setValid(true);
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
   return (
     <Center>
       <Container maxWidth="xs">
@@ -46,28 +66,36 @@ const VerifyEmailPage: NextPage<{ token: string; valid: boolean }> = ({ token, v
           </Typography>
 
           <Paper sx={{ p: 2, width: '100%', textAlign: 'center', background: 'rgba(0, 0, 0, 0.4)' }}>
-            {!token && (
+            {loading ? (
+              <CircularProgress disableShrink />
+            ) : (
               <>
-                <Typography>No token was provided</Typography>
-                <NextButton href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
-                  Go Back
-                </NextButton>
-              </>
-            )}
-            {token && !valid && (
-              <>
-                <Typography>Invalid token</Typography>
-                <NextButton href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
-                  Go Back
-                </NextButton>
-              </>
-            )}
-            {token && valid && (
-              <>
-                <Typography>Your email has been verified!</Typography>
-                <NextButton href={AppNavigation.SignIn} variant="contained" sx={{ mt: 2 }}>
-                  Continue
-                </NextButton>
+                {!token && (
+                  <>
+                    <Typography>Please check your inbox to verify your email</Typography>
+                    <NextButton href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
+                      Go Back
+                    </NextButton>
+                  </>
+                )}
+
+                {token && !valid && (
+                  <>
+                    <Typography>Invalid token</Typography>
+                    <NextButton href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
+                      Go Back
+                    </NextButton>
+                  </>
+                )}
+
+                {token && valid && (
+                  <>
+                    <Typography>All done! Redirecting...</Typography>
+                    <NextButton href={AppNavigation.SignIn} variant="contained" sx={{ mt: 2 }}>
+                      Continue
+                    </NextButton>
+                  </>
+                )}
               </>
             )}
           </Paper>

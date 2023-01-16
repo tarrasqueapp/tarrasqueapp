@@ -27,7 +27,7 @@ import { ControlledTextField } from '../form/ControlledTextField';
 interface CreateUpdateCampaignModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: CampaignInterface | null;
+  campaign: CampaignInterface | undefined;
 }
 
 export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps> = observer(

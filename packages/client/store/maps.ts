@@ -1,14 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 
-import { MapInterface } from '../lib/types';
-
 export enum MapModal {
   CreateUpdate = 'create-update',
   Delete = 'delete',
 }
 
 class MapsStore {
-  selectedMap = null as unknown as MapInterface | null;
+  selectedMapId = null as unknown as string | null;
   modal = null as unknown as MapModal | null;
 
   constructor() {
@@ -17,10 +15,10 @@ class MapsStore {
 
   /**
    * Set the selected map to edit or remove
-   * @param map - The map to edit or remove
+   * @param mapId - The map to edit or remove
    */
-  setSelectedMap(map: MapInterface | null) {
-    this.selectedMap = map;
+  setSelectedMapId(mapId: string | null) {
+    this.selectedMapId = mapId;
   }
 
   /**

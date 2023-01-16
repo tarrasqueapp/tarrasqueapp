@@ -62,7 +62,11 @@ const SignUpPage: NextPage = () => {
   type Schema = yup.InferType<typeof schema>;
 
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: yupResolver(schema) });
+  const methods = useForm<Schema>({
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+    defaultValues: { email: (router.query.email as string) || '' },
+  });
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -75,8 +79,7 @@ const SignUpPage: NextPage = () => {
   async function handleSubmitForm(values: Schema) {
     try {
       await signUp.mutateAsync(values);
-      router.push(AppNavigation.Dashboard);
-      toast('Please check your inbox to verify your email', { icon: '📧' });
+      router.push(AppNavigation.VerifyEmail);
     } catch (error: any) {
       toast.error(error.message);
     }

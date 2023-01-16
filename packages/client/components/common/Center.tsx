@@ -15,6 +15,7 @@ export const Center: React.FC<CenterProps> = ({ children }) => {
         alignItems: 'center',
         flex: '1 0 auto',
         background: Gradient.Linear,
+        py: 1,
       }}
     >
       {children}

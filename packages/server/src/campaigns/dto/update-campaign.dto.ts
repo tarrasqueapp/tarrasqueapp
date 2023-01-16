@@ -1,6 +1,6 @@
 import { IsOptional, IsString, ValidateNested } from 'class-validator';
 
-import { UserEntity } from '../../users/entities/user.entity';
+import { CampaignMemberEntity } from '../entities/campaign-member.entity';
 
 export class UpdateCampaignDto {
   @IsOptional()
@@ -9,5 +9,5 @@ export class UpdateCampaignDto {
 
   @IsOptional()
   @ValidateNested({ each: true })
-  players?: UserEntity[];
+  members?: CampaignMemberEntity[];
 }

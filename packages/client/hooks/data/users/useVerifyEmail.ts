@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
 import { UserInterface } from '../../../lib/types';
@@ -8,7 +8,7 @@ import { UserInterface } from '../../../lib/types';
  * @param token - The email verification token
  * @returns The user details
  */
-export async function verifyEmail(token: string) {
+async function verifyEmail(token: string) {
   const { data } = await api.post<UserInterface>(`/api/auth/verify-email`, { token });
   return data;
 }
@@ -18,5 +18,11 @@ export async function verifyEmail(token: string) {
  * @returns Verify email mutation
  */
 export function useVerifyEmail() {
-  return useMutation(verifyEmail);
+  const queryClient = useQueryClient();
+
+  return useMutation(verifyEmail, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([`auth`]);
+    },
+  });
 }
