@@ -45,16 +45,16 @@ ingress:
   className: ""
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
   hosts:
-    - host: sandbox.tarrasque.app
+    - host: tarrasque.app
       paths:
         - path: /tus/files(/|$)(.*)
           pathType: Prefix
   tls:
     - secretName: tls-secret-tusd
       hosts:
-        - sandbox.tarrasque.app
+        - tarrasque.app
 
 env:
   - name: AWS_ACCESS_KEY_ID

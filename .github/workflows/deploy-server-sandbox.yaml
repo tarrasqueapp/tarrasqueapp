@@ -1,0 +1,20 @@
+name: '[SANDBOX] Deploy server'
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  deploy-server:
+    uses: ./.github/workflows/deploy-server-base.yaml
+
+    with:
+      ENVIRONMENT: sandbox
+      ENVIRONMENT_URL: sandbox.tarrasque.app
+      KUBE_NAMESPACE: sandbox-server
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-sandbox" \
+        --set ingress.hosts[0].host="sandbox.tarrasque.app",ingress.hosts[0].paths[0].path="/api(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix",ingress.hosts[0].paths[1].path="/socket.io(/|$)(.*)",ingress.hosts[0].paths[1].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-server",ingress.tls[0].hosts[0]="sandbox.tarrasque.app" \
+
+    secrets: inherit

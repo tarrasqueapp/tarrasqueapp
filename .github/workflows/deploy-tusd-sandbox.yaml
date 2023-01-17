@@ -1,0 +1,20 @@
+name: '[SANDBOX] Deploy tusd'
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  deploy-tusd:
+    uses: ./.github/workflows/deploy-tusd-base.yaml
+
+    with:
+      ENVIRONMENT: sandbox
+      ENVIRONMENT_URL: sandbox.tarrasque.app
+      KUBE_NAMESPACE: sandbox-tusd
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-sandbox" \
+        --set ingress.hosts[0].host="sandbox.tarrasque.app",ingress.hosts[0].paths[0].path="/tus/files(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-tusd",ingress.tls[0].hosts[0]="sandbox.tarrasque.app" \
+
+    secrets: inherit

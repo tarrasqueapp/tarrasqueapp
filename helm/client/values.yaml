@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository:
   pullPolicy: Always
-  tag: sandbox
+  tag: production
 
 imagePullSecrets:
   - name: tarrasque
@@ -31,26 +31,31 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
-    - host: sandbox.tarrasque.app
+    - host: tarrasque.app
+      paths:
+        - path: /()(.*)
+          pathType: Prefix
+    - host: www.tarrasque.app
       paths:
         - path: /()(.*)
           pathType: Prefix
   tls:
     - secretName: tls-secret-client
       hosts:
-        - sandbox.tarrasque.app
+        - tarrasque.app
+        - www.tarrasque.app
 
 env:
   - name: VERSION
     value: "1.0.0"
   - name: HOST
-    value: "https://sandbox.tarrasque.app"
+    value: "https://tarrasque.app"
   - name: AXIOS_BASE_URL
-    value: "https://sandbox.tarrasque.app"
+    value: "https://tarrasque.app"
   - name: NODE_ENV
     value: "production"
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
