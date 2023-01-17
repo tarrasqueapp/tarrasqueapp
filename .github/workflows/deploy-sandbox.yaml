@@ -6,13 +6,43 @@ on:
 
 jobs:
   deploy-client:
-    uses: ./.github/workflows/deploy-client-sandbox.yaml
+    uses: ./.github/workflows/deploy-client-base.yaml
+
+    with:
+      ENVIRONMENT: sandbox
+      ENVIRONMENT_URL: sandbox.tarrasque.app
+      KUBE_NAMESPACE: sandbox-client
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-sandbox" \
+        --set ingress.hosts[0].host="sandbox.tarrasque.app",ingress.hosts[0].paths[0].path="/()(.*)",ingress.hosts[0].paths[0].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-client",ingress.tls[0].hosts[0]="sandbox.tarrasque.app" \
+
     secrets: inherit
 
   deploy-server:
-    uses: ./.github/workflows/deploy-server-sandbox.yaml
+    uses: ./.github/workflows/deploy-server-base.yaml
+
+    with:
+      ENVIRONMENT: sandbox
+      ENVIRONMENT_URL: sandbox.tarrasque.app
+      KUBE_NAMESPACE: sandbox-server
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-sandbox" \
+        --set ingress.hosts[0].host="sandbox.tarrasque.app",ingress.hosts[0].paths[0].path="/api(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix",ingress.hosts[0].paths[1].path="/socket.io(/|$)(.*)",ingress.hosts[0].paths[1].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-server",ingress.tls[0].hosts[0]="sandbox.tarrasque.app" \
+
     secrets: inherit
 
   deploy-tusd:
-    uses: ./.github/workflows/deploy-tusd-sandbox.yaml
+    uses: ./.github/workflows/deploy-tusd-base.yaml
+
+    with:
+      ENVIRONMENT: sandbox
+      ENVIRONMENT_URL: sandbox.tarrasque.app
+      KUBE_NAMESPACE: sandbox-tusd
+      HELM_ARGS: |
+        --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-sandbox" \
+        --set ingress.hosts[0].host="sandbox.tarrasque.app",ingress.hosts[0].paths[0].path="/tus/files(/|$)(.*)",ingress.hosts[0].paths[0].pathType="Prefix" \
+        --set ingress.tls[0].secretName="tls-secret-tusd",ingress.tls[0].hosts[0]="sandbox.tarrasque.app" \
+
     secrets: inherit
