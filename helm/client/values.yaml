@@ -49,6 +49,8 @@ env:
     value: "1.0.0"
   - name: HOST
     value: "https://sandbox.tarrasque.app"
+  - name: AXIOS_BASE_URL
+    value: "https://sandbox.tarrasque.app"
   - name: NODE_ENV
     value: "production"
   - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME

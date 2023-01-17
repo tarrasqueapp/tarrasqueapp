@@ -1,43 +1,15 @@
-name: 'Deploy'
+name: Deploy
 
 on:
   pull_request:
-    types: [opened]
-  issue_comment:
-    types: [created]
 
 jobs:
-  # Print comment author to console
-  print-comment-author:
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: echo '${{ toJSON(github.event.comment) }}'
-
   deploy-client:
     runs-on: ubuntu-latest
 
-    if: |
-      github.event.issue.pull_request &&
-      github.event.comment.body == '/deploy' &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
-
     steps:
-      - uses: xt0rted/pull-request-comment-branch@v1
-        id: comment-branch
-
-      - name: Set commit status as pending
-        uses: myrotvorets/set-commit-status-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: pending
-          context: Deploy
-
       - name: Checkout code
         uses: actions/checkout@v3
-        if: success()
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -57,6 +29,7 @@ jobs:
           tags: ${{ secrets.REGISTRY }}/client:sandbox
           build-args: |
             HOST=https://sandbox.tarrasque.app
+            AXIOS_BASE_URL=https://sandbox.tarrasque.app
             NODE_ENV=${{ secrets.NODE_ENV }}
             JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
           push: true
@@ -72,6 +45,7 @@ jobs:
             --set image.repository=${{ secrets.REGISTRY }}/client \
             --set image.tag=sandbox \
             --set env.HOST="https://sandbox.tarrasque.app" \
+            --set env.AXIOS_BASE_URL="https://sandbox.tarrasque.app" \
             --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
             --set env.JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" \
             --set ingress.annotations."cert-manager\.io/cluster-issuer"="letsencrypt-staging" \
@@ -81,38 +55,12 @@ jobs:
       - name: Verify deployment
         run: kubectl rollout status deployment/client --namespace sandbox-client --timeout 2m
 
-      - name: Set final commit status
-        uses: myrotvorets/set-commit-status-action@master
-        if: always()
-        with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-
   deploy-server:
     runs-on: ubuntu-latest
 
-    if: |
-      github.event.issue.pull_request &&
-      github.event.comment.body == '/deploy' &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
-
     steps:
-      - uses: xt0rted/pull-request-comment-branch@v1
-        id: comment-branch
-
-      - name: Set commit status as pending
-        uses: myrotvorets/set-commit-status-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: pending
-          context: Deploy
-
       - name: Checkout code
         uses: actions/checkout@v3
-        if: success()
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -196,38 +144,12 @@ jobs:
       - name: Verify deployment
         run: kubectl rollout status deployment/server --namespace sandbox-server --timeout 2m
 
-      - name: Set final commit status
-        uses: myrotvorets/set-commit-status-action@master
-        if: always()
-        with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
-
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    if: |
-      github.event.issue.pull_request &&
-      github.event.comment.body == '/deploy' &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
-
     steps:
-      - uses: xt0rted/pull-request-comment-branch@v1
-        id: comment-branch
-
-      - name: Set commit status as pending
-        uses: myrotvorets/set-commit-status-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: pending
-          context: Deploy
-
       - name: Checkout code
         uses: actions/checkout@v3
-        if: success()
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -251,11 +173,3 @@ jobs:
 
       - name: Verify deployment
         run: kubectl rollout status deployment/tusd --namespace sandbox-tusd --timeout 2m
-
-      - name: Set final commit status
-        uses: myrotvorets/set-commit-status-action@master
-        if: always()
-        with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
