@@ -24,10 +24,6 @@ jobs:
   deploy-tusd:
     runs-on: ubuntu-latest
 
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-
     environment:
       name: ${{ inputs.ENVIRONMENT }}
       url: 'https://${{ inputs.ENVIRONMENT_URL }}'
