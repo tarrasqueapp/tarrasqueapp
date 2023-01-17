@@ -7,6 +7,10 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
 
+    environment:
+      name: sandbox
+      url: 'https://sandbox.tarrasque.app'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -57,6 +61,10 @@ jobs:
 
   deploy-server:
     runs-on: ubuntu-latest
+
+    environment:
+      name: sandbox
+      url: 'https://sandbox.tarrasque.app'
 
     steps:
       - name: Checkout code
@@ -146,6 +154,10 @@ jobs:
 
   deploy-tusd:
     runs-on: ubuntu-latest
+
+    environment:
+      name: sandbox
+      url: 'https://sandbox.tarrasque.app'
 
     steps:
       - name: Checkout code
