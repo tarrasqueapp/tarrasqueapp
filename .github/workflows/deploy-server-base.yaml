@@ -28,7 +28,7 @@ jobs:
 
     environment:
       name: ${{ inputs.ENVIRONMENT }}
-      url: 'https://${{ inputs.ENVIRONMENT_URL }}'
+      url: 'https://${{ inputs.ENVIRONMENT_URL }}/api'
 
     steps:
       - name: Checkout master
