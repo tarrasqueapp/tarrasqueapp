@@ -24,7 +24,7 @@ export enum Color {
   // Orange
   Orange = '#f9cb25',
   // Green
-  Green = '#36f443',
+  Green = '#0bd219',
 }
 
 export const Gradient = {

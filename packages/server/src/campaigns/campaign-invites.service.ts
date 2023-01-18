@@ -25,7 +25,7 @@ export class CampaignInvitesService {
       // Ensure the invite exists
       const invite = await this.prisma.campaignInvite.findUniqueOrThrow({ where: { value } });
       this.logger.debug(`✅️ Found campaign invite by value "${value}"`);
-      // Return the  invite
+      // Return the invite
       return invite;
     } catch (error) {
       this.logger.error(`🚨 Failed to get campaign invite by value "${value}"`);
