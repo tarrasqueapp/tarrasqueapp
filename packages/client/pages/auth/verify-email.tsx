@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Container, Paper, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Container, Paper, Typography } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -73,18 +73,18 @@ const VerifyEmailPage: NextPage<{ token: string }> = ({ token }) => {
                 {!token && (
                   <>
                     <Typography>Please check your inbox to verify your email</Typography>
-                    <NextButton href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
+                    <Button component="a" href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
                       Go Back
-                    </NextButton>
+                    </Button>
                   </>
                 )}
 
                 {token && !valid && (
                   <>
                     <Typography>Invalid token</Typography>
-                    <NextButton href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
+                    <Button component="a" href={AppNavigation.SignIn} variant="outlined" sx={{ mt: 2 }}>
                       Go Back
-                    </NextButton>
+                    </Button>
                   </>
                 )}
 

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Box, Button, Container, Paper, Typography } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -15,6 +15,7 @@ import { ControlledPasswordField } from '../../components/form/ControlledPasswor
 import { ControlledTextField } from '../../components/form/ControlledTextField';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
+import { useResendEmailVerification } from '../../hooks/data/users/useResendEmailVerification';
 import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { AppNavigation } from '../../lib/navigation';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -43,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const SignInPage: NextPage = () => {
   const signIn = useSignIn();
+  const resendEmailVerification = useResendEmailVerification();
 
   const router = useRouter();
 
@@ -72,7 +74,31 @@ const SignInPage: NextPage = () => {
       await signIn.mutateAsync(values);
       router.push(AppNavigation.Dashboard);
     } catch (error: any) {
-      toast.error(error.message);
+      if (error.message === 'Email not verified') {
+        toast.error(
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box>{error.message}</Box>
+
+            <Button
+              onClick={() => {
+                toast.remove();
+                toast.promise(resendEmailVerification.mutateAsync(values.email), {
+                  loading: 'Resending email',
+                  success: 'Email sent, please check your inbox',
+                  error: 'Error',
+                });
+              }}
+              size="small"
+              color="secondary"
+              variant="contained"
+            >
+              Resend
+            </Button>
+          </Box>,
+        );
+      } else {
+        toast.error(error.message);
+      }
     }
   }
 
