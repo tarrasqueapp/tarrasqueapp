@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, Put, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
@@ -158,6 +169,24 @@ export class AuthController {
     res.clearCookie('Refresh');
     // Delete refresh token
     this.usersService.removeRefreshToken(refreshToken);
+  }
+
+  /**
+   * Resend the email verification email to the user
+   */
+  @Post('resend-email-verification')
+  @ApiOkResponse({ type: null })
+  async resendEmailVerification(@Body() data: { email: string }): Promise<void> {
+    // Get the user
+    const user = await this.usersService.getUserByEmail(data.email);
+    // Check if the user's email is verified
+    if (user.emailVerified) {
+      throw new BadRequestException('Email already verified');
+    }
+    // Get the token
+    const token = await this.emailVerificationTokensService.getTokenByUserId(user.id);
+    // Send the email
+    await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.value });
   }
 
   /**

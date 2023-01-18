@@ -25,7 +25,7 @@ export class PasswordResetTokensService {
       // Ensure the token exists
       const token = await this.prisma.passwordResetToken.findUniqueOrThrow({ where: { value } });
       this.logger.debug(`✅️ Found password reset token by value "${value}"`);
-      // Return the  token
+      // Return the token
       return token;
     } catch (error) {
       this.logger.error(`🚨 Failed to get password reset token by value "${value}"`);

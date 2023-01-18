@@ -25,10 +25,29 @@ export class EmailVerificationTokensService {
       // Ensure the token exists
       const token = await this.prisma.emailVerificationToken.findUniqueOrThrow({ where: { value } });
       this.logger.debug(`✅️ Found email verification token by value "${value}"`);
-      // Return the  token
+      // Return the token
       return token;
     } catch (error) {
       this.logger.error(`🚨 Failed to get email verification token by value "${value}"`);
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Get token by user id
+   * @param userId - The user's id
+   * @returns The token
+   */
+  async getTokenByUserId(userId: string): Promise<EmailVerificationToken> {
+    this.logger.verbose(`📂 Getting email verification token for user id "${userId}"`);
+    try {
+      // Get the token
+      const token = await this.prisma.emailVerificationToken.findFirst({ where: { userId } });
+      this.logger.debug(`✅️ Found email verification token for user id "${userId}"`);
+      // Return the token
+      return token;
+    } catch (error) {
+      this.logger.error(`🚨 Failed to get email verification token for user id "${userId}"`);
       throw new NotFoundException(error.message);
     }
   }
