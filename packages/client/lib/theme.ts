@@ -211,6 +211,18 @@ export let theme = createTheme({
         },
       },
     },
+    // Alert
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          alignItems: 'center',
+        },
+        action: {
+          padding: 0,
+          alignItems: 'center',
+        },
+      },
+    },
   },
 });
 

@@ -14,6 +14,7 @@ export interface UserInterface {
   name: string;
   displayName: string;
   email: string;
+  emailVerified: boolean;
   // Avatar
   avatar?: MediaInterface;
   avatarId?: string;

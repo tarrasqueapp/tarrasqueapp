@@ -63,7 +63,7 @@ export class AuthController {
   @Put()
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  updateUser(@User() user: UserEntity, @Body() data: UpdateUserDto): Promise<UserEntity> {
+  async updateUser(@User() user: UserEntity, @Body() data: UpdateUserDto): Promise<UserEntity> {
     if (!data.avatarId && user.avatar) {
       // Delete the media item from the database and its files from the storage
       this.mediaService.deleteMedia(user.avatar.id);
@@ -73,6 +73,16 @@ export class AuthController {
       this.storageService.delete(
         `${this.storageService.uploadPath}/${user.id}/${user.avatar.id}/${THUMBNAIL_FILENAME}`,
       );
+    }
+
+    // Check if email has changed
+    if (data.email !== user.email) {
+      // Generate the verify email token
+      const token = await this.emailVerificationTokensService.createToken({ userId: user.id });
+      // Send the email
+      this.emailService.sendEmailVerificationEmail({ name: data.displayName, to: data.email, token: token.value });
+      // Set the user as unverified
+      data.emailVerified = false;
     }
 
     // Update the user
@@ -164,7 +174,7 @@ export class AuthController {
   signOut(@Req() req: Request, @Res({ passthrough: true }) res: Response): void {
     // Get current refresh token
     const refreshToken = req.signedCookies?.Refresh;
-    // Set cookies
+    // Clear cookies
     res.clearCookie('Access');
     res.clearCookie('Refresh');
     // Delete refresh token
@@ -201,10 +211,14 @@ export class AuthController {
     const user = await this.usersService.updateUser(userId, { emailVerified: true });
     // Delete the token
     this.emailVerificationTokensService.deleteToken(data.token);
-    // Send the welcome email
-    this.emailService.sendWelcomeEmail({ name: user.displayName, to: user.email });
-    // Create a campaign for the user
-    this.campaignsService.createCampaign({ name: `${user.displayName}'s Campaign` }, user.id);
+    // Check if this is a new user or an existing user who has changed their email by checking if they have a campaign
+    const campaigns = await this.campaignsService.getUserCampaigns(user.id);
+    if (campaigns.length === 0) {
+      // Send the welcome email
+      this.emailService.sendWelcomeEmail({ name: user.displayName, to: user.email });
+      // Create a campaign for the user
+      this.campaignsService.createCampaign({ name: `${user.displayName}'s Campaign` }, user.id);
+    }
     // Sign in the user
     return await this.signIn(res, user);
   }

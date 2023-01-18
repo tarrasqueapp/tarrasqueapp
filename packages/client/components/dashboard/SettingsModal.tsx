@@ -17,12 +17,15 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useUpdateUser } from '../../hooks/data/users/useUpdateUser';
+import { AppNavigation } from '../../lib/navigation';
 import { UserInterface } from '../../lib/types';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -41,6 +44,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
   const updateUser = useUpdateUser();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const router = useRouter();
 
   // Setup form validation schema
   const schema = yup
@@ -106,7 +110,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
     }
 
     // Update the user
-    await updateUser.mutateAsync({
+    const user = await updateUser.mutateAsync({
       name: values.name,
       displayName: values.displayName,
       email: values.email,
@@ -115,6 +119,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
     });
 
     onClose();
+
+    // Sign out user if email is no longer verified
+    if (!user.emailVerified) {
+      toast('Your email address has been changed. Please sign in again with your new email address.', { icon: '✉️' });
+      router.push(AppNavigation.SignOut);
+    }
   }
 
   return (
