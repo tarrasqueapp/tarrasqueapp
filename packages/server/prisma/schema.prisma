@@ -583,9 +583,6 @@ model Dnd5eNpc {
   // default prof bonus is actually 2, CR0 is +2 or less
   // the proficiency bonus should be based on CR but sometimes it's not
   proficiency          Int                    @default(2)
-  // DateTime
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @default(now()) @updatedAt
   // Stats
   stats                Dnd5eStat[]            @relation("Dnd5eNpcStats")
   // Skills
@@ -643,6 +640,9 @@ model NonPlayerCharacter {
   // Created by
   createdBy       User       @relation("CreatedNonPlayerCharacters", fields: [createdById], references: [id])
   createdById     String
+  // DateTime
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now()) @updatedAt
   // Controlled by
   controlledBy    User[]     @relation("ControlledNonPlayerCharacters")
   // Campaign
