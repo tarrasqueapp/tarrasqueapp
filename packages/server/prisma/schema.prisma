@@ -630,6 +630,7 @@ model NonPlayerCharacter {
   id              String     @id @default(cuid())
   name            String
   notes           String     @default("")
+  tags            String[]
   // Hit Points
   hitPoints       HitPoints? @relation("NonPlayerCharacterHitPoints")
   // Tokens
