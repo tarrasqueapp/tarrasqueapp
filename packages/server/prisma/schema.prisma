@@ -305,7 +305,7 @@ model Targeting {
   id                   String                @id @default(cuid())
   // this should probably be enumerated? I don't know how to do that in prisma, or is it enforced client side?
   // can add more enum types on the client side i guess?
-  type                 String // current allowed list: melee, ranged, aoeCircle, aoeCone, aoeRectangle, aoeLine
+  type                 TargetingRange        @default(MELEE)
   numberOfTargets      Int? // used by melee/ranged single/multitarget attacks
   range                Int? // used by everything
   rangeFar             Int? // used by ranged attacks for dnd 5e
@@ -321,6 +321,18 @@ model Targeting {
   dnd5eLegendaryAction Dnd5eLegendaryAction? @relation("Dnd5eLegendaryActionTargeting")
   // 5e reaction
   dnd5eReaction        Dnd5eReaction?        @relation("Dnd5eReactionTargeting")
+  // 5e spell
+  dnd5eSpell           Dnd5eSpell?           @relation("Dnd5eSpellTargeting")
+}
+
+// oh we do have enum support
+enum TargetingRange {
+  MELEE
+  RANGED
+  AOE_CIRCLE
+  AOE_CONE
+  AOE_RECTANGLE
+  AOE_LINE
 }
 
 // maybe this is a d20 stat? pathfinder uses the same data I think but has different rules
@@ -334,6 +346,7 @@ model Dnd5eStat {
   modifier           Int      @default(0)
   save               Int
   // bonus or penalty, for tracking stat changes or non-score-derived modifier
+  scoreAdjustment    Int      @default(0)
   modifierAdjustment Int      @default(0)
   // attached to Dnd5eNpc
   dnd5eNpc           Dnd5eNpc @relation("Dnd5eNpcStats", fields: [dnd5eNpcId], references: [id])
@@ -346,15 +359,19 @@ model Dnd5eStat {
 // so we shouldn't need to store every skill, just the ones that are different
 // than expected (through proficiency or some other source)
 model Dnd5eSkill {
-  id        String    @id @default(cuid())
-  name      String
-  shortName String
-  bonus     Int       @default(0)
-  advantage Boolean   @default(false)
-  // shouldn't need the stat here, that should be stored in a client side index since it's static for 5e
+  id             String    @id @default(cuid())
+  name           String
+  shortName      String
+  advantage      Boolean   @default(false)
+  // I realized that a multiplier would be easier than booleans for half/full proficiency and expertise
+  // half = +0.5 * pb, full = +1.0 * pb, expertise = +2.0 * pb
+  profMultiplier Float     @default(0)
+  // this plus the above multiplier should cover all cases
+  // skills are always stat modifier + pb * profMultiplier + adjustment and the stat assignments are (almost always) static
+  adjustment     Int       @default(0)
   // attached to NPC
-  dnd5eNpc  Dnd5eNpc? @relation("Dnd5eNpcSkills", fields: [npcId], references: [id])
-  npcId     String?
+  dnd5eNpc       Dnd5eNpc? @relation("Dnd5eNpcSkills", fields: [npcId], references: [id])
+  npcId          String?
 }
 
 model Dnd5eArmorClass {
@@ -398,10 +415,13 @@ model Dnd5eSenses {
 // and effects, this seems like how we'd represent that
 model Dnd5eDamage {
   id                   String                @id @default(cuid())
-  // we have the option to keep this as a string
-  dieType              Int                   @default(6)
-  dieCount             Int                   @default(1)
-  modifier             Int                   @default(0)
+  // why a string?
+  // the formula should be kept as a string in a valid parsable format (2d6+{str}) for example
+  // this way the front end for the VTT doesn't have to think too much about it and it'll
+  // automatically update if the underlying data changes
+  // assuming the formula is parseable in a consistent format (and it should be) it'll work
+  // with moderate effort on the front-end size to load/save data
+  formula              String
   type                 String
   // this is used in a bunch of spots
   // this is only used by 5e stuff so the names are done accordingly
@@ -416,6 +436,9 @@ model Dnd5eDamage {
   // reaction
   dnd5eReaction        Dnd5eReaction?        @relation("ReactionDamage", fields: [reactionId], references: [id])
   reactionId           String?
+  // spell
+  dnd5eSpell           Dnd5eSpell?           @relation("SpellDamage", fields: [spellId], references: [id])
+  spellId              String?
 }
 
 // now we're getting in to the weeds
@@ -426,10 +449,12 @@ model Dnd5eAction {
   // technically, that's all that's required
   // however, we'd like to have some nice things
   // let's track damage
-  // TODO: versatile weapons discussion
+  // TODO: versatile weapons? uhh....
   damage         Dnd5eDamage[] @relation("ActionDamage")
-  attackModifier Int?
-  saveDc         Int?
+  // see the note for Dnd5eDamage's formula field
+  // these strings will be able to use plain numbers or text macros (e.g. {dc:str} for saveDc)
+  attackModifier String?
+  saveDc         String?
   // range
   targeting      Targeting     @relation("Dnd5eActionTargeting", fields: [targetingId], references: [id])
   targetingId    String        @unique
@@ -449,13 +474,14 @@ model Dnd5eAction {
 // to the point where this model is only different in that it excludes recharge and bonus action info
 // (traits can't do that)
 // maybe this should be combined with action and a type field added? unsure what best practice would be
+// maybe a composite type?
 model Dnd5eTrait {
   id             String        @id @default(cuid())
   name           String
   description    String
   damage         Dnd5eDamage[] @relation("TraitDamage")
-  attackModifier Int?
-  saveDc         Int?
+  attackModifier String?
+  saveDc         String?
   // range
   targeting      Targeting     @relation("Dnd5eTraitTargeting", fields: [targetingId], references: [id])
   targetingId    String        @unique
@@ -472,9 +498,10 @@ model Dnd5eLegendaryAction {
   name           String
   description    String
   actionCost     Int           @default(1)
+  mythic         Boolean       @default(false)
   damage         Dnd5eDamage[] @relation("LegendaryActionDamage")
-  attackModifier Int?
-  saveDc         Int?
+  attackModifier String?
+  saveDc         String?
   // range
   targeting      Targeting     @relation("Dnd5eLegendaryActionTargeting", fields: [targetingId], references: [id])
   targetingId    String        @unique
@@ -490,14 +517,59 @@ model Dnd5eReaction {
   name           String
   description    String
   damage         Dnd5eDamage[] @relation("ReactionDamage")
-  attackModifier Int?
-  saveDc         Int?
+  attackModifier String?
+  saveDc         String?
   // range
   targeting      Targeting     @relation("Dnd5eReactionTargeting", fields: [targetingId], references: [id])
   targetingId    String        @unique
   // linked to npc
   dnd5eNpc       Dnd5eNpc      @relation("Dnd5eNpcReactions", fields: [npcId], references: [id])
   npcId          String
+}
+
+// the spells should really be put in a user-level library and then referenced by the spellcasting lists
+// I don't quite know how to express that relationship right now
+// like the spells belong to a User and then the spellcasting structs access that?
+model Dnd5eSpell {
+  id                      String                 @id @default(cuid())
+  name                    String
+  description             String
+  level                   Int                    @default(0)
+  classes                 String[]
+  damage                  Dnd5eDamage[]          @relation("SpellDamage")
+  // spells have targets too
+  targeting               Targeting              @relation("Dnd5eSpellTargeting", fields: [targetingId], references: [id])
+  targetingId             String                 @unique
+  // so the spells are assigned to the spellcasting lists but they're not necessarily unique?
+  // is this a many to many relationship
+  dnd5eSlotSpellcasting   Dnd5eSlotSpellcasting? @relation("Dnd5eSlotSpellList", fields: [dnd5eSlotSpellcastingId], references: [id])
+  dnd5eSlotSpellcastingId String?
+  dnd5eInnateSpellList    Dnd5eInnateSpellList?  @relation("Dnd5eInnateSpellList", fields: [dnd5eInnateSpellListId], references: [id])
+  dnd5eInnateSpellListId  String?
+}
+
+model Dnd5eSlotSpellcasting {
+  id          String       @id @default(cuid())
+  // ui should sort slots into the proper slots
+  spellsKnown Dnd5eSpell[] @relation("Dnd5eSlotSpellList")
+  // ... i don't really want to write out every spell slot level but we could
+  slots       Int[]
+  slotsUsed   Int[]
+  // npc link
+  dnd5eNpc    Dnd5eNpc     @relation("Dnd5eSlotSpellcasting", fields: [npcId], references: [id])
+  npcId       String       @unique
+}
+
+model Dnd5eInnateSpellList {
+  id       String       @id @default(cuid())
+  spells   Dnd5eSpell[] @relation("Dnd5eInnateSpellList")
+  count    Int          @default(1)
+  // could be enumerated but you know how users are
+  rate     String       @default("Long Rest")
+  used     Int          @default(0)
+  // npc ref
+  dnd5eNpc Dnd5eNpc?    @relation("Dnd5eInnateSpellLists", fields: [npcId], references: [id])
+  npcId    String?
 }
 
 // I think the distinction between PC and NPC here is that a PC has a character sheet attached
@@ -530,17 +602,24 @@ model Dnd5eNpc {
   traits               Dnd5eTrait[]           @relation("Dnd5eNpcTraits")
   // Legendary Actions
   legendaryActionCount Int                    @default(0)
+  // Mythic Actions are just legendary actions that think they're special, so there's a flag for that
+  // mechanically they're the same they just get put in a different part of the stat block
   legendaryActions     Dnd5eLegendaryAction[] @relation("Dnd5eNpcLegendaryActions")
   // Reactions
   reactions            Dnd5eReaction[]        @relation("Dnd5eNpcReactions")
-  // Mythic Actions?
-  // mythicActions  DndMythicActions[]
   // Lair Actions?
   // lairActions  DndLairAction[]
   // Spellcasting is a huge pain
-  // but probably worth it
-  // spellcasting needs to track traditional slots and innate spellcasting, I'll circle back to the
-  // datastructs for that in a bit
+  // these can all use tokens instead of numbers to make them reactive to stat changes
+  spellAbilityMod      String?
+  spellAttackMod       String?
+  spellDc              String?
+  // why are these different? they use different rules and it's annoying
+  // because the innate spell list needs to know what spells go in what recharge list,
+  // we can't just go "spells known" without duplicating data
+  // so they'll just each maintain lists
+  spellSlots           Dnd5eSlotSpellcasting? @relation("Dnd5eSlotSpellcasting")
+  spellInnate          Dnd5eInnateSpellList[] @relation("Dnd5eInnateSpellLists")
   // where does combat tracking info go? in here?
   // both of these should reset when the npc's turn starts in combat
   reactionUsed         Boolean                @default(false)
