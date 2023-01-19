@@ -1,0 +1,89 @@
+name: 'Deploy client'
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      ENVIRONMENT_URL:
+        required: true
+        type: string
+      KUBE_NAMESPACE:
+        required: true
+        type: string
+      HELM_ARGS:
+        required: true
+        type: string
+
+env:
+  DOCKERFILE: packages/client/docker/Dockerfile.prod
+  HELM_CHART: client
+  IMAGE_NAME: client
+  KUBE_DEPLOYMENT: client
+
+jobs:
+  deploy-client:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+      url: 'https://${{ inputs.ENVIRONMENT_URL }}'
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v3
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          file: ${{ env.DOCKERFILE }}
+          tags: ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
+          build-args: |
+            HOST=https://${{ inputs.ENVIRONMENT_URL }}
+            AXIOS_BASE_URL=https://${{ inputs.ENVIRONMENT_URL }}
+            NODE_ENV=${{ secrets.NODE_ENV }}
+            JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
+            SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            SENTRY_URL=${{ secrets.SENTRY_URL }}
+            SENTRY_ORG=${{ secrets.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.KUBE_CLUSTER }}
+
+      - name: Deploy to DigitalOcean Kubernetes
+        run: |
+          helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
+            --set image.repository=${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            --set image.tag=${{ inputs.ENVIRONMENT }} \
+            --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
+            --set env.AXIOS_BASE_URL="https://${{ inputs.ENVIRONMENT_URL }}" \
+            --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
+            --set env.JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" \
+            --set env.SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}" \
+            --set env.SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
+            --set env.SENTRY_URL="${{ secrets.SENTRY_URL }}" \
+            --set env.SENTRY_ORG="${{ secrets.SENTRY_ORG }}" \
+            --set env.SENTRY_PROJECT="${{ secrets.SENTRY_PROJECT }}" \
+            --set env.SENTRY_AUTH_TOKEN="${{ secrets.SENTRY_AUTH_TOKEN }}" \
+            ${{ inputs.HELM_ARGS }}
+
+      - name: Verify deployment
+        run: kubectl rollout status deployment/${{ env.KUBE_DEPLOYMENT }} --namespace ${{ inputs.KUBE_NAMESPACE }} --timeout 2m
