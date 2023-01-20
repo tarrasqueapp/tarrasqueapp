@@ -20,9 +20,16 @@ async function main() {
   for (const dirent of files) {
     // Check if the file is a directory
     if (dirent.isDirectory()) {
+      // Check what package manager to use (pnpm, yarn, npm)
+      const packageManager = (await fs.pathExists(`${pluginsPath}/${dirent.name}/pnpm-lock.yaml`))
+        ? 'pnpm'
+        : (await fs.pathExists(`${pluginsPath}/${dirent.name}/yarn.lock`))
+        ? 'yarn'
+        : 'npm';
+
       cd(`${pluginsPath}/${dirent.name}`);
       await $`git pull`;
-      await $`yarn`;
+      await $`${packageManager} install`;
     }
   }
 

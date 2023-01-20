@@ -1,0 +1,17 @@
+FROM node:18-alpine
+
+RUN apk add --no-cache libc6-compat jq
+RUN corepack enable pnpm
+
+WORKDIR /app
+
+COPY apps/ui/package.json apps/ui/pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+COPY apps/ui ./
+
+COPY package.json /root/
+RUN jq -r .version /root/package.json > /root/.version
+
+CMD export VERSION=$(cat /root/.version) && pnpm dev

@@ -10,14 +10,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn && yarn client && yarn server
+        run: pnpm install && pnpm ui install && pnpm api install
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint

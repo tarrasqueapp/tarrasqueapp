@@ -51,9 +51,16 @@ async function main() {
   echo(`📂 Installing plugin ${plugin.id}...`);
   await fs.rename(temporaryPluginPath, `${pluginsPath}/${plugin.id}`);
 
+  // Check what package manager to use (pnpm, yarn, npm)
+  const packageManager = (await fs.pathExists(`${pluginsPath}/${plugin.id}/pnpm-lock.yaml`))
+    ? 'pnpm'
+    : (await fs.pathExists(`${pluginsPath}/${plugin.id}/yarn.lock`))
+    ? 'yarn'
+    : 'npm';
+
   // Install dependencies
   cd(`${pluginsPath}/${plugin.id}`);
-  await $`yarn`;
+  await $`${packageManager} install`;
 
   echo(`✅ Installed!`);
 }

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Get script directory
@@ -8,15 +8,15 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR/..
 
 do_install() {
-  # Install dependencies
+   # Install dependencies
   echo "📂 Installing development dependencies..."
-  yarn
+  pnpm install
 
-  echo "📂 Installing client dependencies..."
-  yarn client
+  echo "📂 Installing ui dependencies..."
+  pnpm ui install
 
-  echo "📂 Installing server dependencies..."
-  yarn server
+  echo "📂 Installing api dependencies..."
+  pnpm api install
 
   # Install completion
   echo "✅️ Tarrasque App dependencies have been installed."

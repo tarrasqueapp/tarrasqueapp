@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://tarrasque.app" target="_blank"><img src="packages/client/public/images/logo.svg" width="150" /></a>
+  <a href="https://tarrasque.app" target="_blank"><img src="apps/ui/public/images/logo.svg" width="150" /></a>
   <p>Tarrasque App</p>
 </h1>
 
@@ -14,7 +14,7 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 ## Requirements
 
 - [Node.js](https://nodejs.org/en/) (v18.12.1 or higher)
-- [Yarn](https://yarnpkg.com/) (v1.22.19 or higher)
+- [pnpm](https://pnpm.io/) (v7.25.1 or higher)
 - [Docker](https://docs.docker.com/get-docker/) (v20.10.21 or higher)
 - [Docker Compose](https://docs.docker.com/compose/) (v2.13.0 or higher)
 - Supported Platforms: MacOS, Linux, Windows with WSL 2
@@ -40,29 +40,23 @@ To start the development server, run:
 
 This will start the server and the local database service at `http://localhost`.
 
-To start the production server, run:
-
-    tarrasque docker up --prod
-
-This will start the production server at `http://localhost`.
-
 ## Database Management
 
 To create the database, run:
 
-    yarn server prisma db push
+    pnpm api prisma db push
 
 To generate the Prisma client types, run:
 
-    yarn server prisma generate
+    pnpm api prisma generate
 
 To create a database migration, run:
 
-    yarn server prisma migrate dev --name <migration-name>
+    pnpm api prisma migrate dev --name <migration-name>
 
 To browse the database using Prisma Studio, run:
 
-    yarn server prisma studio
+    pnpm api prisma studio
 
 ## Contributing
 

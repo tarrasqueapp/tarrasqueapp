@@ -24,9 +24,16 @@ async function main() {
     process.exit(1);
   }
 
+  // Check what package manager to use (pnpm, yarn, npm)
+  const packageManager = (await fs.pathExists(`${pluginsPath}/${plugin}/pnpm-lock.yaml`))
+    ? 'pnpm'
+    : (await fs.pathExists(`${pluginsPath}/${plugin}/yarn.lock`))
+    ? 'yarn'
+    : 'npm';
+
   cd(`${pluginsPath}/${plugin}`);
   await $`git pull`;
-  await $`yarn`;
+  await $`${packageManager} install`;
 
   echo(`✅ Updated!`);
 }

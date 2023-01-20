@@ -5,18 +5,24 @@ services:
   ### Front-end ###
   #################
 
-  client:
-    container_name: client
+  ui:
+    container_name: ui
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - nginx_network
     build:
+      context: .
+      dockerfile: ./apps/ui/docker/Dockerfile.dev
       args:
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
         - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+    volumes:
+      - ./apps/ui:/app
+      - /app/.next
+      - /app/node_modules
     env_file:
       - ./.env
 
@@ -24,15 +30,21 @@ services:
   ### Back-end ###
   ################
 
-  server:
-    container_name: server
+  api:
+    container_name: api
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - nginx_network
-      - server_network
+      - api_network
+    build:
+      context: .
+      dockerfile: ./apps/api/docker/Dockerfile.dev
     volumes:
+      - ./apps/api:/app
+      - /app/dist
+      - /app/node_modules
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads
     env_file:
@@ -49,7 +61,7 @@ services:
     security_opt:
       - no-new-privileges:true
     networks:
-      - server_network
+      - api_network
     volumes:
       - ./data/postgres:/var/lib/postgresql
     ports:
@@ -103,5 +115,5 @@ services:
       - ./.env
 
 networks:
-  server_network:
+  api_network:
   nginx_network:
