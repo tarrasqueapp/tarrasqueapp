@@ -5,16 +5,16 @@ services:
   ### Front-end ###
   #################
 
-  client:
+  ui:
     build:
       context: .
-      dockerfile: ./packages/client/docker/Dockerfile.prod
+      dockerfile: ./apps/ui/docker/Dockerfile.prod
 
   ################
   ### Back-end ###
   ################
 
-  server:
+  api:
     build:
       context: .
-      dockerfile: ./packages/server/docker/Dockerfile.prod
+      dockerfile: ./apps/api/docker/Dockerfile.prod

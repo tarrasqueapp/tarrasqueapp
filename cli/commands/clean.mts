@@ -19,13 +19,13 @@ async function main() {
   echo(`📂 Cleaning root...`);
   await $`rm -rf yarn-error.log node_modules`;
 
-  echo(`📂 Cleaning client...`);
-  cd('packages/client');
-  await $`rm -rf yarn-error.log node_modules .next dist`;
+  echo(`📂 Cleaning ui...`);
+  cd('apps/ui');
+  await $`rm -rf .next`;
 
-  echo(`📂 Cleaning server...`);
-  cd('../server');
-  await $`rm -rf yarn-error.log node_modules dist`;
+  echo(`📂 Cleaning api...`);
+  cd('../api');
+  await $`rm -rf dist`;
 
   if (argv.all || argv.a) {
     cd('../../data');

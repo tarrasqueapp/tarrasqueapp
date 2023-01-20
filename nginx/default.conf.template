@@ -38,26 +38,26 @@ server {
 
     location /_next/static {
         proxy_cache STATIC;
-        proxy_pass http://client:3000;
+        proxy_pass http://ui:3000;
     }
 
     location /static {
         proxy_cache STATIC;
         proxy_ignore_headers Cache-Control;
         proxy_cache_valid 60m;
-        proxy_pass http://client:3000;
+        proxy_pass http://ui:3000;
     }
 
     location / {
-        proxy_pass http://client:3000;
+        proxy_pass http://ui:3000;
     }
 
     location /api {
-        proxy_pass http://server:3000;
+        proxy_pass http://api:3000;
     }
 
     location /socket.io {
-        proxy_pass http://server:3000;
+        proxy_pass http://api:3000;
     }
 
     location /tus {

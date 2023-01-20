@@ -1,4 +1,4 @@
-name: 'Deploy client'
+name: 'Deploy ui'
 
 on:
   workflow_call:
@@ -17,13 +17,13 @@ on:
         type: string
 
 env:
-  DOCKERFILE: packages/client/docker/Dockerfile.prod
-  HELM_CHART: client
-  IMAGE_NAME: client
-  KUBE_DEPLOYMENT: client
+  DOCKERFILE: apps/ui/docker/Dockerfile.prod
+  HELM_CHART: ui
+  IMAGE_NAME: ui
+  KUBE_DEPLOYMENT: ui
 
 jobs:
-  deploy-client:
+  deploy-ui:
     runs-on: ubuntu-latest
 
     environment:

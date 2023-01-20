@@ -1,0 +1,16 @@
+FROM node:18-alpine
+
+RUN apk add --no-cache libc6-compat jq
+
+WORKDIR /app
+
+COPY apps/ui/package.json apps/ui/yarn.lock ./
+
+RUN yarn install --pure-lockfile
+
+COPY apps/ui ./
+
+COPY package.json /root/
+RUN jq -r .version /root/package.json > /root/.version
+
+CMD export VERSION=$(cat /root/.version) && yarn dev

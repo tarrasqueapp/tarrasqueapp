@@ -5,12 +5,12 @@ services:
   ### Front-end ###
   #################
 
-  client:
+  ui:
     build:
       context: .
-      dockerfile: ./packages/client/docker/Dockerfile.dev
+      dockerfile: ./apps/ui/docker/Dockerfile.dev
     volumes:
-      - ./packages/client:/app
+      - ./apps/ui:/app
       - /app/.next
       - /app/node_modules
 
@@ -18,11 +18,11 @@ services:
   ### Back-end ###
   ################
 
-  server:
+  api:
     build:
       context: .
-      dockerfile: ./packages/server/docker/Dockerfile.dev
+      dockerfile: ./apps/api/docker/Dockerfile.dev
     volumes:
-      - ./packages/server:/app
+      - ./apps/api:/app
       - /app/dist
       - /app/node_modules

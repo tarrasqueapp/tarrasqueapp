@@ -22,10 +22,10 @@ async function main() {
 
     Examples
       $ tarrasque docker up
-      $ tarrasque docker up client nginx
+      $ tarrasque docker up ui nginx
       $ tarrasque docker up --db
       $ tarrasque docker up --prod
-      $ tarrasque docker up --prod --db client
+      $ tarrasque docker up --prod --db ui
   `);
     process.exit(0);
   }
@@ -62,7 +62,7 @@ async function main() {
       services.push('postgres');
     }
 
-    // Set the storage provider to use for the server
+    // Set the storage provider to use for the api
     if (process.env.STORAGE_PROVIDER === 'local') {
       services.push('tusd-local');
     } else if (process.env.STORAGE_PROVIDER === 's3') {

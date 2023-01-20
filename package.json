@@ -6,10 +6,9 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
-    "client": "cd packages/client && yarn",
-    "server": "cd packages/server && yarn",
-    "lint": "yarn client lint && yarn server lint",
-    "ncu": "ncu"
+    "ui": "cd packages/ui && yarn",
+    "api": "cd packages/api && yarn",
+    "lint": "yarn ui lint && yarn api lint"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",

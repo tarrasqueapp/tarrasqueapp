@@ -24,4 +24,4 @@ logs
 # Custom
 /data
 /helm
-packages/server/prisma/seed.ts
+apps/api/prisma/seed.ts

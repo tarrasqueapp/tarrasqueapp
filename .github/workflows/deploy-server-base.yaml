@@ -1,4 +1,4 @@
-name: 'Deploy server'
+name: 'Deploy api'
 
 on:
   workflow_call:
@@ -17,13 +17,13 @@ on:
         type: string
 
 env:
-  DOCKERFILE: packages/server/docker/Dockerfile.prod
-  HELM_CHART: server
-  IMAGE_NAME: server
-  KUBE_DEPLOYMENT: server
+  DOCKERFILE: apps/api/docker/Dockerfile.prod
+  HELM_CHART: api
+  IMAGE_NAME: api
+  KUBE_DEPLOYMENT: api
 
 jobs:
-  deploy-server:
+  deploy-api:
     runs-on: ubuntu-latest
 
     environment:

@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://tarrasque.app" target="_blank"><img src="packages/client/public/images/logo.svg" width="150" /></a>
+  <a href="https://tarrasque.app" target="_blank"><img src="apps/ui/public/images/logo.svg" width="150" /></a>
   <p>Tarrasque App</p>
 </h1>
 
@@ -50,19 +50,19 @@ This will start the production server at `http://localhost`.
 
 To create the database, run:
 
-    yarn server prisma db push
+    yarn api prisma db push
 
 To generate the Prisma client types, run:
 
-    yarn server prisma generate
+    yarn api prisma generate
 
 To create a database migration, run:
 
-    yarn server prisma migrate dev --name <migration-name>
+    yarn api prisma migrate dev --name <migration-name>
 
 To browse the database using Prisma Studio, run:
 
-    yarn server prisma studio
+    yarn api prisma studio
 
 ## Contributing
 

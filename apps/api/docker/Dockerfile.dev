@@ -1,0 +1,22 @@
+FROM node:18-slim
+
+RUN apt-get update && apt-get -y install openssl jq
+
+COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
+
+WORKDIR /app
+
+COPY apps/api/package.json apps/api/yarn.lock ./
+COPY apps/api/prisma prisma
+
+RUN yarn install --pure-lockfile
+
+COPY apps/api ./
+
+RUN yarn prisma generate
+
+COPY package.json /root/
+RUN jq -r .version /root/package.json > /root/.version
+
+CMD export VERSION=$(cat /root/.version) && yarn start:dev
