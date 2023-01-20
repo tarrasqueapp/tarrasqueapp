@@ -13,10 +13,16 @@ services:
     networks:
       - nginx_network
     build:
+      context: .
+      dockerfile: ./apps/ui/docker/Dockerfile.dev
       args:
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
         - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+    volumes:
+      - ./apps/ui:/app
+      - /app/.next
+      - /app/node_modules
     env_file:
       - ./.env
 
@@ -32,7 +38,13 @@ services:
     networks:
       - nginx_network
       - api_network
+    build:
+      context: .
+      dockerfile: ./apps/api/docker/Dockerfile.dev
     volumes:
+      - ./apps/api:/app
+      - /app/dist
+      - /app/node_modules
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads
     env_file:

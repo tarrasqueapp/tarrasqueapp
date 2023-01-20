@@ -11,9 +11,8 @@ logs
 node_modules
 
 # Build
-.cache-loader
-.docusaurus
 .next
+out
 build
 dist
 tsconfig.tsbuildinfo
