@@ -1,16 +1,30 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
+RUN apk add --no-cache libc6-compat
+RUN apk update
+# Set working directory
+WORKDIR /app
+RUN yarn global add turbo
+COPY . .
+RUN turbo prune --scope=ui --docker
 
+# Add lockfile and package.json's of isolated subworkspace
+FROM node:18-alpine AS installer
 RUN apk add --no-cache libc6-compat jq
-
+RUN apk update
 WORKDIR /app
 
-COPY apps/ui/package.json apps/ui/yarn.lock ./
+# First install the dependencies (as they change less often)
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/yarn.lock ./yarn.lock
+RUN yarn install
 
-RUN yarn install --pure-lockfile
 
-COPY apps/ui ./
+# Run the project
+COPY --from=builder /app/out/full/ .
+COPY turbo.json turbo.json
 
-COPY package.json /root/
-RUN jq -r .version /root/package.json > /root/.version
+# Get the version from package.json
+RUN jq -r .version ./package.json > ./.version
 
-CMD export VERSION=$(cat /root/.version) && yarn dev
+CMD export VERSION=$(cat ./.version) && yarn turbo run build --filter=ui...
