@@ -1,12 +1,13 @@
 FROM node:18-alpine AS builder
 
 RUN apk add --no-cache libc6-compat jq
+RUN corepack enable pnpm
 
 WORKDIR /app
 
-COPY apps/ui/package.json apps/ui/yarn.lock ./
+COPY apps/ui/package.json apps/ui/pnpm-lock.yaml ./
 
-RUN yarn install --pure-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY apps/ui ./
 
@@ -18,10 +19,12 @@ ARG JWT_ACCESS_TOKEN_EXPIRATION_TIME
 COPY package.json /root/
 RUN jq -r .version /root/package.json > /root/.version
 
-RUN export VERSION=$(cat /root/.version) && yarn build
+RUN export VERSION=$(cat /root/.version) && pnpm build
 
 
 FROM node:18-alpine AS runner
+
+RUN corepack enable pnpm
 
 WORKDIR /app
 
@@ -33,8 +36,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/yarn.lock ./yarn.lock
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 USER nextjs
 
-CMD yarn start
+CMD pnpm start

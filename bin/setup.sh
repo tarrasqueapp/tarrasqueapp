@@ -51,30 +51,28 @@ do_install() {
     fi
   fi
 
-  # Check that Yarn is installed
-  if ! command_exists yarn; then
-    echo "🚨 Yarn is not installed. Please install Yarn and try again."
-    # Automatic installation of Yarn
+  # Check that pnpm is installed
+  if ! command_exists pnpm; then
+    echo "🚨 pnpm is not installed. Please install pnpm and try again."
+    # Automatic installation of pnpm
     if [ "$OS" != "windows" ]; then
-      read -p "Do you want to install Yarn? [y/N] " -n 1 -r
+      read -p "Do you want to install pnpm? [y/N] " -n 1 -r
       echo
-      # Check if user wants to install Yarn
+      # Check if user wants to install pnpm
       if [[ $REPLY =~ ^[Yy]$ ]]; then
         if [ "$OS" = "mac" ]; then
-          brew install yarn
+          brew install pnpm
         elif [ "$OS" = "linux" ]; then
-          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          sudo apt-get update && sudo apt-get install yarn
+          curl -L https://unpkg.com/@pnpm/self-installer | node
         fi
-      # Exit if user doesn't want to install Yarn
+      # Exit if user doesn't want to install pnpm
       else
-        echo "🚨 Yarn is required to install this program."
+        echo "🚨 pnpm is required to install this program."
         exit 1
       fi
-    # Exit if Yarn is not installed on Windows
+    # Exit if pnpm is not installed on Windows
     else
-      echo "See https://yarnpkg.com/en/docs/install"
+      echo "See https://pnpm.io/installation"
       exit 1
     fi
   fi

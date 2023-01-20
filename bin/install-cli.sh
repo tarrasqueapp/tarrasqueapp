@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 SCRIPT=$(readlink -f "$0")
@@ -8,7 +8,7 @@ DIR=$(dirname "$SCRIPT_PATH")
 do_install() {
   # Install dependencies
   echo "📂 Installing dependencies..."
-  yarn
+  pnpm install
 
   # Detect profile file
   if [ -f "$HOME/.zshrc" ]; then

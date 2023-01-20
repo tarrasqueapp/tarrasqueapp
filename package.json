@@ -5,17 +5,10 @@
   "author": "Richard Solomou <richard@tarrasque.app>",
   "license": "AGPL-3.0-or-later",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
-    "ui": "cd apps/ui && yarn",
-    "api": "cd apps/api && yarn",
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "ui": "cd apps/ui && pnpm",
+    "api": "cd apps/api && pnpm",
+    "lint": "pnpm ui lint && pnpm api lint"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
@@ -28,9 +21,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.1",
     "prettier": "^2.8.3",
-    "turbo": "^1.7.0",
     "typescript": "^4.9.4",
     "zx": "^7.1.1"
-  },
-  "packageManager": "yarn@1.22.19"
+  }
 }

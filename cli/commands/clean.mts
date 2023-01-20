@@ -17,7 +17,7 @@ async function main() {
   }
 
   echo(`📂 Cleaning root...`);
-  await $`rm -rf yarn-error.log node_modules`;
+  await $`rm -rf node_modules`;
 
   echo(`📂 Cleaning ui...`);
   cd('apps/ui');

@@ -1,21 +1,22 @@
 FROM node:18-slim AS builder
 
 RUN apt-get update && apt-get -y install openssl jq
+RUN corepack enable pnpm
 
 WORKDIR /app
 
-COPY apps/api/package.json apps/api/yarn.lock ./
+COPY apps/api/package.json apps/api/pnpm-lock.yaml ./
 COPY apps/api/emails emails
 COPY apps/api/prisma prisma
 
-RUN yarn install --pure-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY apps/api ./
 
 COPY package.json /root/
 RUN jq -r .version /root/package.json > /root/.version
 
-RUN export VERSION=$(cat /root/.version) && yarn build
+RUN export VERSION=$(cat /root/.version) && pnpm build
 
 
 FROM node:18-slim AS runner
@@ -26,26 +27,27 @@ RUN mkdir -p ./dist && chown -R node:node ./dist
 RUN chown -R node:node .
 
 RUN apt-get update && apt-get -y install openssl jq
+RUN corepack enable pnpm
 
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
-COPY apps/api/package.json apps/api/yarn.lock ./
+COPY apps/api/package.json apps/api/pnpm-lock.yaml ./
 COPY apps/api/emails emails
 COPY apps/api/prisma prisma
 
-RUN yarn install --pure-lockfile --production
+RUN pnpm install --frozen-lockfile --production
 
 COPY --from=builder --chown=node:node /app/dist ./dist
 COPY --from=builder --chown=node:node /app/src ./src
 COPY --from=builder --chown=node:node /app/prisma ./prisma
 COPY --from=builder --chown=node:node /app/emails ./emails
 
-RUN yarn prisma generate
+RUN pnpm prisma generate
 
 USER node
 
 COPY package.json /home/node/
 RUN jq -r .version /home/node/package.json > /home/node/.version
 
-CMD export VERSION=$(cat /home/node/.version) && yarn start:prod
+CMD export VERSION=$(cat /home/node/.version) && pnpm start:prod

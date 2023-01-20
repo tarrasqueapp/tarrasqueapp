@@ -17,25 +17,17 @@ async function main() {
     <cmd> represents the Docker Compose command to run.
 
     Options
-      --prod, -p    Can be used to run the application in production mode
       --db          Can be used to run the local database service
 
     Examples
       $ tarrasque docker up
       $ tarrasque docker up ui nginx
       $ tarrasque docker up --db
-      $ tarrasque docker up --prod
-      $ tarrasque docker up --prod --db ui
   `);
     process.exit(0);
   }
 
-  // Use the appropriate docker-compose file depending on the environment
-  const composeFiles = ['docker-compose.yaml'];
-  composeFiles.push(`docker-compose.${argv.prod || argv.p ? 'prod' : 'dev'}.yaml`);
-  const composeFilesString = composeFiles.map((file) => `-f ${file}`).join(' ');
-
-  // Get the command to run and remove the --prod and -p flags from the arguments
+  // Get the command to run
   let cmd = argv._[1];
 
   if (cmd.startsWith('up')) {
@@ -76,7 +68,7 @@ async function main() {
     cmd = `up --build --remove-orphans ${services.join(' ')} `;
   }
 
-  const composeCommand = `${composeFilesString} --env-file ./.env ${cmd.trim()}`;
+  const composeCommand = `--env-file ./.env ${cmd.trim()}`;
 
   spawn('docker-compose', composeCommand.split(' '), { stdio: [0, 1, 2] });
 }
