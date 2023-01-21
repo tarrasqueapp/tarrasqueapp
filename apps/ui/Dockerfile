@@ -42,6 +42,9 @@ FROM node:18-alpine AS runner
 
 WORKDIR /app
 
+COPY package.json ./package-root.json
+RUN jq -r .version ./package-root.json > ./.version
+
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -54,8 +57,5 @@ COPY --from=installer /app/apps/ui/package.json .
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/static ./apps/ui/.next/static
-
-COPY package.json ./package-root.json
-RUN jq -r .version ./package-root.json > ./.version
 
 CMD export VERSION=$(cat ./.version) && node apps/ui/server.js

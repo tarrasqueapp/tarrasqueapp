@@ -39,6 +39,9 @@ FROM node:18-alpine AS runner
 
 WORKDIR /app
 
+COPY package.json ./package-root.json
+RUN jq -r .version ./package-root.json > ./.version
+
 # Don't run production as root
 RUN addgroup --system --gid 1001 nestjs
 RUN adduser --system --uid 1001 nestjs
@@ -48,8 +51,5 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 COPY --from=installer /app .
-
-COPY package.json ./package-root.json
-RUN jq -r .version ./package-root.json > ./.version
 
 CMD export VERSION=$(cat ./.version) && node apps/api/dist/main.js
