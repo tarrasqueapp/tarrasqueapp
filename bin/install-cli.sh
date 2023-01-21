@@ -19,7 +19,7 @@ do_install() {
     PROFILE_FILE="$HOME/.bashrc"
   else
     echo "🚨 Unable to find a profile file. Please add the following to your profile:"
-    echo "  alias tarrasque=$DIR/cli/index.mts"
+    echo "  alias tarrasque=$DIR/apps/cli/index.mts"
     exit 1
   fi
 
@@ -27,7 +27,7 @@ do_install() {
   # Check that the profile file exists
   if [ ! -f "$PROFILE_FILE" ]; then
     echo "🚨 Unable to find a profile file. Please add the following to your profile:"
-    echo "  alias tarrasque=$DIR/cli/index.mts"
+    echo "  alias tarrasque=$DIR/apps/cli/index.mts"
     exit 1
   fi
 
@@ -41,7 +41,7 @@ do_install() {
 
   # Alias tarrasque
   echo "📂 Aliasing tarrasque..."
-  echo "alias tarrasque=\"$DIR/cli/index.mts\"" >> $PROFILE_FILE
+  echo "alias tarrasque=\"$DIR/apps/cli/index.mts\"" >> $PROFILE_FILE
 
   # Install completion
   echo "✅️ Tarrasque CLI has been installed."
