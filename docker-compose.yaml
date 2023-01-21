@@ -1,37 +1,8 @@
 version: '3.8'
 
 services:
-  #################
-  ### Front-end ###
-  #################
-
-  ui:
-    container_name: ui
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - nginx_network
-    build:
-      context: .
-      dockerfile: ./apps/ui/docker/Dockerfile.dev
-      args:
-        - HOST=${HOST}
-        - NODE_ENV=${NODE_ENV}
-        - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
-    volumes:
-      - ./apps/ui:/app
-      - /app/.next
-      - /app/node_modules
-    env_file:
-      - ./.env
-
-  ################
-  ### Back-end ###
-  ################
-
-  api:
-    container_name: api
+  turbo:
+    container_name: turbo
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -40,19 +11,18 @@ services:
       - api_network
     build:
       context: .
-      dockerfile: ./apps/api/docker/Dockerfile.dev
+      dockerfile: ./Dockerfile.dev
+      args:
+        - HOST=${HOST}
+        - NODE_ENV=${NODE_ENV}
+        - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
     volumes:
-      - ./apps/api:/app
-      - /app/dist
+      - ./:/app
       - /app/node_modules
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads
     env_file:
       - ./.env
-
-  ################
-  ### Database ###
-  ################
 
   postgres:
     container_name: postgres
@@ -68,10 +38,6 @@ services:
       - '5432:5432'
     env_file:
       - ./.env
-
-  ######################
-  ### Infrastructure ###
-  ######################
 
   nginx:
     container_name: nginx

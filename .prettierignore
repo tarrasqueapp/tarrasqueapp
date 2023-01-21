@@ -29,4 +29,4 @@ yarn-error.log*
 
 # local
 /data
-/helm
+*.yaml

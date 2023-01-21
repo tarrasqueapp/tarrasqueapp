@@ -8,7 +8,7 @@ DIR=$(dirname "$SCRIPT_PATH")
 do_install() {
   # Install dependencies
   echo "📂 Installing dependencies..."
-  pnpm install
+  yarn install
 
   # Detect profile file
   if [ -f "$HOME/.zshrc" ]; then
