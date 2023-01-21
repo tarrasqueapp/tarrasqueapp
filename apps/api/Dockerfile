@@ -23,15 +23,16 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
 
 RUN yarn install
-RUN yarn prisma generate
 
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
-COPY package.json /root/
-RUN jq -r .version /root/package.json > /root/.version
+RUN yarn workspace api prisma generate
 
-RUN export VERSION=$(cat /root/.version) && yarn turbo run build --filter=api...
+COPY package.json ./package-root.json
+RUN jq -r .version ./package-root.json > ./.version
+
+RUN export VERSION=$(cat ./.version) && yarn turbo run build --filter=api...
 
 
 FROM node:18-alpine AS runner
@@ -48,7 +49,7 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 COPY --from=installer /app .
 
-COPY package.json /root/
-RUN jq -r .version /root/package.json > /root/.version
+COPY package.json ./package-root.json
+RUN jq -r .version ./package-root.json > ./.version
 
-CMD export VERSION=$(cat /root/.version) && node apps/api/dist/main.js
+CMD export VERSION=$(cat ./.version) && node apps/api/dist/main.js

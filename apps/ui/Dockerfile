@@ -32,10 +32,10 @@ ARG AXIOS_BASE_URL
 ARG NODE_ENV
 ARG JWT_ACCESS_TOKEN_EXPIRATION_TIME
 
-COPY package.json /root/
-RUN jq -r .version /root/package.json > /root/.version
+COPY package.json ./package-root.json
+RUN jq -r .version ./package-root.json > ./.version
 
-RUN export VERSION=$(cat /root/.version) && yarn turbo run build --filter=ui...
+RUN export VERSION=$(cat ./.version) && yarn turbo run build --filter=ui...
 
 
 FROM node:18-alpine AS runner
@@ -55,7 +55,7 @@ COPY --from=installer /app/apps/ui/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/static ./apps/ui/.next/static
 
-COPY package.json /root/
-RUN jq -r .version /root/package.json > /root/.version
+COPY package.json ./package-root.json
+RUN jq -r .version ./package-root.json > ./.version
 
-CMD export VERSION=$(cat /root/.version) && node apps/ui/server.js
+CMD export VERSION=$(cat ./.version) && node apps/ui/server.js
