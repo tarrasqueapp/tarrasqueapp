@@ -18,14 +18,12 @@ RUN apk update
 
 WORKDIR /app
 
-# First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
 
 RUN yarn install
 
-# Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
@@ -57,4 +55,7 @@ COPY --from=installer /app/apps/ui/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/static ./apps/ui/.next/static
 
-CMD node apps/ui/server.js
+COPY package.json /root/
+RUN jq -r .version /root/package.json > /root/.version
+
+CMD export VERSION=$(cat /root/.version) && node apps/ui/server.js
