@@ -38,26 +38,26 @@ server {
 
     location /_next/static {
         proxy_cache STATIC;
-        proxy_pass http://turbo:4200;
+        proxy_pass http://turbo:3000;
     }
 
     location /static {
         proxy_cache STATIC;
         proxy_ignore_headers Cache-Control;
         proxy_cache_valid 60m;
-        proxy_pass http://turbo:4200;
+        proxy_pass http://turbo:3000;
     }
 
     location / {
-        proxy_pass http://turbo:4200;
+        proxy_pass http://turbo:3000;
     }
 
     location /api {
-        proxy_pass http://turbo:3333;
+        proxy_pass http://turbo:3001;
     }
 
     location /socket.io {
-        proxy_pass http://turbo:3333;
+        proxy_pass http://turbo:3001;
     }
 
     location /tus {
