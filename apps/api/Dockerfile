@@ -37,6 +37,9 @@ RUN export VERSION=$(cat ./.version) && yarn turbo run build --filter=api...
 
 FROM node:18-alpine AS runner
 
+RUN apk add --no-cache libc6-compat jq
+RUN apk update
+
 WORKDIR /app
 
 COPY package.json ./package-root.json
