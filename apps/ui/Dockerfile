@@ -53,10 +53,13 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next .
-COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/public .
 COPY --from=installer /app/apps/ui/next.config.js .
-COPY --from=installer /app/apps/ui/node_modules .
 COPY --from=installer /app/apps/ui/package.json .
 
-CMD export VERSION=$(cat ./.version) && yarn start
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/static ./apps/ui/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/public /app/apps/ui/.next/standalone/public
+
+CMD export VERSION=$(cat ./.version) && node apps/ui/server.js
