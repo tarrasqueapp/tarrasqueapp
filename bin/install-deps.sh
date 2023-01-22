@@ -9,14 +9,8 @@ cd $SCRIPT_DIR/..
 
 do_install() {
    # Install dependencies
-  echo "📂 Installing development dependencies..."
-  pnpm install
-
-  echo "📂 Installing ui dependencies..."
-  pnpm ui install
-
-  echo "📂 Installing api dependencies..."
-  pnpm api install
+  echo "📂 Installing dependencies..."
+  yarn install
 
   # Install completion
   echo "✅️ Tarrasque App dependencies have been installed."

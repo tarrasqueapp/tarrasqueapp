@@ -9,12 +9,13 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "prisma migrate deploy && node dist/main",
     "ncu": "ncu",
     "lint": "tsc --noEmit && eslint .",
-    "seed": "prisma db push && prisma db seed"
+    "seed": "prisma db push && prisma db seed",
+    "prisma": "prisma"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

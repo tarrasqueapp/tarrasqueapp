@@ -17,7 +17,7 @@ on:
         type: string
 
 env:
-  DOCKERFILE: apps/api/docker/Dockerfile.prod
+  DOCKERFILE: apps/api/Dockerfile
   HELM_CHART: api
   IMAGE_NAME: api
   KUBE_DEPLOYMENT: api

@@ -27,6 +27,9 @@ yarn-error.log*
 .env
 !.env.example
 
+# turbo
+.turbo
+
 # local
 /data
 

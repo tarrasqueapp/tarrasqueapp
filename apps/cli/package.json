@@ -1,0 +1,18 @@
+{
+  "name": "cli",
+  "version": "0.0.0",
+  "repository": "https://github.com/tarrasqueapp/tarrasqueapp",
+  "author": "Richard Solomou <richard@tarrasque.app>",
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "scripts": {
+    "ncu": "ncu"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "dotenv": "^16.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4",
+    "zx": "^7.1.1"
+  }
+}
