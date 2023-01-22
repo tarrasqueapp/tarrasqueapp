@@ -55,4 +55,4 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 COPY --from=installer /app .
 
-CMD export VERSION=$(cat ./.version) && node apps/api/dist/main.js
+CMD export VERSION=$(cat ./.version) && yarn workspace api start:prod
