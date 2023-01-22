@@ -60,6 +60,6 @@ COPY --from=installer /app/apps/ui/package.json .
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/.next/static ./apps/ui/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/public ./apps/ui/.next/standalone/public
+COPY --from=installer --chown=nextjs:nodejs /app/apps/ui/public ./apps/ui/public
 
 CMD export VERSION=$(cat ./.version) && node apps/ui/server.js
