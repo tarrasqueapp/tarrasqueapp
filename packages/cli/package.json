@@ -1,6 +1,6 @@
 {
-  "name": "cli",
-  "version": "0.0.0",
+  "name": "@tarrasque/cli",
+  "version": "1.0.0-alpha",
   "repository": "https://github.com/tarrasqueapp/tarrasqueapp",
   "author": "Richard Solomou <richard@tarrasque.app>",
   "license": "AGPL-3.0-or-later",
