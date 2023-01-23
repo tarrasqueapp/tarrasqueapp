@@ -1,25 +1,27 @@
 FROM node:18-slim
 
-RUN apt-get update && apt-get -y install openssl jq
-RUN yarn global add turbo
-
-COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
-COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
+RUN apt-get update && apt-get -y install openssl
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-COPY apps/ui/package.json ./apps/ui/
-COPY apps/api/package.json ./apps/api/
-COPY apps/api/prisma ./apps/api/prisma
+# Install ffmpeg
+COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
+# Copy only the files needed to install dependencies
+COPY package.json yarn.lock ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/ui/package.json ./apps/ui/
+COPY packages/cli/package.json ./packages/cli/
+
+# Install dependencies
 RUN yarn install --frozen-lockfile
 
+# Copy the rest of the files
 COPY . .
 
-RUN yarn workspace api prisma generate
+# Generate prisma client
+RUN yarn api prisma generate
 
-COPY package.json /root/
-RUN jq -r .version /root/package.json > /root/.version
-
-CMD export VERSION=$(cat /root/.version) && yarn dev
+# Start the dev server
+CMD yarn turbo run dev --parallel

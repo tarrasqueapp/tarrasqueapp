@@ -1,5 +1,7 @@
+import packageJson from '../package.json';
+
 export const config = {
-  VERSION: process.env.VERSION ?? '',
+  VERSION: packageJson.version,
   HOST: process.env.HOST ?? 'http://localhost',
   NODE_ENV: process.env.NODE_ENV ?? 'development',
   VERBOSE: process.env.VERBOSE === 'true',

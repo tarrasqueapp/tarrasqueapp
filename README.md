@@ -44,19 +44,19 @@ This will start the server and the local database service at `http://localhost`.
 
 To create the database, run:
 
-    yarn workspace api prisma db push
+    yarn api prisma db push
 
 To generate the Prisma client types, run:
 
-    yarn workspace api prisma generate
+    yarn api prisma generate
 
 To create a database migration, run:
 
-    yarn workspace api prisma migrate dev --name <migration-name>
+    yarn api prisma migrate dev --name <migration-name>
 
 To browse the database using Prisma Studio, run:
 
-    yarn workspace api prisma studio
+    yarn api prisma studio
 
 ## Contributing
 

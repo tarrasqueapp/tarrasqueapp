@@ -13,7 +13,7 @@ RUN turbo prune --scope=ui --docker
 
 FROM node:18-alpine AS installer
 
-RUN apk add --no-cache libc6-compat jq
+RUN apk add --no-cache libc6-compat
 RUN apk update
 
 WORKDIR /app
@@ -32,21 +32,15 @@ ARG AXIOS_BASE_URL
 ARG NODE_ENV
 ARG JWT_ACCESS_TOKEN_EXPIRATION_TIME
 
-COPY package.json ./package-root.json
-RUN jq -r .version ./package-root.json > ./.version
-
-RUN export VERSION=$(cat ./.version) && yarn turbo run build --filter=ui...
+RUN yarn turbo run build --filter=@tarrasque/ui...
 
 
 FROM node:18-alpine AS runner
 
-RUN apk add --no-cache libc6-compat jq
+RUN apk add --no-cache libc6-compat
 RUN apk update
 
 WORKDIR /app
-
-COPY package.json ./package-root.json
-RUN jq -r .version ./package-root.json > ./.version
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
@@ -55,4 +49,4 @@ USER nextjs
 
 COPY --from=installer /app .
 
-CMD export VERSION=$(cat ./.version) && yarn workspace ui start
+CMD yarn turbo run start --filter=@tarrasque/ui...

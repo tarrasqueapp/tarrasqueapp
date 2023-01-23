@@ -53,8 +53,6 @@ ingress:
         - www.tarrasque.app
 
 env:
-  - name: VERSION
-    value: "1.0.0"
   - name: HOST
     value: "https://tarrasque.app"
   - name: NODE_ENV

@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    // Global
-    VERSION: process.env.VERSION,
     // URL
     HOST: process.env.HOST,
     AXIOS_BASE_URL: process.env.AXIOS_BASE_URL,

@@ -10,9 +10,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
+    "api": "yarn workspace @tarrasque/api",
+    "ui": "yarn workspace @tarrasque/ui",
+    "cli": "yarn workspace @tarrasque/cli",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
