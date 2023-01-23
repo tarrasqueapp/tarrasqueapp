@@ -1,20 +1,7 @@
 {
+  "extends": "@tarrasque/config/tsconfig/nestjs.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "esnext",
-    "sourceMap": true,
     "outDir": "./dist",
-    "incremental": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "exclude": ["node_modules", "dist"]
+    "baseUrl": "./"
+  }
 }

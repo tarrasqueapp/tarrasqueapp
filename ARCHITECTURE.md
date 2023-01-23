@@ -71,7 +71,7 @@ Additionally, the `api` app uses [@nestjs/swagger](https://www.npmjs.com/package
 
 ## `cli`
 
-The `cli` app is a command-line interface (CLI) built with the following technologies:
+The `cli` package is a command-line interface built with the following technologies:
 
 - [zx](https://www.npmjs.com/package/zx): A tool for writing better scripts.
 - [TypeScript](https://www.typescriptlang.org/): A typed superset of JavaScript that compiles to plain JavaScript.

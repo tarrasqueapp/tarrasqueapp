@@ -1,0 +1,25 @@
+{
+  "name": "@tarrasque/config",
+  "version": "0.0.0",
+  "repository": "https://github.com/tarrasqueapp/tarrasqueapp",
+  "author": "Richard Solomou <richard@tarrasque.app>",
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "files": [
+    "eslint/base.json",
+    "eslint/react.json",
+    "tsconfig/base.json",
+    "tsconfig/esm.json",
+    "tsconfig/nestjs.json",
+    "tsconfig/nextjs.json",
+    "tsconfig/react-library.json"
+  ],
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.1"
+  }
+}

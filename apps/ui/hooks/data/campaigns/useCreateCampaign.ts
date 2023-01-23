@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../lib/api';
-import { CampaignInterface } from '../../../lib/types';
+import { CampaignInterface, UserInterface } from '../../../lib/types';
 
 /**
  * Send a request to create a campaign
@@ -26,10 +26,11 @@ export function useCreateCampaign() {
     onMutate: async (campaign) => {
       await queryClient.cancelQueries([`campaigns`]);
       const previousCampaigns = queryClient.getQueryData<CampaignInterface[]>([`campaigns`]);
+      const user = queryClient.getQueryData<UserInterface>(['auth']);
       const id = Math.random().toString(36).substring(2, 9);
       queryClient.setQueryData([`campaigns`], (old: Partial<CampaignInterface>[] = []) => [
         ...old,
-        { id, ...campaign },
+        { id, ...campaign, createdById: user?.id, members: [] },
       ]);
       return { previousCampaigns };
     },

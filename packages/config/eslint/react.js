@@ -1,5 +1,5 @@
+/** @type {import('eslint').ESLint} */
 module.exports = {
-  root: true,
   parser: '@typescript-eslint/parser',
   plugins: ['react', '@typescript-eslint', 'prettier'],
   extends: [
@@ -26,10 +26,5 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
-  },
-  settings: {
-    react: {
-      version: 'detect',
-    },
   },
 };

@@ -26,7 +26,8 @@
     "@mui/lab": "^5.0.0-alpha.116",
     "@mui/material": "^5.11.5",
     "@next/font": "^13.1.4",
-    "@tanstack/react-query": "^4.22.3",
+    "@tanstack/react-query": "^4.22.4",
+    "@tarrasque/config": "*",
     "@uppy/core": "^3.0.4",
     "@uppy/tus": "^3.0.5",
     "axios": "^1.2.3",
@@ -53,7 +54,6 @@
     "@svgr/webpack": "^6.5.1",
     "@types/node": "^18.11.18",
     "@types/nprogress": "^0.2.0",
-    "@types/react": "^18.0.27",
-    "typescript": "^4.9.4"
+    "@types/react": "^18.0.27"
   }
 }
