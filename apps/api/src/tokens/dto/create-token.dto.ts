@@ -14,8 +14,5 @@ export class CreateTokenDto {
   y: number;
 
   @IsString()
-  playerCharacterId: string | null;
-
-  @IsString()
-  nonPlayerCharacterId: string | null;
+  characterId: string | null;
 }

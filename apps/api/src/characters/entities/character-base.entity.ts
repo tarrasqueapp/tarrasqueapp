@@ -1,21 +1,15 @@
-import { NonPlayerCharacter } from '@prisma/client';
+import { Character } from '@prisma/client';
 import { IsDateString, IsString, ValidateNested } from 'class-validator';
 
 import { MediaEntity } from '../../media/entities/media.entity';
 import { UserBaseEntity } from '../../users/entities/user-base.entity';
 
-export class NonPlayerCharacterBaseEntity implements NonPlayerCharacter {
+export class CharacterBaseEntity implements Character {
   @IsString()
   id: string;
 
   @IsString()
   name: string;
-
-  @IsString()
-  size: string;
-
-  @IsString()
-  alignment: string;
 
   // DateTime
   @IsDateString()

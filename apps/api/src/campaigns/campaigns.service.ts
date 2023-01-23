@@ -26,8 +26,7 @@ export class CampaignsService {
         where: { OR: [{ createdById: userId }, { members: { some: { userId } } }] },
         include: {
           members: { include: { user: { include: { avatar: true } } } },
-          playerCharacters: { include: { controlledBy: true, media: true } },
-          nonPlayerCharacters: { include: { controlledBy: true, media: true } },
+          characters: { include: { controlledBy: true, media: true } },
           createdBy: { include: { avatar: true } },
           invites: { select: CAMPAIGN_INVITE_SAFE_FIELDS },
         },
@@ -68,8 +67,7 @@ export class CampaignsService {
         where: { id: campaignId },
         include: {
           members: { include: { user: { include: { avatar: true } } } },
-          playerCharacters: { include: { controlledBy: true, media: true } },
-          nonPlayerCharacters: { include: { controlledBy: true, media: true } },
+          characters: { include: { controlledBy: true, media: true } },
           createdBy: { include: { avatar: true } },
           invites: { select: CAMPAIGN_INVITE_SAFE_FIELDS },
         },

@@ -1,14 +1,10 @@
 import { ValidateNested } from 'class-validator';
 
-import { NonPlayerCharacterBaseEntity } from '../../characters/entities/non-player-character-base.entity';
-import { PlayerCharacterBaseEntity } from '../../characters/entities/player-character-base.entity';
+import { CharacterBaseEntity } from '../../characters/entities/character-base.entity';
 import { TokenBaseEntity } from './token-base.entity';
 
 export class TokenEntity extends TokenBaseEntity {
-  // Player Character
+  // Character
   @ValidateNested()
-  playerCharacter: PlayerCharacterBaseEntity;
-  // Non Player Character
-  @ValidateNested()
-  nonPlayerCharacter: NonPlayerCharacterBaseEntity;
+  character: CharacterBaseEntity;
 }

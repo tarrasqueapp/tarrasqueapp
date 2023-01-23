@@ -4,7 +4,7 @@ import { PrismaModule } from 'nestjs-prisma';
 
 import { AuthModule } from '../auth/auth.module';
 import { CampaignsModule } from '../campaigns/campaigns.module';
-import { CharactersModule } from '../characters/entities/characters.module';
+import { CharactersModule } from '../characters/characters.module';
 import { MapsModule } from '../maps/maps.module';
 import { MediaModule } from '../media/media.module';
 import { PointerModule } from '../pointer/pointer.module';

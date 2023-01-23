@@ -1,7 +1,6 @@
 import { ValidateNested } from 'class-validator';
 
-import { NonPlayerCharacterBaseEntity } from '../../characters/entities/non-player-character-base.entity';
-import { PlayerCharacterBaseEntity } from '../../characters/entities/player-character-base.entity';
+import { CharacterBaseEntity } from '../../characters/entities/character-base.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { CampaignBaseEntity } from './campaign-base.entity';
 import { CampaignInviteEntity } from './campaign-invite.entity';
@@ -12,13 +11,9 @@ export class CampaignEntity extends CampaignBaseEntity {
   @ValidateNested({ each: true })
   members: CampaignMemberEntity[];
 
-  // Player Characters
+  // Characters
   @ValidateNested({ each: true })
-  playerCharacters: PlayerCharacterBaseEntity[];
-
-  // Non Player Characters
-  @ValidateNested({ each: true })
-  nonPlayerCharacters: NonPlayerCharacterBaseEntity[];
+  characters: CharacterBaseEntity[];
 
   // Created by
   @ValidateNested()

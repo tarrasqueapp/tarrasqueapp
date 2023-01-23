@@ -32,11 +32,7 @@ export class TokenBaseEntity implements Token {
   @IsString()
   mapId: string;
 
-  // Player Character
+  // Character
   @IsString()
-  playerCharacterId: string | null;
-
-  // Non Player Character
-  @IsString()
-  nonPlayerCharacterId: string | null;
+  characterId: string | null;
 }
