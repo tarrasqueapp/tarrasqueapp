@@ -1,5 +1,5 @@
 {
-  "extends": "@tarrasque/config/tsconfig/esm.json",
+  "extends": "@tarrasque/tsconfig/esm",
   "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
   "exclude": ["node_modules"]
 }

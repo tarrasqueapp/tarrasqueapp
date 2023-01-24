@@ -1,1 +1,1 @@
-module.exports = require('@tarrasque/config/eslint/react');
+module.exports = require('@tarrasque/eslint-config/react');

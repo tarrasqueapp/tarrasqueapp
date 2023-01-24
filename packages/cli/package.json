@@ -13,7 +13,6 @@
     "zx": "^7.1.1"
   },
   "devDependencies": {
-    "@tarrasque/config": "*",
     "@types/node": "^18.11.18",
     "dotenv": "^16.0.3",
     "ts-node": "^10.9.1"

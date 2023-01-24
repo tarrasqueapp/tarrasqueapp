@@ -1,7 +1,8 @@
 {
-  "extends": "@tarrasque/config/tsconfig/nestjs.json",
+  "extends": "@tarrasque/tsconfig/nestjs",
   "compilerOptions": {
-    "outDir": "./dist",
-    "baseUrl": "./"
-  }
+    "outDir": "./dist"
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
+  "exclude": ["node_modules", "dist"]
 }

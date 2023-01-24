@@ -30,7 +30,6 @@
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/websockets": "^9.2.1",
     "@prisma/client": "^4.9.0",
-    "@tarrasque/config": "*",
     "argon2": "^0.30.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",

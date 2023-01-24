@@ -1,5 +1,5 @@
 {
-  "extends": "@tarrasque/config/tsconfig/nextjs.json",
+  "extends": "@tarrasque/tsconfig/nextjs",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
