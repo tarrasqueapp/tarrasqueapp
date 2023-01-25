@@ -16,7 +16,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev",
     "build:api": "turbo run build --filter=@tarrasque/api...",
     "build:ui": "turbo run build --filter=@tarrasque/ui...",
     "start:api": "turbo run start --filter=@tarrasque/api...",

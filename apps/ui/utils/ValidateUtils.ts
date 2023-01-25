@@ -37,4 +37,6 @@ export class ValidateUtils {
       extension: yup.string().min(1).required(),
     })
     .required();
+
+  static Url = yup.string().trim().url('Invalid URL').required('URL is required');
 }

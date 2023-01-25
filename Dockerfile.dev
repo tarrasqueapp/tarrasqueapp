@@ -1,6 +1,6 @@
 FROM node:18-slim
 
-RUN apt-get update && apt-get -y install openssl
+RUN apt-get update && apt-get -y install openssl procps
 
 WORKDIR /app
 
@@ -13,7 +13,6 @@ COPY package.json yarn.lock ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/ui/package.json ./apps/ui/
 COPY packages/cli/package.json ./packages/cli/
-COPY packages/config/package.json ./packages/config/
 
 # Install dependencies
 RUN yarn install --frozen-lockfile

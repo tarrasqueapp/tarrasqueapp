@@ -160,7 +160,7 @@ export const CampaignMembersModal: React.FC<CampaignMembersModalProps> = observe
                   </ListItem>
                 ))
               ) : (
-                <ListItem>No members</ListItem>
+                <ListItem>No members found</ListItem>
               )}
             </List>
 
