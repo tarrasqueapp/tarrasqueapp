@@ -25,18 +25,22 @@ Install Node and Yarn in your WSL 2 distribution, then install Docker Desktop an
 
 ## Installation
 
-To install Tarrasque App, run the following commands to install the dependencies and set up the environment variables:
+To install Tarrasque App, first run the following command to install the [Tarrasque CLI](https://github.com/tarrasqueapp/cli):
+
+    npm install -g @tarrasque/cli
+
+Then, run the following commands to install the dependencies and set up the environment variables:
 
     ./bin/setup.sh
     cp .env.example .env
 
-Then, edit the `.env` file to set the necessary environment variables.
+Finally, edit the `.env` file to set the necessary environment variables.
 
 ## Running the Server
 
 To start the development server, run:
 
-    tarrasque docker up --db
+    tarrasque app dev
 
 This will start the server and the local database service at `http://localhost`.
 

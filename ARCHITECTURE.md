@@ -68,10 +68,3 @@ The `api` app implements email functionality using the following packages:
 The `api` app uses [argon2](https://www.npmjs.com/package/argon2) for password hashing. The `api` also includes support for JSON Web Tokens (JWTs) with [@nestjs/jwt](https://www.npmjs.com/package/@nestjs/jwt).
 
 Additionally, the `api` app uses [@nestjs/swagger](https://www.npmjs.com/package/@nestjs/swagger) for generating API documentation using the [Swagger](https://swagger.io/) specification. It also uses [cuid](https://www.npmjs.com/package/cuid) for generating collision-resistant ids.
-
-## `cli`
-
-The `cli` package is a command-line interface built with the following technologies:
-
-- [zx](https://www.npmjs.com/package/zx): A tool for writing better scripts.
-- [TypeScript](https://www.typescriptlang.org/): A typed superset of JavaScript that compiles to plain JavaScript.

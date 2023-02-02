@@ -12,7 +12,6 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 COPY package.json yarn.lock ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/ui/package.json ./apps/ui/
-COPY packages/cli/package.json ./packages/cli/
 
 # Install dependencies
 RUN yarn install --frozen-lockfile
