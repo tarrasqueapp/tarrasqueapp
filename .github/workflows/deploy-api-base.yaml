@@ -52,7 +52,7 @@ jobs:
           tags: ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
             HOST=${{ inputs.ENVIRONMENT_URL }}
-            NODE_ENV=${{ secrets.NODE_ENV }}
+            NODE_ENV=production
             VERBOSE=${{ secrets.VERBOSE }}
             COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
             JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
@@ -89,7 +89,7 @@ jobs:
             --set image.repository="${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set image.tag="${{ inputs.ENVIRONMENT }}" \
             --set env.HOST="${{ inputs.ENVIRONMENT_URL }}" \
-            --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
+            --set env.NODE_ENV="production" \
             --set env.VERBOSE="${{ secrets.VERBOSE }}" \
             --set env.COOKIE_SECRET="${{ secrets.COOKIE_SECRET }}" \
             --set env.JWT_ACCESS_TOKEN_SECRET="${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" \

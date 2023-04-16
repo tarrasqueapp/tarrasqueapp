@@ -53,7 +53,7 @@ jobs:
           build-args: |
             HOST=${{ inputs.ENVIRONMENT_URL }}
             AXIOS_BASE_URL=${{ inputs.ENVIRONMENT_URL }}
-            NODE_ENV=${{ secrets.NODE_ENV }}
+            NODE_ENV=production
             JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
             SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
@@ -75,7 +75,7 @@ jobs:
             --set image.tag=${{ inputs.ENVIRONMENT }} \
             --set env.HOST="${{ inputs.ENVIRONMENT_URL }}" \
             --set env.AXIOS_BASE_URL="${{ inputs.ENVIRONMENT_URL }}" \
-            --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
+            --set env.NODE_ENV="production" \
             --set env.JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" \
             --set env.SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}" \
             --set env.SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
