@@ -193,7 +193,7 @@ export const CampaignMembersModal: React.FC<CampaignMembersModalProps> = observe
                   </ListItem>
                 ))
               ) : (
-                <ListItem>No pending invites</ListItem>
+                <ListItem>No pending invites found</ListItem>
               )}
             </List>
           </DialogContent>

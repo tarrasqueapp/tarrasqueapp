@@ -19,7 +19,7 @@ on:
 env:
   DOCKERFILE: apps/api/Dockerfile
   HELM_CHART: api
-  IMAGE_NAME: api
+  IMAGE_NAME: tarrasqueapp/api
   KUBE_DEPLOYMENT: api
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
 
     environment:
       name: ${{ inputs.ENVIRONMENT }}
-      url: 'https://${{ inputs.ENVIRONMENT_URL }}/api'
+      url: ${{ inputs.ENVIRONMENT_URL }}/api
 
     steps:
       - name: Checkout master
@@ -51,7 +51,7 @@ jobs:
           file: ${{ env.DOCKERFILE }}
           tags: ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.ENVIRONMENT }}
           build-args: |
-            HOST=https://${{ inputs.ENVIRONMENT_URL }}
+            HOST=${{ inputs.ENVIRONMENT_URL }}
             NODE_ENV=${{ secrets.NODE_ENV }}
             VERBOSE=${{ secrets.VERBOSE }}
             COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
@@ -88,7 +88,7 @@ jobs:
           helm upgrade --install ${{ env.HELM_CHART }} ./helm/${{ env.HELM_CHART }} --namespace ${{ inputs.KUBE_NAMESPACE }} --create-namespace \
             --set image.repository="${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set image.tag="${{ inputs.ENVIRONMENT }}" \
-            --set env.HOST="https://${{ inputs.ENVIRONMENT_URL }}" \
+            --set env.HOST="${{ inputs.ENVIRONMENT_URL }}" \
             --set env.NODE_ENV="${{ secrets.NODE_ENV }}" \
             --set env.VERBOSE="${{ secrets.VERBOSE }}" \
             --set env.COOKIE_SECRET="${{ secrets.COOKIE_SECRET }}" \

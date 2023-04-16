@@ -1,5 +1,5 @@
 {
-  "extends": "@tarrasque/tsconfig/nestjs",
+  "extends": "@tronite/tsconfig/nestjs",
   "compilerOptions": {
     "outDir": "./dist"
   },

@@ -3,10 +3,10 @@ replicaCount: 1
 image:
   repository:
   pullPolicy: Always
-  tag: production
+  tag: sandbox
 
 imagePullSecrets:
-  - name: tarrasque
+  - name: tronite
 nameOverride: ""
 fullnameOverride: ""
 
@@ -31,26 +31,19 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
     nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
-    - host: tarrasque.app
-      paths:
-        - path: /api(/|$)(.*)
-          pathType: Prefix
-        - path: /socket.io(/|$)(.*)
-          pathType: Prefix
-    - host: www.tarrasque.app
+    - host: sandbox.tarrasque.app
       paths:
         - path: /api(/|$)(.*)
           pathType: Prefix
         - path: /socket.io(/|$)(.*)
           pathType: Prefix
   tls:
-    - secretName: tls-secret-api
+    - secretName: tls-secret-tarrasqueapp-api
       hosts:
-        - tarrasque.app
-        - www.tarrasque.app
+        - sandbox.tarrasque.app
 
 env:
   - name: HOST

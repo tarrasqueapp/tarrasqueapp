@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "attilabuti.vscode-mjml",
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",

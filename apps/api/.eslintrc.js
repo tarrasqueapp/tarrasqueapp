@@ -1,1 +1,1 @@
-module.exports = require('@tarrasque/eslint-config/node');
+module.exports = require('@tronite/eslint-config/node');

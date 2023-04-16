@@ -26,7 +26,7 @@ jobs:
 
     environment:
       name: ${{ inputs.ENVIRONMENT }}
-      url: 'https://${{ inputs.ENVIRONMENT_URL }}/tus/files'
+      url: ${{ inputs.ENVIRONMENT_URL }}/tus/files
 
     steps:
       - name: Checkout master

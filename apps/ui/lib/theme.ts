@@ -1,5 +1,5 @@
 import { alpha, createTheme, filledInputClasses, formLabelClasses, responsiveFontSizes } from '@mui/material';
-import { Raleway, Recursive } from '@next/font/google';
+import { Raleway, Recursive } from 'next/font/google';
 
 import { Color } from './colors';
 
