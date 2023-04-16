@@ -39,14 +39,16 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /api
-          #     port: {{ .Values.service.port }}
-          # readinessProbe:
-          #   httpGet:
-          #     path: /api
-          #     port: {{ .Values.service.port }}
+          livenessProbe:
+            httpGet:
+              path: /api
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
