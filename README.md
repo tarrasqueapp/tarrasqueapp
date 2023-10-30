@@ -14,14 +14,14 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 ## Requirements
 
 - [Node.js](https://nodejs.org/en/) (v18.12.1 or higher)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install) (v1.22.17 or higher)
+- [pnpm](https://pnpm.io/) (v8.8.0 or higher)
 - [Docker](https://docs.docker.com/get-docker/) (v20.10.21 or higher)
 - [Docker Compose](https://docs.docker.com/compose/) (v2.13.0 or higher)
 - Supported Platforms: MacOS, Linux, Windows with WSL 2
 
 ### WSL Requirements
 
-Install Node and Yarn in your WSL 2 distribution, then install Docker Desktop and enable the [WSL 2 Backend](https://docs.docker.com/desktop/windows/wsl/) for your WSL 2 distribution.
+Install Node and pnpm in your WSL 2 distribution, then install Docker Desktop and enable the [WSL 2 Backend](https://docs.docker.com/desktop/windows/wsl/) for your WSL 2 distribution.
 
 ## Installation
 
@@ -48,19 +48,19 @@ This will start the server and the local database service at `http://localhost`.
 
 To create the database, run:
 
-    yarn api prisma db push
+    pnpm api exec prisma db push
 
 To generate the Prisma client types, run:
 
-    yarn api prisma generate
+    pnpm api exec prisma generate
 
 To create a database migration, run:
 
-    yarn api prisma migrate dev --name <migration-name>
+    pnpm api exec prisma migrate dev --name <migration-name>
 
 To browse the database using Prisma Studio, run:
 
-    yarn api prisma studio
+    pnpm api exec prisma studio
 
 ## Contributing
 

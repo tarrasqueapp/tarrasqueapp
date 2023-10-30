@@ -10,7 +10,7 @@ cd $SCRIPT_DIR/..
 do_install() {
    # Install dependencies
   echo "📂 Installing dependencies..."
-  yarn install
+  pnpm install
 
   # Install completion
   echo "✅️ Tarrasque App dependencies have been installed."

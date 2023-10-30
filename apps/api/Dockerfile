@@ -1,48 +1,44 @@
-FROM node:18-alpine AS builder
+FROM node:18-alpine AS base
 
-RUN apk add --no-cache libc6-compat
-RUN apk update
-RUN yarn global add turbo
+RUN npm install --global pnpm
+
+RUN apk add --update --no-cache libc6-compat
 
 WORKDIR /app
+
+
+FROM base AS builder
+
+RUN pnpm add --global turbo
 
 COPY . .
 
 RUN turbo prune --scope=@tarrasque/api --docker
 
 
-FROM node:18-alpine AS installer
-
-RUN apk add --no-cache libc6-compat
-RUN apk update
-
-WORKDIR /app
+FROM base AS installer
 
 # Copy only the files needed to install dependencies
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/yarn.lock ./yarn.lock
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
 # Install dependencies
-RUN yarn install
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the files
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
 # Generate prisma client
-RUN yarn api prisma generate
+RUN pnpm api exec prisma generate
 
 # Build the app
-RUN yarn build:api
+RUN pnpm build:api
 
 
-FROM node:18-alpine AS runner
-
-RUN apk add --no-cache libc6-compat
-RUN apk update
-
-WORKDIR /app
+FROM base AS runner
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nestjs
@@ -57,4 +53,4 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 COPY --from=installer /app .
 
 # Start the production server
-CMD yarn start:api
+CMD pnpm start:api

@@ -4,6 +4,22 @@ set -e
 # Get script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Identify operating system
+IS_MAC=false
+IS_LINUX=false
+IS_WINDOWS=false
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  IS_MAC=true
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  IS_LINUX=true
+elif [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+  IS_WINDOWS=true
+else
+  echo "🚨 Unrecognized OS. Please install dependencies manually."
+  exit 1
+fi
+
 # Function to check if command exists
 command_exists() {
   command -v "$@" > /dev/null 2>&1
@@ -17,26 +33,19 @@ do_install() {
     exit 1
   fi
 
-  # Check that Docker Compose is installed
-  if ! command_exists docker-compose; then
-    echo "🚨 Docker Compose is not installed. Please install Docker Compose and try again."
-    echo "See https://docs.docker.com/compose/install/ for instructions."
-    exit 1
-  fi
-
   # Check that Node.js is installed
   if ! command_exists node; then
     echo "🚨 Node.js is not installed. Please install Node.js and try again."
     # Automatic installation of Node.js
-    if [ "$OS" != "windows" ]; then
+    if ! IS_WINDOWS; then
       read -p "Do you want to install Node.js? [y/N] " -n 1 -r
       echo
       # Check if user wants to install Node.js
       if [[ $REPLY =~ ^[Yy]$ ]]; then
-        if [ "$OS" = "mac" ]; then
+        if IS_MAC; then
           brew install node
-        elif [ "$OS" = "linux" ]; then
-          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+        elif IS_LINUX; then
+          curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt-get install nodejs
         fi
       # Exit if user doesn't want to install Node.js
@@ -51,30 +60,28 @@ do_install() {
     fi
   fi
 
-  # Check that Yarn is installed
-  if ! command_exists yarn; then
-    echo "🚨 Yarn is not installed. Please install Yarn and try again."
-    # Automatic installation of Yarn
-    if [ "$OS" != "windows" ]; then
-      read -p "Do you want to install Yarn? [y/N] " -n 1 -r
+  # Check that pnpm is installed
+  if ! command_exists pnpm; then
+    echo "🚨 pnpm is not installed. Please install pnpm and try again."
+    # Automatic installation of pnpm
+    if ! IS_WINDOWS; then
+      read -p "Do you want to install pnpm? [y/N] " -n 1 -r
       echo
-      # Check if user wants to install Yarn
+      # Check if user wants to install pnpm
       if [[ $REPLY =~ ^[Yy]$ ]]; then
-        if [ "$OS" = "mac" ]; then
-          brew install yarn
-        elif [ "$OS" = "linux" ]; then
-          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          sudo apt-get update && sudo apt-get install yarn
+        if IS_MAC; then
+          brew install pnpm
+        elif IS_LINUX; then
+          curl -fsSL https://get.pnpm.io/install.sh | sh -
         fi
-      # Exit if user doesn't want to install Yarn
+      # Exit if user doesn't want to install pnpm
       else
-        echo "🚨 Yarn is required to install this program."
+        echo "🚨 pnpm is required to install this program."
         exit 1
       fi
-    # Exit if Yarn is not installed on Windows
+    # Exit if pnpm is not installed on Windows
     else
-      echo "See https://classic.yarnpkg.com/en/docs/install/#windows-stable"
+      echo "See https://pnpm.io/installation"
       exit 1
     fi
   fi

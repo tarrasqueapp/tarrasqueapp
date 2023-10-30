@@ -9,18 +9,18 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 # Copy only the files needed to install dependencies
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml* ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/ui/package.json ./apps/ui/
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the files
 COPY . .
 
 # Generate prisma client
-RUN yarn api prisma generate
+RUN pnpm api exec prisma generate
 
 # Start the dev server
-CMD yarn dev
+CMD pnpm dev
