@@ -3,7 +3,7 @@ import axios from 'axios';
 import { config } from './config';
 
 export const api = axios.create({
-  baseURL: typeof window !== 'undefined' ? config.HOST : config.AXIOS_BASE_URL,
+  baseURL: typeof window !== 'undefined' ? config.HOST : config.API_BASE_URL,
 });
 
 // Always return a readable error message

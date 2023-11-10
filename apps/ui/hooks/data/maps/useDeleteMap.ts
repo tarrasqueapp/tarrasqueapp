@@ -2,15 +2,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 
 import { api } from '../../../lib/api';
-import { MapInterface } from '../../../lib/types';
+import { MapEntity } from '../../../lib/types';
 
 /**
  * Send a request to delete a map
  * @param map - The map to delete
  * @returns The deleted map
  */
-async function deleteMap(map: MapInterface) {
-  const { data } = await api.delete<MapInterface>(`/api/maps/${map.id}`, { data: { campaignId: map.campaignId } });
+async function deleteMap(map: MapEntity) {
+  const { data } = await api.delete<MapEntity>(`/api/maps/${map.id}`, { data: { campaignId: map.campaignId } });
   return data;
 }
 
@@ -25,8 +25,8 @@ export function useDeleteMap() {
     // Optimistic update
     onMutate: async (map) => {
       await queryClient.cancelQueries([`campaigns/${map.campaignId}/maps`]);
-      const previousMaps = queryClient.getQueryData<MapInterface[]>([`campaigns/${map.campaignId}/maps`]);
-      queryClient.setQueryData([`campaigns/${map.campaignId}/maps`], (old: MapInterface[] = []) =>
+      const previousMaps = queryClient.getQueryData<MapEntity[]>([`campaigns/${map.campaignId}/maps`]);
+      queryClient.setQueryData([`campaigns/${map.campaignId}/maps`], (old: MapEntity[] = []) =>
         old.filter((m) => m.id !== map.id),
       );
       return { previousMaps };

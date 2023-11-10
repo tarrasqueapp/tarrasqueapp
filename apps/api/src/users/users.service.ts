@@ -1,21 +1,10 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'nestjs-prisma';
 
-import { config } from '../config';
-import { toMillisecondsFromString } from '../helpers';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserWithExcludedFieldsEntity } from './entities/user-with-excluded-fields.entity';
 import { UserEntity } from './entities/user.entity';
 
 export function serializeUser(user: User) {
@@ -110,13 +99,12 @@ export class UsersService {
    * @param userId - The user's id
    * @returns User
    */
-  async getUserByIdWithExcludedFields(userId: string): Promise<UserWithExcludedFieldsEntity> {
+  async getUserByIdWithExcludedFields(userId: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Getting user "${userId}"`);
     try {
       // Get the user
       const user = await this.prisma.user.findUniqueOrThrow({
         where: { id: userId },
-        include: { refreshTokens: true },
       });
       this.logger.debug(`✅️ Found user "${userId}"`);
       return user;
@@ -127,17 +115,16 @@ export class UsersService {
   }
 
   /**
-   * Get a user that matches the given email (with their password and refresh token)
+   * Get a user that matches the given email (with their password)
    * @param email - The user's email
    * @returns User
    */
-  async getUserByEmailWithExcludedFields(email: string): Promise<UserWithExcludedFieldsEntity> {
+  async getUserByEmailWithExcludedFields(email: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Getting user with email "${email}"`);
     try {
       // Get the user
       const user = await this.prisma.user.findUniqueOrThrow({
         where: { email },
-        include: { refreshTokens: true },
       });
       this.logger.debug(`✅️ Found user "${user.id}" with email "${email}"`);
       return user;
@@ -165,7 +152,7 @@ export class UsersService {
       this.logger.debug(`✅️ Created user "${data.email}"`);
       return user;
     } catch (error) {
-      this.logger.error(`🚨 User "${data.email}" already exists`);
+      this.logger.error(`🚨 User "${data.email}" already exists`, error);
       throw new ConflictException('User already exists');
     }
   }
@@ -187,7 +174,7 @@ export class UsersService {
           displayName: data.displayName,
           email: data.email,
           avatarId: data.avatarId,
-          emailVerified: data.emailVerified,
+          isEmailVerified: data.isEmailVerified,
           ...(data.password && { password: await argon2.hash(data.password) }),
         },
         include: { avatar: true },
@@ -216,96 +203,5 @@ export class UsersService {
       this.logger.error(`🚨 User "${userId}" not found`);
       throw new NotFoundException(error.message);
     }
-  }
-
-  /**
-   * Create a new refresh token for a user
-   * @param userId - The user's id
-   * @param value - The refresh token's value
-   * @returns The created refresh token
-   */
-  async createRefreshToken(userId: string, value: string): Promise<void> {
-    this.logger.verbose(`📂 Creating refresh token for user "${userId}"`);
-    try {
-      // Create the refresh token
-      await this.prisma.refreshToken.create({
-        data: { value, user: { connect: { id: userId } } },
-      });
-      this.logger.debug(`✅️ Created refresh token for user "${userId}"`);
-    } catch (error) {
-      this.logger.error(`🚨 User "${userId}" not found`);
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  /**
-   * Set the refresh token for a user
-   * @param refreshToken - The refresh token's value
-   * @param newValue - The new refresh token's value
-   */
-  async updateRefreshToken(refreshToken: string, newValue: string): Promise<void> {
-    this.logger.verbose(`📂 Updating refresh token "${refreshToken}"`);
-    // Hash the refresh token
-    try {
-      // Update the refresh token
-      await this.prisma.refreshToken.update({
-        where: { value: refreshToken },
-        data: { value: newValue },
-      });
-      this.logger.debug(`✅️ Updated refresh token "${refreshToken}"`);
-    } catch (error) {
-      this.logger.error(`🚨 Refresh token "${refreshToken}" not found`);
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  /**
-   * Remove the refresh token from a user
-   * @param refreshToken - The refresh token
-   */
-  async removeRefreshToken(refreshToken: string): Promise<void> {
-    this.logger.verbose(`📂 Removing refresh token "${refreshToken}"`);
-    try {
-      // Delete the refresh token
-      await this.prisma.refreshToken.delete({ where: { value: refreshToken } });
-      this.logger.debug(`✅️ Removed refresh token "${refreshToken}"`);
-    } catch (error) {
-      this.logger.error(`🚨 Refresh token "${refreshToken}" not found`);
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  /**
-   * Get user from refresh token
-   * @param userId - The user's id
-   * @param refreshToken - The refresh token
-   * @returns The matched user
-   */
-  async getUserIfRefreshTokenMatches(userId: string, refreshToken: string): Promise<UserEntity> {
-    // Get the user
-    const userWithExcludedFields = await this.getUserByIdWithExcludedFields(userId);
-    // Check if the refresh token exists for the user
-    const foundRefreshToken = userWithExcludedFields.refreshTokens.find((token) => token.value === refreshToken);
-    // Throw an error if the refresh token doesn't exist
-    if (!foundRefreshToken) {
-      throw new UnauthorizedException('Refresh token not found');
-    }
-    // Return the user
-    return await this.getUserById(userId);
-  }
-
-  /**
-   * Remove old refresh tokens at midnight
-   */
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async removeOldRefreshTokens(): Promise<void> {
-    this.logger.verbose(`📂 Removing old refresh tokens`);
-    // Convert the expiration time to milliseconds
-    const expirationTime = toMillisecondsFromString(config.JWT_REFRESH_TOKEN_EXPIRATION_TIME);
-    // Get the expiry date by subtracting the expiration time from the current date
-    const expiryDate = new Date(Date.now() - expirationTime);
-    // Delete the refresh tokens
-    await this.prisma.refreshToken.deleteMany({ where: { updatedAt: { lte: expiryDate } } });
-    this.logger.debug(`✅️ Removed old refresh tokens`);
   }
 }

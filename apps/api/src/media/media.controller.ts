@@ -17,7 +17,10 @@ import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from './media.ser
 @ApiTags('media')
 @Controller('media')
 export class MediaController {
-  constructor(private readonly mediaService: MediaService, private readonly storageService: StorageService) {}
+  constructor(
+    private readonly mediaService: MediaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   /**
    * Create a new media item

@@ -33,9 +33,9 @@ COPY turbo.json turbo.json
 
 # Set build-time variables
 ARG HOST
-ARG AXIOS_BASE_URL
+ARG API_BASE_URL
 ARG NODE_ENV
-ARG JWT_ACCESS_TOKEN_EXPIRATION_TIME
+ARG JWT_EXPIRES_IN
 
 # Build the app
 RUN pnpm build:ui

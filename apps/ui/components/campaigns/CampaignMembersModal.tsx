@@ -28,7 +28,7 @@ import { useCreateCampaignInvite } from '../../hooks/data/campaigns/invites/useC
 import { useDeleteCampaignInvite } from '../../hooks/data/campaigns/invites/useDeleteCampaignInvite';
 import { useDeleteCampaignMember } from '../../hooks/data/campaigns/members/useDeleteCampaignMember';
 import { useUpdateCampaignMember } from '../../hooks/data/campaigns/members/useUpdateCampaignMember';
-import { CampaignInterface, CampaignMemberRole } from '../../lib/types';
+import { CampaignEntity, CampaignMemberRole } from '../../lib/types';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -36,7 +36,7 @@ import { ControlledTextField } from '../form/ControlledTextField';
 interface CampaignMembersModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: CampaignInterface | undefined;
+  campaign: CampaignEntity | undefined;
 }
 
 export const CampaignMembersModal: React.FC<CampaignMembersModalProps> = observer(({ open, onClose, campaign }) => {

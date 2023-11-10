@@ -1,16 +1,16 @@
-import { MapInterface, MediaInterface } from '../types';
+import { MapEntity, MediaEntity } from '../types';
 
-export class MapFactory implements Partial<MapInterface> {
+export class MapFactory implements Partial<MapEntity> {
   name = '';
   campaignId = '';
-  media = [] as MediaInterface[];
+  media = [] as MediaEntity[];
   selectedMediaId = '';
 
   /**
    * Generate new map
    * @param map - The map to generate
    */
-  constructor(map?: Partial<MapInterface>) {
+  constructor(map?: Partial<MapEntity>) {
     Object.assign(this, map);
   }
 }

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../lib/api';
-import { CampaignInterface } from '../../../lib/types';
+import { CampaignEntity } from '../../../lib/types';
 
 /**
  * Send a request to reorder campaigns
@@ -10,7 +10,7 @@ import { CampaignInterface } from '../../../lib/types';
  * @returns The reordered campaigns
  */
 async function reorderCampaigns(campaignIds: string[]) {
-  const { data } = await api.post<CampaignInterface>(`/api/campaigns/reorder`, { campaignIds });
+  const { data } = await api.post<CampaignEntity>(`/api/campaigns/reorder`, { campaignIds });
   return data;
 }
 
@@ -25,9 +25,9 @@ export function useReorderCampaigns() {
     // Optimistic update
     onMutate: async (campaignOrder) => {
       await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignInterface[]>([`campaigns`]);
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
       // Sort the campaigns based on the user's campaign order
-      queryClient.setQueryData([`campaigns`], (campaigns: CampaignInterface[] = []) =>
+      queryClient.setQueryData([`campaigns`], (campaigns: CampaignEntity[] = []) =>
         campaigns.sort((a, b) => {
           const aOrder = campaignOrder.findIndex((campaignId) => campaignId === a.id);
           const bOrder = campaignOrder.findIndex((campaignId) => campaignId === b.id);

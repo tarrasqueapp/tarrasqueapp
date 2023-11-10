@@ -11,13 +11,16 @@ import { TokenPayload } from './token-payload.interface';
 export class AuthService {
   private logger: Logger = new Logger(AuthService.name);
 
-  constructor(private usersService: UsersService, private jwtService: JwtService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   /**
    * Log in user and return the user with the hashed password.
    * @param email - The user's email
    * @param password - The user's password
-   * @returns The user with the hashed password and the hashed refresh token
+   * @returns The user with the hashed password
    */
   async signIn(email: string, password: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Logging in user "${email}"`);
@@ -51,44 +54,12 @@ export class AuthService {
   }
 
   /**
-   * Sign a JWT access token for the user
-   * @param userId - The user's ID
-   * @returns The JWT access token
-   */
-  generateAccessToken(userId: string): string {
-    this.logger.verbose(`📂 Generating access token`);
-    const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload, {
-      secret: config.JWT_ACCESS_TOKEN_SECRET,
-      expiresIn: config.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-    });
-    this.logger.debug(`✅️ Generated access token`);
-    return token;
-  }
-
-  /**
-   * Sign a JWT refresh token for the user
-   * @param userId - The user's ID
-   * @returns The JWT refresh token
-   */
-  generateRefreshToken(userId: string): string {
-    this.logger.verbose(`📂 Generating refresh token`);
-    const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload, {
-      secret: config.JWT_REFRESH_TOKEN_SECRET,
-      expiresIn: config.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-    });
-    this.logger.debug(`✅️ Generated refresh token`);
-    return token;
-  }
-
-  /**
    * Get the user from the JWT access token
    * @param accessToken - The JWT access token
    * @returns The user
    */
   getUserFromAccessToken(accessToken: string): Promise<UserEntity> {
-    const payload: TokenPayload = this.jwtService.verify(accessToken, { secret: config.JWT_ACCESS_TOKEN_SECRET });
+    const payload: TokenPayload = this.jwtService.verify(accessToken, { secret: config.JWT_SECRET });
     if (payload.userId) {
       return this.usersService.getUserById(payload.userId);
     }

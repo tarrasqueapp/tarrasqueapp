@@ -54,18 +54,10 @@ env:
     value: "true"
   - name: COOKIE_SECRET
     value: ""
-  - name: JWT_ACCESS_TOKEN_SECRET
+  - name: JWT_SECRET
     value: ""
-  - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
-    value: "5m"
-  - name: JWT_REFRESH_TOKEN_SECRET
-    value: ""
-  - name: JWT_REFRESH_TOKEN_EXPIRATION_TIME
+  - name: JWT_EXPIRES_IN
     value: "7d"
-  - name: JWT_GENERIC_TOKEN_SECRET
-    value: ""
-  - name: JWT_GENERIC_TOKEN_EXPIRATION_TIME
-    value: "1d"
   - name: SENTRY_ENABLED
     value: "true"
   - name: SENTRY_DSN

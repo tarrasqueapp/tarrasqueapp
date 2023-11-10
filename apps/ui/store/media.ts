@@ -2,7 +2,7 @@ import { UploadedUppyFile, UppyFile } from '@uppy/core';
 import { makeAutoObservable } from 'mobx';
 
 import { config } from '../lib/config';
-import { DimensionsInterface, FileInterface, MediaInterface } from '../lib/types';
+import { DimensionsEntity, FileEntity, MediaEntity } from '../lib/types';
 
 export type UploadingFile = UppyFile<Record<string, unknown>, Record<string, unknown>> & {
   progress?: { percentage: number };
@@ -26,15 +26,15 @@ class MediaStore {
   }
 
   /**
-   * Convert an Uppy file to a FileInterface
+   * Convert an Uppy file to a FileEntity
    * @param uppyFile - The Uppy file to convert
    * @returns The converted file
    * @throws Error
    */
-  async convertUppyToFile(uppyFile: UploadedFile): Promise<FileInterface> {
+  async convertUppyToFile(uppyFile: UploadedFile): Promise<FileEntity> {
     const id = this.getFileNameFromUploadUrl(uppyFile.uploadURL);
 
-    let file: FileInterface = {
+    let file: FileEntity = {
       id,
       name: uppyFile.name,
       type: uppyFile.type!,
@@ -59,7 +59,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is an image
    */
-  isImage(file?: FileInterface | UploadingFile): boolean {
+  isImage(file?: FileEntity | UploadingFile): boolean {
     if (!file) return false;
     return file.type?.startsWith('image/') || false;
   }
@@ -69,7 +69,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is a video
    */
-  isVideo(file?: FileInterface | UploadingFile): boolean {
+  isVideo(file?: FileEntity | UploadingFile): boolean {
     if (!file) return false;
     return file.type?.startsWith('video/') || false;
   }
@@ -93,12 +93,12 @@ class MediaStore {
   }
 
   /**
-   * Check if file is of MediaInterface
+   * Check if file is of MediaEntity
    * @param file - The file to check
-   * @returns If the file is of MediaInterface
+   * @returns If the file is of MediaEntity
    */
-  isMedia(file: unknown): file is MediaInterface {
-    return (file as MediaInterface)?.thumbnailUrl !== undefined;
+  isMedia(file: unknown): file is MediaEntity {
+    return (file as MediaEntity)?.thumbnailUrl !== undefined;
   }
 
   /**
@@ -124,7 +124,7 @@ class MediaStore {
    * @param file - The image file
    * @returns The image dimensions
    */
-  getImageDimensions(file: File | Blob): Promise<DimensionsInterface> {
+  getImageDimensions(file: File | Blob): Promise<DimensionsEntity> {
     return new Promise((resolve) => {
       const reader = new FileReader();
 
@@ -146,7 +146,7 @@ class MediaStore {
    * @param file - The video file
    * @returns The video dimensions
    */
-  getVideoDimensions(file: File | Blob): Promise<DimensionsInterface> {
+  getVideoDimensions(file: File | Blob): Promise<DimensionsEntity> {
     return new Promise((resolve) => {
       const reader = new FileReader();
 

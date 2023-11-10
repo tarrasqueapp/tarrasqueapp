@@ -6,14 +6,14 @@ import React, { useEffect, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { Color } from '../../../lib/colors';
-import { MediaInterface } from '../../../lib/types';
+import { MediaEntity } from '../../../lib/types';
 import { store } from '../../../store';
 import { UploadingFile } from '../../../store/media';
 import { MathUtils } from '../../../utils/MathUtils';
 import { CircularProgressWithLabel } from '../../common/CircularProgressWithLabel';
 
 export interface ImageUploaderProps {
-  file?: UploadingFile | MediaInterface;
+  file?: UploadingFile | MediaEntity;
   onChange?: (file: UploadingFile | null) => void;
 }
 
@@ -123,7 +123,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) 
    * @param file
    * @returns
    */
-  function handleDelete(file: UploadingFile | MediaInterface) {
+  function handleDelete(file: UploadingFile | MediaEntity) {
     if (!file) return;
     if (store.media.isUploadingFile(file)) uppy.removeFile(file.id);
     onChange?.(null);

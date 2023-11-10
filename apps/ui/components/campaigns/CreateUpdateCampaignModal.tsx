@@ -19,7 +19,7 @@ import * as yup from 'yup';
 import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
 import { useUpdateCampaign } from '../../hooks/data/campaigns/useUpdateCampaign';
 import { CampaignFactory } from '../../lib/factories/CampaignFactory';
-import { CampaignInterface } from '../../lib/types';
+import { CampaignEntity } from '../../lib/types';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -27,7 +27,7 @@ import { ControlledTextField } from '../form/ControlledTextField';
 interface CreateUpdateCampaignModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: CampaignInterface | undefined;
+  campaign: CampaignEntity | undefined;
 }
 
 export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps> = observer(

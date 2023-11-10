@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class PasswordResetDto {
+export class ConnectEventTokenDto {
   @IsString()
-  userId: string;
+  eventTokenId: string;
 }

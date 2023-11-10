@@ -11,7 +11,6 @@ import { UserEntity } from '../users/entities/user.entity';
 import { CreateTokensDto } from './dto/create-tokens.dto';
 import { DeleteTokensDto } from './dto/delete-tokens.dto';
 import { UpdateTokensDto } from './dto/update-tokens.dto';
-import { TokenBaseEntity } from './entities/token-base.entity';
 import { TokenEntity } from './entities/token.entity';
 import { TokensService } from './tokens.service';
 
@@ -50,8 +49,8 @@ export class TokensController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.PLAYER))
   @Put()
   @ApiBearerAuth()
-  @ApiOkResponse({ type: [TokenBaseEntity] })
-  updateTokens(@Body() data: UpdateTokensDto): Promise<TokenBaseEntity[]> {
+  @ApiOkResponse({ type: [TokenEntity] })
+  updateTokens(@Body() data: UpdateTokensDto): Promise<TokenEntity[]> {
     return this.tokensService.updateTokens(data.tokens);
   }
 
@@ -61,8 +60,8 @@ export class TokensController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.PLAYER))
   @Delete()
   @ApiBearerAuth()
-  @ApiOkResponse({ type: [TokenBaseEntity] })
-  deleteTokens(@Body() data: DeleteTokensDto): Promise<TokenBaseEntity[]> {
+  @ApiOkResponse({ type: [TokenEntity] })
+  deleteTokens(@Body() data: DeleteTokensDto): Promise<TokenEntity[]> {
     const tokenIds = data.tokens.map((token) => token.id);
     return this.tokensService.deleteTokens(tokenIds);
   }

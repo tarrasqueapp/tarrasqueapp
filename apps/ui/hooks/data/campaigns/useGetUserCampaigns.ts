@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { CampaignInterface } from '../../../lib/types';
+import { CampaignEntity } from '../../../lib/types';
 
 /**
  * Send a request to get the user's campaigns
  * @returns The user's campaigns
  */
 async function getUserCampaigns() {
-  const { data } = await api.get<CampaignInterface[]>(`/api/campaigns`);
+  const { data } = await api.get<CampaignEntity[]>(`/api/campaigns`);
   return data;
 }
 

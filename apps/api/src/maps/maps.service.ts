@@ -4,7 +4,6 @@ import { PrismaService } from 'nestjs-prisma';
 
 import { CreateMapDto } from './dto/create-map.dto';
 import { UpdateMapDto } from './dto/update-map.dto';
-import { MapBaseEntity } from './entities/map-base.entity';
 import { MapEntity } from './entities/map.entity';
 
 @Injectable()
@@ -18,13 +17,13 @@ export class MapsService {
    * @param campaignId - The campaign id
    * @returns The maps
    */
-  async getCampaignMaps(campaignId: string): Promise<MapBaseEntity[]> {
+  async getCampaignMaps(campaignId: string): Promise<MapEntity[]> {
     this.logger.verbose(`📂 Getting maps for campaign "${campaignId}"`);
     try {
       // Get the maps
       const maps = await this.prisma.map.findMany({
         where: { campaignId },
-        include: { media: true },
+        include: { media: true, createdBy: true },
         orderBy: { order: 'asc' },
       });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
@@ -49,6 +48,7 @@ export class MapsService {
         include: {
           tokens: true,
           media: true,
+          createdBy: true,
           campaign: true,
         },
       });
@@ -65,11 +65,15 @@ export class MapsService {
    * @param query - The query
    * @returns The maps
    */
-  async getMaps(query: Prisma.MapFindManyArgs): Promise<MapBaseEntity[]> {
+  async getMaps(query: Prisma.MapFindManyArgs): Promise<MapEntity[]> {
     this.logger.verbose(`📂 Getting maps`);
     try {
       // Get the maps
-      const maps = await this.prisma.map.findMany({ ...query, include: { media: true }, orderBy: { order: 'asc' } });
+      const maps = await this.prisma.map.findMany({
+        ...query,
+        include: { media: true, createdBy: true },
+        orderBy: { order: 'asc' },
+      });
       this.logger.debug(`✅️ Found ${maps.length} maps`);
       return maps;
     } catch (error) {
@@ -101,7 +105,7 @@ export class MapsService {
    * @param createdById - The user id
    * @returns The created map
    */
-  async createMap(data: CreateMapDto, createdById: string): Promise<MapBaseEntity> {
+  async createMap(data: CreateMapDto, createdById: string): Promise<MapEntity> {
     this.logger.verbose(`📂 Creating map "${data.name} for campaign "${data.campaignId}"`);
     try {
       // Create the map
@@ -113,7 +117,7 @@ export class MapsService {
           campaign: { connect: { id: data.campaignId } },
           createdBy: { connect: { id: createdById } },
         },
-        include: { media: true },
+        include: { media: true, createdBy: true },
       });
       this.logger.debug(`✅️ Created map "${data.name}"`);
       return map;
@@ -128,7 +132,7 @@ export class MapsService {
    * @param mapId - The map id
    * @returns The duplicated map
    */
-  async duplicateMap(mapId: string): Promise<MapBaseEntity> {
+  async duplicateMap(mapId: string): Promise<MapEntity> {
     this.logger.verbose(`📂 Duplicating map "${mapId}"`);
     const map = await this.getMap(mapId);
     try {
@@ -152,6 +156,7 @@ export class MapsService {
         },
         include: {
           media: true,
+          createdBy: true,
         },
       });
       this.logger.debug(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
@@ -168,7 +173,7 @@ export class MapsService {
    * @param data - The map data
    * @returns The updated map
    */
-  async updateMap(mapId: string, data: UpdateMapDto): Promise<MapBaseEntity> {
+  async updateMap(mapId: string, data: UpdateMapDto): Promise<MapEntity> {
     this.logger.verbose(`📂 Updating map "${mapId}"`);
     try {
       // Update the map
@@ -180,7 +185,7 @@ export class MapsService {
           ...(data.selectedMediaId && { selectedMediaId: data.selectedMediaId }),
           campaign: { connect: { id: data.campaignId } },
         },
-        include: { media: true },
+        include: { media: true, createdBy: true },
       });
       this.logger.debug(`✅️ Updated map "${mapId}"`);
       return map;
@@ -195,13 +200,13 @@ export class MapsService {
    * @param mapId - The map id
    * @returns The deleted map
    */
-  async deleteMap(mapId: string): Promise<MapBaseEntity> {
+  async deleteMap(mapId: string): Promise<MapEntity> {
     this.logger.verbose(`📂 Deleting map "${mapId}"`);
     try {
       // Delete the map
       const map = await this.prisma.map.delete({
         where: { id: mapId },
-        include: { media: true },
+        include: { media: true, createdBy: true },
       });
       this.logger.debug(`✅️ Deleted map "${mapId}"`);
       return map;
@@ -217,7 +222,7 @@ export class MapsService {
    * @param mapIds - The map ids
    * @returns The updated maps in the new order
    */
-  async reorderMaps(campaignId: string, mapIds: string[]): Promise<MapBaseEntity[]> {
+  async reorderMaps(campaignId: string, mapIds: string[]): Promise<MapEntity[]> {
     this.logger.verbose(`📂 Reordering maps for campaign "${campaignId}"`);
     try {
       // Update the map order

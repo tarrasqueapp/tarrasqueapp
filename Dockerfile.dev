@@ -1,6 +1,7 @@
 FROM node:18-slim
 
 RUN apt-get update && apt-get -y install openssl procps
+RUN npm install --global pnpm
 
 WORKDIR /app
 
@@ -9,8 +10,8 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 # Copy only the files needed to install dependencies
-COPY package.json pnpm-lock.yaml* ./
-COPY apps/api/package.json ./apps/api/
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json apps/api/prisma ./apps/api/
 COPY apps/ui/package.json ./apps/ui/
 
 # Install dependencies

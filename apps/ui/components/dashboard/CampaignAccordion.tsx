@@ -34,7 +34,7 @@ import { useEffect, useState } from 'react';
 import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
 import { useGetUser } from '../../hooks/data/users/useGetUser';
-import { CampaignInterface, CampaignMemberRole } from '../../lib/types';
+import { CampaignEntity, CampaignMemberRole } from '../../lib/types';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
@@ -44,7 +44,7 @@ import { NewMap } from './NewMap';
 export interface CampaignAccordionProps {
   expanded?: boolean;
   onToggle?: (expanded: boolean) => void;
-  campaign?: CampaignInterface;
+  campaign?: CampaignEntity;
 }
 
 export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, onToggle, campaign }) => {

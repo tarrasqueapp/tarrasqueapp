@@ -26,7 +26,7 @@ import * as yup from 'yup';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useUpdateUser } from '../../hooks/data/users/useUpdateUser';
 import { AppNavigation } from '../../lib/navigation';
-import { UserInterface } from '../../lib/types';
+import { UserEntity } from '../../lib/types';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledPasswordField } from '../form/ControlledPasswordField';
@@ -36,7 +36,7 @@ import { ControlledImageUploader } from '../form/ImageUploader/ControlledImageUp
 interface SettingsModalProps {
   open: boolean;
   onClose: () => void;
-  user?: UserInterface;
+  user?: UserEntity;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onClose, user }) => {
@@ -121,7 +121,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
     onClose();
 
     // Sign out user if email is no longer verified
-    if (!user.emailVerified) {
+    if (!user.isEmailVerified) {
       toast('Your email address has been changed. Please sign in again with your new email address.', { icon: '✉️' });
       router.push(AppNavigation.SignOut);
     }

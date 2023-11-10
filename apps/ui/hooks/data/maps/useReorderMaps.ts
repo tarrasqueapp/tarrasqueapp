@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../lib/api';
-import { MapInterface } from '../../../lib/types';
+import { MapEntity } from '../../../lib/types';
 
 interface ReorderMapsInterface {
   campaignId: string;
@@ -16,7 +16,7 @@ interface ReorderMapsInterface {
  * @returns The reordered maps
  */
 async function reorderMaps({ campaignId, mapIds }: ReorderMapsInterface) {
-  const { data } = await api.post<MapInterface>(`/api/campaigns/${campaignId}/maps/reorder`, { mapIds });
+  const { data } = await api.post<MapEntity>(`/api/campaigns/${campaignId}/maps/reorder`, { mapIds });
   return data;
 }
 
@@ -31,9 +31,9 @@ export function useReorderMaps() {
     // Optimistic update
     onMutate: async ({ campaignId, mapIds }) => {
       await queryClient.cancelQueries([`campaigns/${campaignId}/maps`]);
-      const previousMaps = queryClient.getQueryData<MapInterface[]>([`campaigns/${campaignId}/maps`]);
+      const previousMaps = queryClient.getQueryData<MapEntity[]>([`campaigns/${campaignId}/maps`]);
       // Sort the maps based on the user's map order
-      queryClient.setQueryData([`campaigns/${campaignId}/maps`], (maps: MapInterface[] = []) =>
+      queryClient.setQueryData([`campaigns/${campaignId}/maps`], (maps: MapEntity[] = []) =>
         maps.sort((a, b) => {
           const aOrder = mapIds.findIndex((mapId) => mapId === a.id);
           const bOrder = mapIds.findIndex((mapId) => mapId === b.id);

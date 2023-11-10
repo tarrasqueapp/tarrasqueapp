@@ -7,10 +7,10 @@ import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
 import { DashboardModals } from '../components/dashboard/DashboardModals';
 import { TopBar } from '../components/dashboard/TopBar/TopBar';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
-import { checkRefreshToken } from '../hooks/data/users/useGetRefreshToken';
 import { useGetUser } from '../hooks/data/users/useGetUser';
 import { Gradient } from '../lib/colors';
 import { AppNavigation } from '../lib/navigation';
+import { SSRUtils } from '../utils/SSRUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Get the setup data from the database
@@ -22,14 +22,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Redirect to the setup page if the setup is not completed
   if (!setup.completed) return { props: {}, redirect: { destination: AppNavigation.Setup } };
 
+  const ssr = new SSRUtils(context);
+
+  // Get the user
+  const user = await ssr.getUser();
+
   // Redirect to the sign-in page if the user is not signed in
-  try {
-    await checkRefreshToken({ withCredentials: true, headers: { Cookie: context.req.headers.cookie || '' } });
-  } catch (err) {
+  if (!user) {
     return { props: {}, redirect: { destination: AppNavigation.SignIn } };
   }
 
-  return { props: {} };
+  return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
 const DashboardPage: NextPage = () => {

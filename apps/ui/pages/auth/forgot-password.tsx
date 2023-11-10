@@ -13,21 +13,22 @@ import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledTextField } from '../../components/form/ControlledTextField';
 import { useForgotPassword } from '../../hooks/data/users/useForgotPassword';
-import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { AppNavigation } from '../../lib/navigation';
+import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Redirect to the dashboard page if the user is logged in
-  try {
-    const user = await checkRefreshToken({
-      withCredentials: true,
-      headers: { Cookie: context.req.headers.cookie || '' },
-    });
-    if (user) return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
-  } catch (err) {}
+  const ssr = new SSRUtils(context);
 
-  return { props: {} };
+  // Get the user
+  const user = await ssr.getUser();
+
+  // Redirect to the dashboard page if the user is signed in
+  if (user) {
+    return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
+  }
+
+  return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
 const ForgotPasswordPage: NextPage = () => {

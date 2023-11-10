@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../../lib/api';
-import { CampaignInterface, CampaignMemberInterface } from '../../../../lib/types';
+import { CampaignEntity, CampaignMemberEntity } from '../../../../lib/types';
 
 interface UpdateCampaignMemberInterface {
-  campaign: Partial<CampaignInterface>;
-  member: CampaignMemberInterface;
+  campaign: Partial<CampaignEntity>;
+  member: CampaignMemberEntity;
 }
 
 /**
@@ -16,7 +16,7 @@ interface UpdateCampaignMemberInterface {
  * @returns The updated campaign
  */
 async function updateCampaignMember({ campaign, member }: UpdateCampaignMemberInterface) {
-  const { data } = await api.put<CampaignInterface>(`/api/campaigns/${campaign.id}/members/${member.id}`, {
+  const { data } = await api.put<CampaignEntity>(`/api/campaigns/${campaign.id}/members/${member.id}`, {
     role: member.role,
   });
   return data;
@@ -33,8 +33,8 @@ export function useUpdateCampaignMember() {
     // Optimistic update
     onMutate: async ({ campaign, member }) => {
       await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignInterface[]>([`campaigns`]);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignInterface>[] = []) =>
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
+      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
           c.id === campaign.id
             ? { ...campaign, members: campaign.members?.map((i) => (i.id === member.id ? member : i)) }

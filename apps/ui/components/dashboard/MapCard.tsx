@@ -25,13 +25,13 @@ import { useState } from 'react';
 import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
 import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { AppNavigation } from '../../lib/navigation';
-import { CampaignInterface, CampaignMemberRole, MapInterface } from '../../lib/types';
+import { CampaignEntity, CampaignMemberRole, MapEntity } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 
 interface MapCardProps {
-  map?: MapInterface;
-  campaign?: CampaignInterface;
+  map?: MapEntity;
+  campaign?: CampaignEntity;
 }
 
 export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {

@@ -1,5 +1,8 @@
 {
   "extends": "@tronite/tsconfig/nextjs",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "strictPropertyInitialization": false
+  },
   "exclude": ["node_modules", ".next"]
 }

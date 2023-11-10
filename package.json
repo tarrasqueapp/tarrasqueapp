@@ -22,12 +22,12 @@
     "start:ui": "turbo run start --filter=@tarrasque/ui..."
   },
   "devDependencies": {
-    "@tronite/eslint-config": "^1.0.4",
-    "@tronite/prettier-config": "^1.0.3",
-    "@tronite/tsconfig": "^1.0.3",
-    "eslint": "^8.38.0",
+    "@tronite/eslint-config": "^1.0.10",
+    "@tronite/prettier-config": "^1.0.6",
+    "@tronite/tsconfig": "^1.0.5",
+    "eslint": "^8.53.0",
     "prettier": "^3.0.3",
-    "turbo": "^1.9.1",
+    "turbo": "^1.10.16",
     "typescript": "^5.2.2"
   },
   "packageManager": "pnpm@8.8.0"

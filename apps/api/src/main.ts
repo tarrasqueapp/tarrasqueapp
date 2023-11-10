@@ -11,13 +11,9 @@ import { serializeUser } from './users/users.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: [
-      'log',
-      'warn',
-      'error',
-      config.NODE_ENV !== 'production' && 'debug',
-      config.NODE_ENV !== 'production' && config.VERBOSE && 'verbose',
-    ].filter(Boolean) as LogLevel[],
+    logger: ['log', 'warn', 'error', ...(config.NODE_ENV !== 'production' && ['debug', 'verbose'])].filter(
+      Boolean,
+    ) as LogLevel[],
     cors: { origin: '*', credentials: false },
   });
 
@@ -31,10 +27,8 @@ async function bootstrap() {
   // Validate all requests
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
-  // Enable shutdown hook
-  const prismaService: PrismaService = app.get(PrismaService);
-  prismaService.enableShutdownHooks(app);
   // Prisma middleware to hide password before sending to client
+  const prismaService: PrismaService = app.get(PrismaService);
   prismaService.$use(async (params, next) => {
     const result = await next(params);
     if (params.model === 'User') {

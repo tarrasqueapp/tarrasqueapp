@@ -1,15 +1,55 @@
-import { ValidateNested } from 'class-validator';
+import { Map } from '@prisma/client';
+import { IsDateString, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-import { CampaignBaseEntity } from '../../campaigns/entities/campaign-base.entity';
-import { TokenBaseEntity } from '../../tokens/entities/token-base.entity';
-import { MapBaseEntity } from './map-base.entity';
+import { CampaignEntity } from '../../campaigns/entities/campaign.entity';
+import { MediaEntity } from '../../media/entities/media.entity';
+import { TokenEntity } from '../../tokens/entities/token.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 
-export class MapEntity extends MapBaseEntity {
-  // Tokens
+export class MapEntity implements Map {
+  @IsString()
+  id: string;
+
+  @IsString()
+  name: string;
+
+  // Order
+  @IsNumber()
+  order: number;
+
+  // DateTime
+  @IsDateString()
+  createdAt: Date;
+
+  @IsDateString()
+  updatedAt: Date;
+
+  // Media
+  @IsOptional()
   @ValidateNested({ each: true })
-  tokens: TokenBaseEntity[];
+  media?: MediaEntity[];
+
+  @IsString()
+  selectedMediaId: string;
 
   // Campaign
+  @IsOptional()
   @ValidateNested()
-  campaign: CampaignBaseEntity;
+  campaign?: CampaignEntity;
+
+  @IsString()
+  campaignId: string;
+
+  // Created by
+  @IsOptional()
+  @ValidateNested()
+  createdBy?: UserEntity;
+
+  @IsString()
+  createdById: string;
+
+  // Tokens
+  @IsOptional()
+  @ValidateNested({ each: true })
+  tokens?: TokenEntity[];
 }

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { UserInterface } from '../../../lib/types';
+import { UserEntity } from '../../../lib/types';
 
 /**
  * Send a request to check if the password reset token is valid
@@ -25,7 +25,7 @@ interface ResetPasswordInterface {
  * @returns The signed in user
  */
 async function resetPassword({ token, password }: ResetPasswordInterface) {
-  const { data } = await api.post<UserInterface>(`/api/auth/reset-password`, { token, password });
+  const { data } = await api.post<UserEntity>(`/api/auth/reset-password`, { token, password });
   return data;
 }
 
@@ -39,7 +39,6 @@ export function useResetPassword() {
   return useMutation(resetPassword, {
     onSuccess: () => {
       queryClient.invalidateQueries([`auth`]);
-      queryClient.invalidateQueries([`auth/refresh`]);
     },
   });
 }

@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { MapInterface } from '../../../lib/types';
+import { MapEntity } from '../../../lib/types';
 
 /**
  * Send a request to update a map
  * @param map - The map to update
  * @returns The updated map
  */
-async function updateMap(map: Partial<MapInterface>) {
-  const { data } = await api.put<MapInterface>(`/api/maps/${map.id}`, map);
+async function updateMap(map: Partial<MapEntity>) {
+  const { data } = await api.put<MapEntity>(`/api/maps/${map.id}`, map);
   return data;
 }
 

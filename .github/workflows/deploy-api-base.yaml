@@ -53,14 +53,9 @@ jobs:
           build-args: |
             HOST=${{ inputs.ENVIRONMENT_URL }}
             NODE_ENV=production
-            VERBOSE=${{ secrets.VERBOSE }}
             COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
-            JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
-            JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}
-            JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
-            JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}
-            JWT_GENERIC_TOKEN_SECRET=${{ secrets.JWT_GENERIC_TOKEN_SECRET }}
-            JWT_GENERIC_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_GENERIC_TOKEN_EXPIRATION_TIME }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
             SENTRY_ENABLED=${{ secrets.SENTRY_ENABLED }}
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             STORAGE_PROVIDER=${{ secrets.STORAGE_PROVIDER }}
@@ -90,14 +85,9 @@ jobs:
             --set image.tag="${{ inputs.ENVIRONMENT }}" \
             --set env.HOST="${{ inputs.ENVIRONMENT_URL }}" \
             --set env.NODE_ENV="production" \
-            --set env.VERBOSE="${{ secrets.VERBOSE }}" \
             --set env.COOKIE_SECRET="${{ secrets.COOKIE_SECRET }}" \
-            --set env.JWT_ACCESS_TOKEN_SECRET="${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" \
-            --set env.JWT_ACCESS_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }}" \
-            --set env.JWT_REFRESH_TOKEN_SECRET="${{ secrets.JWT_REFRESH_TOKEN_SECRET }}" \
-            --set env.JWT_REFRESH_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }}" \
-            --set env.JWT_GENERIC_TOKEN_SECRET="${{ secrets.JWT_GENERIC_TOKEN_SECRET }}" \
-            --set env.JWT_GENERIC_TOKEN_EXPIRATION_TIME="${{ secrets.JWT_GENERIC_TOKEN_EXPIRATION_TIME }}" \
+            --set env.JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            --set env.JWT_EXPIRES_IN="${{ secrets.JWT_EXPIRES_IN }}" \
             --set env.SENTRY_ENABLED="${{ secrets.SENTRY_ENABLED }}" \
             --set env.SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
             --set env.STORAGE_PROVIDER="${{ secrets.STORAGE_PROVIDER }}" \

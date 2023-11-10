@@ -1,15 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { FileInterface, MediaInterface } from '../../../lib/types';
+import { FileEntity, MediaEntity } from '../../../lib/types';
 
 /**
  * Send a request to create a media item
  * @param file - The uploaded file
  * @returns The created media
  */
-async function createMedia(file: Partial<FileInterface>) {
-  const { data } = await api.post<MediaInterface>(`/api/media`, file);
+async function createMedia(file: Partial<FileEntity>) {
+  const { data } = await api.post<MediaEntity>(`/api/media`, file);
   return data;
 }
 
@@ -18,5 +18,5 @@ async function createMedia(file: Partial<FileInterface>) {
  * @returns Media create mutation
  */
 export function useCreateMedia() {
-  return useMutation(createMedia);
+  return useMutation({ mutationFn: createMedia });
 }

@@ -6,25 +6,26 @@ import React, { useEffect, useState } from 'react';
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextButton } from '../../components/common/NextButton';
-import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { useVerifyEmail } from '../../hooks/data/users/useVerifyEmail';
 import { useEffectAsync } from '../../hooks/useEffectAsync';
 import { AppNavigation } from '../../lib/navigation';
+import { SSRUtils } from '../../utils/SSRUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Redirect to the dashboard page if the user is logged in
-  try {
-    const user = await checkRefreshToken({
-      withCredentials: true,
-      headers: { Cookie: context.req.headers.cookie || '' },
-    });
-    if (user) return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
-  } catch (err) {}
+  const ssr = new SSRUtils(context);
+
+  // Get the user
+  const user = await ssr.getUser();
+
+  // Redirect to the dashboard page if the user is signed in
+  if (user) {
+    return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
+  }
 
   // Get the token from the query string
   const token = (context.query.token as string) || '';
 
-  return { props: { token } };
+  return { props: { token, dehydratedState: ssr.dehydrate() } };
 };
 
 const VerifyEmailPage: NextPage<{ token: string }> = ({ token }) => {

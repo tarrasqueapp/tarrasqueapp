@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { MapInterface } from '../../../lib/types';
+import { MapEntity } from '../../../lib/types';
 
 /**
  * Send a request to create a map
  * @param map - The map to create
  * @returns The created map
  */
-async function createMap(map: Partial<MapInterface>) {
-  const { data } = await api.post<MapInterface>(`/api/maps`, map);
+async function createMap(map: Partial<MapEntity>) {
+  const { data } = await api.post<MapEntity>(`/api/maps`, map);
   return data;
 }
 

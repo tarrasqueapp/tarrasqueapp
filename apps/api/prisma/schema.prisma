@@ -7,11 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+////////////
+// Setup //
+//////////
+
 model Setup {
   id        Int     @id @default(1)
   step      Int     @default(1)
   completed Boolean @default(false)
 }
+
+////////////
+// Media //
+//////////
 
 model Media {
   id           String      @id @default(cuid())
@@ -33,89 +41,76 @@ model Media {
   // Characters
   characters   Character[] @relation("CharacterMedia")
   // Created by
-  createdBy    User        @relation("UserMedia", fields: [createdById], references: [id])
+  createdBy    User        @relation("UserMedia", fields: [createdById], references: [id], onDelete: Cascade)
   createdById  String
 }
 
+////////////
+// Users //
+//////////
+
 model User {
-  id                      String                   @id @default(cuid())
-  name                    String
-  displayName             String
-  email                   String                   @unique
-  emailVerified           Boolean                  @default(false)
-  password                String
+  id                   String           @id @default(cuid())
+  name                 String
+  displayName          String
+  email                String           @unique
+  isEmailVerified      Boolean          @default(false)
+  password             String
+  isAdmin              Boolean          @default(false)
   // Avatar
-  avatar                  Media?                   @relation("UserAvatar", fields: [avatarId], references: [id])
-  avatarId                String?
+  avatar               Media?           @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
+  avatarId             String?
   // Order of user campaigns
-  campaignOrder           String[]                 @default([])
+  campaignOrder        String[]         @default([])
   // DateTime
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @default(now()) @updatedAt
-  // Refresh Tokens
-  refreshTokens           RefreshToken[]           @relation("UserRefreshTokens")
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @default(now()) @updatedAt
   // Maps
-  maps                    Map[]                    @relation("UserMaps")
+  maps                 Map[]            @relation("UserMaps")
   // Tokens
-  tokens                  Token[]                  @relation("UserTokens")
+  tokens               Token[]          @relation("UserTokens")
   // Media
-  media                   Media[]                  @relation("UserMedia")
+  media                Media[]          @relation("UserMedia")
   // Campaigns
-  campaignsCreated        Campaign[]               @relation("UserCampaigns")
-  campaignsMember         CampaignMember[]         @relation("UserCampaignsMember")
+  campaignsCreated     Campaign[]       @relation("UserCampaigns")
+  campaignsMember      CampaignMember[] @relation("UserCampaignsMember")
   // Characters
-  createdCharacters       Character[]              @relation("CreatedCharacters")
-  controlledCharacters    Character[]              @relation("ControlledCharacters")
+  createdCharacters    Character[]      @relation("CreatedCharacters")
+  controlledCharacters Character[]      @relation("ControlledCharacters")
   // Generic tokens
-  emailVerificationTokens EmailVerificationToken[] @relation("UserEmailVerificationTokens")
-  passwordResetTokens     PasswordResetToken[]     @relation("UserPasswordResetTokens")
-  campaignInvites         CampaignInvite[]         @relation("UserCampaignInvites")
+  eventTokens          EventToken[]     @relation("UserEventTokens")
 }
 
-model RefreshToken {
-  id        String   @id @default(cuid())
-  value     String   @unique
-  // DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  // User
-  user      User     @relation("UserRefreshTokens", fields: [userId], references: [id])
-  userId    String
+///////////////////
+// Event Tokens //
+/////////////////
+
+enum EventTokenType {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+  INVITE
 }
 
-model EmailVerificationToken {
-  id        String   @id @default(cuid())
-  value     String   @unique
-  // DateTime
-  createdAt DateTime @default(now())
-  // User
-  user      User     @relation("UserEmailVerificationTokens", fields: [userId], references: [id])
-  userId    String
-}
-
-model PasswordResetToken {
-  id        String   @id @default(cuid())
-  value     String   @unique
-  // DateTime
-  createdAt DateTime @default(now())
-  // User
-  user      User     @relation("UserPasswordResetTokens", fields: [userId], references: [id])
-  userId    String
-}
-
-model CampaignInvite {
-  id         String   @id @default(cuid())
+model EventToken {
+  id         String         @id @default(uuid())
+  type       EventTokenType
   email      String
-  value      String   @unique
+  payload    Json?
   // DateTime
-  createdAt  DateTime @default(now())
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+  expiresAt  DateTime
   // User
-  user       User?    @relation("UserCampaignInvites", fields: [userId], references: [id])
+  user       User?          @relation("UserEventTokens", fields: [userId], references: [id], onDelete: Cascade)
   userId     String?
   // Campaign
-  campaign   Campaign @relation("CampaignInvites", fields: [campaignId], references: [id])
-  campaignId String
+  campaign   Campaign?      @relation("CampaignInvites", fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String?
 }
+
+////////////////
+// Campaigns //
+//////////////
 
 model Campaign {
   id          String           @id @default(cuid())
@@ -130,10 +125,10 @@ model Campaign {
   // Characters
   characters  Character[]      @relation("CampaignCharacters")
   // Created by
-  createdBy   User             @relation("UserCampaigns", fields: [createdById], references: [id])
+  createdBy   User             @relation("UserCampaigns", fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
   // Invites
-  invites     CampaignInvite[] @relation("CampaignInvites")
+  invites     EventToken[]     @relation("CampaignInvites")
 }
 
 enum CampaignMemberRole {
@@ -145,15 +140,19 @@ model CampaignMember {
   id         String             @id @default(cuid())
   role       CampaignMemberRole @default(PLAYER)
   // User
-  user       User               @relation("UserCampaignsMember", fields: [userId], references: [id])
+  user       User               @relation("UserCampaignsMember", fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   // Campaign
-  campaign   Campaign           @relation("CampaignMembers", fields: [campaignId], references: [id])
+  campaign   Campaign           @relation("CampaignMembers", fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId String
   // DateTime
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @default(now()) @updatedAt
 }
+
+///////////
+// Maps //
+/////////
 
 model Map {
   id              String   @id @default(cuid())
@@ -163,17 +162,17 @@ model Map {
   // DateTime
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now()) @updatedAt
-  // Tokens
-  tokens          Token[]  @relation("MapTokens")
   // Media
   media           Media[]  @relation("MapMedia")
   selectedMediaId String?
   // Campaign
-  campaign        Campaign @relation("CampaignMaps", fields: [campaignId], references: [id])
+  campaign        Campaign @relation("CampaignMaps", fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId      String
   // Created by
-  createdBy       User     @relation("UserMaps", fields: [createdById], references: [id])
+  createdBy       User     @relation("UserMaps", fields: [createdById], references: [id], onDelete: Cascade)
   createdById     String
+  // Tokens
+  tokens          Token[]  @relation("MapTokens")
 }
 
 model Character {
@@ -188,12 +187,12 @@ model Character {
   media           Media[]  @relation("CharacterMedia")
   selectedMediaId String?
   // Created by
-  createdBy       User     @relation("CreatedCharacters", fields: [createdById], references: [id])
+  createdBy       User     @relation("CreatedCharacters", fields: [createdById], references: [id], onDelete: Cascade)
   createdById     String
   // Controlled by
   controlledBy    User[]   @relation("ControlledCharacters")
   // Campaign
-  campaign        Campaign @relation("CampaignCharacters", fields: [campaignId], references: [id])
+  campaign        Campaign @relation("CampaignCharacters", fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId      String
 }
 
@@ -207,12 +206,12 @@ model Token {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
   // User
-  createdBy   User      @relation("UserTokens", fields: [createdById], references: [id])
+  createdBy   User      @relation("UserTokens", fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
   // Map
-  map         Map       @relation("MapTokens", fields: [mapId], references: [id])
+  map         Map       @relation("MapTokens", fields: [mapId], references: [id], onDelete: Cascade)
   mapId       String
   // Character
-  character   Character @relation("CharacterTokens", fields: [characterId], references: [id])
+  character   Character @relation("CharacterTokens", fields: [characterId], references: [id], onDelete: Cascade)
   characterId String
 }

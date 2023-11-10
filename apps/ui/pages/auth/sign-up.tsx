@@ -14,9 +14,9 @@ import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
 import { ControlledTextField } from '../../components/form/ControlledTextField';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
-import { checkRefreshToken } from '../../hooks/data/users/useGetRefreshToken';
 import { useSignUp } from '../../hooks/data/users/useSignUp';
 import { AppNavigation } from '../../lib/navigation';
+import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -29,16 +29,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Redirect to the setup page if the setup is not completed
   if (!setup.completed) return { props: {}, redirect: { destination: AppNavigation.Setup } };
 
-  // Redirect to the dashboard page if the user is logged in
-  try {
-    const user = await checkRefreshToken({
-      withCredentials: true,
-      headers: { Cookie: context.req.headers.cookie || '' },
-    });
-    if (user) return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
-  } catch (err) {}
+  const ssr = new SSRUtils(context);
 
-  return { props: {} };
+  // Get the user
+  const user = await ssr.getUser();
+
+  // Redirect to the dashboard page if the user is signed in
+  if (user) {
+    return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
+  }
+
+  return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
 const SignUpPage: NextPage = () => {

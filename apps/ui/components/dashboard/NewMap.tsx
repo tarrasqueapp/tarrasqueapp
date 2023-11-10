@@ -2,12 +2,12 @@ import { Add } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
 import { Color } from '../../lib/colors';
-import { CampaignInterface } from '../../lib/types';
+import { CampaignEntity } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 
 interface NewMapProps {
-  campaign: CampaignInterface | null;
+  campaign: CampaignEntity | null;
 }
 
 export const NewMap: React.FC<NewMapProps> = ({ campaign }) => {

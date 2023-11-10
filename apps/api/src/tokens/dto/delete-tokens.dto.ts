@@ -1,8 +1,8 @@
 import { ValidateNested } from 'class-validator';
 
-import { TokenBaseEntity } from '../entities/token-base.entity';
+import { TokenEntity } from '../entities/token.entity';
 
 export class DeleteTokensDto {
   @ValidateNested({ each: true })
-  tokens: TokenBaseEntity[];
+  tokens: TokenEntity[];
 }

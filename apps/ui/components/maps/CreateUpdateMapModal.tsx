@@ -25,7 +25,7 @@ import { useUpdateMap } from '../../hooks/data/maps/useUpdateMap';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { MapFactory } from '../../lib/factories/MapFactory';
-import { CampaignInterface, MapInterface, MediaInterface } from '../../lib/types';
+import { CampaignEntity, MapEntity, MediaEntity } from '../../lib/types';
 import { store } from '../../store';
 import { UploadedFile } from '../../store/media';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -35,8 +35,8 @@ import { ControlledMediaUploader } from '../form/MediaUploader/ControlledMediaUp
 interface CreateUpdateMapModalProps {
   open: boolean;
   onClose: () => void;
-  map: MapInterface | undefined;
-  campaign: CampaignInterface | undefined;
+  map: MapEntity | undefined;
+  campaign: CampaignEntity | undefined;
 }
 
 export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observer(
@@ -58,7 +58,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
       .object({
         name: ValidateUtils.Name,
         campaignId: yup.string().when('campaign', {
-          is: (campaign: CampaignInterface | undefined) => Boolean(campaign),
+          is: (campaign: CampaignEntity | undefined) => Boolean(campaign),
           then: yup.string().required(),
         }),
         media: yup
@@ -101,7 +101,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
 
       if (map) {
         // Get existing media
-        const existingMedia = values.media.filter((media: MediaInterface) => store.media.isMedia(media));
+        const existingMedia = values.media.filter((media: MediaEntity) => store.media.isMedia(media));
         // Find new files that needs to be created as media
         const newMedia = await Promise.all(
           values.media
@@ -116,7 +116,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
             }),
         );
         // Merge existing and new media
-        const media = [...existingMedia, ...newMedia] as MediaInterface[];
+        const media = [...existingMedia, ...newMedia] as MediaEntity[];
         // Update map
         await updateMap.mutateAsync({
           name: values.name,

@@ -3,7 +3,6 @@ import { PrismaService } from 'nestjs-prisma';
 
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
-import { TokenBaseEntity } from './entities/token-base.entity';
 import { TokenEntity } from './entities/token.entity';
 
 @Injectable()
@@ -102,7 +101,7 @@ export class TokensService {
    * @param data - The token data
    * @returns The updated token
    */
-  async updateToken(tokenId: string, data: UpdateTokenDto): Promise<TokenBaseEntity> {
+  async updateToken(tokenId: string, data: UpdateTokenDto): Promise<TokenEntity> {
     this.logger.verbose(`📂 Updating token "${tokenId}"`);
     try {
       // Update the token
@@ -120,7 +119,7 @@ export class TokensService {
    * @param data - The token data
    * @returns The updated tokens
    */
-  updateTokens(data: UpdateTokenDto[]): Promise<TokenBaseEntity[]> {
+  updateTokens(data: UpdateTokenDto[]): Promise<TokenEntity[]> {
     const promises = data.map((token) => this.updateToken(token.id, token));
     return Promise.all(promises);
   }
@@ -130,7 +129,7 @@ export class TokensService {
    * @param tokenId - The token id
    * @returns The deleted token
    */
-  async deleteToken(tokenId: string): Promise<TokenBaseEntity> {
+  async deleteToken(tokenId: string): Promise<TokenEntity> {
     this.logger.verbose(`📂 Deleting token "${tokenId}"`);
     try {
       // Delete the token
@@ -148,7 +147,7 @@ export class TokensService {
    * @param tokenIds - The token ids
    * @returns The deleted tokens
    */
-  deleteTokens(tokenIds: string[]): Promise<TokenBaseEntity[]> {
+  deleteTokens(tokenIds: string[]): Promise<TokenEntity[]> {
     const promises = tokenIds.map((tokenId) => this.deleteToken(tokenId));
     return Promise.all(promises);
   }

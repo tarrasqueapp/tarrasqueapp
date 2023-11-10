@@ -4,19 +4,19 @@ export enum SetupStep {
   COMPLETED = 3,
 }
 
-export interface SetupInterface {
+export class SetupEntity {
   step: SetupStep;
   completed: boolean;
 }
 
-export interface UserInterface {
+export class UserEntity {
   id: string;
   name: string;
   displayName: string;
   email: string;
-  emailVerified: boolean;
+  isEmailVerified: boolean;
   // Avatar
-  avatar?: MediaInterface;
+  avatar?: MediaEntity;
   avatarId?: string;
   // Order of campaigns
   campaignOrder: string[];
@@ -25,32 +25,42 @@ export interface UserInterface {
   updatedAt: string;
 }
 
-export interface CampaignInviteInterface {
-  id: string;
-  email: string;
-  // DateTime
-  createdAt: string;
-  // User
-  user?: UserInterface;
-  userId?: string;
-  // Campaign
-  campaignId: string;
-  campaign?: CampaignInterface;
+export enum EventTokenType {
+  VERIFY_EMAIL = 'VERIFY_EMAIL',
+  RESET_PASSWORD = 'RESET_PASSWORD',
+  INVITE = 'INVITE',
 }
 
-export interface CampaignInterface {
+export class EventTokenEntity {
+  id: string;
+  type: EventTokenType;
+  email: string;
+  payload: Record<string, any>;
+  // DateTime
+  createdAt: Date;
+  updatedAt: Date;
+  expiresAt: Date;
+  // User
+  user?: UserEntity | null;
+  userId: string | null;
+  // Campaign
+  campaign?: CampaignEntity | null;
+  campaignId: string | null;
+}
+
+export class CampaignEntity {
   id: string;
   name: string;
   // DateTime
   createdAt: string;
   updatedAt: string;
   // Members
-  members: CampaignMemberInterface[];
+  members: CampaignMemberEntity[];
   // Created by
-  createdBy: UserInterface;
+  createdBy: UserEntity;
   createdById: string;
   // Invites
-  invites: CampaignInviteInterface[];
+  invites: EventTokenEntity[];
 }
 
 export enum CampaignMemberRole {
@@ -58,11 +68,11 @@ export enum CampaignMemberRole {
   PLAYER = 'PLAYER',
 }
 
-export interface CampaignMemberInterface {
+export class CampaignMemberEntity {
   id: string;
   role: CampaignMemberRole;
   // User
-  user: UserInterface;
+  user: UserEntity;
   userId: string;
   // Campaign
   campaignId: string;
@@ -71,51 +81,51 @@ export interface CampaignMemberInterface {
   updatedAt: string;
 }
 
-export interface MapInterface {
+export class MapEntity {
   id: string;
   name: string;
   // DateTime
   createdAt: string;
   updatedAt: string;
   // Media
-  media: MediaInterface[];
+  media: MediaEntity[];
   mediaIds: string[];
   selectedMediaId: string;
   // Campaign
-  campaign: CampaignInterface;
+  campaign: CampaignEntity;
   campaignId: string;
   // Created by
-  createdBy: UserInterface;
+  createdBy: UserEntity;
   createdById: string;
 }
 
-export interface CharacterInterface {
+export class CharacterEntity {
   id: string;
   name: string;
   // DateTime
   createdAt: string;
   updatedAt: string;
   // Tokens
-  tokens: TokenInterface[];
+  tokens: TokenEntity[];
   // Media
-  media: MediaInterface[];
+  media: MediaEntity[];
   mediaIds: string[];
   // Created by
-  createdBy: UserInterface;
+  createdBy: UserEntity;
   createdById: string;
   // Controlled by
-  controlledBy: UserInterface[];
+  controlledBy: UserEntity[];
   // Campaign
-  campaign: CampaignInterface;
+  campaign: CampaignEntity;
   campaignId: string;
 }
 
-export interface DimensionsInterface {
+export class DimensionsEntity {
   width: number;
   height: number;
 }
 
-export interface FileInterface {
+export class FileEntity {
   id: string;
   name: string;
   type: string;
@@ -125,7 +135,7 @@ export interface FileInterface {
   height?: number;
 }
 
-export interface MediaInterface {
+export class MediaEntity {
   id: string;
   name: string;
   url: string;
@@ -139,11 +149,11 @@ export interface MediaInterface {
   createdAt: string;
   updatedAt: string;
   // Created by
-  createdBy: UserInterface;
+  createdBy: UserEntity;
   createdById: string;
 }
 
-export interface TokenInterface {
+export class TokenEntity {
   id: string;
   width: number;
   height: number;
@@ -153,12 +163,12 @@ export interface TokenInterface {
   createdAt: string;
   updatedAt: string;
   // User
-  createdBy: UserInterface;
+  createdBy: UserEntity;
   createdById: string;
   // Map
-  map: MapInterface;
+  map: MapEntity;
   mapId: string;
   // Character
-  character?: CharacterInterface;
+  character?: CharacterEntity;
   characterId?: string;
 }

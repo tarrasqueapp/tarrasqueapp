@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { SetupInterface } from '../../../lib/types';
+import { SetupEntity } from '../../../lib/types';
 
 /**
  * Send a request to update setup
  * @param setup - The setup to update with
  * @returns The updated setup
  */
-async function updateSetup(setup: Partial<SetupInterface>) {
-  const { data } = await api.put<SetupInterface>(`/api/setup`, setup);
+async function updateSetup(setup: Partial<SetupEntity>) {
+  const { data } = await api.put<SetupEntity>(`/api/setup`, setup);
   return data;
 }
 

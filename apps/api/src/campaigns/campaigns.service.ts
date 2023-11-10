@@ -1,10 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
-import { CAMPAIGN_INVITE_SAFE_FIELDS } from './campaign-invites.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
-import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
 
 @Injectable()
@@ -28,7 +26,7 @@ export class CampaignsService {
           members: { include: { user: { include: { avatar: true } } } },
           characters: { include: { controlledBy: true, media: true } },
           createdBy: { include: { avatar: true } },
-          invites: { select: CAMPAIGN_INVITE_SAFE_FIELDS },
+          invites: true,
         },
         orderBy: { createdAt: 'asc' },
       });
@@ -69,7 +67,7 @@ export class CampaignsService {
           members: { include: { user: { include: { avatar: true } } } },
           characters: { include: { controlledBy: true, media: true } },
           createdBy: { include: { avatar: true } },
-          invites: { select: CAMPAIGN_INVITE_SAFE_FIELDS },
+          invites: true,
         },
       });
       this.logger.debug(`✅️ Found campaign "${campaignId}"`);
@@ -103,7 +101,7 @@ export class CampaignsService {
    * @param createdById - The user's id
    * @returns The created campaign
    */
-  async createCampaign(data: CreateCampaignDto, createdById: string): Promise<CampaignBaseEntity> {
+  async createCampaign(data: CreateCampaignDto, createdById: string): Promise<CampaignEntity> {
     this.logger.verbose(`📂 Creating campaign "${data.name}"`);
     try {
       // Create the campaign
@@ -127,7 +125,7 @@ export class CampaignsService {
    * @param data - The campaign's data
    * @returns The updated campaign
    */
-  async updateCampaign(campaignId: string, data: UpdateCampaignDto): Promise<CampaignBaseEntity> {
+  async updateCampaign(campaignId: string, data: UpdateCampaignDto): Promise<CampaignEntity> {
     this.logger.verbose(`📂 Updating campaign "${campaignId}"`);
     try {
       // Update the campaign
@@ -135,7 +133,7 @@ export class CampaignsService {
         where: { id: campaignId },
         data: {
           name: data.name,
-          members: { connect: data.members },
+          members: { connect: data.members.map((member) => ({ id: member.userId })) },
         },
       });
       this.logger.debug(`✅️ Updated campaign "${campaignId}"`);
@@ -151,7 +149,7 @@ export class CampaignsService {
    * @param campaignId - The campaign's id
    * @returns The deleted campaign
    */
-  async deleteCampaign(campaignId: string): Promise<CampaignBaseEntity> {
+  async deleteCampaign(campaignId: string): Promise<CampaignEntity> {
     this.logger.verbose(`📂 Deleting campaign "${campaignId}"`);
     try {
       // Delete the campaign

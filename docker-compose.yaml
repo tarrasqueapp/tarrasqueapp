@@ -15,7 +15,6 @@ services:
       args:
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
-        - JWT_ACCESS_TOKEN_EXPIRATION_TIME=${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
     volumes:
       - ./:/app
       - /app/node_modules

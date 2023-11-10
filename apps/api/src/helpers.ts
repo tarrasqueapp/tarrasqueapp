@@ -32,6 +32,15 @@ export function toMillisecondsFromString(duration: string): number {
 }
 
 /**
+ * Transform a duration string into a date
+ * @param duration - A duration string
+ * @returns The date
+ */
+export function durationToDate(duration: string): Date {
+  return new Date(Date.now() + toMillisecondsFromString(duration));
+}
+
+/**
  * Get the milliseconds multiplier for a duration unit
  * @param unit - A unit of time
  * @returns The number of milliseconds in the given unit

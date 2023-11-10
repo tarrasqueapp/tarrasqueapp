@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { UserInterface } from '../../../lib/types';
+import { UserEntity } from '../../../lib/types';
 
 /**
  * Send a request to sign up the user
  * @param user - The user details
  */
-async function signUp(user: Partial<UserInterface>) {
-  const { data } = await api.post<UserInterface>(`/api/auth/sign-up`, user);
+async function signUp(user: Partial<UserEntity>) {
+  const { data } = await api.post<UserEntity>(`/api/auth/sign-up`, user);
   return data;
 }
 

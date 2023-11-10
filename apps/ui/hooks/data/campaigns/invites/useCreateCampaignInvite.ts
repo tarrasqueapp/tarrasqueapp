@@ -2,10 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../../lib/api';
-import { CampaignInterface } from '../../../../lib/types';
+import { CampaignEntity, EventTokenEntity, EventTokenType } from '../../../../lib/types';
 
 interface CampaignInviteInterface {
-  campaign: Partial<CampaignInterface>;
+  campaign: Partial<CampaignEntity>;
   email: string;
 }
 
@@ -16,7 +16,7 @@ interface CampaignInviteInterface {
  * @returns The updated campaign
  */
 async function createCampaignInvite({ campaign, email }: CampaignInviteInterface) {
-  const { data } = await api.post<CampaignInterface>(`/api/campaigns/${campaign.id}/invites`, { email });
+  const { data } = await api.post<CampaignEntity>(`/api/campaigns/${campaign.id}/invites`, { email });
   return data;
 }
 
@@ -31,16 +31,26 @@ export function useCreateCampaignInvite() {
     // Optimistic update
     onMutate: async ({ campaign, email }) => {
       await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignInterface[]>([`campaigns`]);
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
       const id = Math.random().toString(36).substring(2, 9);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignInterface>[] = []) =>
+      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
           c.id === campaign.id
             ? {
                 ...campaign,
                 invites: [
                   ...campaign.invites!,
-                  { id, email, createdAt: new Date().toISOString(), campaignId: campaign.id! },
+                  {
+                    id,
+                    type: EventTokenType.INVITE,
+                    email,
+                    payload: {},
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    expiresAt: new Date(),
+                    userId: null,
+                    campaignId: campaign.id!,
+                  } as EventTokenEntity,
                 ],
               }
             : c,

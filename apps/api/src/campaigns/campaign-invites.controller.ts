@@ -1,19 +1,20 @@
 import { BadRequestException, Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CampaignMemberRole } from '@prisma/client';
+import { CampaignMemberRole, EventTokenType } from '@prisma/client';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EmailService } from '../email/email.service';
+import { EventTokensService } from '../event-tokens/event-tokens.service';
+import { durationToDate } from '../helpers';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import { CampaignInvitesService } from './campaign-invites.service';
 import { CampaignMembersService } from './campaign-members.service';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignInviteDto } from './dto/connect-campaign-invite.dto';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateInviteDto } from './dto/create-invite.dto';
-import { CampaignBaseEntity } from './entities/campaign-base.entity';
+import { CampaignEntity } from './entities/campaign.entity';
 import { CampaignRoleGuard } from './guards/campaign-role.guard';
 
 @ApiTags('campaigns/:campaignId/invites')
@@ -22,7 +23,7 @@ export class CampaignInvitesController {
   constructor(
     private readonly campaignsService: CampaignsService,
     private readonly campaignMembersService: CampaignMembersService,
-    private readonly campaignInvitesService: CampaignInvitesService,
+    private readonly eventTokensService: EventTokensService,
     private readonly usersService: UsersService,
     private readonly emailService: EmailService,
   ) {}
@@ -33,12 +34,12 @@ export class CampaignInvitesController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post()
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
+  @ApiOkResponse({ type: CampaignEntity })
   async createInvite(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() { email }: CreateInviteDto,
     @User() user: UserEntity,
-  ): Promise<CampaignBaseEntity> {
+  ): Promise<CampaignEntity> {
     // Check if the user is already a member of the campaign
     const campaign = await this.campaignsService.getCampaign(campaignId);
     const isMember = campaign.members.some((member) => member.user.id === user.id || member.user.email === email);
@@ -63,24 +64,35 @@ export class CampaignInvitesController {
       // Check if the invited user already has an account
       const invitee = await this.usersService.getUserByEmail(email);
       // Create a token for the invited user
-      const token = await this.campaignInvitesService.createInvite({ email, userId: invitee.id, campaignId });
+      const token = await this.eventTokensService.createToken({
+        type: EventTokenType.INVITE,
+        email,
+        userId: invitee.id,
+        expiresAt: durationToDate('7d'),
+        campaignId,
+      });
       // Send an email to the invited user
       await this.emailService.sendCampaignInviteExistingUserEmail({
         hostName: user.displayName,
         campaignName: campaign.name,
         inviteeName: invitee.displayName,
         to: invitee.email,
-        token: token.value,
+        token: token.id,
       });
     } catch (e) {
       // Create a token for the invited user
-      const token = await this.campaignInvitesService.createInvite({ email, campaignId });
+      const token = await this.eventTokensService.createToken({
+        type: EventTokenType.INVITE,
+        email,
+        expiresAt: durationToDate('7d'),
+        campaignId,
+      });
       // Send an email to the invited user
       await this.emailService.sendCampaignInviteNewUserEmail({
         hostName: user.displayName,
         campaignName: campaign.name,
         to: email,
-        token: token.value,
+        token: token.id,
       });
     }
 
@@ -93,10 +105,10 @@ export class CampaignInvitesController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':inviteId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
-  async removeInvite(@Param() { campaignId, inviteId }: ConnectCampaignInviteDto): Promise<CampaignBaseEntity> {
+  @ApiOkResponse({ type: CampaignEntity })
+  async removeInvite(@Param() { campaignId, inviteId }: ConnectCampaignInviteDto): Promise<CampaignEntity> {
     // Delete the invite
-    await this.campaignInvitesService.deleteInvite(inviteId);
+    await this.eventTokensService.deleteToken(inviteId);
 
     return this.campaignsService.getCampaign(campaignId);
   }
@@ -113,7 +125,7 @@ export class CampaignInvitesController {
     @User() user: UserEntity,
   ): Promise<void> {
     // Delete the invite
-    await this.campaignInvitesService.deleteInvite(inviteId);
+    await this.eventTokensService.deleteToken(inviteId);
     // Add the user to the campaign
     await this.campaignMembersService.createMember({ userId: user.id, campaignId });
   }
@@ -127,6 +139,6 @@ export class CampaignInvitesController {
   @ApiOkResponse({ type: null })
   async declineInvite(@Param() { inviteId }: ConnectCampaignInviteDto): Promise<void> {
     // Delete the invite
-    await this.campaignInvitesService.deleteInvite(inviteId);
+    await this.eventTokensService.deleteToken(inviteId);
   }
 }

@@ -2,13 +2,13 @@ import { CircularProgress, Tooltip } from '@mui/material';
 import { useIsFetching, useIsMutating } from '@tanstack/react-query';
 import React, { ReactNode } from 'react';
 
-import { useGetRefreshToken } from '../hooks/data/users/useGetRefreshToken';
+import { useGetUser } from '../hooks/data/users/useGetUser';
 
 export const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const isFetching = useIsFetching();
   const isMutating = useIsMutating();
 
-  useGetRefreshToken();
+  useGetUser();
 
   return (
     <>

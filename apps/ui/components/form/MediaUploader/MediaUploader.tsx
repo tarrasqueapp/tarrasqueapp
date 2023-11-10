@@ -31,7 +31,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { Color } from '../../../lib/colors';
-import { MediaInterface } from '../../../lib/types';
+import { MediaEntity } from '../../../lib/types';
 import { store } from '../../../store';
 import { UploadingFile } from '../../../store/media';
 import { MathUtils } from '../../../utils/MathUtils';
@@ -64,10 +64,10 @@ function generateFileTypesString(fileTypes: string[]) {
 }
 
 export interface MediaUploaderProps {
-  files?: (UploadingFile | MediaInterface)[];
-  onChange?: (files: (UploadingFile | MediaInterface)[]) => void;
+  files?: (UploadingFile | MediaEntity)[];
+  onChange?: (files: (UploadingFile | MediaEntity)[]) => void;
   selectedMediaId?: string;
-  onSelect?: (file: UploadingFile | MediaInterface) => void;
+  onSelect?: (file: UploadingFile | MediaEntity) => void;
 }
 
 export const MediaUploader: React.FC<MediaUploaderProps> = ({ files, onChange, selectedMediaId, onSelect }) => {
@@ -204,7 +204,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({ files, onChange, s
    * @param file
    * @returns
    */
-  function handleDelete(file: UploadingFile | MediaInterface) {
+  function handleDelete(file: UploadingFile | MediaEntity) {
     if (!file || !files) return;
     if (store.media.isUploadingFile(file)) uppy.removeFile(file.id);
     const newFiles = files.filter((existingFile) => existingFile.id !== file.id);

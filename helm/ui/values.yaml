@@ -47,12 +47,10 @@ ingress:
 env:
   - name: HOST
     value: "https://tarrasque.app"
-  - name: AXIOS_BASE_URL
+  - name: API_BASE_URL
     value: "https://tarrasque.app"
   - name: NODE_ENV
     value: "production"
-  - name: JWT_ACCESS_TOKEN_EXPIRATION_TIME
-    value: "5m"
   - name: SENTRY_ENABLED
     value: "true"
   - name: SENTRY_DSN

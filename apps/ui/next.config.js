@@ -3,9 +3,9 @@ const nextConfig = {
   env: {
     // URL
     HOST: process.env.HOST,
-    AXIOS_BASE_URL: process.env.AXIOS_BASE_URL,
+    API_BASE_URL: process.env.API_BASE_URL,
     // Authentication
-    JWT_ACCESS_TOKEN_EXPIRATION_TIME: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
   },
   webpack(config) {
     config.module.rules.push({

@@ -11,7 +11,6 @@ import { UserEntity } from '../users/entities/user.entity';
 import { ConnectMapDto } from './dto/connect-map.dto';
 import { CreateMapDto } from './dto/create-map.dto';
 import { UpdateMapDto } from './dto/update-map.dto';
-import { MapBaseEntity } from './entities/map-base.entity';
 import { MapEntity } from './entities/map.entity';
 import { MapsService } from './maps.service';
 
@@ -39,8 +38,8 @@ export class MapsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post()
   @ApiBearerAuth()
-  @ApiOkResponse({ type: MapBaseEntity })
-  createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapBaseEntity> {
+  @ApiOkResponse({ type: MapEntity })
+  createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapEntity> {
     return this.mapsService.createMap(data, user.id);
   }
 
@@ -50,8 +49,8 @@ export class MapsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post(':mapId/duplicate')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: MapBaseEntity })
-  duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
+  @ApiOkResponse({ type: MapEntity })
+  duplicateMap(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
     return this.mapsService.duplicateMap(mapId);
   }
 
@@ -61,8 +60,8 @@ export class MapsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Put(':mapId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: MapBaseEntity })
-  async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapBaseEntity> {
+  @ApiOkResponse({ type: MapEntity })
+  async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapEntity> {
     // Get the current map
     const map = await this.mapsService.getMap(mapId);
 
@@ -113,8 +112,8 @@ export class MapsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':mapId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: MapBaseEntity })
-  async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapBaseEntity> {
+  @ApiOkResponse({ type: MapEntity })
+  async deleteMap(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
     // Delete the map from the database
     const map = await this.mapsService.deleteMap(mapId);
 

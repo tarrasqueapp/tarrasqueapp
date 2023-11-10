@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { MapInterface } from '../../../lib/types';
+import { MapEntity } from '../../../lib/types';
 
 /**
  * Send a request to get a map by id
@@ -9,7 +9,7 @@ import { MapInterface } from '../../../lib/types';
  * @returns The map data
  */
 async function getMap(mapId: string) {
-  const { data } = await api.get<MapInterface>(`/api/maps/${mapId}`);
+  const { data } = await api.get<MapEntity>(`/api/maps/${mapId}`);
   return data;
 }
 

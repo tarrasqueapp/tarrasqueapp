@@ -11,13 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { EventTokenType } from '@prisma/client';
 import { Request, Response } from 'express';
 
-import { CampaignInvitesService } from '../campaigns/campaign-invites.service';
 import { CampaignsService } from '../campaigns/campaigns.service';
 import { EmailService } from '../email/email.service';
-import { EmailVerificationTokensService } from '../generic-tokens/email-verification-tokens.service';
-import { PasswordResetTokensService } from '../generic-tokens/password-reset-tokens.service';
+import { EventTokensService } from '../event-tokens/event-tokens.service';
+import { durationToDate } from '../helpers';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
@@ -27,7 +27,6 @@ import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')
@@ -38,9 +37,7 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly mediaService: MediaService,
     private readonly storageService: StorageService,
-    private readonly emailVerificationTokensService: EmailVerificationTokensService,
-    private readonly passwordResetTokensService: PasswordResetTokensService,
-    private readonly campaignInvitesService: CampaignInvitesService,
+    private readonly eventTokensService: EventTokensService,
     private readonly emailService: EmailService,
     private readonly campaignsService: CampaignsService,
   ) {}
@@ -78,51 +75,20 @@ export class AuthController {
     // Check if email has changed
     if (data.email !== user.email) {
       // Generate the verify email token
-      const token = await this.emailVerificationTokensService.createToken({ userId: user.id });
+      const token = await this.eventTokensService.createToken({
+        type: EventTokenType.VERIFY_EMAIL,
+        email: data.email,
+        userId: user.id,
+        expiresAt: durationToDate('7d'),
+      });
       // Send the email
-      this.emailService.sendEmailVerificationEmail({ name: data.displayName, to: data.email, token: token.value });
+      this.emailService.sendEmailVerificationEmail({ name: data.displayName, to: data.email, token: token.id });
       // Set the user as unverified
-      data.emailVerified = false;
+      data.isEmailVerified = false;
     }
 
     // Update the user
     return this.usersService.updateUser(user.id, data);
-  }
-
-  /**
-   * Set new refresh token
-   */
-  @UseGuards(JwtRefreshGuard)
-  @Get('refresh')
-  @ApiBearerAuth()
-  @ApiOkResponse({ type: UserEntity })
-  async refresh(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-    @User() user: UserEntity,
-  ): Promise<UserEntity> {
-    // Get current refresh token
-    const currentRefreshToken = req.signedCookies?.Refresh;
-    // Generate access and refresh tokens based on user
-    const accessToken = this.authService.generateAccessToken(user.id);
-    const refreshToken = this.authService.generateRefreshToken(user.id);
-    // Set refresh token
-    await this.usersService.updateRefreshToken(currentRefreshToken, refreshToken);
-    // Set cookies
-    res.cookie('Access', accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie('Refresh', refreshToken, { httpOnly: true, signed: true, path: '/' });
-    return user;
-  }
-
-  /**
-   * Check if the refresh token is valid
-   */
-  @UseGuards(JwtRefreshGuard)
-  @Get('check-refresh-token')
-  @ApiBearerAuth()
-  @ApiOkResponse({ type: UserEntity })
-  async checkRefreshToken(@User() user: UserEntity): Promise<UserEntity> {
-    return user;
   }
 
   /**
@@ -134,11 +100,16 @@ export class AuthController {
     // Create the user
     const user = await this.usersService.createUser(data);
     // Generate the verify email token
-    const token = await this.emailVerificationTokensService.createToken({ userId: user.id });
+    const token = await this.eventTokensService.createToken({
+      type: EventTokenType.VERIFY_EMAIL,
+      email: user.email,
+      userId: user.id,
+      expiresAt: durationToDate('7d'),
+    });
     // Send the email
-    await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.value });
+    await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.id });
     // Assign existing campaign invites to the new user
-    await this.campaignInvitesService.assignInvitesToUser(user.email, user.id);
+    await this.eventTokensService.assignTokensToUser(user.email, user.id);
   }
 
   /**
@@ -148,18 +119,14 @@ export class AuthController {
   @Post('sign-in')
   @ApiOkResponse({ type: UserEntity })
   async signIn(@Res({ passthrough: true }) res: Response, @User() user: UserEntity): Promise<UserEntity> {
-    if (!user.emailVerified) {
+    if (!user.isEmailVerified) {
       throw new UnauthorizedException('Email not verified');
     }
 
-    // Generate access and refresh tokens based on user
-    const accessToken = this.authService.generateAccessToken(user.id);
-    const refreshToken = this.authService.generateRefreshToken(user.id);
-    // Set refresh token
-    await this.usersService.createRefreshToken(user.id, refreshToken);
+    // Generate access token based on user
+    const accessToken = this.eventTokensService.generateToken(user.id);
     // Set cookies
     res.cookie('Access', accessToken, { httpOnly: true, signed: true, path: '/' });
-    res.cookie('Refresh', refreshToken, { httpOnly: true, signed: true, path: '/' });
 
     return user;
   }
@@ -172,13 +139,8 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: null })
   signOut(@Req() req: Request, @Res({ passthrough: true }) res: Response): void {
-    // Get current refresh token
-    const refreshToken = req.signedCookies?.Refresh;
     // Clear cookies
     res.clearCookie('Access');
-    res.clearCookie('Refresh');
-    // Delete refresh token
-    this.usersService.removeRefreshToken(refreshToken);
   }
 
   /**
@@ -190,13 +152,13 @@ export class AuthController {
     // Get the user
     const user = await this.usersService.getUserByEmail(data.email);
     // Check if the user's email is verified
-    if (user.emailVerified) {
+    if (user.isEmailVerified) {
       throw new BadRequestException('Email already verified');
     }
     // Get the token
-    const token = await this.emailVerificationTokensService.getTokenByUserId(user.id);
+    const [token] = await this.eventTokensService.getTokensByUserId(user.id, EventTokenType.VERIFY_EMAIL);
     // Send the email
-    await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.value });
+    await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.id });
   }
 
   /**
@@ -206,11 +168,11 @@ export class AuthController {
   @ApiOkResponse({ type: UserEntity })
   async verifyEmail(@Res({ passthrough: true }) res: Response, @Body() data: { token: string }): Promise<UserEntity> {
     // Decode the token
-    const { userId } = await this.emailVerificationTokensService.getToken(data.token);
-    // Update the user's emailVerified field
-    const user = await this.usersService.updateUser(userId, { emailVerified: true });
+    const { userId } = await this.eventTokensService.getTokenById(data.token);
+    // Update the user's isEmailVerified field
+    const user = await this.usersService.updateUser(userId, { isEmailVerified: true });
     // Delete the token
-    this.emailVerificationTokensService.deleteToken(data.token);
+    this.eventTokensService.deleteToken(data.token);
     // Check if this is a new user or an existing user who has changed their email by checking if they have a campaign
     const campaigns = await this.campaignsService.getUserCampaigns(user.id);
     if (campaigns.length === 0) {
@@ -233,9 +195,14 @@ export class AuthController {
       // Get the user
       const user = await this.usersService.getUserByEmail(data.email);
       // Create a token
-      const token = await this.passwordResetTokensService.createToken({ userId: user.id });
+      const token = await this.eventTokensService.createToken({
+        type: EventTokenType.RESET_PASSWORD,
+        email: user.email,
+        userId: user.id,
+        expiresAt: durationToDate('1d'),
+      });
       // Send password reset email
-      this.emailService.sendPasswordResetEmail({ name: user.displayName, to: user.email, token: token.value });
+      this.emailService.sendPasswordResetEmail({ name: user.displayName, to: user.email, token: token.id });
     } catch (e) {
       // Ignore the error if the user doesn't exist
     }
@@ -247,7 +214,7 @@ export class AuthController {
   @Post('check-password-reset-token')
   @ApiOkResponse({ type: null })
   async checkPasswordResetToken(@Body() data: { token: string }): Promise<void> {
-    await this.passwordResetTokensService.getToken(data.token);
+    await this.eventTokensService.getTokenById(data.token);
   }
 
   /**
@@ -260,11 +227,11 @@ export class AuthController {
     @Body() data: { token: string; password: string },
   ): Promise<UserEntity> {
     // Decode the token
-    const { userId } = await this.passwordResetTokensService.getToken(data.token);
+    const { userId } = await this.eventTokensService.getTokenById(data.token);
     // Update the user's password
     const user = await this.usersService.updateUser(userId, { password: data.password });
     // Delete the token
-    this.passwordResetTokensService.deleteToken(data.token);
+    this.eventTokensService.deleteToken(data.token);
     // Sign in the user
     return await this.signIn(res, user);
   }

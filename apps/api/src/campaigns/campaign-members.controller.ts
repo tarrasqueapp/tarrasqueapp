@@ -7,7 +7,7 @@ import { CampaignMembersService } from './campaign-members.service';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignMemberDto } from './dto/connect-campaign-member.dto';
 import { UpdateCampaignMemberDto } from './dto/update-campaign-member.dto';
-import { CampaignBaseEntity } from './entities/campaign-base.entity';
+import { CampaignEntity } from './entities/campaign.entity';
 import { CampaignRoleGuard } from './guards/campaign-role.guard';
 
 @ApiTags('campaigns/:campaignId/members')
@@ -24,11 +24,11 @@ export class CampaignMembersController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Put(':memberId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
+  @ApiOkResponse({ type: CampaignEntity })
   async updateMember(
     @Param() { campaignId, memberId }: ConnectCampaignMemberDto,
     @Body() member: UpdateCampaignMemberDto,
-  ): Promise<CampaignBaseEntity> {
+  ): Promise<CampaignEntity> {
     // Update the member
     await this.campaignMembersService.updateMember(memberId, member);
     // Return the campaign
@@ -41,8 +41,8 @@ export class CampaignMembersController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':memberId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
-  async deleteMember(@Param() { campaignId, memberId }: ConnectCampaignMemberDto): Promise<CampaignBaseEntity> {
+  @ApiOkResponse({ type: CampaignEntity })
+  async deleteMember(@Param() { campaignId, memberId }: ConnectCampaignMemberDto): Promise<CampaignEntity> {
     // Delete the member
     await this.campaignMembersService.deleteMember(memberId);
     // Return the campaign

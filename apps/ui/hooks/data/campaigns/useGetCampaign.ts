@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { CampaignInterface } from '../../../lib/types';
+import { CampaignEntity } from '../../../lib/types';
 
 /**
  * Send a request to get a campaign by id
@@ -9,7 +9,7 @@ import { CampaignInterface } from '../../../lib/types';
  * @returns The campaign data
  */
 async function getCampaign(campaignId: string) {
-  const { data } = await api.get<CampaignInterface>(`/api/campaigns/${campaignId}`);
+  const { data } = await api.get<CampaignEntity>(`/api/campaigns/${campaignId}`);
   return data;
 }
 

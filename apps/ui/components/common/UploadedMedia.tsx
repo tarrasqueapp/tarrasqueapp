@@ -10,14 +10,14 @@ import {
   Typography,
 } from '@mui/material';
 
-import { MediaInterface } from '../../lib/types';
+import { MediaEntity } from '../../lib/types';
 import { store } from '../../store';
 
 interface UploadedMediaProps {
-  media?: MediaInterface[];
+  media?: MediaEntity[];
   selectedMediaId?: string;
-  onSelect?: (media: MediaInterface) => void;
-  onDelete?: (media: MediaInterface) => void;
+  onSelect?: (media: MediaEntity) => void;
+  onDelete?: (media: MediaEntity) => void;
 }
 
 export const UploadedMedia: React.FC<UploadedMediaProps> = ({ media, selectedMediaId, onSelect, onDelete }) => {

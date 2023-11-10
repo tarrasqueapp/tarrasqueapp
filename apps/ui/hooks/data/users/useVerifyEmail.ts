@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { UserInterface } from '../../../lib/types';
+import { UserEntity } from '../../../lib/types';
 
 /**
  * Send a request to verify the user's email
@@ -9,7 +9,7 @@ import { UserInterface } from '../../../lib/types';
  * @returns The user details
  */
 async function verifyEmail(token: string) {
-  const { data } = await api.post<UserInterface>(`/api/auth/verify-email`, { token });
+  const { data } = await api.post<UserEntity>(`/api/auth/verify-email`, { token });
   return data;
 }
 

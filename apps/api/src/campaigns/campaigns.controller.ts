@@ -3,7 +3,6 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CampaignMemberRole } from '@prisma/client';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { MapBaseEntity } from '../maps/entities/map-base.entity';
 import { MapEntity } from '../maps/entities/map.entity';
 import { MapsService } from '../maps/maps.service';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
@@ -16,7 +15,6 @@ import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { ReorderCampaignsDto } from './dto/reorder-campaigns.dto';
 import { ReorderMapsDto } from './dto/reorder-maps.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
-import { CampaignBaseEntity } from './entities/campaign-base.entity';
 import { CampaignEntity } from './entities/campaign.entity';
 import { CampaignRoleGuard } from './guards/campaign-role.guard';
 
@@ -55,7 +53,7 @@ export class CampaignsController {
    */
   @Get(':campaignId/maps')
   @ApiOkResponse({ type: [MapEntity] })
-  getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapBaseEntity[]> {
+  getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapEntity[]> {
     return this.mapsService.getCampaignMaps(campaignId);
   }
 
@@ -65,8 +63,8 @@ export class CampaignsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
-  createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignBaseEntity> {
+  @ApiOkResponse({ type: CampaignEntity })
+  createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignEntity> {
     return this.campaignsService.createCampaign(data, user.id);
   }
 
@@ -76,11 +74,11 @@ export class CampaignsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Put(':campaignId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
+  @ApiOkResponse({ type: CampaignEntity })
   updateCampaign(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() data: UpdateCampaignDto,
-  ): Promise<CampaignBaseEntity> {
+  ): Promise<CampaignEntity> {
     return this.campaignsService.updateCampaign(campaignId, data);
   }
 
@@ -90,8 +88,8 @@ export class CampaignsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Delete(':campaignId')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: CampaignBaseEntity })
-  async deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignBaseEntity> {
+  @ApiOkResponse({ type: CampaignEntity })
+  async deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
     // Get every map for the campaign
     const maps = await this.mapsService.getCampaignMaps(campaignId);
 
@@ -146,11 +144,8 @@ export class CampaignsController {
   @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
   @Post(':campaignId/maps/reorder')
   @ApiBearerAuth()
-  @ApiOkResponse({ type: [MapBaseEntity] })
-  reorderMaps(
-    @Param() { campaignId }: ConnectCampaignDto,
-    @Body() { mapIds }: ReorderMapsDto,
-  ): Promise<MapBaseEntity[]> {
+  @ApiOkResponse({ type: [MapEntity] })
+  reorderMaps(@Param() { campaignId }: ConnectCampaignDto, @Body() { mapIds }: ReorderMapsDto): Promise<MapEntity[]> {
     return this.mapsService.reorderMaps(campaignId, mapIds);
   }
 }

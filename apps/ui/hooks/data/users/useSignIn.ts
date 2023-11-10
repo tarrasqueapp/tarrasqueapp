@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '../../../lib/api';
-import { UserInterface } from '../../../lib/types';
+import { UserEntity } from '../../../lib/types';
 
 /**
  * Send a request to sign in the user
  * @param user - The user details
  * @returns The user details
  */
-async function signIn(user: Partial<UserInterface>) {
-  const { data } = await api.post<UserInterface>(`/api/auth/sign-in`, user);
+async function signIn(user: Partial<UserEntity>) {
+  const { data } = await api.post<UserEntity>(`/api/auth/sign-in`, user);
   return data;
 }
 
@@ -23,7 +23,6 @@ export function useSignIn() {
   return useMutation(signIn, {
     onSuccess: () => {
       queryClient.invalidateQueries([`auth`]);
-      queryClient.invalidateQueries([`auth/refresh`]);
     },
   });
 }
