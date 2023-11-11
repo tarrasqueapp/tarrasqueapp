@@ -59,10 +59,10 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
         name: ValidateUtils.Name,
         campaignId: yup.string().when('campaign', {
           is: (campaign: CampaignEntity | undefined) => Boolean(campaign),
-          then: yup.string().required(),
+          then: () => yup.string().required(),
         }),
         media: yup
-          .mixed()
+          .mixed<(UploadedFile | MediaEntity)[]>()
           .test('isUppyFileOrMedia', 'Invalid media', (value) => {
             if (!value || !Array.isArray(value) || !value.length) return false;
             return value.every((file) => store.media.isUploadedFile(file) || store.media.isMedia(file));
@@ -101,12 +101,12 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
 
       if (map) {
         // Get existing media
-        const existingMedia = values.media.filter((media: MediaEntity) => store.media.isMedia(media));
+        const existingMedia = values.media.filter((media) => store.media.isMedia(media));
         // Find new files that needs to be created as media
         const newMedia = await Promise.all(
           values.media
-            .filter((file: UploadedFile) => store.media.isUploadedFile(file))
-            .map(async (uppyFile: UploadedFile) => {
+            .filter((file): file is UploadedFile => store.media.isUploadedFile(file))
+            .map(async (uppyFile) => {
               const file = await store.media.convertUppyToFile(uppyFile);
               const media = await createMedia.mutateAsync(file);
               if (values.selectedMediaId === uppyFile.id) {
@@ -135,8 +135,8 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
       // Create new media
       const media = await Promise.all(
         values.media
-          .filter((file: UploadedFile) => store.media.isUploadedFile(file))
-          .map(async (uppyFile: UploadedFile) => {
+          .filter((file): file is UploadedFile => store.media.isUploadedFile(file))
+          .map(async (uppyFile) => {
             const file = await store.media.convertUppyToFile(uppyFile);
             const media = await createMedia.mutateAsync(file);
             if (values.selectedMediaId === uppyFile.id) {

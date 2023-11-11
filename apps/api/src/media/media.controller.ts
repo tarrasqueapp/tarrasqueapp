@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import cuid from 'cuid';
+import { createId } from '@paralleldrive/cuid2';
 import fs from 'fs-extra';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -30,7 +30,7 @@ export class MediaController {
   @ApiOkResponse({ type: MediaEntity })
   async createMedia(@Body() data: FileDto, @User() user: UserEntity): Promise<MediaEntity> {
     // Pre-generate id to use for the file name
-    const id = cuid();
+    const id = createId();
 
     // Get the file from the tusd upload location
     const file = await this.storageService.getFile(`${this.storageService.tmpPath}/${data.id}`);

@@ -26,8 +26,9 @@ import * as yup from 'yup';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { useUpdateUser } from '../../hooks/data/users/useUpdateUser';
 import { AppNavigation } from '../../lib/navigation';
-import { UserEntity } from '../../lib/types';
+import { MediaEntity, UserEntity } from '../../lib/types';
 import { store } from '../../store';
+import { UploadedFile } from '../../store/media';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledPasswordField } from '../form/ControlledPasswordField';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -52,8 +53,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
     .shape(
       {
         name: ValidateUtils.Name,
+        displayName: ValidateUtils.Name,
         email: ValidateUtils.Email,
-        avatar: yup.mixed().test('isUppyFileOrMedia', 'Invalid avatar', (value) => {
+        avatar: yup.mixed<UploadedFile | MediaEntity>().test('isUppyFileOrMedia', 'Invalid avatar', (value) => {
           if (!value) return true;
           return store.media.isUploadedFile(value) || store.media.isMedia(value);
         }),
@@ -62,18 +64,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onC
           .trim()
           .when('password', {
             is: (password: string) => password && password.length > 0,
-            then: yup.string().min(8, 'Password must have at least 8 characters'),
+            then: () => yup.string().min(8, 'Password must have at least 8 characters'),
           }),
         confirmPassword: yup
           .string()
           .trim()
           .when('password', {
             is: (password: string) => (password && password.length > 0 ? true : false),
-            then: yup
-              .string()
-              .trim()
-              .required('Please confirm your password')
-              .oneOf([yup.ref('password')], 'Passwords must match'),
+            then: () =>
+              yup
+                .string()
+                .trim()
+                .required('Please confirm your password')
+                .oneOf([yup.ref('password')], 'Passwords must match'),
           }),
       },
       [['password', 'password']],
