@@ -17,7 +17,7 @@ The `ui` app uses [MUI](https://mui.com/) for the interface, and the following p
 
 HTTP requests are handled with the following packages:
 
-- [react-query](https://tanstack.com/query/v4): A React hook for fetching, caching, and updating data.
+- [@tanstack/react-query](https://tanstack.com/query): A React hook for fetching, caching, and updating data.
 - [axios](https://axios-http.com/): A popular HTTP client library for JavaScript.
 
 State management is handled with the following packages:
@@ -33,7 +33,6 @@ File uploads are supported through the following packages:
 The `ui` app also includes a rendering engine built with the following packages:
 
 - [PixiJS](https://pixijs.com/): A fast, lightweight 2D rendering engine for the web.
-- [react-pixi-fiber](https://www.npmjs.com/package/react-pixi-fiber): A set of React components and custom hooks for using PixiJS with React.
 
 WebSocket communication is supported with [socket.io-client](https://socket.io/docs/v4/client-api/).
 

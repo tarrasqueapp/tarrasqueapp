@@ -1,5 +1,5 @@
+import { Sprite } from '@pixi/react';
 import * as PIXI from 'pixi.js';
-import { Sprite } from 'react-pixi-fiber';
 
 interface MapMediaProps {
   url: string;

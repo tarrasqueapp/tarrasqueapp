@@ -1,13 +1,14 @@
+import { Stage } from '@pixi/react';
 import { observer } from 'mobx-react-lite';
-import * as PIXI from 'pixi.js';
+import { Color as PixiColor } from 'pixi.js';
 import React, { useEffect } from 'react';
-import { Stage } from 'react-pixi-fiber';
 import { io } from 'socket.io-client';
 
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { Color } from '../../lib/colors';
 import { store } from '../../store';
+import { Providers } from '../Providers';
 import { Grid } from './Grid';
 import { Map } from './Map';
 import { Token } from './Token';
@@ -50,20 +51,24 @@ const Canvas: React.FC = observer(() => {
   if (!map) return null;
 
   const media = map.media.find((media) => media.id === map.selectedMediaId)!;
+  const backgroundColor = new PixiColor(Color.Black).toNumber();
 
   return (
     <Stage
+      width={windowSize.width}
+      height={windowSize.height}
       options={{
-        width: windowSize.width,
-        height: windowSize.height,
-        backgroundColor: PIXI.utils.string2hex(Color.Black),
+        backgroundColor,
         antialias: true,
+        eventMode: 'dynamic',
       }}
     >
-      <Map mapId={map.id} width={media.width} height={media.height} url={media.url}>
-        <Grid width={media.width} height={media.height} />
-        <Token url="https://cdn.tarrasque.app/sample/token.webp" x={70} y={70} width={70} height={70} />
-      </Map>
+      <Providers>
+        <Map mapId={map.id} width={media.width} height={media.height} url={media.url}>
+          <Grid width={media.width} height={media.height} size={70} color={Color.Black} />
+          <Token url="https://cdn.tarrasque.app/sample/token.webp" x={70} y={70} width={70} height={70} />
+        </Map>
+      </Providers>
     </Stage>
   );
 });

@@ -1,13 +1,12 @@
+import { useApp } from '@pixi/react';
 import { observer } from 'mobx-react-lite';
 import { Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
-import { usePixiApp } from 'react-pixi-fiber';
 import useLocalStorage from 'use-local-storage';
 
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { store } from '../../store';
-import { SelectTool, Tool } from '../../store/toolbar';
 import { CameraBase } from './CameraBase';
 
 interface CameraProps {
@@ -18,7 +17,7 @@ interface CameraProps {
 }
 
 export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, children }) => {
-  const app = usePixiApp();
+  const app = useApp();
   const windowSize = useWindowSize();
 
   // Get the camera position from local storage
@@ -96,21 +95,21 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
    * Handle the double click event
    * @param event - The interaction event
    */
-  function handleDoubleClick(event: PIXI.InteractionEvent) {
+  function handleDoubleClick(event: PIXI.FederatedPointerEvent) {
     console.debug('Double Click.');
     // Emit a "pingLocation" event to the server, passing the map ID and the global coordinates of the click event
-    store.app.socket.emit('pingLocation', { mapId, ...event.data.global });
+    store.app.socket.emit('pingLocation', { mapId, ...event.global });
   }
 
   /**
    * Handle the right click event
    * @param event - The interaction event
    */
-  function handleRightClick(event: PIXI.InteractionEvent) {
-    console.debug('Right Click.', event.data.global);
+  function handleRightClick(event: PIXI.FederatedPointerEvent) {
+    console.debug('Right Click.', event.global);
     store.map.setContextMenuVisible(false);
     // Update the app state with the global coordinates of the right click event
-    store.map.setContextMenuAnchorPoint(event.data.global.x, event.data.global.y);
+    store.map.setContextMenuAnchorPoint(event.global.x, event.global.y);
     store.map.setContextMenuVisible(true);
   }
 
@@ -119,6 +118,7 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
    * @param viewport - The viewport instance
    */
   function handleMove(viewport: Viewport) {
+    console.debug('Move.');
     const newPosition = {
       x: viewport.center.x,
       y: viewport.center.y,
@@ -127,14 +127,16 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
     setPosition(newPosition);
   }
 
+  const events = new PIXI.EventSystem(app.renderer);
+  events.domElement = app.renderer.view as any;
+
   return (
     <CameraBase
       worldWidth={width}
       worldHeight={height}
       screenWidth={windowSize.width}
       screenHeight={windowSize.height}
-      ticker={app.ticker}
-      interaction={app.renderer.plugins.interaction}
+      events={events}
       onLoad={handleLoad}
       onBeforeSingleClick={handleBeforeSingleClick}
       onSingleClick={handleSingleClick}
@@ -142,7 +144,6 @@ export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, c
       onRightClick={handleRightClick}
       onMove={handleMove}
       isTrackpad={store.app.isTrackpad}
-      pressToDrag={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
     >
       {children}
     </CameraBase>
