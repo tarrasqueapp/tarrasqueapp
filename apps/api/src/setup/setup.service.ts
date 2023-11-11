@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Setup } from '@prisma/client';
-import execa from 'execa';
 import { PrismaService } from 'nestjs-prisma';
 
+import { run } from '../helpers';
 import { SetupStep } from './setup-step.enum';
 
 @Injectable()
@@ -69,8 +69,8 @@ export class SetupService {
     this.logger.verbose(`📂 Creating database`);
     try {
       // Run migrations and log the output
-      const { stdout } = await execa('prisma', ['migrate', 'deploy']);
-      this.logger.debug(stdout);
+      const result = await run('prisma migrate deploy');
+      this.logger.debug(result);
       this.logger.debug('✅️ Database created');
     } catch (error) {
       this.logger.error(error.message);

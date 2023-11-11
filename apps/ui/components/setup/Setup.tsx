@@ -56,7 +56,7 @@ export const Setup: React.FC = () => {
       content: <CreateDatabase onSubmit={handleNext} />,
     },
     {
-      label: 'Create a user',
+      label: 'Create admin account',
       content: <CreateUser onSubmit={handleNext} />,
     },
   ];

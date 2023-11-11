@@ -1,3 +1,5 @@
+import { exec } from 'child_process';
+
 /**
  * Exclude fields from a type T based on a list of keys K (which must be a subset of T) and return a new type
  * @param fields - The initial fields
@@ -58,4 +60,25 @@ export function getMillisecondsMultiplier(unit: string): number {
     default:
       throw new Error(`Unknown unit: ${unit}`);
   }
+}
+
+/**
+ * Runs a shell command and returns its standard output
+ * @param command - The shell command to run
+ * @returns A promise that resolves with the standard output of the command
+ */
+export function run(command: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(`error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        reject(`stderr: ${stderr}`);
+        return;
+      }
+      resolve(stdout);
+    });
+  });
 }
