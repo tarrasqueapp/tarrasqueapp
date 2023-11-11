@@ -21,14 +21,15 @@ async function createCampaign(campaign: Partial<CampaignEntity>) {
 export function useCreateCampaign() {
   const queryClient = useQueryClient();
 
-  return useMutation(createCampaign, {
+  return useMutation({
+    mutationFn: createCampaign,
     // Optimistic update
     onMutate: async (campaign) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
       const user = queryClient.getQueryData<UserEntity>(['auth']);
       const id = Math.random().toString(36).substring(2, 9);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) => [
+      queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) => [
         ...old,
         { id, ...campaign, createdById: user?.id, members: [] },
       ]);
@@ -43,8 +44,8 @@ export function useCreateCampaign() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
-      queryClient.setQueryData([`campaigns/${campaign?.id}/maps`], []);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+      queryClient.setQueryData(['campaigns', campaign?.id, 'maps'], []);
     },
   });
 }

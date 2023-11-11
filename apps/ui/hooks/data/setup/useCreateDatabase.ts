@@ -17,5 +17,5 @@ async function createDatabase() {
  * @returns Create database mutation
  */
 export function useCreateDatabase() {
-  return useMutation(createDatabase);
+  return useMutation({ mutationFn: createDatabase });
 }

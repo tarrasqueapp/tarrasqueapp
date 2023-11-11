@@ -36,9 +36,10 @@ async function resetPassword({ token, password }: ResetPasswordInterface) {
 export function useResetPassword() {
   const queryClient = useQueryClient();
 
-  return useMutation(resetPassword, {
+  return useMutation({
+    mutationFn: resetPassword,
     onSuccess: () => {
-      queryClient.invalidateQueries([`auth`]);
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
   });
 }

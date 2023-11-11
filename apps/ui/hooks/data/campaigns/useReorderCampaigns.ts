@@ -21,13 +21,14 @@ async function reorderCampaigns(campaignIds: string[]) {
 export function useReorderCampaigns() {
   const queryClient = useQueryClient();
 
-  return useMutation(reorderCampaigns, {
+  return useMutation({
+    mutationFn: reorderCampaigns,
     // Optimistic update
     onMutate: async (campaignOrder) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
       // Sort the campaigns based on the user's campaign order
-      queryClient.setQueryData([`campaigns`], (campaigns: CampaignEntity[] = []) =>
+      queryClient.setQueryData(['campaigns'], (campaigns: CampaignEntity[] = []) =>
         campaigns.sort((a, b) => {
           const aOrder = campaignOrder.findIndex((campaignId) => campaignId === a.id);
           const bOrder = campaignOrder.findIndex((campaignId) => campaignId === b.id);
@@ -50,7 +51,7 @@ export function useReorderCampaigns() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

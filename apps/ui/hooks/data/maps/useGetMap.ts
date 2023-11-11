@@ -19,5 +19,9 @@ async function getMap(mapId: string) {
  * @returns Map query
  */
 export function useGetMap(mapId: string) {
-  return useQuery([`maps/${mapId}`], () => getMap(mapId), { enabled: Boolean(mapId) });
+  return useQuery({
+    queryKey: ['maps', mapId],
+    queryFn: () => getMap(mapId),
+    enabled: Boolean(mapId),
+  });
 }

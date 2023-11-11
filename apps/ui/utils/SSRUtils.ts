@@ -1,4 +1,4 @@
-import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 
 import { getUser } from '../hooks/data/users/useGetUser';
@@ -19,7 +19,7 @@ export class SSRUtils {
    * Dehydrate the query client
    * @returns The dehydrated state of the query client
    */
-  dehydrate() {
+  dehydrate(): DehydratedState {
     return dehydrate(this.queryClient);
   }
 
@@ -28,10 +28,10 @@ export class SSRUtils {
    * @returns user
    */
   async getUser() {
-    await this.queryClient.prefetchQuery(
-      ['auth'],
-      () => getUser({ withCredentials: true, headers: this.headers }) || null,
-    );
+    await this.queryClient.prefetchQuery({
+      queryKey: ['auth'],
+      queryFn: () => getUser({ withCredentials: true, headers: this.headers }) || null,
+    });
     return this.queryClient.getQueryData<UserEntity>(['auth']) || null;
   }
 }

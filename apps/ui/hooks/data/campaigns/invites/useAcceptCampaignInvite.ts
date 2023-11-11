@@ -22,12 +22,13 @@ async function acceptCampaignInvite(invite: EventTokenEntity) {
 export function useAcceptCampaignInvite() {
   const queryClient = useQueryClient();
 
-  return useMutation(acceptCampaignInvite, {
+  return useMutation({
+    mutationFn: acceptCampaignInvite,
     // Optimistic update
     onMutate: async (invite) => {
-      await queryClient.cancelQueries([`notifications`]);
-      const previousNotifications = queryClient.getQueryData<NotificationsInterface>([`notifications`]);
-      queryClient.setQueryData([`notifications`], (old: NotificationsInterface = { campaignInvites: [] }) => ({
+      await queryClient.cancelQueries({ queryKey: ['notifications'] });
+      const previousNotifications = queryClient.getQueryData<NotificationsInterface>(['notifications']);
+      queryClient.setQueryData(['notifications'], (old: NotificationsInterface = { campaignInvites: [] }) => ({
         ...old,
         campaignInvites: old.campaignInvites.filter((i) => i.id !== invite.id),
       }));
@@ -42,8 +43,8 @@ export function useAcceptCampaignInvite() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`notifications`]);
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

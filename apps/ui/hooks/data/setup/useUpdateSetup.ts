@@ -20,9 +20,10 @@ async function updateSetup(setup: Partial<SetupEntity>) {
 export function useUpdateSetup() {
   const queryClient = useQueryClient();
 
-  return useMutation(updateSetup, {
+  return useMutation({
+    mutationFn: updateSetup,
     onSuccess: () => {
-      queryClient.invalidateQueries([`setup`]);
+      queryClient.invalidateQueries({ queryKey: ['setup'] });
     },
   });
 }

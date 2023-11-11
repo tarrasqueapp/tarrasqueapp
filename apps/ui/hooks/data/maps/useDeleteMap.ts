@@ -21,26 +21,27 @@ async function deleteMap(map: MapEntity) {
 export function useDeleteMap() {
   const queryClient = useQueryClient();
 
-  return useMutation(deleteMap, {
+  return useMutation({
+    mutationFn: deleteMap,
     // Optimistic update
     onMutate: async (map) => {
-      await queryClient.cancelQueries([`campaigns/${map.campaignId}/maps`]);
-      const previousMaps = queryClient.getQueryData<MapEntity[]>([`campaigns/${map.campaignId}/maps`]);
-      queryClient.setQueryData([`campaigns/${map.campaignId}/maps`], (old: MapEntity[] = []) =>
+      await queryClient.cancelQueries({ queryKey: ['campaigns', map.campaignId, 'maps'] });
+      const previousMaps = queryClient.getQueryData<MapEntity[]>(['campaigns', map.campaignId, 'maps']);
+      queryClient.setQueryData(['campaigns', map.campaignId, 'maps'], (old: MapEntity[] = []) =>
         old.filter((m) => m.id !== map.id),
       );
       return { previousMaps };
     },
     // Rollback
     onError: (err, map, context) => {
-      queryClient.setQueryData([`campaigns/${map.campaignId}/maps`], context?.previousMaps);
+      queryClient.setQueryData(['campaigns', map.campaignId, 'maps'], context?.previousMaps);
     },
     // Refetch
     onSettled: (map, err: Error | null) => {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns/${map?.campaignId}/maps`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns', map?.campaignId, 'maps'] });
     },
   });
 }

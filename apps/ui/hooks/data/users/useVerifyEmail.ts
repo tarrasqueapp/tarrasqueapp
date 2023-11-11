@@ -20,9 +20,10 @@ async function verifyEmail(token: string) {
 export function useVerifyEmail() {
   const queryClient = useQueryClient();
 
-  return useMutation(verifyEmail, {
+  return useMutation({
+    mutationFn: verifyEmail,
     onSuccess: () => {
-      queryClient.invalidateQueries([`auth`]);
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
   });
 }

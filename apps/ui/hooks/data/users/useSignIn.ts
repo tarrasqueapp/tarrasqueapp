@@ -20,9 +20,10 @@ async function signIn(user: Partial<UserEntity>) {
 export function useSignIn() {
   const queryClient = useQueryClient();
 
-  return useMutation(signIn, {
+  return useMutation({
+    mutationFn: signIn,
     onSuccess: () => {
-      queryClient.invalidateQueries([`auth`]);
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
   });
 }

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { AxiosResponse, RawAxiosRequestConfig } from 'axios';
+import { RawAxiosRequestConfig } from 'axios';
 
 import { api } from '../../../lib/api';
 import { UserEntity } from '../../../lib/types';
@@ -18,5 +18,8 @@ export async function getUser(requestConfig?: RawAxiosRequestConfig) {
  * @returns User query
  */
 export function useGetUser() {
-  return useQuery<UserEntity, AxiosResponse>([`auth`], getUser);
+  return useQuery({
+    queryKey: ['auth'],
+    queryFn: getUser,
+  });
 }

@@ -20,9 +20,10 @@ async function updateMap(map: Partial<MapEntity>) {
 export function useUpdateMap() {
   const queryClient = useQueryClient();
 
-  return useMutation(updateMap, {
+  return useMutation({
+    mutationFn: updateMap,
     onSuccess: (map) => {
-      queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns', map.campaignId, 'maps'] });
     },
   });
 }

@@ -27,12 +27,13 @@ async function deleteCampaignMember({ campaign, member }: DeleteCampaignMemberIn
 export function useDeleteCampaignMember() {
   const queryClient = useQueryClient();
 
-  return useMutation(deleteCampaignMember, {
+  return useMutation({
+    mutationFn: deleteCampaignMember,
     // Optimistic update
     onMutate: async ({ campaign, member }) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) =>
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
+      queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
           c.id === campaign.id ? { ...campaign, members: campaign.members?.filter((i) => i.id !== member.id) } : c,
         ),
@@ -48,7 +49,7 @@ export function useDeleteCampaignMember() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

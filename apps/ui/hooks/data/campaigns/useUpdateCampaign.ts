@@ -21,12 +21,13 @@ async function updateCampaign(campaign: Partial<CampaignEntity>) {
 export function useUpdateCampaign() {
   const queryClient = useQueryClient();
 
-  return useMutation(updateCampaign, {
+  return useMutation({
+    mutationFn: updateCampaign,
     // Optimistic update
     onMutate: async (campaign) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) =>
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
+      queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) => (c.id === campaign.id ? campaign : c)),
       );
       return { previousCampaigns };
@@ -40,7 +41,7 @@ export function useUpdateCampaign() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

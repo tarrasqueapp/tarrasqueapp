@@ -16,5 +16,5 @@ async function resendEmailVerification(email: string) {
  * @returns Resend email verification mutation
  */
 export function useResendEmailVerification() {
-  return useMutation(resendEmailVerification);
+  return useMutation({ mutationFn: resendEmailVerification });
 }

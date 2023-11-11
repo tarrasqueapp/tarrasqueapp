@@ -27,13 +27,14 @@ async function reorderMaps({ campaignId, mapIds }: ReorderMapsInterface) {
 export function useReorderMaps() {
   const queryClient = useQueryClient();
 
-  return useMutation(reorderMaps, {
+  return useMutation({
+    mutationFn: reorderMaps,
     // Optimistic update
     onMutate: async ({ campaignId, mapIds }) => {
-      await queryClient.cancelQueries([`campaigns/${campaignId}/maps`]);
-      const previousMaps = queryClient.getQueryData<MapEntity[]>([`campaigns/${campaignId}/maps`]);
+      await queryClient.cancelQueries({ queryKey: ['campaigns', campaignId, 'maps'] });
+      const previousMaps = queryClient.getQueryData<MapEntity[]>(['campaigns', campaignId, 'maps']);
       // Sort the maps based on the user's map order
-      queryClient.setQueryData([`campaigns/${campaignId}/maps`], (maps: MapEntity[] = []) =>
+      queryClient.setQueryData(['campaigns', campaignId, 'maps'], (maps: MapEntity[] = []) =>
         maps.sort((a, b) => {
           const aOrder = mapIds.findIndex((mapId) => mapId === a.id);
           const bOrder = mapIds.findIndex((mapId) => mapId === b.id);
@@ -49,14 +50,14 @@ export function useReorderMaps() {
     },
     // Rollback
     onError: (err, { campaignId }, context) => {
-      queryClient.setQueryData([`campaigns/${campaignId}/maps`], context?.previousMaps);
+      queryClient.setQueryData(['campaigns', campaignId, 'maps'], context?.previousMaps);
     },
     // Refetch
     onSettled: (map, err: Error | null, variables) => {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns/${variables.campaignId}/maps`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns', variables.campaignId, 'maps'] });
     },
   });
 }

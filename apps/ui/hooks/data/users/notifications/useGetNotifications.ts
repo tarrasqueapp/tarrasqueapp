@@ -21,5 +21,8 @@ async function getNotifications() {
  * @returns User notifications query
  */
 export function useGetNotifications() {
-  return useQuery([`notifications`], getNotifications);
+  return useQuery({
+    queryKey: ['notifications'],
+    queryFn: getNotifications,
+  });
 }

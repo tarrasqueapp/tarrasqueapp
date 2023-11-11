@@ -20,9 +20,10 @@ async function createMap(map: Partial<MapEntity>) {
 export function useCreateMap() {
   const queryClient = useQueryClient();
 
-  return useMutation(createMap, {
+  return useMutation({
+    mutationFn: createMap,
     onSuccess: (map) => {
-      queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns', map.campaignId, 'maps'] });
     },
   });
 }

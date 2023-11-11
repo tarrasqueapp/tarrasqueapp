@@ -17,5 +17,8 @@ async function getUserCampaigns() {
  * @returns Campaigns query
  */
 export function useGetUserCampaigns() {
-  return useQuery([`campaigns`], () => getUserCampaigns());
+  return useQuery({
+    queryKey: ['campaigns'],
+    queryFn: () => getUserCampaigns(),
+  });
 }

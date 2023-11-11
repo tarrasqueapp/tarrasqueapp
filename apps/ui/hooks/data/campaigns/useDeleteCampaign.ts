@@ -21,12 +21,13 @@ async function deleteCampaign(campaign: CampaignEntity) {
 export function useDeleteCampaign() {
   const queryClient = useQueryClient();
 
-  return useMutation(deleteCampaign, {
+  return useMutation({
+    mutationFn: deleteCampaign,
     // Optimistic update
     onMutate: async (campaign) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
-      queryClient.setQueryData([`campaigns`], (old: CampaignEntity[] = []) => old.filter((c) => c.id !== campaign.id));
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
+      queryClient.setQueryData(['campaigns'], (old: CampaignEntity[] = []) => old.filter((c) => c.id !== campaign.id));
       return { previousCampaigns };
     },
     // Rollback
@@ -38,7 +39,7 @@ export function useDeleteCampaign() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

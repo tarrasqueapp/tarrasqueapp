@@ -27,13 +27,14 @@ async function createCampaignInvite({ campaign, email }: CampaignInviteInterface
 export function useCreateCampaignInvite() {
   const queryClient = useQueryClient();
 
-  return useMutation(createCampaignInvite, {
+  return useMutation({
+    mutationFn: createCampaignInvite,
     // Optimistic update
     onMutate: async ({ campaign, email }) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
       const id = Math.random().toString(36).substring(2, 9);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) =>
+      queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
           c.id === campaign.id
             ? {
@@ -67,7 +68,7 @@ export function useCreateCampaignInvite() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

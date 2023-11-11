@@ -17,5 +17,5 @@ async function signUp(user: Partial<UserEntity>) {
  * @returns Sign up user mutation
  */
 export function useSignUp() {
-  return useMutation(signUp);
+  return useMutation({ mutationFn: signUp });
 }

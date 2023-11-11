@@ -20,9 +20,10 @@ async function duplicateMap(map: MapEntity) {
 export function useDuplicateMap() {
   const queryClient = useQueryClient();
 
-  return useMutation(duplicateMap, {
+  return useMutation({
+    mutationFn: duplicateMap,
     onSuccess: (map) => {
-      queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns', map.campaignId, 'maps'] });
     },
   });
 }

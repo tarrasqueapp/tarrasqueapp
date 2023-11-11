@@ -19,5 +19,9 @@ async function getCampaign(campaignId: string) {
  * @returns Campaign query
  */
 export function useGetCampaign(campaignId: string) {
-  return useQuery([`campaigns/${campaignId}`], () => getCampaign(campaignId), { enabled: Boolean(campaignId) });
+  return useQuery({
+    queryKey: ['campaigns', campaignId],
+    queryFn: () => getCampaign(campaignId),
+    enabled: Boolean(campaignId),
+  });
 }

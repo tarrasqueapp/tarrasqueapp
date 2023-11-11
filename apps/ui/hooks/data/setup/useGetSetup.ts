@@ -17,5 +17,5 @@ export async function getSetup() {
  * @returns Setup query
  */
 export function useGetSetup() {
-  return useQuery([`setup`], () => getSetup());
+  return useQuery({ queryKey: ['setup'], queryFn: () => getSetup() });
 }

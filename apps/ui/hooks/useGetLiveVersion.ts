@@ -17,5 +17,8 @@ async function getLiveVersion() {
  * @returns Version query
  */
 export function useGetLiveVersion() {
-  return useQuery([`version`], () => getLiveVersion());
+  return useQuery({
+    queryKey: ['version'],
+    queryFn: () => getLiveVersion(),
+  });
 }

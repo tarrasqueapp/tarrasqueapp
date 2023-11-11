@@ -19,7 +19,9 @@ async function getCampaignMaps(campaignId?: string) {
  * @returns Campaign maps query
  */
 export function useGetCampaignMaps(campaignId?: string) {
-  return useQuery([`campaigns/${campaignId}/maps`], () => getCampaignMaps(campaignId), {
+  return useQuery({
+    queryKey: ['campaigns', campaignId, 'maps'],
+    queryFn: () => getCampaignMaps(campaignId),
     enabled: Boolean(campaignId),
   });
 }

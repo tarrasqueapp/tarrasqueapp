@@ -27,12 +27,13 @@ async function deleteCampaignInvite({ campaign, invite }: DeleteCampaignInviteIn
 export function useDeleteCampaignInvite() {
   const queryClient = useQueryClient();
 
-  return useMutation(deleteCampaignInvite, {
+  return useMutation({
+    mutationFn: deleteCampaignInvite,
     // Optimistic update
     onMutate: async ({ campaign, invite }) => {
-      await queryClient.cancelQueries([`campaigns`]);
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>([`campaigns`]);
-      queryClient.setQueryData([`campaigns`], (old: Partial<CampaignEntity>[] = []) =>
+      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
+      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
+      queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
           c.id === campaign.id ? { ...campaign, invites: campaign.invites?.filter((i) => i.id !== invite.id) } : c,
         ),
@@ -48,7 +49,7 @@ export function useDeleteCampaignInvite() {
       if (err) {
         toast.error(err.message);
       }
-      queryClient.invalidateQueries([`campaigns`]);
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

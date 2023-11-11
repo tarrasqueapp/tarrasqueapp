@@ -16,5 +16,5 @@ async function forgotPassword(email: string) {
  * @returns Forgot password mutation
  */
 export function useForgotPassword() {
-  return useMutation(forgotPassword);
+  return useMutation({ mutationFn: forgotPassword });
 }

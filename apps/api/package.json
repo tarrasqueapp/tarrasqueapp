@@ -13,8 +13,8 @@
     "lint": "tsc --noEmit && eslint ."
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.445.0",
-    "@aws-sdk/lib-storage": "^3.445.0",
+    "@aws-sdk/client-s3": "^3.449.0",
+    "@aws-sdk/lib-storage": "^3.449.0",
     "@nestjs/common": "^10.2.8",
     "@nestjs/core": "^10.2.8",
     "@nestjs/jwt": "^10.2.0",

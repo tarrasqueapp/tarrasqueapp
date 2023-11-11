@@ -126,7 +126,7 @@ export const CreateUpdateMapModal: React.FC<CreateUpdateMapModalProps> = observe
           selectedMediaId: values.selectedMediaId,
         });
         if (values.campaignId !== map.campaignId) {
-          queryClient.invalidateQueries([`campaigns/${map.campaignId}/maps`]);
+          queryClient.invalidateQueries({ queryKey: ['campaigns', map.campaignId, 'maps'] });
         }
         onClose();
         return;
