@@ -22,8 +22,8 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
-import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { AppNavigation } from '../../lib/navigation';
 import { CampaignEntity, CampaignMemberRole, MapEntity } from '../../lib/types';
 import { store } from '../../store';
@@ -34,7 +34,7 @@ interface MapCardProps {
   campaign?: CampaignEntity;
 }
 
-export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
+export function MapCard({ map, campaign }: MapCardProps) {
   const { data: user } = useGetUser();
   const duplicateMap = useDuplicateMap();
 
@@ -178,4 +178,4 @@ export const MapCard: React.FC<MapCardProps> = ({ map, campaign }) => {
       )}
     </Card>
   );
-};
+}

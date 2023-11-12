@@ -1,12 +1,12 @@
 import { Box, Button, CircularProgress, Container, Paper, Typography } from '@mui/material';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextButton } from '../../components/common/NextButton';
-import { useVerifyEmail } from '../../hooks/data/users/useVerifyEmail';
+import { useVerifyEmail } from '../../hooks/data/auth/useVerifyEmail';
 import { useEffectAsync } from '../../hooks/useEffectAsync';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
@@ -28,7 +28,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { token, dehydratedState: ssr.dehydrate() } };
 };
 
-const VerifyEmailPage: NextPage<{ token: string }> = ({ token }) => {
+interface VerifyEmailPageProps {
+  token: string;
+}
+
+export default function VerifyEmailPage({ token }: VerifyEmailPageProps) {
   const verifyEmail = useVerifyEmail();
 
   const [loading, setLoading] = useState(false);
@@ -104,6 +108,4 @@ const VerifyEmailPage: NextPage<{ token: string }> = ({ token }) => {
       </Container>
     </Center>
   );
-};
-
-export default VerifyEmailPage;
+}

@@ -8,7 +8,7 @@ import { Color } from '../../../lib/colors';
 import { store } from '../../../store';
 import { FogTool, Tool } from '../../../store/toolbar';
 
-export const FogToolItem: React.FC = observer(() => {
+export const FogToolItem = observer(function FogToolItem() {
   const popupState = usePopupState({ variant: 'popper', popupId: 'fogTool' });
 
   const HideFogTool = (props: any) => {

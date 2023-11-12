@@ -7,7 +7,7 @@ type ControlledMediaUploaderProps = MediaUploaderProps & {
   name: string;
 };
 
-export const ControlledMediaUploader: React.FC<ControlledMediaUploaderProps> = ({ name, ...props }) => {
+export function ControlledMediaUploader({ name, ...props }: ControlledMediaUploaderProps) {
   const { control } = useFormContext();
 
   return (
@@ -20,4 +20,4 @@ export const ControlledMediaUploader: React.FC<ControlledMediaUploaderProps> = (
       />
     </FormControl>
   );
-};
+}

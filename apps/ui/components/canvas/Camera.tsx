@@ -16,7 +16,7 @@ interface CameraProps {
   children?: React.ReactNode;
 }
 
-export const Camera: React.FC<CameraProps> = observer(({ mapId, width, height, children }) => {
+export const Camera = observer(function Camera({ mapId, width, height, children }: CameraProps) {
   const app = useApp();
   const windowSize = useWindowSize();
 

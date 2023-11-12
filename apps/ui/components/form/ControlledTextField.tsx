@@ -6,7 +6,7 @@ export type ControlledTextFieldProps = TextFieldProps & {
   name: string;
 };
 
-export const ControlledTextField: React.FC<ControlledTextFieldProps> = ({ name, ...props }) => {
+export function ControlledTextField({ name, ...props }: ControlledTextFieldProps) {
   const {
     control,
     formState: { errors },
@@ -36,4 +36,4 @@ export const ControlledTextField: React.FC<ControlledTextFieldProps> = ({ name, 
       )}
     />
   );
-};
+}

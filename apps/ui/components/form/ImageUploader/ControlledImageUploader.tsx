@@ -7,7 +7,7 @@ type ControlledImageUploaderProps = ImageUploaderProps & {
   name: string;
 };
 
-export const ControlledImageUploader: React.FC<ControlledImageUploaderProps> = ({ name, ...props }) => {
+export function ControlledImageUploader({ name, ...props }: ControlledImageUploaderProps) {
   const { control } = useFormContext();
 
   return (
@@ -20,4 +20,4 @@ export const ControlledImageUploader: React.FC<ControlledImageUploaderProps> = (
       />
     </FormControl>
   );
-};
+}

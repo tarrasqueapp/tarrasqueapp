@@ -30,82 +30,84 @@ interface CreateUpdateCampaignModalProps {
   campaign: CampaignEntity | undefined;
 }
 
-export const CreateUpdateCampaignModal: React.FC<CreateUpdateCampaignModalProps> = observer(
-  ({ open, onClose, campaign }) => {
-    const createCampaign = useCreateCampaign();
-    const updateCampaign = useUpdateCampaign();
+export const CreateUpdateCampaignModal = observer(function CreateUpdateCampaignModal({
+  open,
+  onClose,
+  campaign,
+}: CreateUpdateCampaignModalProps) {
+  const createCampaign = useCreateCampaign();
+  const updateCampaign = useUpdateCampaign();
 
-    const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-    // Setup form validation schema
-    const schema = yup
-      .object({
-        name: ValidateUtils.Name,
-      })
-      .required();
-    type Schema = yup.InferType<typeof schema>;
+  // Setup form validation schema
+  const schema = yup
+    .object({
+      name: ValidateUtils.Name,
+    })
+    .required();
+  type Schema = yup.InferType<typeof schema>;
 
-    // Setup form
-    const methods = useForm<Schema>({
-      mode: 'onChange',
-      resolver: yupResolver(schema),
-      defaultValues: campaign || new CampaignFactory(),
-    });
-    const {
-      handleSubmit,
-      reset,
-      formState: { isSubmitting, isValid },
-    } = methods;
+  // Setup form
+  const methods = useForm<Schema>({
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+    defaultValues: campaign || new CampaignFactory(),
+  });
+  const {
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, isValid },
+  } = methods;
 
-    // Reset the form when the campaign changes
-    useEffect(() => {
-      reset(campaign || new CampaignFactory());
-    }, [campaign, reset, store.campaigns.modal]);
+  // Reset the form when the campaign changes
+  useEffect(() => {
+    reset(campaign || new CampaignFactory());
+  }, [campaign, reset, store.campaigns.modal]);
 
-    /**
-     * Handle the form submission
-     * @param values - The campaign values
-     */
-    async function handleSubmitForm(values: Schema) {
-      if (campaign) {
-        updateCampaign.mutate({ ...values, id: campaign.id });
-        onClose();
-        return;
-      }
-
-      createCampaign.mutate(values);
+  /**
+   * Handle the form submission
+   * @param values - The campaign values
+   */
+  async function handleSubmitForm(values: Schema) {
+    if (campaign) {
+      updateCampaign.mutate({ ...values, id: campaign.id });
       onClose();
+      return;
     }
 
-    return (
-      <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
-        <FormProvider {...methods}>
-          <form
-            onSubmit={handleSubmit(handleSubmitForm)}
-            style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
-          >
-            <DialogTitle>
-              <span>{campaign ? 'Update Campaign' : 'Create Campaign'}</span>
+    createCampaign.mutate(values);
+    onClose();
+  }
 
-              <IconButton onClick={onClose}>
-                <Close />
-              </IconButton>
-            </DialogTitle>
+  return (
+    <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(handleSubmitForm)}
+          style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
+        >
+          <DialogTitle>
+            <span>{campaign ? 'Update Campaign' : 'Create Campaign'}</span>
 
-            <DialogContent>
-              <ControlledTextField name="name" label="Name" autoFocus fullWidth />
-            </DialogContent>
+            <IconButton onClick={onClose}>
+              <Close />
+            </IconButton>
+          </DialogTitle>
 
-            <DialogActions>
-              <Button onClick={onClose}>Cancel</Button>
+          <DialogContent>
+            <ControlledTextField name="name" label="Name" autoFocus fullWidth />
+          </DialogContent>
 
-              <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit">
-                Submit
-              </LoadingButton>
-            </DialogActions>
-          </form>
-        </FormProvider>
-      </Dialog>
-    );
-  },
-);
+          <DialogActions>
+            <Button onClick={onClose}>Cancel</Button>
+
+            <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit">
+              Submit
+            </LoadingButton>
+          </DialogActions>
+        </form>
+      </FormProvider>
+    </Dialog>
+  );
+});

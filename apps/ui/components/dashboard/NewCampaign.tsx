@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 
-export const NewCampaign: React.FC = () => {
+export function NewCampaign() {
   return (
     <Button
       onClick={() => {
@@ -23,4 +23,4 @@ export const NewCampaign: React.FC = () => {
       New Campaign
     </Button>
   );
-};
+}

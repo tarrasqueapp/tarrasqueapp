@@ -1,5 +1,4 @@
 import { Box, Container, Paper, Typography } from '@mui/material';
-import { NextPage } from 'next';
 import React from 'react';
 
 import { Center } from '../components/common/Center';
@@ -7,7 +6,7 @@ import { Logo } from '../components/common/Logo';
 import { NextButton } from '../components/common/NextButton';
 import { AppNavigation } from '../lib/navigation';
 
-const NotFound: NextPage = () => {
+export default function NotFoundPage() {
   return (
     <Center>
       <Container maxWidth="sm">
@@ -31,6 +30,4 @@ const NotFound: NextPage = () => {
       </Container>
     </Center>
   );
-};
-
-export default NotFound;
+}

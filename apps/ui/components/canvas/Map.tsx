@@ -9,11 +9,11 @@ export interface MapProps {
   children?: React.ReactNode;
 }
 
-export const Map: React.FC<MapProps> = ({ mapId, width, height, url, children }) => {
+export function Map({ mapId, width, height, url, children }: MapProps) {
   return (
     <Camera mapId={mapId} width={width} height={height}>
       <MapMedia url={url} />
       {children}
     </Camera>
   );
-};
+}

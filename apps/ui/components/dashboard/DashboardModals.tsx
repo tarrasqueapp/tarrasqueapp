@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react-lite';
 
-import { useGetUser } from '../../hooks/data/users/useGetUser';
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { store } from '../../store';
 import { CampaignModals } from '../campaigns/CampaignModals';
 import { MapModals } from '../maps/MapModals';
 import { SettingsModal } from './SettingsModal';
 
-export const DashboardModals: React.FC = observer(() => {
+export const DashboardModals = observer(function DashboardModals() {
   const { data: user } = useGetUser();
 
   return (

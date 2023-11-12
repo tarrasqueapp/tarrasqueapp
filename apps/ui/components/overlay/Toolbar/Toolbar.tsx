@@ -8,7 +8,7 @@ import { Tool } from '../../../store/toolbar';
 import { FogToolItem } from './FogToolItem';
 import { SelectToolItem } from './SelectToolItem';
 
-export const Toolbar: React.FC = observer(() => {
+export const Toolbar = observer(function Toolbar() {
   return (
     <Box sx={{ position: 'fixed', top: 4, left: 4, display: 'flex', flexDirection: 'column' }}>
       <ToggleButtonGroup

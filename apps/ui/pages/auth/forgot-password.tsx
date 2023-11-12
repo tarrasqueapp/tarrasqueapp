@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box, Container, Paper, Typography } from '@mui/material';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -12,7 +12,7 @@ import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledTextField } from '../../components/form/ControlledTextField';
-import { useForgotPassword } from '../../hooks/data/users/useForgotPassword';
+import { useForgotPassword } from '../../hooks/data/auth/useForgotPassword';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
-const ForgotPasswordPage: NextPage = () => {
+export default function ForgotPasswordPage() {
   const forgotPassword = useForgotPassword();
 
   const router = useRouter();
@@ -109,6 +109,4 @@ const ForgotPasswordPage: NextPage = () => {
       </Container>
     </Center>
   );
-};
-
-export default ForgotPasswordPage;
+}

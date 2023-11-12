@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Container, Paper, Typography } from '@mui/material';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -13,8 +13,8 @@ import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
 import { ControlledTextField } from '../../components/form/ControlledTextField';
+import { useSignUp } from '../../hooks/data/auth/useSignUp';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
-import { useSignUp } from '../../hooks/data/users/useSignUp';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
-const SignUpPage: NextPage = () => {
+export default function SignUpPage() {
   const signUp = useSignUp();
 
   const router = useRouter();
@@ -127,6 +127,4 @@ const SignUpPage: NextPage = () => {
       </Container>
     </Center>
   );
-};
-
-export default SignUpPage;
+}

@@ -20,7 +20,7 @@ interface UploadedMediaProps {
   onDelete?: (media: MediaEntity) => void;
 }
 
-export const UploadedMedia: React.FC<UploadedMediaProps> = ({ media, selectedMediaId, onSelect, onDelete }) => {
+export function UploadedMedia({ media, selectedMediaId, onSelect, onDelete }: UploadedMediaProps) {
   if (!media?.length) return null;
 
   return (
@@ -56,4 +56,4 @@ export const UploadedMedia: React.FC<UploadedMediaProps> = ({ media, selectedMed
       ))}
     </List>
   );
-};
+}

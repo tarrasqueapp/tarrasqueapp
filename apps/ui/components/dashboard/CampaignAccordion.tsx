@@ -31,9 +31,9 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
-import { useGetUser } from '../../hooks/data/users/useGetUser';
 import { CampaignEntity, CampaignMemberRole } from '../../lib/types';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
@@ -47,7 +47,7 @@ export interface CampaignAccordionProps {
   campaign?: CampaignEntity;
 }
 
-export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, onToggle, campaign }) => {
+export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAccordionProps) {
   const { data: user } = useGetUser();
   const { data: maps } = useGetCampaignMaps(campaign?.id);
   const reorderMaps = useReorderMaps();
@@ -268,4 +268,4 @@ export const CampaignAccordion: React.FC<CampaignAccordionProps> = ({ expanded, 
       </Collapse>
     </Paper>
   );
-};
+}

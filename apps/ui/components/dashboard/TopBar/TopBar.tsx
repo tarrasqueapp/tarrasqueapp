@@ -16,14 +16,14 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 
-import { useGetUser } from '../../../hooks/data/users/useGetUser';
+import { useGetUser } from '../../../hooks/data/auth/useGetUser';
 import { AppNavigation } from '../../../lib/navigation';
 import { store } from '../../../store';
 import { Logo } from '../../common/Logo';
 import { Notifications } from './Notifications/Notifications';
 import { Version } from './Version';
 
-export const TopBar: React.FC = () => {
+export function TopBar() {
   const { data: user } = useGetUser();
 
   return (
@@ -92,4 +92,4 @@ export const TopBar: React.FC = () => {
       </Toolbar>
     </AppBar>
   );
-};
+}

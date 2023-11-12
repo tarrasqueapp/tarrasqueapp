@@ -7,7 +7,7 @@ import { AppNavigation } from '../../lib/navigation';
 import { CreateDatabase } from './CreateDatabase';
 import { CreateUser } from './CreateUser';
 
-export const Setup: React.FC = () => {
+export function Setup() {
   const { data, error, isLoading } = useGetSetup();
 
   const [activeStep, setActiveStep] = useState(0);
@@ -73,4 +73,4 @@ export const Setup: React.FC = () => {
       </Stepper>
     </>
   );
-};
+}

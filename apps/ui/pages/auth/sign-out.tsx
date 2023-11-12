@@ -1,13 +1,12 @@
 import { CircularProgress } from '@mui/material';
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { Center } from '../../components/common/Center';
-import { useSignOut } from '../../hooks/data/users/useSignOut';
+import { useSignOut } from '../../hooks/data/auth/useSignOut';
 import { AppNavigation } from '../../lib/navigation';
 
-const SignOutPage: NextPage = () => {
+export default function SignOutPage() {
   const signOut = useSignOut();
 
   const router = useRouter();
@@ -26,6 +25,4 @@ const SignOutPage: NextPage = () => {
       <CircularProgress disableShrink />
     </Center>
   );
-};
-
-export default SignOutPage;
+}

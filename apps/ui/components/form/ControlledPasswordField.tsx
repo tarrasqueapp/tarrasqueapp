@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import { ControlledTextField, ControlledTextFieldProps } from './ControlledTextField';
 
-export const ControlledPasswordField: React.FC<ControlledTextFieldProps> = ({ name, ...props }) => {
+export function ControlledPasswordField({ name, ...props }: ControlledTextFieldProps) {
   const [visible, setVisible] = useState(false);
 
   /**
@@ -34,4 +34,4 @@ export const ControlledPasswordField: React.FC<ControlledTextFieldProps> = ({ na
       {...props}
     />
   );
-};
+}

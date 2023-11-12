@@ -39,7 +39,11 @@ interface CampaignMembersModalProps {
   campaign: CampaignEntity | undefined;
 }
 
-export const CampaignMembersModal: React.FC<CampaignMembersModalProps> = observer(({ open, onClose, campaign }) => {
+export const CampaignMembersModal = observer(function CampaignMembersModal({
+  open,
+  onClose,
+  campaign,
+}: CampaignMembersModalProps) {
   const createCampaignInvite = useCreateCampaignInvite();
   const deleteCampaignInvite = useDeleteCampaignInvite();
   const deleteCampaignMember = useDeleteCampaignMember();

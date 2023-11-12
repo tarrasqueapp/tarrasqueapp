@@ -6,7 +6,7 @@ interface CenterProps {
   children: React.ReactNode;
 }
 
-export const Center: React.FC<CenterProps> = ({ children }) => {
+export function Center({ children }: CenterProps) {
   return (
     <Box
       sx={{
@@ -21,4 +21,4 @@ export const Center: React.FC<CenterProps> = ({ children }) => {
       {children}
     </Box>
   );
-};
+}

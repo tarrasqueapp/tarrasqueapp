@@ -1,6 +1,6 @@
 import { Box, CircularProgress, CircularProgressProps, Typography } from '@mui/material';
 
-export const CircularProgressWithLabel: React.FC<CircularProgressProps & { value: number }> = (props) => {
+export function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex' }}>
       <CircularProgress variant="determinate" size={60} {...props} />
@@ -10,4 +10,4 @@ export const CircularProgressWithLabel: React.FC<CircularProgressProps & { value
       </Box>
     </Box>
   );
-};
+}

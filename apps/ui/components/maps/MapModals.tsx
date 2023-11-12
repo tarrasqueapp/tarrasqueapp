@@ -9,7 +9,7 @@ import { MapModal } from '../../store/maps';
 import { ConfirmModal } from '../common/ConfirmModal';
 import { CreateUpdateMapModal } from './CreateUpdateMapModal';
 
-export const MapModals: React.FC = observer(() => {
+export const MapModals = observer(function MapModals() {
   const { data: campaigns } = useGetUserCampaigns();
   const { data: maps } = useGetCampaignMaps(store.campaigns.selectedCampaignId || undefined);
   const deleteMap = useDeleteMap();

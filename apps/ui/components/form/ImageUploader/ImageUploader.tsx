@@ -17,7 +17,7 @@ export interface ImageUploaderProps {
   onChange?: (file: UploadingFile | null) => void;
 }
 
-export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) => {
+export function ImageUploader({ file, onChange }: ImageUploaderProps) {
   const allowedFileTypes = ['image/*'];
 
   // Setup the uploader
@@ -216,4 +216,4 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ file, onChange }) 
       </Box>
     </Box>
   );
-};
+}

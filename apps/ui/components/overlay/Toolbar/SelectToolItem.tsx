@@ -8,7 +8,7 @@ import { Color } from '../../../lib/colors';
 import { store } from '../../../store';
 import { SelectTool, Tool } from '../../../store/toolbar';
 
-export const SelectToolItem: React.FC = observer(() => {
+export const SelectToolItem = observer(function SelectToolItem() {
   const popupState = usePopupState({ variant: 'popper', popupId: 'selectTool' });
 
   const SingleSelectTool = (props: any) => {

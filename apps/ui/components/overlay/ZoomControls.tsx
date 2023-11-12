@@ -9,7 +9,7 @@ import { Color } from '../../lib/colors';
 import { store } from '../../store';
 import { HotkeysUtils } from '../../utils/HotkeyUtils';
 
-export const ZoomControls: React.FC = observer(() => {
+export const ZoomControls = observer(function ZoomControls() {
   const { data: map } = useGetCurrentMap();
 
   const [isFullScreen, setIsFullScreen] = useState(false);

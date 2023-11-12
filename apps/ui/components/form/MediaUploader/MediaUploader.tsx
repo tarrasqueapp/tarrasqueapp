@@ -70,7 +70,7 @@ export interface MediaUploaderProps {
   onSelect?: (file: UploadingFile | MediaEntity) => void;
 }
 
-export const MediaUploader: React.FC<MediaUploaderProps> = ({ files, onChange, selectedMediaId, onSelect }) => {
+export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: MediaUploaderProps) {
   const [activeStep, setActiveStep] = useState(0);
   const [adding, setAdding] = useState(false);
 
@@ -432,4 +432,4 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({ files, onChange, s
       </Box>
     </Box>
   );
-};
+}

@@ -5,8 +5,8 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { useSignUp } from '../../hooks/data/auth/useSignUp';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
-import { useSignUp } from '../../hooks/data/users/useSignUp';
 import { SetupStep } from '../../lib/types';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -15,7 +15,7 @@ interface CreateUserProps {
   onSubmit: () => void;
 }
 
-export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
+export function CreateUser({ onSubmit }: CreateUserProps) {
   const signUp = useSignUp();
   const updateSetup = useUpdateSetup();
 
@@ -69,4 +69,4 @@ export const CreateUser: React.FC<CreateUserProps> = ({ onSubmit }) => {
       </form>
     </FormProvider>
   );
-};
+}

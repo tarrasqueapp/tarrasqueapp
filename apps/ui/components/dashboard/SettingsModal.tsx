@@ -23,8 +23,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
+import { useUpdateUser } from '../../hooks/data/auth/useUpdateUser';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
-import { useUpdateUser } from '../../hooks/data/users/useUpdateUser';
 import { AppNavigation } from '../../lib/navigation';
 import { MediaEntity, UserEntity } from '../../lib/types';
 import { store } from '../../store';
@@ -40,7 +40,7 @@ interface SettingsModalProps {
   user?: UserEntity;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = observer(({ open, onClose, user }) => {
+export const SettingsModal = observer(function SettingsModal({ open, onClose, user }: SettingsModalProps) {
   const createMedia = useCreateMedia();
   const updateUser = useUpdateUser();
 

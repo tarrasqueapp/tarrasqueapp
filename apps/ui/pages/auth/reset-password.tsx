@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Container, Paper, Typography } from '@mui/material';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -12,8 +12,8 @@ import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
+import { checkPasswordResetToken, useResetPassword } from '../../hooks/data/auth/useResetPassword';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
-import { checkPasswordResetToken, useResetPassword } from '../../hooks/data/users/useResetPassword';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -51,7 +51,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { token, valid, dehydratedState: ssr.dehydrate() } };
 };
 
-const ResetPasswordPage: NextPage<{ token: string; valid: boolean }> = ({ token, valid }) => {
+interface ResetPasswordPageProps {
+  token: string;
+  valid: boolean;
+}
+
+export default function ResetPasswordPage({ token, valid }: ResetPasswordPageProps) {
   const resetPassword = useResetPassword();
 
   const router = useRouter();
@@ -130,6 +135,4 @@ const ResetPasswordPage: NextPage<{ token: string; valid: boolean }> = ({ token,
       </Container>
     </Center>
   );
-};
-
-export default ResetPasswordPage;
+}

@@ -5,7 +5,7 @@ import { config } from '../../../lib/config';
 import { ExternalNavigation } from '../../../lib/navigation';
 import { ExternalLink } from '../../common/ExternalLink';
 
-export const Version: React.FC = () => {
+export function Version() {
   const { data: liveVersion } = useGetLiveVersion();
 
   const isLatest = liveVersion ? liveVersion.version === `v${config.VERSION}` : true;
@@ -26,4 +26,4 @@ export const Version: React.FC = () => {
       </Badge>
     </Tooltip>
   );
-};
+}

@@ -1,13 +1,13 @@
 import { Box, CircularProgress, Container } from '@mui/material';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
 import { Center } from '../components/common/Center';
 import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
 import { DashboardModals } from '../components/dashboard/DashboardModals';
 import { TopBar } from '../components/dashboard/TopBar/TopBar';
+import { useGetUser } from '../hooks/data/auth/useGetUser';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
-import { useGetUser } from '../hooks/data/users/useGetUser';
 import { Gradient } from '../lib/colors';
 import { AppNavigation } from '../lib/navigation';
 import { SSRUtils } from '../utils/SSRUtils';
@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
-const DashboardPage: NextPage = () => {
+export default function DashboardPage() {
   const { isLoading } = useGetUser();
 
   if (isLoading) {
@@ -76,6 +76,4 @@ const DashboardPage: NextPage = () => {
       <DashboardModals />
     </>
   );
-};
-
-export default DashboardPage;
+}

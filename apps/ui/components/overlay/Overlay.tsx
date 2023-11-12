@@ -5,7 +5,7 @@ import { MapContextMenu } from './MapContextMenu';
 import { Toolbar } from './Toolbar/Toolbar';
 import { ZoomControls } from './ZoomControls';
 
-export const Overlay: React.FC = () => {
+export function Overlay() {
   return (
     <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
       <MapContextMenu />
@@ -14,4 +14,4 @@ export const Overlay: React.FC = () => {
       <BottomBar />
     </Box>
   );
-};
+}

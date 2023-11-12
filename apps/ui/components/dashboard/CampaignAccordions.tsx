@@ -20,7 +20,7 @@ import { useReorderCampaigns } from '../../hooks/data/campaigns/useReorderCampai
 import { CampaignAccordion } from './CampaignAccordion';
 import { NewCampaign } from './NewCampaign';
 
-export const CampaignAccordions: React.FC = () => {
+export function CampaignAccordions() {
   const { data: campaigns } = useGetUserCampaigns();
   const reorderCampaigns = useReorderCampaigns();
 
@@ -148,4 +148,4 @@ export const CampaignAccordions: React.FC = () => {
       <NewCampaign />
     </>
   );
-};
+}

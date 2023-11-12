@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Container, Paper, Typography } from '@mui/material';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -13,9 +13,9 @@ import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
 import { ControlledTextField } from '../../components/form/ControlledTextField';
+import { useResendEmailVerification } from '../../hooks/data/auth/useResendEmailVerification';
+import { useSignIn } from '../../hooks/data/auth/useSignIn';
 import { getSetup } from '../../hooks/data/setup/useGetSetup';
-import { useResendEmailVerification } from '../../hooks/data/users/useResendEmailVerification';
-import { useSignIn } from '../../hooks/data/users/useSignIn';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
-const SignInPage: NextPage = () => {
+export default function SignInPage() {
   const signIn = useSignIn();
   const resendEmailVerification = useResendEmailVerification();
 
@@ -147,6 +147,4 @@ const SignInPage: NextPage = () => {
       </Container>
     </Center>
   );
-};
-
-export default SignInPage;
+}

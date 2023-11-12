@@ -20,7 +20,7 @@ export interface ConfirmModalProps {
   children?: React.ReactNode;
 }
 
-export const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onConfirm, onClose, title, children }) => {
+export function ConfirmModal({ open, onConfirm, onClose, title, children }: ConfirmModalProps) {
   const [loading, setLoading] = useState(false);
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -55,4 +55,4 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onConfirm, onC
       </DialogActions>
     </Dialog>
   );
-};
+}

@@ -1,8 +1,9 @@
 import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 
-import { getUser } from '../hooks/data/users/useGetUser';
-import { UserEntity } from '../lib/types';
+import { getUser } from '../hooks/data/auth/useGetUser';
+import { getSetup } from '../hooks/data/setup/useGetSetup';
+import { SetupEntity, UserEntity } from '../lib/types';
 
 export class SSRUtils {
   queryClient: QueryClient;
@@ -24,8 +25,8 @@ export class SSRUtils {
   }
 
   /**
-   * Get the user from the server side
-   * @returns user
+   * Prefetch the user
+   * @returns The user object
    */
   async getUser() {
     await this.queryClient.prefetchQuery({
@@ -33,5 +34,17 @@ export class SSRUtils {
       queryFn: () => getUser({ withCredentials: true, headers: this.headers }) || null,
     });
     return this.queryClient.getQueryData<UserEntity>(['auth']) || null;
+  }
+
+  /**
+   * Prefetch the application setup
+   * @returns The setup data
+   */
+  async getSetup() {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['setup'],
+      queryFn: () => getSetup({ withCredentials: true, headers: this.headers }) || null,
+    });
+    return this.queryClient.getQueryData<SetupEntity>(['setup']) || null;
   }
 }

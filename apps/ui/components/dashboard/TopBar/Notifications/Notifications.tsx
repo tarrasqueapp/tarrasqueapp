@@ -2,10 +2,10 @@ import { Notifications as NotificationsIcon } from '@mui/icons-material';
 import { Badge, Box, IconButton, List, Popover, Tooltip, Typography } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 
-import { useGetNotifications } from '../../../../hooks/data/users/notifications/useGetNotifications';
+import { useGetNotifications } from '../../../../hooks/data/auth/notifications/useGetNotifications';
 import { CampaignInviteNotification } from './CampaignInviteNotification';
 
-export const Notifications: React.FC = () => {
+export function Notifications() {
   const { data: notifications } = useGetNotifications();
 
   return (
@@ -49,4 +49,4 @@ export const Notifications: React.FC = () => {
       </PopupState>
     </>
   );
-};
+}

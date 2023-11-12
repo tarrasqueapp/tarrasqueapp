@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { store } from '../../store';
 
-export const MapContextMenu: React.FC = observer(() => {
+export const MapContextMenu = observer(function MapContextMenu() {
   const { data: map } = useGetCurrentMap();
 
   const width = 230;

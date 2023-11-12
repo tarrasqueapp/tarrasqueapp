@@ -33,7 +33,7 @@ import NextLink from 'next/link';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { useGetUser } from '../../../hooks/data/users/useGetUser';
+import { useGetUser } from '../../../hooks/data/auth/useGetUser';
 import { Color } from '../../../lib/colors';
 import { AppNavigation, ExternalNavigation } from '../../../lib/navigation';
 import { store } from '../../../store';
@@ -48,7 +48,7 @@ const CustomIconButton = styled(IconButton)({
   borderRadius: '10px',
 });
 
-export const BottomBar: React.FC = observer(() => {
+export const BottomBar = observer(function BottomBar() {
   const { data: user } = useGetUser();
 
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);

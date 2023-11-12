@@ -1,12 +1,25 @@
 import { Box, Container, Paper } from '@mui/material';
-import { NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import React from 'react';
 
 import { Center } from '../components/common/Center';
 import { Logo } from '../components/common/Logo';
 import { Setup } from '../components/setup/Setup';
+import { AppNavigation } from '../lib/navigation';
+import { SSRUtils } from '../utils/SSRUtils';
 
-const SetupPage: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const ssr = new SSRUtils(context);
+
+  const setup = await ssr.getSetup();
+
+  // Redirect to the sign in page if the setup has been completed
+  if (setup?.completed) return { props: {}, redirect: { destination: AppNavigation.SignIn } };
+
+  return { props: { dehydratedState: ssr.dehydrate() } };
+};
+
+export default function SetupPage() {
   return (
     <Center>
       <Container maxWidth="xs">
@@ -22,6 +35,4 @@ const SetupPage: NextPage = () => {
       </Container>
     </Center>
   );
-};
-
-export default SetupPage;
+}

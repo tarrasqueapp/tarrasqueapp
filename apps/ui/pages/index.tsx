@@ -1,12 +1,11 @@
 import { CircularProgress } from '@mui/material';
-import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 import { Center } from '../components/common/Center';
 import { AppNavigation } from '../lib/navigation';
 
-const IndexPage: NextPage = () => {
+export default function IndexPage() {
   const router = useRouter();
 
   useEffect(() => {
@@ -18,6 +17,4 @@ const IndexPage: NextPage = () => {
       <CircularProgress disableShrink />
     </Center>
   );
-};
-
-export default IndexPage;
+}

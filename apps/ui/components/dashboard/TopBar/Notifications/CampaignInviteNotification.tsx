@@ -5,7 +5,7 @@ import { useAcceptCampaignInvite } from '../../../../hooks/data/campaigns/invite
 import { useDeclineCampaignInvite } from '../../../../hooks/data/campaigns/invites/useDeclineCampaignInvite';
 import { EventTokenEntity } from '../../../../lib/types';
 
-export const CampaignInviteNotification: React.FC<EventTokenEntity> = (invite) => {
+export function CampaignInviteNotification(invite: EventTokenEntity) {
   const acceptCampaignInvite = useAcceptCampaignInvite();
   const declineCampaignInvite = useDeclineCampaignInvite();
 
@@ -34,4 +34,4 @@ export const CampaignInviteNotification: React.FC<EventTokenEntity> = (invite) =
       />
     </ListItem>
   );
-};
+}

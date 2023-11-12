@@ -13,7 +13,7 @@ import { Grid } from './Grid';
 import { Map } from './Map';
 import { Token } from './Token';
 
-const Canvas: React.FC = observer(() => {
+const Canvas = observer(function Canvas() {
   const { data: map } = useGetCurrentMap();
 
   const windowSize = useWindowSize();

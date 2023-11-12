@@ -5,6 +5,6 @@ interface LogoProps extends BoxProps {
   size?: number;
 }
 
-export const Logo: React.FC<LogoProps> = ({ size, ...props }) => {
+export function Logo({ size, ...props }: LogoProps) {
   return <Box component="img" src="/images/logo.svg" alt="Tarrasque App Logo" width={size} height={size} {...props} />;
-};
+}

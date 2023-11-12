@@ -2,6 +2,6 @@ import { SvgIcon, SvgIconProps } from '@mui/material';
 
 import characterIcon from '../../public/images/app-icons/character.svg';
 
-export const CharacterIcon: React.FC<SvgIconProps> = (props) => {
+export function CharacterIcon(props: SvgIconProps) {
   return <SvgIcon component={characterIcon} {...props} />;
-};
+}

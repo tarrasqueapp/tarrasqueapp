@@ -9,7 +9,7 @@ import { ConfirmModal } from '../common/ConfirmModal';
 import { CampaignMembersModal } from './CampaignMembersModal';
 import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';
 
-export const CampaignModals: React.FC = observer(() => {
+export const CampaignModals = observer(function CampaignModals() {
   const { data: campaigns } = useGetUserCampaigns();
   const deleteCampaign = useDeleteCampaign();
 

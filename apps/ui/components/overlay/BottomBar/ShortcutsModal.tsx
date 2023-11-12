@@ -59,7 +59,7 @@ interface ShortcutsModalProps {
   onClose: () => void;
 }
 
-export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ open, onClose }) => {
+export function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   return (
@@ -408,4 +408,4 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ open, onClose })
       </DialogActions>
     </Dialog>
   );
-};
+}

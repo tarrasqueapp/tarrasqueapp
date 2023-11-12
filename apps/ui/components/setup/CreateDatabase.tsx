@@ -9,7 +9,7 @@ interface CreateDatabaseProps {
   onSubmit: () => void;
 }
 
-export const CreateDatabase: React.FC<CreateDatabaseProps> = ({ onSubmit }) => {
+export function CreateDatabase({ onSubmit }: CreateDatabaseProps) {
   const createDatabase = useCreateDatabase();
 
   // Setup form
@@ -48,4 +48,4 @@ export const CreateDatabase: React.FC<CreateDatabaseProps> = ({ onSubmit }) => {
       </Typography>
     </form>
   );
-};
+}

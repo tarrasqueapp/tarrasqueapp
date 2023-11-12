@@ -10,7 +10,7 @@ interface NewMapProps {
   campaign: CampaignEntity | null;
 }
 
-export const NewMap: React.FC<NewMapProps> = ({ campaign }) => {
+export function NewMap({ campaign }: NewMapProps) {
   return (
     <Button
       disabled={!campaign}
@@ -33,4 +33,4 @@ export const NewMap: React.FC<NewMapProps> = ({ campaign }) => {
       New Map
     </Button>
   );
-};
+}

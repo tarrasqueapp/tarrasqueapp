@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 
 import { api } from '../../../../lib/api';
 import { EventTokenEntity } from '../../../../lib/types';
-import { NotificationsInterface } from '../../users/notifications/useGetNotifications';
+import { NotificationsInterface } from '../../auth/notifications/useGetNotifications';
 
 /**
  * Send a request to accept an invite of a user to a campaign
