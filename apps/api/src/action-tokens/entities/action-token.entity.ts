@@ -1,15 +1,15 @@
-import { EventToken, EventTokenType, Prisma } from '@prisma/client';
+import { ActionToken, ActionTokenType, Prisma } from '@prisma/client';
 import { IsDateString, IsEmail, IsEnum, IsJSON, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { CampaignEntity } from '../../campaigns/entities/campaign.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
-export class EventTokenEntity implements EventToken {
+export class ActionTokenEntity implements ActionToken {
   @IsString()
   id: string;
 
-  @IsEnum(EventTokenType)
-  type: EventTokenType;
+  @IsEnum(ActionTokenType)
+  type: ActionTokenType;
 
   @IsEmail()
   email: string;

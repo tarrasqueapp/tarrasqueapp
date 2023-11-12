@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../../lib/api';
-import { EventTokenEntity } from '../../../../lib/types';
+import { ActionTokenEntity } from '../../../../lib/types';
 import { NotificationsInterface } from '../../auth/notifications/useGetNotifications';
 
 /**
@@ -10,7 +10,7 @@ import { NotificationsInterface } from '../../auth/notifications/useGetNotificat
  * @param invite - The invite to accept
  * @returns The updated notifications
  */
-async function acceptCampaignInvite(invite: EventTokenEntity) {
+async function acceptCampaignInvite(invite: ActionTokenEntity) {
   const { data } = await api.post<void>(`/api/campaigns/${invite.campaignId}/invites/${invite.id}/accept`);
   return data;
 }

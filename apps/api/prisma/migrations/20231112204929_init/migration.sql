@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "EventTokenType" AS ENUM ('VERIFY_EMAIL', 'RESET_PASSWORD', 'INVITE');
+CREATE TYPE "ActionTokenType" AS ENUM ('VERIFY_EMAIL', 'RESET_PASSWORD', 'INVITE');
 
 -- CreateEnum
 CREATE TYPE "CampaignMemberRole" AS ENUM ('GAME_MASTER', 'PLAYER');
@@ -49,9 +49,9 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "EventToken" (
+CREATE TABLE "ActionToken" (
     "id" TEXT NOT NULL,
-    "type" "EventTokenType" NOT NULL,
+    "type" "ActionTokenType" NOT NULL,
     "email" TEXT NOT NULL,
     "payload" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -60,7 +60,7 @@ CREATE TABLE "EventToken" (
     "userId" TEXT,
     "campaignId" TEXT,
 
-    CONSTRAINT "EventToken_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ActionToken_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -175,10 +175,10 @@ ALTER TABLE "Media" ADD CONSTRAINT "Media_createdById_fkey" FOREIGN KEY ("create
 ALTER TABLE "User" ADD CONSTRAINT "User_avatarId_fkey" FOREIGN KEY ("avatarId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "EventToken" ADD CONSTRAINT "EventToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ActionToken" ADD CONSTRAINT "ActionToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "EventToken" ADD CONSTRAINT "EventToken_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ActionToken" ADD CONSTRAINT "ActionToken_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

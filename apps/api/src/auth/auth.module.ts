@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { ActionTokensModule } from '../action-tokens/action-tokens.module';
 import { CampaignsModule } from '../campaigns/campaigns.module';
 import { EmailModule } from '../email/email.module';
-import { EventTokensModule } from '../event-tokens/event-tokens.module';
 import { MediaModule } from '../media/media.module';
 import { StorageModule } from '../storage/storage.module';
 import { UsersModule } from '../users/users.module';
@@ -21,7 +21,7 @@ import { UserNotificationsController } from './user-notifications.controller';
     UsersModule,
     MediaModule,
     StorageModule,
-    EventTokensModule,
+    ActionTokensModule,
     EmailModule,
     CampaignsModule,
   ],

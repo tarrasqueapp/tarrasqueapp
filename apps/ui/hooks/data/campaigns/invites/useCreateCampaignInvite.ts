@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../../lib/api';
-import { CampaignEntity, EventTokenEntity, EventTokenType } from '../../../../lib/types';
+import { ActionTokenEntity, ActionTokenType, CampaignEntity } from '../../../../lib/types';
 
 interface CampaignInviteInterface {
   campaign: Partial<CampaignEntity>;
@@ -43,7 +43,7 @@ export function useCreateCampaignInvite() {
                   ...campaign.invites!,
                   {
                     id,
-                    type: EventTokenType.INVITE,
+                    type: ActionTokenType.INVITE,
                     email,
                     payload: {},
                     createdAt: new Date(),
@@ -51,7 +51,7 @@ export function useCreateCampaignInvite() {
                     expiresAt: new Date(),
                     userId: null,
                     campaignId: campaign.id!,
-                  } as EventTokenEntity,
+                  } as ActionTokenEntity,
                 ],
               }
             : c,

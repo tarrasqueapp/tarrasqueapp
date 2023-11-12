@@ -1,10 +1,10 @@
 import { BadRequestException, Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CampaignMemberRole, EventTokenType } from '@prisma/client';
+import { ActionTokenType, CampaignMemberRole } from '@prisma/client';
 
+import { ActionTokensService } from '../action-tokens/action-tokens.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EmailService } from '../email/email.service';
-import { EventTokensService } from '../event-tokens/event-tokens.service';
 import { durationToDate } from '../helpers';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
@@ -23,7 +23,7 @@ export class CampaignInvitesController {
   constructor(
     private readonly campaignsService: CampaignsService,
     private readonly campaignMembersService: CampaignMembersService,
-    private readonly eventTokensService: EventTokensService,
+    private readonly actionTokensService: ActionTokensService,
     private readonly usersService: UsersService,
     private readonly emailService: EmailService,
   ) {}
@@ -64,8 +64,8 @@ export class CampaignInvitesController {
       // Check if the invited user already has an account
       const invitee = await this.usersService.getUserByEmail(email);
       // Create a token for the invited user
-      const token = await this.eventTokensService.createToken({
-        type: EventTokenType.INVITE,
+      const token = await this.actionTokensService.createToken({
+        type: ActionTokenType.INVITE,
         email,
         userId: invitee.id,
         expiresAt: durationToDate('7d'),
@@ -81,8 +81,8 @@ export class CampaignInvitesController {
       });
     } catch (e) {
       // Create a token for the invited user
-      const token = await this.eventTokensService.createToken({
-        type: EventTokenType.INVITE,
+      const token = await this.actionTokensService.createToken({
+        type: ActionTokenType.INVITE,
         email,
         expiresAt: durationToDate('7d'),
         campaignId,
@@ -108,7 +108,7 @@ export class CampaignInvitesController {
   @ApiOkResponse({ type: CampaignEntity })
   async removeInvite(@Param() { campaignId, inviteId }: ConnectCampaignInviteDto): Promise<CampaignEntity> {
     // Delete the invite
-    await this.eventTokensService.deleteToken(inviteId);
+    await this.actionTokensService.deleteToken(inviteId);
 
     return this.campaignsService.getCampaign(campaignId);
   }
@@ -125,7 +125,7 @@ export class CampaignInvitesController {
     @User() user: UserEntity,
   ): Promise<void> {
     // Delete the invite
-    await this.eventTokensService.deleteToken(inviteId);
+    await this.actionTokensService.deleteToken(inviteId);
     // Add the user to the campaign
     await this.campaignMembersService.createMember({ userId: user.id, campaignId });
   }
@@ -139,6 +139,6 @@ export class CampaignInvitesController {
   @ApiOkResponse({ type: null })
   async declineInvite(@Param() { inviteId }: ConnectCampaignInviteDto): Promise<void> {
     // Delete the invite
-    await this.eventTokensService.deleteToken(inviteId);
+    await this.actionTokensService.deleteToken(inviteId);
   }
 }

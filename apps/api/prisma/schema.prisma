@@ -77,34 +77,34 @@ model User {
   // Characters
   createdCharacters    Character[]      @relation("CreatedCharacters")
   controlledCharacters Character[]      @relation("ControlledCharacters")
-  // Generic tokens
-  eventTokens          EventToken[]     @relation("UserEventTokens")
+  // Action tokens
+  actionTokens         ActionToken[]    @relation("UserActionTokens")
 }
 
 ///////////////////
-// Event Tokens //
+// Action Tokens //
 /////////////////
 
-enum EventTokenType {
+enum ActionTokenType {
   VERIFY_EMAIL
   RESET_PASSWORD
   INVITE
 }
 
-model EventToken {
-  id         String         @id @default(uuid())
-  type       EventTokenType
+model ActionToken {
+  id         String          @id @default(uuid())
+  type       ActionTokenType
   email      String
   payload    Json?
   // DateTime
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @default(now()) @updatedAt
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @default(now()) @updatedAt
   expiresAt  DateTime
   // User
-  user       User?          @relation("UserEventTokens", fields: [userId], references: [id], onDelete: Cascade)
+  user       User?           @relation("UserActionTokens", fields: [userId], references: [id], onDelete: Cascade)
   userId     String?
   // Campaign
-  campaign   Campaign?      @relation("CampaignInvites", fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign   Campaign?       @relation("CampaignInvites", fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId String?
 }
 
@@ -128,7 +128,7 @@ model Campaign {
   createdBy   User             @relation("UserCampaigns", fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
   // Invites
-  invites     EventToken[]     @relation("CampaignInvites")
+  invites     ActionToken[]    @relation("CampaignInvites")
 }
 
 enum CampaignMemberRole {

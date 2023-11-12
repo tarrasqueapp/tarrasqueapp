@@ -11,12 +11,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { EventTokenType } from '@prisma/client';
+import { ActionTokenType } from '@prisma/client';
 import { Request, Response } from 'express';
 
+import { ActionTokensService } from '../action-tokens/action-tokens.service';
 import { CampaignsService } from '../campaigns/campaigns.service';
 import { EmailService } from '../email/email.service';
-import { EventTokensService } from '../event-tokens/event-tokens.service';
 import { durationToDate } from '../helpers';
 import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/media.service';
 import { StorageService } from '../storage/storage.service';
@@ -37,7 +37,7 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly mediaService: MediaService,
     private readonly storageService: StorageService,
-    private readonly eventTokensService: EventTokensService,
+    private readonly actionTokensService: ActionTokensService,
     private readonly emailService: EmailService,
     private readonly campaignsService: CampaignsService,
   ) {}
@@ -75,8 +75,8 @@ export class AuthController {
     // Check if email has changed
     if (data.email !== user.email) {
       // Generate the verify email token
-      const token = await this.eventTokensService.createToken({
-        type: EventTokenType.VERIFY_EMAIL,
+      const token = await this.actionTokensService.createToken({
+        type: ActionTokenType.VERIFY_EMAIL,
         email: data.email,
         userId: user.id,
         expiresAt: durationToDate('7d'),
@@ -100,8 +100,8 @@ export class AuthController {
     // Create the user
     const user = await this.usersService.createUser(data);
     // Generate the verify email token
-    const token = await this.eventTokensService.createToken({
-      type: EventTokenType.VERIFY_EMAIL,
+    const token = await this.actionTokensService.createToken({
+      type: ActionTokenType.VERIFY_EMAIL,
       email: user.email,
       userId: user.id,
       expiresAt: durationToDate('7d'),
@@ -109,7 +109,7 @@ export class AuthController {
     // Send the email
     await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.id });
     // Assign existing campaign invites to the new user
-    await this.eventTokensService.assignTokensToUser(user.email, user.id);
+    await this.actionTokensService.assignTokensToUser(user.email, user.id);
   }
 
   /**
@@ -124,7 +124,7 @@ export class AuthController {
     }
 
     // Generate access token based on user
-    const accessToken = this.eventTokensService.generateToken(user.id);
+    const accessToken = this.actionTokensService.generateToken(user.id);
     // Set cookies
     res.cookie('Access', accessToken, { httpOnly: true, signed: true, path: '/' });
 
@@ -156,7 +156,7 @@ export class AuthController {
       throw new BadRequestException('Email already verified');
     }
     // Get the token
-    const [token] = await this.eventTokensService.getTokensByUserId(user.id, EventTokenType.VERIFY_EMAIL);
+    const [token] = await this.actionTokensService.getTokensByUserId(user.id, ActionTokenType.VERIFY_EMAIL);
     // Send the email
     await this.emailService.sendEmailVerificationEmail({ name: user.displayName, to: user.email, token: token.id });
   }
@@ -168,11 +168,11 @@ export class AuthController {
   @ApiOkResponse({ type: UserEntity })
   async verifyEmail(@Res({ passthrough: true }) res: Response, @Body() data: { token: string }): Promise<UserEntity> {
     // Decode the token
-    const { userId } = await this.eventTokensService.getTokenById(data.token);
+    const { userId } = await this.actionTokensService.getTokenById(data.token);
     // Update the user's isEmailVerified field
     const user = await this.usersService.updateUser(userId, { isEmailVerified: true });
     // Delete the token
-    this.eventTokensService.deleteToken(data.token);
+    this.actionTokensService.deleteToken(data.token);
     // Check if this is a new user or an existing user who has changed their email by checking if they have a campaign
     const campaigns = await this.campaignsService.getUserCampaigns(user.id);
     if (campaigns.length === 0) {
@@ -195,8 +195,8 @@ export class AuthController {
       // Get the user
       const user = await this.usersService.getUserByEmail(data.email);
       // Create a token
-      const token = await this.eventTokensService.createToken({
-        type: EventTokenType.RESET_PASSWORD,
+      const token = await this.actionTokensService.createToken({
+        type: ActionTokenType.RESET_PASSWORD,
         email: user.email,
         userId: user.id,
         expiresAt: durationToDate('1d'),
@@ -214,7 +214,7 @@ export class AuthController {
   @Post('check-password-reset-token')
   @ApiOkResponse({ type: null })
   async checkPasswordResetToken(@Body() data: { token: string }): Promise<void> {
-    await this.eventTokensService.getTokenById(data.token);
+    await this.actionTokensService.getTokenById(data.token);
   }
 
   /**
@@ -227,11 +227,11 @@ export class AuthController {
     @Body() data: { token: string; password: string },
   ): Promise<UserEntity> {
     // Decode the token
-    const { userId } = await this.eventTokensService.getTokenById(data.token);
+    const { userId } = await this.actionTokensService.getTokenById(data.token);
     // Update the user's password
     const user = await this.usersService.updateUser(userId, { password: data.password });
     // Delete the token
-    this.eventTokensService.deleteToken(data.token);
+    this.actionTokensService.deleteToken(data.token);
     // Sign in the user
     return await this.signIn(res, user);
   }

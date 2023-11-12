@@ -3,9 +3,9 @@ import { IconButton, ListItem, ListItemText } from '@mui/material';
 
 import { useAcceptCampaignInvite } from '../../../../hooks/data/campaigns/invites/useAcceptCampaignInvite';
 import { useDeclineCampaignInvite } from '../../../../hooks/data/campaigns/invites/useDeclineCampaignInvite';
-import { EventTokenEntity } from '../../../../lib/types';
+import { ActionTokenEntity } from '../../../../lib/types';
 
-export function CampaignInviteNotification(invite: EventTokenEntity) {
+export function CampaignInviteNotification(invite: ActionTokenEntity) {
   const acceptCampaignInvite = useAcceptCampaignInvite();
   const declineCampaignInvite = useDeclineCampaignInvite();
 

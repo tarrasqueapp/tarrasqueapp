@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { api } from '../../../../lib/api';
-import { CampaignEntity, EventTokenEntity } from '../../../../lib/types';
+import { ActionTokenEntity, CampaignEntity } from '../../../../lib/types';
 
 interface DeleteCampaignInviteInterface {
   campaign: Partial<CampaignEntity>;
-  invite: EventTokenEntity;
+  invite: ActionTokenEntity;
 }
 
 /**

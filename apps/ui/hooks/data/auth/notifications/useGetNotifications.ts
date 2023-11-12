@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { api } from '../../../../lib/api';
-import { EventTokenEntity } from '../../../../lib/types';
+import { ActionTokenEntity } from '../../../../lib/types';
 
 export interface NotificationsInterface {
-  campaignInvites: EventTokenEntity[];
+  campaignInvites: ActionTokenEntity[];
 }
 
 /**

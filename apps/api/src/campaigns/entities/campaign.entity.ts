@@ -1,8 +1,8 @@
 import { Campaign } from '@prisma/client';
 import { IsDateString, IsOptional, IsString, ValidateNested } from 'class-validator';
 
+import { ActionTokenEntity } from '../../action-tokens/entities/action-token.entity';
 import { CharacterEntity } from '../../characters/entities/character.entity';
-import { EventTokenEntity } from '../../event-tokens/entities/event-token.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { CampaignMemberEntity } from './campaign-member.entity';
 
@@ -41,5 +41,5 @@ export class CampaignEntity implements Campaign {
   // Invites
   @IsOptional()
   @ValidateNested({ each: true })
-  invites?: EventTokenEntity[];
+  invites?: ActionTokenEntity[];
 }

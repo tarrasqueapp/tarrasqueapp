@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 
+import { ActionTokensModule } from '../action-tokens/action-tokens.module';
 import { EmailModule } from '../email/email.module';
-import { EventTokensModule } from '../event-tokens/event-tokens.module';
 import { MapsModule } from '../maps/maps.module';
 import { MediaModule } from '../media/media.module';
 import { StorageModule } from '../storage/storage.module';
@@ -13,7 +13,7 @@ import { CampaignsController } from './campaigns.controller';
 import { CampaignsService } from './campaigns.service';
 
 @Module({
-  imports: [forwardRef(() => MapsModule), MediaModule, StorageModule, EventTokensModule, UsersModule, EmailModule],
+  imports: [forwardRef(() => MapsModule), MediaModule, StorageModule, ActionTokensModule, UsersModule, EmailModule],
   controllers: [CampaignsController, CampaignInvitesController, CampaignMembersController],
   providers: [CampaignsService, CampaignMembersService],
   exports: [CampaignsService, CampaignMembersService],

@@ -25,15 +25,15 @@ export class UserEntity {
   updatedAt: string;
 }
 
-export enum EventTokenType {
+export enum ActionTokenType {
   VERIFY_EMAIL = 'VERIFY_EMAIL',
   RESET_PASSWORD = 'RESET_PASSWORD',
   INVITE = 'INVITE',
 }
 
-export class EventTokenEntity {
+export class ActionTokenEntity {
   id: string;
-  type: EventTokenType;
+  type: ActionTokenType;
   email: string;
   payload: Record<string, any>;
   // DateTime
@@ -60,7 +60,7 @@ export class CampaignEntity {
   createdBy: UserEntity;
   createdById: string;
   // Invites
-  invites: EventTokenEntity[];
+  invites: ActionTokenEntity[];
 }
 
 export enum CampaignMemberRole {

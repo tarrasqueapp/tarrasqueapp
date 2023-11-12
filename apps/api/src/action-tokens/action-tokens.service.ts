@@ -7,17 +7,17 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { EventTokenType, Prisma } from '@prisma/client';
+import { ActionTokenType, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { config } from '../config';
-import { CreateEventTokenDto } from './dto/create-event-token.dto';
-import { EventTokenEntity } from './entities/event-token.entity';
+import { CreateActionTokenDto } from './dto/create-action-token.dto';
+import { ActionTokenEntity } from './entities/action-token.entity';
 import { TokenPayload } from './token-payload.interface';
 
 @Injectable()
-export class EventTokensService {
-  private logger: Logger = new Logger(EventTokensService.name);
+export class ActionTokensService {
+  private logger: Logger = new Logger(ActionTokensService.name);
 
   constructor(
     private prisma: PrismaService,
@@ -28,11 +28,11 @@ export class EventTokensService {
    * Get all tokens
    * @returns All tokens
    */
-  async getTokens(): Promise<EventTokenEntity[]> {
+  async getTokens(): Promise<ActionTokenEntity[]> {
     this.logger.verbose(`📂 Getting tokens`);
     try {
       // Get the tokens
-      const tokens = await this.prisma.eventToken.findMany({
+      const tokens = await this.prisma.actionToken.findMany({
         where: { expiresAt: { gte: new Date() } },
         orderBy: { createdAt: 'asc' },
       });
@@ -50,14 +50,14 @@ export class EventTokensService {
    * @param id - The token id
    * @returns The token
    */
-  async getTokenById(id: string, type?: EventTokenType): Promise<EventTokenEntity | null> {
+  async getTokenById(id: string, type?: ActionTokenType): Promise<ActionTokenEntity | null> {
     if (!id) {
       throw new BadRequestException('Invalid or expired token');
     }
     this.logger.verbose(`📂 Getting token "${id}"`);
     try {
       // Get the token
-      const token = await this.prisma.eventToken.findFirst({ where: { id, type, expiresAt: { gte: new Date() } } });
+      const token = await this.prisma.actionToken.findFirst({ where: { id, type, expiresAt: { gte: new Date() } } });
 
       if (!token) {
         this.logger.error(`🚨 Failed to get token "${id}"`);
@@ -79,14 +79,14 @@ export class EventTokensService {
    * @param type - The token type
    * @returns The tokens
    */
-  async getTokensByUserId(userId: string, type?: EventTokenType): Promise<EventTokenEntity[]> {
+  async getTokensByUserId(userId: string, type?: ActionTokenType): Promise<ActionTokenEntity[]> {
     if (!userId) {
       throw new NotFoundException('User not found');
     }
     this.logger.verbose(`📂 Getting tokens for user "${userId}"`);
     try {
       // Get the tokens
-      const tokens = await this.prisma.eventToken.findMany({
+      const tokens = await this.prisma.actionToken.findMany({
         where: { userId, type, expiresAt: { gte: new Date() } },
         orderBy: { createdAt: 'asc' },
       });
@@ -104,11 +104,11 @@ export class EventTokensService {
    * @param data - The token data
    * @returns The created token
    */
-  async createToken(data: CreateEventTokenDto): Promise<EventTokenEntity> {
+  async createToken(data: CreateActionTokenDto): Promise<ActionTokenEntity> {
     this.logger.verbose(`📂 Creating ${data.type} token for user "${data.email}"`);
     try {
       // Create the token
-      const token = await this.prisma.eventToken.create({
+      const token = await this.prisma.actionToken.create({
         data: {
           type: data.type,
           email: data.email,
@@ -133,16 +133,16 @@ export class EventTokensService {
    * @param data - The token data
    * @returns The updated token
    */
-  async updateToken(id: string, data: Prisma.TokenUpdateInput): Promise<EventTokenEntity> {
+  async updateToken(id: string, data: Prisma.TokenUpdateInput): Promise<ActionTokenEntity> {
     this.logger.verbose(`📂 Updating token "${id}"`);
     try {
       // Update the token
-      const token = await this.prisma.eventToken.update({ where: { id }, data });
+      const token = await this.prisma.actionToken.update({ where: { id }, data });
       this.logger.debug(`✅️ Updated token "${id}"`);
       // Return the token
       return token;
     } catch (error) {
-      this.logger.error(`🚨 EventToken "${id}" not found`, error);
+      this.logger.error(`🚨 ActionToken "${id}" not found`, error);
       throw new NotFoundException(error.message);
     }
   }
@@ -153,17 +153,17 @@ export class EventTokensService {
    * @param userId - The user's id
    * @returns The updated tokens
    */
-  async assignTokensToUser(email: string, userId: string): Promise<EventTokenEntity[]> {
+  async assignTokensToUser(email: string, userId: string): Promise<ActionTokenEntity[]> {
     this.logger.verbose(`📂 Assigning tokens of email "${email}" to user "${userId}"`);
     try {
       // Update the tokens
-      const tokens = await this.prisma.eventToken.updateMany({
+      const tokens = await this.prisma.actionToken.updateMany({
         where: { email },
         data: { userId },
       });
       this.logger.debug(`✅️ Assigned ${tokens.count} tokens of email "${email}" to user "${userId}"`);
       // Return the tokens
-      const updatedTokens = await this.prisma.eventToken.findMany({ where: { email } });
+      const updatedTokens = await this.prisma.actionToken.findMany({ where: { email } });
       return updatedTokens;
     } catch (error) {
       this.logger.error(`🚨 Failed to assign tokens of email "${email}" to user "${userId}"`);
@@ -176,16 +176,16 @@ export class EventTokensService {
    * @param id - The token id
    * @returns The deleted token
    */
-  async deleteToken(id: string): Promise<EventTokenEntity> {
+  async deleteToken(id: string): Promise<ActionTokenEntity> {
     this.logger.verbose(`📂 Deleting token "${id}"`);
     try {
       // Delete the token
-      const token = await this.prisma.eventToken.delete({ where: { id } });
+      const token = await this.prisma.actionToken.delete({ where: { id } });
       this.logger.debug(`✅️ Deleted token "${id}"`);
       // Return the token
       return token;
     } catch (error) {
-      this.logger.error(`🚨 EventToken "${id}" not found`, error);
+      this.logger.error(`🚨 ActionToken "${id}" not found`, error);
       throw new NotFoundException(error.message);
     }
   }
@@ -224,7 +224,7 @@ export class EventTokensService {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async deleteExpiredTokens(): Promise<void> {
     this.logger.verbose(`📂 Deleting expired tokens`);
-    await this.prisma.eventToken.deleteMany({ where: { expiresAt: { lte: new Date() } } });
+    await this.prisma.actionToken.deleteMany({ where: { expiresAt: { lte: new Date() } } });
     this.logger.debug(`✅️ Deleted expired tokens`);
   }
 }

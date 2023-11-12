@@ -1,9 +1,9 @@
-import { EventToken, EventTokenType, Prisma } from '@prisma/client';
+import { ActionToken, ActionTokenType, Prisma } from '@prisma/client';
 import { IsDateString, IsEnum, IsJSON, IsOptional, IsString } from 'class-validator';
 
-export class CreateEventTokenDto implements Partial<EventToken> {
-  @IsEnum(EventTokenType)
-  type: EventTokenType;
+export class CreateActionTokenDto implements Partial<ActionToken> {
+  @IsEnum(ActionTokenType)
+  type: ActionTokenType;
 
   @IsString()
   email: string;
