@@ -1,9 +1,10 @@
 import { Check, Close } from '@mui/icons-material';
 import { IconButton, ListItem, ListItemText } from '@mui/material';
 
+import { ActionTokenEntity } from '@tarrasque/sdk';
+
 import { useAcceptCampaignInvite } from '../../../../hooks/data/campaigns/invites/useAcceptCampaignInvite';
 import { useDeclineCampaignInvite } from '../../../../hooks/data/campaigns/invites/useDeclineCampaignInvite';
-import { ActionTokenEntity } from '../../../../lib/types';
 
 export function CampaignInviteNotification(invite: ActionTokenEntity) {
   const acceptCampaignInvite = useAcceptCampaignInvite();

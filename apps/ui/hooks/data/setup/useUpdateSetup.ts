@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { SetupEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../lib/api';
-import { SetupEntity } from '../../../lib/types';
 
 /**
  * Send a request to update setup

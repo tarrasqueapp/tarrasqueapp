@@ -63,14 +63,14 @@ export class CampaignEntity {
   invites: ActionTokenEntity[];
 }
 
-export enum CampaignMemberRole {
+export enum Role {
   GAME_MASTER = 'GAME_MASTER',
   PLAYER = 'PLAYER',
 }
 
 export class CampaignMemberEntity {
   id: string;
-  role: CampaignMemberRole;
+  role: Role;
   // User
   user: UserEntity;
   userId: string;

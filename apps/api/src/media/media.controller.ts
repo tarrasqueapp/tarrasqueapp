@@ -3,8 +3,9 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { createId } from '@paralleldrive/cuid2';
 import fs from 'fs-extra';
 
+import { config } from '@tarrasque/common';
+
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { config } from '../config';
 import { StorageProviderEnum } from '../storage/storage-provider.enum';
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';

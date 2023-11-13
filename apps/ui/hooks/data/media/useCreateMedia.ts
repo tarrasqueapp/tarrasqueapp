@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { FileEntity, MediaEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../lib/api';
-import { FileEntity, MediaEntity } from '../../../lib/types';
 
 /**
  * Send a request to create a media item

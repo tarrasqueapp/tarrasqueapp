@@ -30,8 +30,9 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
+import { MediaEntity } from '@tarrasque/sdk';
+
 import { Color } from '../../../lib/colors';
-import { MediaEntity } from '../../../lib/types';
 import { store } from '../../../store';
 import { UploadingFile } from '../../../store/media';
 import { MathUtils } from '../../../utils/MathUtils';

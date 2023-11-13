@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { config } from './config';
+import { config } from '@tarrasque/common';
 
 export const api = axios.create({
   baseURL: typeof window !== 'undefined' ? config.HOST : config.API_BASE_URL,

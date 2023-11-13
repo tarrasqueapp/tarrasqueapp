@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { CampaignEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../lib/api';
-import { CampaignEntity } from '../../../lib/types';
 
 /**
  * Send a request to get a campaign by id

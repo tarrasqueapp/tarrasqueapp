@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
+import { ActionTokenEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../../lib/api';
-import { ActionTokenEntity } from '../../../../lib/types';
 import { NotificationsInterface } from '../../auth/notifications/useGetNotifications';
 
 /**

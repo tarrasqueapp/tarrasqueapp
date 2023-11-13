@@ -22,10 +22,11 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
+import { CampaignEntity, CampaignMemberRole, MapEntity } from '@tarrasque/sdk';
+
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
 import { AppNavigation } from '../../lib/navigation';
-import { CampaignEntity, CampaignMemberRole, MapEntity } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 

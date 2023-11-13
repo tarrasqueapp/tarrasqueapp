@@ -2,8 +2,9 @@ import createEmotionServer from '@emotion/server/create-instance';
 import Document, { DocumentProps, Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
 
+import { config } from '@tarrasque/common';
+
 import { Color } from '../lib/colors';
-import { config } from '../lib/config';
 import createEmotionCache from '../lib/createEmotionCache';
 
 type MyDocumentProps = DocumentProps & {

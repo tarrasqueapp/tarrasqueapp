@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { UserEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../lib/api';
-import { UserEntity } from '../../../lib/types';
 
 /**
  * Send a request to update the user

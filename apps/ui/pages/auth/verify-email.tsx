@@ -14,7 +14,6 @@ import { SSRUtils } from '../../utils/SSRUtils';
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssr = new SSRUtils(context);
 
-  // Get the user
   const user = await ssr.getUser();
 
   // Redirect to the dashboard page if the user is signed in

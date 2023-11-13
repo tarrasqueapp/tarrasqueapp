@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from 'nestjs-prisma';
 
+import { ActionTokensModule } from '../action-tokens/action-tokens.module';
 import { AuthModule } from '../auth/auth.module';
 import { CampaignsModule } from '../campaigns/campaigns.module';
 import { CharactersModule } from '../characters/characters.module';
@@ -14,8 +16,10 @@ import { AppController } from './app.controller';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
+    JwtModule.register({ global: true }),
     PrismaModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
+    ActionTokensModule,
     AuthModule,
     CampaignsModule,
     CharactersModule,

@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
+import { CampaignEntity, CampaignMemberEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../../lib/api';
-import { CampaignEntity, CampaignMemberEntity } from '../../../../lib/types';
 
 interface UpdateCampaignMemberInterface {
   campaign: Partial<CampaignEntity>;

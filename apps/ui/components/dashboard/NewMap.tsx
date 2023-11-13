@@ -1,8 +1,9 @@
 import { Add } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
+import { CampaignEntity } from '@tarrasque/sdk';
+
 import { Color } from '../../lib/colors';
-import { CampaignEntity } from '../../lib/types';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 

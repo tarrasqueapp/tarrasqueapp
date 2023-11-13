@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
+import { MapEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../lib/api';
-import { MapEntity } from '../../../lib/types';
 
 interface ReorderMapsInterface {
   campaignId: string;

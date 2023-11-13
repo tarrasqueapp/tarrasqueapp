@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { ActionTokenEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../../lib/api';
-import { ActionTokenEntity } from '../../../../lib/types';
 
 export interface NotificationsInterface {
   campaignInvites: ActionTokenEntity[];

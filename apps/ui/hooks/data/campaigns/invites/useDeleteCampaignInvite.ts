@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
+import { ActionTokenEntity, CampaignEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../../lib/api';
-import { ActionTokenEntity, CampaignEntity } from '../../../../lib/types';
 
 interface DeleteCampaignInviteInterface {
   campaign: Partial<CampaignEntity>;

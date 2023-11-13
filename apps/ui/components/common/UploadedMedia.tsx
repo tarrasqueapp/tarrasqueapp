@@ -10,7 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 
-import { MediaEntity } from '../../lib/types';
+import { MediaEntity } from '@tarrasque/sdk';
+
 import { store } from '../../store';
 
 interface UploadedMediaProps {

@@ -1,0 +1,60 @@
+{
+  "name": "@tarrasque/sdk",
+  "version": "0.0.1",
+  "description": "Plugin SDK for Tarrasque App",
+  "keywords": [
+    "tarrasque",
+    "sdk",
+    "plugin"
+  ],
+  "homepage": "https://github.com/tarrasqueapp/tarrasqueapp/tree/main/packages/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/tarrasqueapp/tarrasqueapp/issues",
+    "email": "support@tarrasque.app"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "Richard Solomou",
+    "email": "richard@tarrasque.app",
+    "url": "https://tarrasque.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarrasqueapp/tarrasqueapp"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "tsc --noEmit && eslint .",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@jest/globals": "^29.7.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.0",
+    "@tronite/eslint-config": "^1.0.10",
+    "@tronite/prettier-config": "^1.0.6",
+    "@tronite/tsconfig": "^1.0.5",
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.53.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io": "^4.7.2",
+    "typescript": "^5.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,17 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { api } from '../../../lib/api';
-import { UserEntity } from '../../../lib/types';
+import { UserEntity } from '@tarrasque/sdk';
 
-/**
- * Send a request to check if the password reset token is valid
- * @param token - The password reset token
- * @returns The user data
- */
-export async function checkPasswordResetToken(token: string) {
-  const { data } = await api.post<void>(`/api/auth/check-password-reset-token`, { token });
-  return data;
-}
+import { api } from '../../../lib/api';
 
 interface ResetPasswordInterface {
   token: string;

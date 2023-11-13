@@ -7,6 +7,7 @@ const nextConfig = {
     // Authentication
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
   },
+  transpilePackages: ['@tarrasque/common', '@tarrasque/sdk'],
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,

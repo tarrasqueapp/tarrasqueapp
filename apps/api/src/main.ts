@@ -5,8 +5,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
+import { config } from '@tarrasque/common';
+
 import { AppModule } from './app/app.module';
-import { config } from './config';
 import { serializeUser } from './users/users.service';
 
 async function bootstrap() {

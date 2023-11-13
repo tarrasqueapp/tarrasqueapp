@@ -10,7 +10,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { ActionTokenType, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
-import { config } from '../config';
+import { config } from '@tarrasque/common';
+
 import { CreateActionTokenDto } from './dto/create-action-token.dto';
 import { ActionTokenEntity } from './entities/action-token.entity';
 import { TokenPayload } from './token-payload.interface';

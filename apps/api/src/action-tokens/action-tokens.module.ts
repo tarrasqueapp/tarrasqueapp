@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 
+import { ActionTokensController } from './action-tokens.controller';
 import { ActionTokensService } from './action-tokens.service';
 
 @Module({
-  imports: [JwtModule.register({})],
+  imports: [],
+  controllers: [ActionTokensController],
   providers: [ActionTokensService],
   exports: [ActionTokensService],
 })

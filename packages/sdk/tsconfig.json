@@ -1,0 +1,8 @@
+{
+  "extends": "@tronite/tsconfig/react",
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
+  "compilerOptions": {
+    "strictPropertyInitialization": false
+  },
+  "exclude": ["node_modules"]
+}

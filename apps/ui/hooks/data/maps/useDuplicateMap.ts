@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { MapEntity } from '@tarrasque/sdk';
+
 import { api } from '../../../lib/api';
-import { MapEntity } from '../../../lib/types';
 
 /**
  * Send a request to duplicate a map

@@ -31,10 +31,11 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
+import { CampaignEntity, CampaignMemberRole } from '@tarrasque/sdk';
+
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
-import { CampaignEntity, CampaignMemberRole } from '../../lib/types';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';

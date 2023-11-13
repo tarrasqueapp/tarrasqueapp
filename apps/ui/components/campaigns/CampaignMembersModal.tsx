@@ -24,11 +24,12 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { CampaignEntity, CampaignMemberRole } from '@tarrasque/sdk';
+
 import { useCreateCampaignInvite } from '../../hooks/data/campaigns/invites/useCreateCampaignInvite';
 import { useDeleteCampaignInvite } from '../../hooks/data/campaigns/invites/useDeleteCampaignInvite';
 import { useDeleteCampaignMember } from '../../hooks/data/campaigns/members/useDeleteCampaignMember';
 import { useUpdateCampaignMember } from '../../hooks/data/campaigns/members/useUpdateCampaignMember';
-import { CampaignEntity, CampaignMemberRole } from '../../lib/types';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';

@@ -1,4 +1,4 @@
-import { CampaignEntity } from '../../lib/types';
+import { CampaignEntity } from '@tarrasque/sdk';
 
 export class CampaignFactory implements Partial<CampaignEntity> {
   name = '';

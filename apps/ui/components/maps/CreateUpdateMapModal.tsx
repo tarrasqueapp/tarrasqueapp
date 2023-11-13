@@ -19,13 +19,14 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { CampaignEntity, MapEntity, MediaEntity } from '@tarrasque/sdk';
+
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
 import { useUpdateMap } from '../../hooks/data/maps/useUpdateMap';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';
 import { MapFactory } from '../../lib/factories/MapFactory';
-import { CampaignEntity, MapEntity, MediaEntity } from '../../lib/types';
 import { store } from '../../store';
 import { UploadedFile } from '../../store/media';
 import { ValidateUtils } from '../../utils/ValidateUtils';

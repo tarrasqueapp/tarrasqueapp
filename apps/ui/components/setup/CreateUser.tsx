@@ -5,9 +5,10 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { SetupStep } from '@tarrasque/sdk';
+
 import { useSignUp } from '../../hooks/data/auth/useSignUp';
 import { useUpdateSetup } from '../../hooks/data/setup/useUpdateSetup';
-import { SetupStep } from '../../lib/types';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
 

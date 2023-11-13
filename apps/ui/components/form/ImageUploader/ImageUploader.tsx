@@ -5,8 +5,9 @@ import Tus from '@uppy/tus';
 import React, { useEffect, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
+import { MediaEntity } from '@tarrasque/sdk';
+
 import { Color } from '../../../lib/colors';
-import { MediaEntity } from '../../../lib/types';
 import { store } from '../../../store';
 import { UploadingFile } from '../../../store/media';
 import { MathUtils } from '../../../utils/MathUtils';

@@ -16,10 +16,11 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { CampaignEntity } from '@tarrasque/sdk';
+
 import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
 import { useUpdateCampaign } from '../../hooks/data/campaigns/useUpdateCampaign';
 import { CampaignFactory } from '../../lib/factories/CampaignFactory';
-import { CampaignEntity } from '../../lib/types';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';

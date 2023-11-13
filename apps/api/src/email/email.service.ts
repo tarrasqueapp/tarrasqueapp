@@ -5,7 +5,8 @@ import mjml2html from 'mjml';
 import nodemailer from 'nodemailer';
 import path from 'path';
 
-import { config } from '../config';
+import { config } from '@tarrasque/common';
+
 import { SendCampaignInviteExistingUserEmailDto } from './dto/send-campaign-invite-existing-user-email.dto';
 import { SendCampaignInviteNewUserEmailDto } from './dto/send-campaign-invite-new-user-email.dto';
 import { SendEmailVerificationDto } from './dto/send-email-verification-email.dto';
