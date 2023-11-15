@@ -54,7 +54,7 @@ async function bootstrap() {
     .setTitle('Tarrasque API')
     .setDescription('Free & Open-Source Virtual Tabletop for Dungeons & Dragons')
     .setVersion(`v${config.VERSION}`)
-    .addBearerAuth()
+    .addCookieAuth('Access')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup(apiPath, app, document);

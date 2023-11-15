@@ -1,5 +1,4 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateMapDto } from './dto/create-map.dto';
@@ -23,7 +22,7 @@ export class MapsService {
       // Get the maps
       const maps = await this.prisma.map.findMany({
         where: { campaignId },
-        include: { media: true, createdBy: true },
+        include: { media: true, createdBy: { include: { avatar: true } } },
         orderBy: { order: 'asc' },
       });
       this.logger.debug(`✅️ Found ${maps.length} maps for campaign "${campaignId}"`);
@@ -48,7 +47,7 @@ export class MapsService {
         include: {
           tokens: true,
           media: true,
-          createdBy: true,
+          createdBy: { include: { avatar: true } },
           campaign: true,
         },
       });
@@ -61,20 +60,20 @@ export class MapsService {
   }
 
   /**
-   * Get all maps that match the given criteria
-   * @param query - The query
+   * Get all maps that contain the given media id
+   * @param mediaId - The media id
    * @returns The maps
    */
-  async getMaps(query: Prisma.MapFindManyArgs): Promise<MapEntity[]> {
-    this.logger.verbose(`📂 Getting maps`);
+  async getMapsWithMediaId(mediaId: string): Promise<MapEntity[]> {
+    this.logger.verbose(`📂 Getting maps with media id "${mediaId}"`);
     try {
       // Get the maps
       const maps = await this.prisma.map.findMany({
-        ...query,
-        include: { media: true, createdBy: true },
+        where: { media: { some: { id: mediaId } } },
+        include: { media: true, createdBy: { include: { avatar: true } } },
         orderBy: { order: 'asc' },
       });
-      this.logger.debug(`✅️ Found ${maps.length} maps`);
+      this.logger.debug(`✅️ Found ${maps.length} maps with media id "${mediaId}"`);
       return maps;
     } catch (error) {
       this.logger.error(error.message);
@@ -117,7 +116,7 @@ export class MapsService {
           campaign: { connect: { id: data.campaignId } },
           createdBy: { connect: { id: createdById } },
         },
-        include: { media: true, createdBy: true },
+        include: { media: true, createdBy: { include: { avatar: true } } },
       });
       this.logger.debug(`✅️ Created map "${data.name}"`);
       return map;
@@ -156,7 +155,7 @@ export class MapsService {
         },
         include: {
           media: true,
-          createdBy: true,
+          createdBy: { include: { avatar: true } },
         },
       });
       this.logger.debug(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
@@ -185,7 +184,7 @@ export class MapsService {
           ...(data.selectedMediaId && { selectedMediaId: data.selectedMediaId }),
           campaign: { connect: { id: data.campaignId } },
         },
-        include: { media: true, createdBy: true },
+        include: { media: true, createdBy: { include: { avatar: true } } },
       });
       this.logger.debug(`✅️ Updated map "${mapId}"`);
       return map;
@@ -206,7 +205,7 @@ export class MapsService {
       // Delete the map
       const map = await this.prisma.map.delete({
         where: { id: mapId },
-        include: { media: true, createdBy: true },
+        include: { media: true, createdBy: { include: { avatar: true } } },
       });
       this.logger.debug(`✅️ Deleted map "${mapId}"`);
       return map;

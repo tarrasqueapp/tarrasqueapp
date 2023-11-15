@@ -50,40 +50,39 @@ model Media {
 //////////
 
 model User {
-  id                   String           @id @default(cuid())
+  id                   String        @id @default(cuid())
   name                 String
   displayName          String
-  email                String           @unique
-  isEmailVerified      Boolean          @default(false)
+  email                String        @unique
+  isEmailVerified      Boolean       @default(false)
   password             String
-  isAdmin              Boolean          @default(false)
   // Avatar
-  avatar               Media?           @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
+  avatar               Media?        @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
   avatarId             String?
   // Order of user campaigns
-  campaignOrder        String[]         @default([])
+  campaignOrder        String[]      @default([])
   // DateTime
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @default(now()) @updatedAt
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @default(now()) @updatedAt
   // Maps
-  maps                 Map[]            @relation("UserMaps")
+  maps                 Map[]         @relation("UserMaps")
   // Tokens
-  tokens               Token[]          @relation("UserTokens")
+  tokens               Token[]       @relation("UserTokens")
   // Media
-  media                Media[]          @relation("UserMedia")
+  media                Media[]       @relation("UserMedia")
   // Campaigns
-  campaignsCreated     Campaign[]       @relation("UserCampaigns")
-  campaignsMember      CampaignMember[] @relation("UserCampaignsMember")
+  createdCampaigns     Campaign[]    @relation("UserCampaigns")
+  memberships          Membership[]  @relation("UserMemberships")
   // Characters
-  createdCharacters    Character[]      @relation("CreatedCharacters")
-  controlledCharacters Character[]      @relation("ControlledCharacters")
+  createdCharacters    Character[]   @relation("CreatedCharacters")
+  controlledCharacters Character[]   @relation("ControlledCharacters")
   // Action tokens
-  actionTokens         ActionToken[]    @relation("UserActionTokens")
+  actionTokens         ActionToken[] @relation("UserActionTokens")
 }
 
-///////////////////
+////////////////////
 // Action Tokens //
-/////////////////
+//////////////////
 
 enum ActionTokenType {
   VERIFY_EMAIL
@@ -92,7 +91,7 @@ enum ActionTokenType {
 }
 
 model ActionToken {
-  id         String          @id @default(uuid())
+  id         String          @id @default(cuid())
   type       ActionTokenType
   email      String
   payload    Json?
@@ -113,41 +112,43 @@ model ActionToken {
 //////////////
 
 model Campaign {
-  id          String           @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   // DateTime
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @default(now()) @updatedAt
-  // Maps
-  maps        Map[]            @relation("CampaignMaps")
-  // Members
-  members     CampaignMember[] @relation("CampaignMembers")
-  // Characters
-  characters  Character[]      @relation("CampaignCharacters")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
   // Created by
-  createdBy   User             @relation("UserCampaigns", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User          @relation("UserCampaigns", fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
+  // Maps
+  maps        Map[]         @relation("CampaignMaps")
+  // Characters
+  characters  Character[]   @relation("CampaignCharacters")
+  // Memberships
+  memberships Membership[]  @relation("Memberships")
   // Invites
-  invites     ActionToken[]    @relation("CampaignInvites")
+  invites     ActionToken[] @relation("CampaignInvites")
 }
 
-enum CampaignMemberRole {
+enum Role {
   GAME_MASTER
   PLAYER
 }
 
-model CampaignMember {
-  id         String             @id @default(cuid())
-  role       CampaignMemberRole @default(PLAYER)
+model Membership {
   // User
-  user       User               @relation("UserCampaignsMember", fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation("UserMemberships", fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   // Campaign
-  campaign   Campaign           @relation("CampaignMembers", fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign   Campaign @relation("Memberships", fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId String
+  // Role
+  role       Role     @default(PLAYER)
   // DateTime
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @default(now()) @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@id([userId, campaignId])
 }
 
 ///////////

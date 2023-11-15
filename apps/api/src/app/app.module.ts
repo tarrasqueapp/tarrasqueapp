@@ -8,10 +8,9 @@ import { AuthModule } from '../auth/auth.module';
 import { CampaignsModule } from '../campaigns/campaigns.module';
 import { CharactersModule } from '../characters/characters.module';
 import { MapsModule } from '../maps/maps.module';
+import { TokensModule } from '../maps/modules/tokens/tokens.module';
 import { MediaModule } from '../media/media.module';
-import { PointerModule } from '../pointer/pointer.module';
 import { SetupModule } from '../setup/setup.module';
-import { TokensModule } from '../tokens/tokens.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -25,7 +24,6 @@ import { AppController } from './app.controller';
     CharactersModule,
     MapsModule,
     MediaModule,
-    PointerModule,
     SetupModule,
     TokensModule,
   ],

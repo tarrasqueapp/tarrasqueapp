@@ -1,6 +1,7 @@
-import { IsNumber, IsString } from 'class-validator';
+import { Media } from '@prisma/client';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class CreateMediaDto {
+export class CreateMediaDto implements Partial<Media> {
   @IsString()
   id: string;
 
@@ -27,4 +28,8 @@ export class CreateMediaDto {
 
   @IsString()
   extension: string;
+
+  @IsOptional()
+  @IsString()
+  createdById?: string;
 }

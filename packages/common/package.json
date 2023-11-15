@@ -21,11 +21,12 @@
     "url": "https://github.com/tarrasqueapp/tarrasqueapp"
   },
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "dev": "tsc --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "pnpm build --watch",
     "lint": "tsc --noEmit && eslint ."
   },
   "devDependencies": {

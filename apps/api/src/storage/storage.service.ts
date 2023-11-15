@@ -4,7 +4,8 @@ import { Injectable, InternalServerErrorException, Logger, NotFoundException, On
 import fs from 'fs-extra';
 import { Readable } from 'stream';
 
-import { config } from '../config';
+import { config } from '@tarrasque/common';
+
 import { StorageProviderEnum } from './storage-provider.enum';
 
 @Injectable()

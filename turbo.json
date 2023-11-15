@@ -3,7 +3,8 @@
   "pipeline": {
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "start": {
       "cache": false,
@@ -15,6 +16,10 @@
     },
     "lint": {
       "outputs": []
+    },
+    "test": {},
+    "test:watch": {
+      "cache": false
     }
   }
 }

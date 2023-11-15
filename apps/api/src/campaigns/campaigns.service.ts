@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateCampaignDto } from './dto/create-campaign.dto';
@@ -12,34 +12,39 @@ export class CampaignsService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * Get all campaigns for a given user
+   * Get all campaigns that a user is a member of
    * @param userId - The user's id
-   * @returns The user's campaigns
+   * @returns All campaigns that a user is a member of
    */
-  async getUserCampaigns(userId: string): Promise<CampaignEntity[]> {
+  async getCampaignsByUserId(userId: string): Promise<CampaignEntity[]> {
     this.logger.verbose(`📂 Getting campaigns for user "${userId}"`);
+
     try {
       // User must be the creator of the campaign or a player
       const campaigns = await this.prisma.campaign.findMany({
-        where: { OR: [{ createdById: userId }, { members: { some: { userId } } }] },
+        where: { OR: [{ createdById: userId }, { memberships: { some: { userId } } }] },
         include: {
-          members: { include: { user: { include: { avatar: true } } } },
-          characters: { include: { controlledBy: true, media: true } },
+          memberships: { include: { user: { include: { avatar: true } } } },
+          characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
           createdBy: { include: { avatar: true } },
           invites: true,
         },
         orderBy: { createdAt: 'asc' },
       });
+
       // Get the user
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
       // Sort the campaigns by the user's campaign order
       campaigns.sort((a, b) => {
         const aOrder = user.campaignOrder.findIndex((campaignId) => campaignId === a.id);
         const bOrder = user.campaignOrder.findIndex((campaignId) => campaignId === b.id);
+
         // If the user has no campaign order or the campaign is not in the order, sort by creation date
         if (aOrder === -1 || bOrder === -1) {
           return a.createdAt.getTime() - b.createdAt.getTime();
         }
+
         // Sort by the user's campaign order
         return aOrder - bOrder;
       });
@@ -53,19 +58,47 @@ export class CampaignsService {
   }
 
   /**
+   * Get all campaigns that a user is the creator of
+   * @param userId - The user's id
+   * @returns All campaigns that a user is the creator of
+   */
+  async getCampaignsCreatedByUserId(userId: string): Promise<CampaignEntity[]> {
+    this.logger.verbose(`📂 Getting created campaigns for user "${userId}"`);
+
+    try {
+      // Get the campaigns
+      const campaigns = await this.prisma.campaign.findMany({
+        where: { createdById: userId },
+        include: {
+          memberships: { include: { user: { include: { avatar: true } } } },
+          characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
+          createdBy: { include: { avatar: true } },
+          invites: true,
+        },
+        orderBy: { createdAt: 'asc' },
+      });
+      this.logger.debug(`✅️ Found ${campaigns.length} created campaigns for user "${userId}"`);
+      return campaigns;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  /**
    * Get a campaign by its id
    * @param campaignId - The campaign's id
    * @returns The campaign
    */
-  async getCampaign(campaignId: string): Promise<CampaignEntity> {
+  async getCampaignById(campaignId: string): Promise<CampaignEntity> {
     this.logger.verbose(`📂 Getting campaign "${campaignId}"`);
     try {
       // Get the campaign
       const campaign = await this.prisma.campaign.findUniqueOrThrow({
         where: { id: campaignId },
         include: {
-          members: { include: { user: { include: { avatar: true } } } },
-          characters: { include: { controlledBy: true, media: true } },
+          memberships: { include: { user: { include: { avatar: true } } } },
+          characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
           createdBy: { include: { avatar: true } },
           invites: true,
         },
@@ -73,25 +106,8 @@ export class CampaignsService {
       this.logger.debug(`✅️ Found campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
-      this.logger.error(`🚨 Campaign "${campaignId}" not found`);
+      this.logger.error(`🚨 Campaign "${campaignId}" not found`, error);
       throw new NotFoundException(error.message);
-    }
-  }
-
-  /**
-   * Get campaign count
-   * @returns Campaign count
-   */
-  async getCampaignCount(): Promise<number> {
-    this.logger.verbose(`📂 Getting campaign count`);
-    try {
-      // Get the campaign count
-      const count = await this.prisma.campaign.count();
-      this.logger.debug(`✅️ Found ${count} campaigns`);
-      return count;
-    } catch (error) {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -101,21 +117,21 @@ export class CampaignsService {
    * @param createdById - The user's id
    * @returns The created campaign
    */
-  async createCampaign(data: CreateCampaignDto, createdById: string): Promise<CampaignEntity> {
+  async createCampaign(data: CreateCampaignDto): Promise<CampaignEntity> {
     this.logger.verbose(`📂 Creating campaign "${data.name}"`);
     try {
       // Create the campaign
       const campaign = await this.prisma.campaign.create({
         data: {
           name: data.name,
-          createdBy: { connect: { id: createdById } },
+          createdById: data.createdById,
         },
       });
       this.logger.debug(`✅️ Created campaign "${campaign.id}"`);
       return campaign;
     } catch (error) {
       this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -133,13 +149,12 @@ export class CampaignsService {
         where: { id: campaignId },
         data: {
           name: data.name,
-          members: { connect: data.members.map((member) => ({ id: member.userId })) },
         },
       });
       this.logger.debug(`✅️ Updated campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
-      this.logger.error(`🚨 Campaign "${campaignId}" not found`);
+      this.logger.error(`🚨 Campaign "${campaignId}" not found`, error);
       throw new NotFoundException(error.message);
     }
   }
@@ -174,8 +189,9 @@ export class CampaignsService {
       // Update the user's campaign order
       await this.prisma.user.update({ where: { id: userId }, data: { campaignOrder: campaignIds } });
       this.logger.debug(`✅️ Reordered campaigns for user "${userId}"`);
+
       // Return the campaigns in the new order
-      return this.getUserCampaigns(userId);
+      return this.getCampaignsByUserId(userId);
     } catch (error) {
       this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);

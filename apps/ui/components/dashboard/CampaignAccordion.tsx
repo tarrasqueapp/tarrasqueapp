@@ -31,7 +31,7 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
-import { CampaignEntity, CampaignMemberRole } from '@tarrasque/sdk';
+import { CampaignEntity, Role } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
@@ -80,7 +80,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
   const isGameMaster =
     campaign?.createdById === user?.id ||
-    campaign?.members.some((member) => member.id === user?.id && member.role === CampaignMemberRole.GAME_MASTER);
+    campaign?.members.some((member) => member.id === user?.id && member.role === Role.GAME_MASTER);
 
   /**
    * Set active map id for drag and drop

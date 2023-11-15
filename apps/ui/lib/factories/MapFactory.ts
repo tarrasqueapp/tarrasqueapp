@@ -1,4 +1,4 @@
-import { MapEntity, MediaEntity } from '../types';
+import { MapEntity, MediaEntity } from '@tarrasque/sdk';
 
 export class MapFactory implements Partial<MapEntity> {
   name = '';

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { CampaignMemberRole } from '@prisma/client';
+import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { MapEntity } from '../maps/entities/map.entity';
@@ -16,78 +16,97 @@ import { ReorderCampaignsDto } from './dto/reorder-campaigns.dto';
 import { ReorderMapsDto } from './dto/reorder-maps.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignEntity } from './entities/campaign.entity';
-import { CampaignRoleGuard } from './guards/campaign-role.guard';
+import { RoleGuard } from './guards/role.guard';
 
 @ApiTags('campaigns')
 @Controller('campaigns')
 export class CampaignsController {
   constructor(
-    private readonly campaignsService: CampaignsService,
-    private readonly mapsService: MapsService,
-    private readonly mediaService: MediaService,
-    private readonly storageService: StorageService,
+    private campaignsService: CampaignsService,
+    private mapsService: MapsService,
+    private mediaService: MediaService,
+    private storageService: StorageService,
   ) {}
 
   /**
    * Get all campaigns the user belongs to
+   * @param user - The user
+   * @returns All campaigns the user belongs to
    */
   @UseGuards(JwtAuthGuard)
   @Get()
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: [CampaignEntity] })
-  getCampaigns(@User() user: UserEntity): Promise<CampaignEntity[]> {
-    return this.campaignsService.getUserCampaigns(user.id);
+  getCampaignsByUserId(@User() user: UserEntity): Promise<CampaignEntity[]> {
+    // Get the campaigns
+    return this.campaignsService.getCampaignsByUserId(user.id);
   }
 
   /**
    * Get a campaign by its id
+   * @param campaignId - The campaign id
+   * @returns The campaign
    */
   @Get(':campaignId')
   @ApiOkResponse({ type: CampaignEntity })
-  getCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
-    return this.campaignsService.getCampaign(campaignId);
+  getCampaignById(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
+    // Get the campaign
+    return this.campaignsService.getCampaignById(campaignId);
   }
 
   /**
    * Get all maps for a campaign
+   * @param campaignId - The campaign id
+   * @returns All maps for a campaign
    */
   @Get(':campaignId/maps')
   @ApiOkResponse({ type: [MapEntity] })
   getMaps(@Param() { campaignId }: ConnectCampaignDto): Promise<MapEntity[]> {
+    // Get the maps
     return this.mapsService.getCampaignMaps(campaignId);
   }
 
   /**
    * Create a new campaign
+   * @param data - The campaign data
+   * @param user - The user
+   * @returns The created campaign
    */
   @UseGuards(JwtAuthGuard)
   @Post()
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: CampaignEntity })
   createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignEntity> {
-    return this.campaignsService.createCampaign(data, user.id);
+    // Create the campaign
+    return this.campaignsService.createCampaign({ ...data, createdById: user.id });
   }
 
   /**
    * Update a campaign
+   * @param campaignId - The campaign id
+   * @param data - The campaign data
+   * @returns The updated campaign
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
+  @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Put(':campaignId')
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: CampaignEntity })
   updateCampaign(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() data: UpdateCampaignDto,
   ): Promise<CampaignEntity> {
+    // Update the campaign
     return this.campaignsService.updateCampaign(campaignId, data);
   }
 
   /**
    * Delete a campaign
+   * @param campaignId - The campaign id
+   * @returns The deleted campaign
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
+  @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Delete(':campaignId')
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: CampaignEntity })
   async deleteCampaign(@Param() { campaignId }: ConnectCampaignDto): Promise<CampaignEntity> {
     // Get every map for the campaign
@@ -102,7 +121,7 @@ export class CampaignsController {
         // Loop through all media items and delete them if they are not used by any other map
         for (const media of deletedMap.media) {
           // Get all maps that use the media item
-          const maps = await this.mapsService.getMaps({ where: { media: { some: { id: media.id } } } });
+          const maps = await this.mapsService.getMapsWithMediaId(media.id);
 
           if (maps.length === 0) {
             // Delete the media item from the database and its files from the storage
@@ -129,23 +148,31 @@ export class CampaignsController {
 
   /**
    * Reorder campaigns
+   * @param campaignIds - The campaign ids
+   * @param user - The user
+   * @returns The reordered campaigns
    */
   @UseGuards(JwtAuthGuard)
   @Post('reorder')
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: [CampaignEntity] })
   reorderCampaigns(@Body() { campaignIds }: ReorderCampaignsDto, @User() user: UserEntity): Promise<CampaignEntity[]> {
+    // Reorder the campaigns
     return this.campaignsService.reorderCampaigns(campaignIds, user.id);
   }
 
   /**
    * Reorder maps
+   * @param campaignId - The campaign id
+   * @param mapIds - The map ids
+   * @returns The reordered maps
    */
-  @UseGuards(JwtAuthGuard, CampaignRoleGuard(CampaignMemberRole.GAME_MASTER))
+  @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Post(':campaignId/maps/reorder')
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: [MapEntity] })
   reorderMaps(@Param() { campaignId }: ConnectCampaignDto, @Body() { mapIds }: ReorderMapsDto): Promise<MapEntity[]> {
+    // Reorder the maps
     return this.mapsService.reorderMaps(campaignId, mapIds);
   }
 }

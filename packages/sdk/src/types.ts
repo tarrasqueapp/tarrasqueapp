@@ -106,17 +106,17 @@ export class CharacterEntity {
   createdAt: string;
   updatedAt: string;
   // Tokens
-  tokens: TokenEntity[];
+  tokens?: TokenEntity[];
   // Media
-  media: MediaEntity[];
+  media?: MediaEntity[];
   mediaIds: string[];
   // Created by
-  createdBy: UserEntity;
+  createdBy?: UserEntity;
   createdById: string;
   // Controlled by
-  controlledBy: UserEntity[];
+  controlledBy?: UserEntity[];
   // Campaign
-  campaign: CampaignEntity;
+  campaign?: CampaignEntity;
   campaignId: string;
 }
 

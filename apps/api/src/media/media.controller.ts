@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { createId } from '@paralleldrive/cuid2';
 import fs from 'fs-extra';
 
@@ -19,15 +19,15 @@ import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from './media.ser
 @Controller('media')
 export class MediaController {
   constructor(
-    private readonly mediaService: MediaService,
-    private readonly storageService: StorageService,
+    private mediaService: MediaService,
+    private storageService: StorageService,
   ) {}
 
   /**
    * Create a new media item
    */
   @Post()
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: MediaEntity })
   async createMedia(@Body() data: FileDto, @User() user: UserEntity): Promise<MediaEntity> {
     // Pre-generate id to use for the file name
@@ -67,20 +67,18 @@ export class MediaController {
     );
 
     // Create the media
-    const media = await this.mediaService.createMedia(
-      {
-        id,
-        name: data.name,
-        url,
-        thumbnailUrl,
-        width: data.width,
-        height: data.height,
-        size: data.size,
-        format: data.type,
-        extension: data.extension,
-      },
-      user.id,
-    );
+    const media = await this.mediaService.createMedia({
+      id,
+      name: data.name,
+      url,
+      thumbnailUrl,
+      width: data.width,
+      height: data.height,
+      size: data.size,
+      format: data.type,
+      extension: data.extension,
+      createdById: user.id,
+    });
 
     // Delete the temporary files
     this.storageService.delete(`${this.storageService.tmpPath}/${data.id}.info`);

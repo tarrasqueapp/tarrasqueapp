@@ -4,7 +4,7 @@ import { IsDateString, IsOptional, IsString, ValidateNested } from 'class-valida
 import { ActionTokenEntity } from '../../action-tokens/entities/action-token.entity';
 import { CharacterEntity } from '../../characters/entities/character.entity';
 import { UserEntity } from '../../users/entities/user.entity';
-import { CampaignMemberEntity } from './campaign-member.entity';
+import { MembershipEntity } from '../modules/memberships/entities/membership.entity';
 
 export class CampaignEntity implements Campaign {
   @IsString()
@@ -28,15 +28,15 @@ export class CampaignEntity implements Campaign {
   @IsString()
   createdById: string;
 
-  // Members
-  @IsOptional()
-  @ValidateNested({ each: true })
-  members?: CampaignMemberEntity[];
-
   // Characters
   @IsOptional()
   @ValidateNested({ each: true })
   characters?: CharacterEntity[];
+
+  // Memberships
+  @IsOptional()
+  @ValidateNested({ each: true })
+  memberships?: MembershipEntity[];
 
   // Invites
   @IsOptional()

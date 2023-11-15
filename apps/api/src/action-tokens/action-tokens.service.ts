@@ -26,27 +26,6 @@ export class ActionTokensService {
   ) {}
 
   /**
-   * Get all tokens
-   * @returns All tokens
-   */
-  async getTokens(): Promise<ActionTokenEntity[]> {
-    this.logger.verbose(`📂 Getting tokens`);
-    try {
-      // Get the tokens
-      const tokens = await this.prisma.actionToken.findMany({
-        where: { expiresAt: { gte: new Date() } },
-        orderBy: { createdAt: 'asc' },
-      });
-      this.logger.debug(`✅️ Found ${tokens.length} tokens`);
-      // Return the tokens
-      return tokens;
-    } catch (error) {
-      this.logger.error(`🚨 Failed to get tokens`, error);
-      throw new InternalServerErrorException(error.message);
-    }
-  }
-
-  /**
    * Get a token by id
    * @param id - The token id
    * @returns The token
@@ -134,12 +113,31 @@ export class ActionTokensService {
    * @param data - The token data
    * @returns The updated token
    */
-  async updateToken(id: string, data: Prisma.TokenUpdateInput): Promise<ActionTokenEntity> {
+  async updateToken(id: string, data: Prisma.ActionTokenUpdateInput): Promise<ActionTokenEntity> {
     this.logger.verbose(`📂 Updating token "${id}"`);
     try {
       // Update the token
       const token = await this.prisma.actionToken.update({ where: { id }, data });
       this.logger.debug(`✅️ Updated token "${id}"`);
+      // Return the token
+      return token;
+    } catch (error) {
+      this.logger.error(`🚨 ActionToken "${id}" not found`, error);
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  /**
+   * Delete a token
+   * @param id - The token id
+   * @returns The deleted token
+   */
+  async deleteToken(id: string): Promise<ActionTokenEntity> {
+    this.logger.verbose(`📂 Deleting token "${id}"`);
+    try {
+      // Delete the token
+      const token = await this.prisma.actionToken.delete({ where: { id } });
+      this.logger.debug(`✅️ Deleted token "${id}"`);
       // Return the token
       return token;
     } catch (error) {
@@ -168,25 +166,6 @@ export class ActionTokensService {
       return updatedTokens;
     } catch (error) {
       this.logger.error(`🚨 Failed to assign tokens of email "${email}" to user "${userId}"`);
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  /**
-   * Delete a token
-   * @param id - The token id
-   * @returns The deleted token
-   */
-  async deleteToken(id: string): Promise<ActionTokenEntity> {
-    this.logger.verbose(`📂 Deleting token "${id}"`);
-    try {
-      // Delete the token
-      const token = await this.prisma.actionToken.delete({ where: { id } });
-      this.logger.debug(`✅️ Deleted token "${id}"`);
-      // Return the token
-      return token;
-    } catch (error) {
-      this.logger.error(`🚨 ActionToken "${id}" not found`, error);
       throw new NotFoundException(error.message);
     }
   }

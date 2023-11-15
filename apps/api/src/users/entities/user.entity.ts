@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { IsBoolean, IsDateString, IsEmail, IsOptional, IsString, ValidateNested } from 'class-validator';
 
+import { MembershipEntity } from '../../campaigns/modules/memberships/entities/membership.entity';
 import { MediaEntity } from '../../media/entities/media.entity';
 
 export class UserEntity implements User {
@@ -23,13 +24,10 @@ export class UserEntity implements User {
   @IsString()
   password: string;
 
-  @IsBoolean()
-  isAdmin: boolean;
-
   // Avatar
   @IsOptional()
   @ValidateNested()
-  avatar?: MediaEntity;
+  avatar: MediaEntity | null;
 
   @IsString()
   avatarId: string | null;
@@ -44,4 +42,9 @@ export class UserEntity implements User {
 
   @IsDateString()
   updatedAt: Date;
+
+  // Memberships
+  @IsOptional()
+  @ValidateNested({ each: true })
+  memberships?: MembershipEntity[];
 }

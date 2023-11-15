@@ -12,6 +12,8 @@
   "scripts": {
     "api": "pnpm --filter @tarrasque/api",
     "ui": "pnpm --filter @tarrasque/ui",
+    "common": "pnpm --filter @tarrasque/common",
+    "sdk": "pnpm --filter @tarrasque/sdk",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "FORCE_COLOR=1 turbo run lint",
     "build": "turbo run build",
@@ -22,13 +24,22 @@
     "start:ui": "turbo run start --filter=@tarrasque/ui..."
   },
   "devDependencies": {
+    "@testing-library/react": "^14.1.0",
     "@tronite/eslint-config": "^1.0.10",
     "@tronite/prettier-config": "^1.0.6",
     "@tronite/tsconfig": "^1.0.5",
+    "@types/react": "^18.2.37",
     "eslint": "^8.53.0",
-    "prettier": "^3.0.3",
+    "jsdom": "^22.1.0",
+    "prettier": "^3.1.0",
+    "react": "^18.2.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "tsup": "^7.2.0",
     "turbo": "^1.10.16",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0",
+    "vitest": "^0.34.6"
   },
   "packageManager": "pnpm@8.8.0"
 }

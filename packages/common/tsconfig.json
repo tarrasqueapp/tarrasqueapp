@@ -1,7 +1,8 @@
 {
   "extends": "@tronite/tsconfig/nestjs",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "incremental": false
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]

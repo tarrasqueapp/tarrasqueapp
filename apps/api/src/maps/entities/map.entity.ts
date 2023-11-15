@@ -3,8 +3,8 @@ import { IsDateString, IsNumber, IsOptional, IsString, ValidateNested } from 'cl
 
 import { CampaignEntity } from '../../campaigns/entities/campaign.entity';
 import { MediaEntity } from '../../media/entities/media.entity';
-import { TokenEntity } from '../../tokens/entities/token.entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { TokenEntity } from '../modules/tokens/entities/token.entity';
 
 export class MapEntity implements Map {
   @IsString()
@@ -43,7 +43,7 @@ export class MapEntity implements Map {
   // Created by
   @IsOptional()
   @ValidateNested()
-  createdBy?: UserEntity;
+  createdBy?: UserEntity | null;
 
   @IsString()
   createdById: string;

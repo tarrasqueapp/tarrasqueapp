@@ -12,25 +12,21 @@ import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
-import { checkPasswordResetToken, useResetPassword } from '../../hooks/data/auth/useResetPassword';
-import { getSetup } from '../../hooks/data/setup/useGetSetup';
+import { useResetPassword } from '../../hooks/data/auth/useResetPassword';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Get the setup data from the database
-  const setup = await getSetup();
-
-  // Render normally if the server can't be reached
-  if (!setup) return { props: {} };
-
-  // Redirect to the setup page if the setup is not completed
-  if (!setup.completed) return { props: {}, redirect: { destination: AppNavigation.Setup } };
-
   const ssr = new SSRUtils(context);
 
-  // Get the user
+  const setup = await ssr.getSetup();
+
+  // Redirect to the setup page if the setup is not completed
+  if (!setup?.completed) {
+    return { props: {}, redirect: { destination: AppNavigation.Setup } };
+  }
+
   const user = await ssr.getUser();
 
   // Redirect to the dashboard page if the user is signed in
@@ -42,11 +38,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const token = (context.query.token as string) || '';
 
   // Check the reset password token
-  let valid = false;
-  try {
-    await checkPasswordResetToken(context.query.token as string);
-    valid = true;
-  } catch (err) {}
+  const actionToken = await ssr.getActionToken(token);
+  const valid = Boolean(actionToken);
 
   return { props: { token, valid, dehydratedState: ssr.dehydrate() } };
 };

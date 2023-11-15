@@ -1,13 +1,7 @@
-import { IsOptional, IsString, ValidateNested } from 'class-validator';
-
-import { CampaignMemberEntity } from '../entities/campaign-member.entity';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateCampaignDto {
   @IsOptional()
   @IsString()
   name?: string;
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  members?: CampaignMemberEntity[];
 }

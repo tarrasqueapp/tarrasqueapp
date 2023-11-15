@@ -1,34 +1,75 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as argon2 from 'argon2';
+import { Response } from 'express';
 
-import { config } from '../config';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import { TokenPayload } from './token-payload.interface';
 
 @Injectable()
 export class AuthService {
   private logger: Logger = new Logger(AuthService.name);
 
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   /**
-   * Log in user and return the user with the hashed password.
+   * Set access token cookie
+   * @param res - The response object
+   * @param accessToken - The access token
+   */
+  setCookies(res: Response, accessToken: string): void {
+    // Clear previous cookies before setting
+    this.clearCookies(res);
+
+    const cookieName = 'Access';
+
+    // Set the cookie
+    res.cookie(cookieName, accessToken, {
+      httpOnly: true,
+      signed: true,
+      path: '/',
+      sameSite: 'lax',
+    });
+  }
+
+  /**
+   * Delete access token cookie
+   * @param res - The response object
+   */
+  clearCookies(res: Response): void {
+    // Set the cookie name based on the environment
+    const cookieName = 'Access';
+
+    // Clear the cookie
+    res.clearCookie(cookieName, {
+      httpOnly: true,
+      signed: true,
+      path: '/',
+      sameSite: 'lax',
+    });
+  }
+
+  /**
+   * Log in user and return the user
    * @param email - The user's email
    * @param password - The user's password
    * @returns The user with the hashed password
    */
   async signIn(email: string, password: string): Promise<UserEntity> {
     this.logger.verbose(`📂 Logging in user "${email}"`);
+
     // Get the user
-    const user = await this.usersService.getUserByEmailWithExcludedFields(email);
+    const user = await this.usersService.getUserByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     // Throw an error if the password is wrong
+    if (!user.password) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
     await this.verifyPassword(user.password, password);
     this.logger.debug(`✅️ Logged in user "${email}"`);
+
     // Return the user without the excluded fields
     return await this.usersService.getUserById(user.id);
   }
@@ -44,24 +85,13 @@ export class AuthService {
       // Check if the password is correct
       const passwordMatches = await argon2.verify(hashedPassword, password);
       if (!passwordMatches) {
+        this.logger.error(`🚨 Failed to verify password`);
         throw new UnauthorizedException('Invalid email or password');
       }
       this.logger.debug(`✅️ Verified password`);
     } catch (error) {
-      this.logger.error(`🚨 User failed to verify password`);
+      this.logger.error(`🚨 Failed to verify password`, error);
       throw new UnauthorizedException('Invalid email or password');
-    }
-  }
-
-  /**
-   * Get the user from the JWT access token
-   * @param accessToken - The JWT access token
-   * @returns The user
-   */
-  getUserFromAccessToken(accessToken: string): Promise<UserEntity> {
-    const payload: TokenPayload = this.jwtService.verify(accessToken, { secret: config.JWT_SECRET });
-    if (payload.userId) {
-      return this.usersService.getUserById(payload.userId);
     }
   }
 }

@@ -6,4 +6,7 @@ export class SendWelcomeEmailDto {
 
   @IsEmail()
   to: string;
+
+  @IsString()
+  token: string;
 }

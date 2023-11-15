@@ -8,7 +8,7 @@ import { SetupService } from './setup.service';
 @ApiTags('setup')
 @Controller('setup')
 export class SetupController {
-  constructor(private readonly setupService: SetupService) {}
+  constructor(private setupService: SetupService) {}
 
   /**
    * Get the setup progress
@@ -19,6 +19,11 @@ export class SetupController {
     return this.setupService.getSetup();
   }
 
+  /**
+   * Update the setup progress
+   * @param data - The setup progress
+   * @returns The updated setup progress
+   */
   @UseGuards(SetupGuard)
   @Put()
   @ApiOkResponse({ type: SetupDto })

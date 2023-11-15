@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ActionTokenType } from '@prisma/client';
 
 import { ActionTokensService } from '../action-tokens/action-tokens.service';
@@ -11,14 +11,14 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @ApiTags('auth/notifications')
 @Controller('auth/notifications')
 export class UserNotificationsController {
-  constructor(private readonly actionTokensService: ActionTokensService) {}
+  constructor(private actionTokensService: ActionTokensService) {}
 
   /**
    * Get the user's notifications
    */
   @UseGuards(JwtAuthGuard)
   @Get()
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @ApiOkResponse({ type: null })
   async getNotifications(@User() user: UserEntity): Promise<{ campaignInvites: ActionTokenEntity[] }> {
     const campaignInvites = await this.actionTokensService.getTokensByUserId(user.id, ActionTokenType.INVITE);

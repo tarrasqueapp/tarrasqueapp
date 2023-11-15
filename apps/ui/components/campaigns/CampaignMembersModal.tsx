@@ -24,7 +24,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { CampaignEntity, CampaignMemberRole } from '@tarrasque/sdk';
+import { CampaignEntity, Role } from '@tarrasque/sdk';
 
 import { useCreateCampaignInvite } from '../../hooks/data/campaigns/invites/useCreateCampaignInvite';
 import { useDeleteCampaignInvite } from '../../hooks/data/campaigns/invites/useDeleteCampaignInvite';
@@ -155,12 +155,12 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                       value={member.role}
                       sx={{ mr: 2 }}
                       onChange={(event) => {
-                        const role = event.target.value as CampaignMemberRole;
+                        const role = event.target.value as Role;
                         updateCampaignMember.mutate({ campaign, member: { ...member, role } });
                       }}
                     >
-                      <MenuItem value={CampaignMemberRole.GAME_MASTER}>Game Master</MenuItem>
-                      <MenuItem value={CampaignMemberRole.PLAYER}>Player</MenuItem>
+                      <MenuItem value={Role.GAME_MASTER}>Game Master</MenuItem>
+                      <MenuItem value={Role.PLAYER}>Player</MenuItem>
                     </TextField>
                   </ListItem>
                 ))

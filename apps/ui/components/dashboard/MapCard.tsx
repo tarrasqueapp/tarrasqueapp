@@ -22,7 +22,7 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
-import { CampaignEntity, CampaignMemberRole, MapEntity } from '@tarrasque/sdk';
+import { CampaignEntity, MapEntity, Role } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
@@ -50,7 +50,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
 
   const isGameMaster =
     campaign?.createdById === user?.id ||
-    campaign?.members.some((member) => member.id === user?.id && member.role === CampaignMemberRole.GAME_MASTER);
+    campaign?.members.some((member) => member.id === user?.id && member.role === Role.GAME_MASTER);
 
   const width = 250;
   const height = 200;

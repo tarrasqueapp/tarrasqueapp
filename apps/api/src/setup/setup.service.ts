@@ -46,7 +46,7 @@ export class SetupService {
 
   /**
    * Update the setup
-   * @param setup - The setup to update with
+   * @param data - The setup to update with
    * @returns The updated setup
    */
   async updateSetup(data: Partial<Setup>): Promise<Setup> {

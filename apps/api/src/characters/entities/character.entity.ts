@@ -31,6 +31,10 @@ export class CharacterEntity implements Character {
   @IsString()
   createdById: string;
 
+  @IsOptional()
+  @ValidateNested()
+  createdBy?: UserEntity;
+
   // Controlled by
   @IsOptional()
   @ValidateNested({ each: true })
@@ -40,12 +44,6 @@ export class CharacterEntity implements Character {
   @IsString()
   campaignId: string;
 
-  // Created by
-  @IsOptional()
-  @ValidateNested()
-  createdBy?: UserEntity;
-
-  // Campaign
   @IsOptional()
   @ValidateNested()
   campaign?: CampaignEntity;

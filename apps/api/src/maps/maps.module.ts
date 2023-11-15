@@ -11,6 +11,6 @@ import { MapsService } from './maps.service';
   imports: [forwardRef(() => CampaignsModule), MediaModule, StorageModule],
   controllers: [MapsController],
   providers: [MapsService, MapsGateway],
-  exports: [MapsService],
+  exports: [MapsService, MapsGateway],
 })
 export class MapsModule {}

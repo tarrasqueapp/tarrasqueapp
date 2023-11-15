@@ -17,7 +17,7 @@ export class AppController {
    */
   @Get('version')
   @ApiOkResponse({ type: VersionEntity })
-  getUsers(): VersionEntity {
+  getVersion(): VersionEntity {
     const entity = new VersionEntity();
     entity.version = `v${config.VERSION}`;
     return entity;

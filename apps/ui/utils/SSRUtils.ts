@@ -1,9 +1,11 @@
 import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 
+import { ActionTokenEntity, ActionTokenType, SetupEntity, UserEntity } from '@tarrasque/sdk';
+
+import { getActionToken } from '../hooks/data/action-tokens/useGetActionToken';
 import { getUser } from '../hooks/data/auth/useGetUser';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
-import { SetupEntity, UserEntity } from '../lib/types';
 
 export class SSRUtils {
   queryClient: QueryClient;
@@ -46,5 +48,23 @@ export class SSRUtils {
       queryFn: () => getSetup({ withCredentials: true, headers: this.headers }) || null,
     });
     return this.queryClient.getQueryData<SetupEntity>(['setup']) || null;
+  }
+
+  /**
+   * Prefetch an action token
+   * @param tokenId - token id
+   * @param type - token type
+   * @returns token
+   */
+  async getActionToken(tokenId: string, type?: ActionTokenType): Promise<ActionTokenEntity | null> {
+    if (!tokenId) {
+      return null;
+    }
+
+    await this.queryClient.prefetchQuery({
+      queryKey: ['tokens', tokenId],
+      queryFn: () => getActionToken(tokenId, type, { withCredentials: true, headers: this.headers }) || null,
+    });
+    return this.queryClient.getQueryData<ActionTokenEntity>(['tokens', tokenId]) || null;
   }
 }
