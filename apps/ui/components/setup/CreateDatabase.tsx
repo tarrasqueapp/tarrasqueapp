@@ -37,7 +37,7 @@ export function CreateDatabase({ onSubmit }: CreateDatabaseProps) {
         Tarrasque is a free, open-source, and mobile-friendly virtual tabletop for playing Dungeons &amp; Dragons.
       </Typography>
 
-      <Typography paragraph>Ready to get started? First, {`let's`} initialize the database.</Typography>
+      <Typography paragraph>Ready to get started? First, let&apos;s initialize the database.</Typography>
 
       <LoadingButton loading={isSubmitting} variant="contained" type="submit">
         Continue

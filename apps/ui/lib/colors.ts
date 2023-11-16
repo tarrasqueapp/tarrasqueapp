@@ -1,32 +1,31 @@
 export enum Color {
   // Black
-  Black = '#000000',
-  BlackLight = '#181410',
+  BLACK = '#000000',
+  BLACK_LIGHT = '#181410',
   // White
-  White = '#ffffff',
-  WhiteDark = '#f2f1ef',
+  WHITE = '#ffffff',
   // Brown
   Brown = '#9b7d65',
-  BrownLight = '#e3b38b',
-  BrownDark = '#5c443c',
-  BrownVeryDark = '#241d18',
+  BROWN_LIGHT = '#e3b38b',
+  BROWN_DARK = '#5c443c',
+  BROWN_VERY_DARK = '#241d18',
   // Purple
-  Purple = '#475268',
-  PurpleDark = '#242330',
+  PURPLE = '#475268',
+  PURPLE_DARK = '#242330',
   // Grey
-  Grey = '#b4b4b4',
-  GreyLight = '#dadada',
-  GreyDark = '#acacac',
+  GREY = '#b4b4b4',
+
+  // MUI
   // Blue
-  Blue = '#3688f4',
+  BLUE = '#4987c5',
   // Red
-  Red = '#f44336',
+  RED = '#f25757',
   // Orange
-  Orange = '#f9cb25',
+  ORANGE = '#C58544',
   // Green
-  Green = '#0bd219',
+  GREEN = '#6c9245',
 }
 
 export const Gradient = {
-  Linear: `linear-gradient(120deg, ${Color.BlackLight} 0%, ${Color.BrownDark} 50%, ${Color.PurpleDark} 100%)`,
+  Linear: `linear-gradient(120deg, ${Color.BLACK_LIGHT} 0%, ${Color.BROWN_DARK} 50%, ${Color.PURPLE_DARK} 100%)`,
 };

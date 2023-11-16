@@ -1,42 +1,46 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { CampaignEntity, CampaignMemberEntity } from '@tarrasque/sdk';
+import { CampaignEntity, MembershipEntity } from '@tarrasque/sdk';
 
 import { api } from '../../../../lib/api';
 
-interface DeleteCampaignMemberInterface {
+interface UpdateCampaignMemberInterface {
   campaign: Partial<CampaignEntity>;
-  member: CampaignMemberEntity;
+  membership: MembershipEntity;
 }
 
 /**
- * Send a request to delete a member from a campaign
- * @param campaign - The campaign to delete a member from
- * @param member - The member to delete
+ * Send a request to update a member of a campaign
+ * @param campaign - The campaign to update a member on
+ * @param membership - The membership to update
  * @returns The updated campaign
  */
-async function deleteCampaignMember({ campaign, member }: DeleteCampaignMemberInterface) {
-  const { data } = await api.delete<CampaignEntity>(`/api/campaigns/${campaign.id}/members/${member.id}`);
+async function updateCampaignMember({ campaign, membership }: UpdateCampaignMemberInterface) {
+  const { data } = await api.put<CampaignEntity>(`/api/campaigns/${campaign.id}/memberships/${membership.id}`, {
+    role: membership.role,
+  });
   return data;
 }
 
 /**
- * Delete a member from a campaign
- * @returns Delete campaign member mutation
+ * Update a member of a campaign
+ * @returns Update campaign member mutation
  */
-export function useDeleteCampaignMember() {
+export function useUpdateCampaignMember() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteCampaignMember,
+    mutationFn: updateCampaignMember,
     // Optimistic update
-    onMutate: async ({ campaign, member }) => {
+    onMutate: async ({ campaign, membership }) => {
       await queryClient.cancelQueries({ queryKey: ['campaigns'] });
       const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
       queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
-          c.id === campaign.id ? { ...campaign, members: campaign.members?.filter((i) => i.id !== member.id) } : c,
+          c.id === campaign.id
+            ? { ...campaign, memberships: campaign.memberships?.map((i) => (i.id === membership.id ? membership : i)) }
+            : c,
         ),
       );
       return { previousCampaigns };

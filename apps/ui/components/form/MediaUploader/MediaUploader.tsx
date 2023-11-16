@@ -223,7 +223,7 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
       sx={{
         p: 0.5,
         textTransform: 'none',
-        color: Color.White,
+        color: Color.WHITE,
         borderRadius: '10px',
         background: 'rgba(255, 255, 255, 0.09)',
         '&:hover': {
@@ -250,7 +250,7 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
         <input {...getInputProps()} />
 
         <Box sx={{ p: 4 }}>
-          <CloudUpload fontSize="large" htmlColor={Color.BrownLight} sx={{ mt: -2 }} />
+          <CloudUpload fontSize="large" htmlColor={Color.BROWN_LIGHT} sx={{ mt: -2 }} />
 
           <Typography variant="h5" sx={{ mt: 2 }}>
             {isDragActive && !isDragReject && 'Drop the file here'}

@@ -82,7 +82,7 @@ export const ZoomControls = observer(function ZoomControls() {
 
   return (
     <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
-      <ToggleButtonGroup orientation="vertical" sx={{ background: alpha(Color.BlackLight, 0.9) }}>
+      <ToggleButtonGroup orientation="vertical" sx={{ background: alpha(Color.BLACK_LIGHT, 0.9) }}>
         <Tooltip title="Zoom In" placement="left">
           <ToggleButton value="zoom-in" size="small" onClick={handleZoomIn}>
             <Add />

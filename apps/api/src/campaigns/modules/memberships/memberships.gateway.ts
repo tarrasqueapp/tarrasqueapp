@@ -10,7 +10,9 @@ import { MembershipEntity } from './entities/membership.entity';
 @UseGuards(JwtWsAuthGuard)
 @WebSocketGateway({ path: '/socket.io', cors: { origin: '*' } })
 export class MembershipsGateway {
-  @WebSocketServer() server: Server;
+  @WebSocketServer()
+  server: Server;
+
   private logger: Logger = new Logger(MembershipsGateway.name);
 
   /**

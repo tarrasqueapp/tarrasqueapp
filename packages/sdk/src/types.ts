@@ -54,8 +54,8 @@ export class CampaignEntity {
   // DateTime
   createdAt: string;
   updatedAt: string;
-  // Members
-  members: CampaignMemberEntity[];
+  // Memberships
+  memberships: MembershipEntity[];
   // Created by
   createdBy: UserEntity;
   createdById: string;
@@ -68,7 +68,7 @@ export enum Role {
   PLAYER = 'PLAYER',
 }
 
-export class CampaignMemberEntity {
+export class MembershipEntity {
   id: string;
   role: Role;
   // User

@@ -56,7 +56,7 @@ export function Setup() {
       content: <CreateDatabase onSubmit={handleNext} />,
     },
     {
-      label: 'Create admin account',
+      label: 'Create your account',
       content: <CreateUser onSubmit={handleNext} />,
     },
   ];

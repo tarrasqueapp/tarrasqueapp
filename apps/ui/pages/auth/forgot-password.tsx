@@ -20,6 +20,13 @@ import { ValidateUtils } from '../../utils/ValidateUtils';
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssr = new SSRUtils(context);
 
+  const setup = await ssr.getSetup();
+
+  // Redirect to the setup page if the setup is not completed
+  if (!setup?.completed) {
+    return { props: {}, redirect: { destination: AppNavigation.Setup } };
+  }
+
   // Get the user
   const user = await ssr.getUser();
 
@@ -99,10 +106,6 @@ export default function ForgotPasswordPage() {
           </Paper>
 
           <Typography variant="body2" align="center" sx={{ mt: 4 }}>
-            Don&apos;t have an account? <NextLink href={AppNavigation.SignUp}>Sign up</NextLink>
-          </Typography>
-
-          <Typography variant="body2" align="center" sx={{ mt: 1 }}>
             Back to <NextLink href={AppNavigation.SignIn}>sign in</NextLink>
           </Typography>
         </Box>

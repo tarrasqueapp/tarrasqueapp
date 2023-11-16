@@ -17,7 +17,7 @@ export const Toolbar = observer(function Toolbar() {
         value={store.toolbar.tool}
         onChange={(event, newTool) => newTool && store.toolbar.setTool(newTool)}
         orientation="vertical"
-        sx={{ background: alpha(Color.BlackLight, 0.9) }}
+        sx={{ background: alpha(Color.BLACK_LIGHT, 0.9) }}
       >
         <SelectToolItem />
 

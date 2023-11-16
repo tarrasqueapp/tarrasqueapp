@@ -142,7 +142,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
             p: 0.5,
             overflow: 'hidden',
             textTransform: 'none',
-            color: Color.White,
+            color: Color.WHITE,
             borderRadius: '50%',
 
             background: 'rgba(255, 255, 255, 0.09)',
@@ -193,7 +193,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
 
             {!file && (
               <Box sx={{ p: 4 }}>
-                <CloudUpload fontSize="large" htmlColor={Color.BrownLight} sx={{ mt: -2 }} />
+                <CloudUpload fontSize="large" htmlColor={Color.BROWN_LIGHT} sx={{ mt: -2 }} />
 
                 <Typography variant="h5" sx={{ mt: 2 }}>
                   {isDragActive && !isDragReject && 'Drop the file here'}

@@ -11,7 +11,9 @@ import { UserEntity } from './entities/user.entity';
 @UseGuards(JwtWsAuthGuard)
 @WebSocketGateway({ path: '/socket.io', cors: { origin: '*' } })
 export class UsersGateway {
-  @WebSocketServer() server: Server;
+  @WebSocketServer()
+  server: Server;
+
   private logger: Logger = new Logger(UsersGateway.name);
 
   /**

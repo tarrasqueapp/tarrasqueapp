@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 
 import { Center } from '../components/common/Center';
@@ -15,17 +15,15 @@ export default function NotFoundPage() {
             <Logo size={150} />
           </Box>
 
-          <Paper sx={{ p: 4, background: 'rgba(0, 0, 0, 0.4)' }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h3" paragraph>
-                Can&apos;t find what you&apos;re looking for!
-              </Typography>
+          <Box sx={{ p: 2, textAlign: 'center' }}>
+            <Typography variant="h3" paragraph>
+              Can&apos;t find what you&apos;re looking for!
+            </Typography>
 
-              <NextButton href={AppNavigation.SignIn} variant="outlined">
-                Go Back
-              </NextButton>
-            </Box>
-          </Paper>
+            <NextButton href={AppNavigation.Dashboard} variant="outlined">
+              Go Back
+            </NextButton>
+          </Box>
         </Box>
       </Container>
     </Center>

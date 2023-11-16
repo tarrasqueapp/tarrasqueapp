@@ -68,7 +68,7 @@ export const BottomBar = observer(function BottomBar() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: alpha(Color.BlackLight, 0.9),
+        background: alpha(Color.BLACK_LIGHT, 0.9),
         borderTop: (theme) => `1px solid ${theme.palette.divider}`,
         p: 1,
         gap: 1,

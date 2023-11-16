@@ -2,9 +2,9 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 
-import { TarrasqueEmitEvents, TarrasqueEvent, TarrasqueListenEvents } from './events';
-import { tarrasque } from './tarrasque';
-import { CharacterEntity } from './types';
+import { TarrasqueEmitEvents, TarrasqueEvent, TarrasqueListenEvents } from '../src/events';
+import { tarrasque } from '../src/tarrasque';
+import { CharacterEntity } from '../src/types';
 
 // Create Socket.IO server and client instance
 let server: http.Server;

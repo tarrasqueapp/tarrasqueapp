@@ -14,22 +14,19 @@ import { NextLink } from '../../components/common/NextLink';
 import { ControlledPasswordField } from '../../components/form/ControlledPasswordField';
 import { ControlledTextField } from '../../components/form/ControlledTextField';
 import { useSignUp } from '../../hooks/data/auth/useSignUp';
-import { getSetup } from '../../hooks/data/setup/useGetSetup';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Get the setup data from the database
-  const setup = await getSetup();
+  const ssr = new SSRUtils(context);
 
-  // Render normally if the server can't be reached
-  if (!setup) return { props: {} };
+  const setup = await ssr.getSetup();
 
   // Redirect to the setup page if the setup is not completed
-  if (!setup.completed) return { props: {}, redirect: { destination: AppNavigation.Setup } };
-
-  const ssr = new SSRUtils(context);
+  if (!setup?.completed) {
+    return { props: {}, redirect: { destination: AppNavigation.Setup } };
+  }
 
   // Get the user
   const user = await ssr.getUser();

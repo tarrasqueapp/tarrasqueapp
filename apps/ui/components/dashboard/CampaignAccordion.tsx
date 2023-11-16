@@ -80,7 +80,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
   const isGameMaster =
     campaign?.createdById === user?.id ||
-    campaign?.members.some((member) => member.id === user?.id && member.role === Role.GAME_MASTER);
+    campaign?.memberships.some((membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER);
 
   /**
    * Set active map id for drag and drop

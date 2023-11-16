@@ -68,44 +68,55 @@ export class AuthController {
   @Post('sign-up')
   @ApiOkResponse({ type: null })
   async signUp(@Body() data: SignUpDto): Promise<void> {
+    const email = data.email.toLowerCase();
+
     // Check if the user's email is already taken
-    const existingUser = await this.usersService.getUserByEmail(data.email);
+    const existingUser = await this.usersService.getUserByEmail(email);
     if (existingUser) {
       throw new ConflictException('Email already exists');
     }
 
-    // Require an invite token to sign up
+    let user: UserEntity;
+
     if (!data.token) {
-      throw new BadRequestException('Invalid or expired token');
+      // Create the user
+      user = await this.usersService.createUser({
+        name: data.name,
+        email,
+        password: data.password,
+      });
+    } else {
+      // Get the invite
+      const invite = await this.actionTokensService.getTokenById(data.token, ActionTokenType.INVITE);
+      if (!invite) {
+        throw new NotFoundException('Invalid or expired token');
+      }
+
+      // Check that the invite is for the correct email
+      if (invite.email !== email) {
+        throw new BadRequestException('Invite does not match provided email');
+      }
+
+      // Get the role from the token payload
+      const payload = invite.payload as Prisma.JsonObject;
+      const role = (payload?.role as Role) || Role.PLAYER;
+
+      // Create the user
+      const user = await this.usersService.createUser({
+        name: data.name,
+        email,
+        password: data.password,
+      });
+
+      // Assign the user to the campaign
+      await this.membershipsService.createMembership({ userId: user.id, campaignId: invite.campaignId, role });
+
+      // Delete the invite once used
+      this.actionTokensService.deleteToken(invite.id);
     }
-
-    // Get the invite
-    const invite = await this.actionTokensService.getTokenById(data.token, ActionTokenType.INVITE);
-    if (!invite) {
-      throw new NotFoundException('Invalid or expired token');
-    }
-
-    // Check if the invite is for the correct email
-    const email = data.email.toLowerCase();
-    if (invite.email.toLowerCase() !== email.toLowerCase()) {
-      throw new BadRequestException('Invite does not match provided email');
-    }
-
-    // Get the role from the token payload
-    const payload = invite.payload as Prisma.JsonObject;
-    const role = (payload?.role as Role) || Role.PLAYER;
-
-    // Create the user
-    const user = await this.usersService.createUser({ name: data.name, email: invite.email, password: data.password });
-
-    // Assign the user to the campaign
-    await this.membershipsService.createMembership({ userId: user.id, campaignId: invite.campaignId, role });
 
     // Assign existing campaign invites to the new user
     await this.actionTokensService.assignTokensToUser(user.email, user.id);
-
-    // Delete the invite once used
-    this.actionTokensService.deleteToken(invite.id);
 
     // Generate the verify email token
     const token = await this.actionTokensService.createToken({
@@ -164,7 +175,8 @@ export class AuthController {
   @ApiOkResponse({ type: null })
   async resendEmailVerification(@Body() data: { email: string }): Promise<void> {
     // Get the user
-    const user = await this.usersService.getUserByEmail(data.email);
+    const email = data.email.toLowerCase();
+    const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -230,7 +242,8 @@ export class AuthController {
   @ApiOkResponse({ type: null })
   async forgotPassword(@Body() data: { email: string }): Promise<void> {
     // Get the user
-    const user = await this.usersService.getUserByEmail(data.email);
+    const email = data.email.toLowerCase();
+    const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -308,9 +321,10 @@ export class AuthController {
     }
 
     // Check if email has changed
-    if (data.email && data.email !== user.email) {
+    const email = data.email.toLowerCase();
+    if (email && email !== user.email) {
       // Check if the email is already in use
-      const existingUser = await this.usersService.getUserByEmail(data.email);
+      const existingUser = await this.usersService.getUserByEmail(email);
       if (existingUser) {
         throw new ConflictException('Email already exists');
       }
@@ -318,14 +332,14 @@ export class AuthController {
       // Generate the verify email token
       const token = await this.actionTokensService.createToken({
         type: ActionTokenType.VERIFY_EMAIL,
-        email: data.email,
+        email,
         expiresAt: durationToDate('7d'),
         userId: user.id,
       });
 
       // Send the email
       const name = data.name || user.name;
-      this.emailService.sendEmailVerificationEmail({ name, to: data.email, token: token.id });
+      this.emailService.sendEmailVerificationEmail({ name, to: email, token: token.id });
 
       // Set the user as unverified
       data.isEmailVerified = false;

@@ -93,8 +93,8 @@ export class MembershipsController {
     // Check if the user is the current user
     if (user.id === params.userId) {
       // Check that the user is not the last admin
-      const members = await this.membershipsService.getCampaignMemberships(params.campaignId);
-      const admins = members.filter((member) => member.role === Role.GAME_MASTER);
+      const memberships = await this.membershipsService.getCampaignMemberships(params.campaignId);
+      const admins = memberships.filter((membership) => membership.role === Role.GAME_MASTER);
       if (admins.length === 1) {
         throw new BadRequestException('Cannot delete the last Game Master');
       }

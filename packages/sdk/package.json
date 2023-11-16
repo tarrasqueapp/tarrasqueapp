@@ -26,7 +26,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "tsup",
     "dev": "pnpm build --watch",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "tsc --noEmit && eslint .",
@@ -35,11 +35,13 @@
   },
   "devDependencies": {
     "@types/node": "^20.9.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
     "@types/react": "^18.2.37",
     "react": "^18.2.0",
-    "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
-    "typescript": "^5.2.2"
+    "socket.io": "^4.7.2"
   },
   "publishConfig": {
     "access": "public"

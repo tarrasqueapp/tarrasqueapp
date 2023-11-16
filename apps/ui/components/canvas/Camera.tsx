@@ -127,16 +127,13 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
     setPosition(newPosition);
   }
 
-  const events = new PIXI.EventSystem(app.renderer);
-  events.domElement = app.renderer.view as any;
-
   return (
     <CameraBase
       worldWidth={width}
       worldHeight={height}
       screenWidth={windowSize.width}
       screenHeight={windowSize.height}
-      events={events}
+      events={app.renderer.events}
       onLoad={handleLoad}
       onBeforeSingleClick={handleBeforeSingleClick}
       onSingleClick={handleSingleClick}

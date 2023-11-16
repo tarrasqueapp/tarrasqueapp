@@ -51,7 +51,7 @@ const Canvas = observer(function Canvas() {
   if (!map) return null;
 
   const media = map.media.find((media) => media.id === map.selectedMediaId)!;
-  const backgroundColor = new PixiColor(Color.Black).toNumber();
+  const backgroundColor = new PixiColor(Color.BLACK).toNumber();
 
   return (
     <Stage
@@ -65,7 +65,7 @@ const Canvas = observer(function Canvas() {
     >
       <Providers>
         <Map mapId={map.id} width={media.width} height={media.height} url={media.url}>
-          <Grid width={media.width} height={media.height} size={70} color={Color.Black} />
+          <Grid width={media.width} height={media.height} size={70} color={Color.BLACK} />
           <Token url="https://cdn.tarrasque.app/sample/token.webp" x={70} y={70} width={70} height={70} />
         </Map>
       </Providers>

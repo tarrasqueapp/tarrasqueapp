@@ -40,6 +40,8 @@ RUN pnpm build:api
 
 FROM base AS runner
 
+RUN apk add --no-cache exiftool
+
 # Don't run production as root
 RUN addgroup --system --gid 1001 nestjs
 RUN adduser --system --uid 1001 nestjs

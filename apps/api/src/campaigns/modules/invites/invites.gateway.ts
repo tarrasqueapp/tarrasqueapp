@@ -10,7 +10,9 @@ import { JwtWsAuthGuard } from '../../../auth/guards/jwt-ws-auth.guard';
 @UseGuards(JwtWsAuthGuard)
 @WebSocketGateway({ path: '/socket.io', cors: { origin: '*' } })
 export class InvitesGateway {
-  @WebSocketServer() server: Server;
+  @WebSocketServer()
+  server: Server;
+
   private logger: Logger = new Logger(InvitesGateway.name);
 
   /**

@@ -1,4 +1,12 @@
-import { alpha, createTheme, filledInputClasses, formLabelClasses, responsiveFontSizes } from '@mui/material';
+import {
+  alpha,
+  createTheme,
+  darken,
+  filledInputClasses,
+  formLabelClasses,
+  lighten,
+  responsiveFontSizes,
+} from '@mui/material';
 import { Raleway, Recursive } from 'next/font/google';
 
 import { Color } from './colors';
@@ -9,13 +17,13 @@ const recursive = Recursive({ subsets: ['latin'] });
 export let theme = createTheme({
   palette: {
     mode: 'dark',
-    primary: { main: Color.BrownLight },
-    secondary: { main: Color.Purple },
-    error: { main: Color.Red },
-    warning: { main: Color.Orange },
-    info: { main: Color.Blue },
-    success: { main: Color.Green },
-    background: { default: Color.BlackLight, paper: Color.BrownVeryDark },
+    primary: { main: Color.BROWN_LIGHT },
+    secondary: { main: Color.PURPLE },
+    error: { main: Color.RED },
+    warning: { main: Color.ORANGE },
+    info: { main: Color.BLUE },
+    success: { main: Color.GREEN },
+    background: { default: Color.BLACK_LIGHT, paper: Color.BROWN_VERY_DARK },
   },
   typography: {
     fontSize: 15,
@@ -28,7 +36,7 @@ export let theme = createTheme({
     h6: { fontFamily: recursive.style.fontFamily, fontSize: 16, lineHeight: 1.28 },
     body1: { lineHeight: 1.5 },
     body2: { fontSize: 15, lineHeight: 1.28 },
-    caption: { fontSize: 15, lineHeight: 1.28, color: Color.Grey },
+    caption: { fontSize: 15, lineHeight: 1.28, color: Color.GREY },
     button: { fontWeight: 500, lineHeight: 1.125 },
   },
   components: {
@@ -46,7 +54,7 @@ export let theme = createTheme({
       },
       styleOverrides: {
         tooltip: {
-          backgroundColor: Color.BrownDark,
+          backgroundColor: Color.BROWN_DARK,
           fontWeight: 500,
         },
       },
@@ -70,7 +78,7 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 0,
-          background: alpha(Color.BlackLight, 0.8),
+          background: alpha(Color.BLACK_LIGHT, 0.8),
           boxShadow: 'none',
           borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
         },
@@ -91,7 +99,7 @@ export let theme = createTheme({
         paper: {
           borderRadius: 0,
           boxSizing: 'border-box',
-          background: alpha(Color.BlackLight, 0.8),
+          background: alpha(Color.BLACK_LIGHT, 0.8),
         },
       },
     },
@@ -107,6 +115,22 @@ export let theme = createTheme({
         },
         sizeLarge: {
           padding: '18px 40px',
+        },
+        // Outlined
+        outlinedSecondary: {
+          color: Color.WHITE,
+          borderColor: lighten(Color.PURPLE, 0.2),
+          '&:hover': {
+            borderColor: lighten(Color.PURPLE, 0.4),
+            backgroundColor: alpha(Color.PURPLE, 0.4),
+          },
+        },
+        // Text
+        textSecondary: {
+          color: lighten(Color.PURPLE, 0.8),
+          '&:hover': {
+            backgroundColor: alpha(Color.PURPLE, 0.4),
+          },
         },
       },
     },
@@ -140,7 +164,7 @@ export let theme = createTheme({
           flex: '1 0 auto',
           [`& .${filledInputClasses.focused}`]: {
             [`&.${formLabelClasses.root}`]: {
-              color: Color.BrownLight,
+              color: Color.BROWN_LIGHT,
             },
           },
         },
@@ -169,7 +193,7 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            backgroundColor: alpha(Color.BrownLight, 0.1),
+            backgroundColor: alpha(Color.BROWN_LIGHT, 0.1),
           },
         },
       },
@@ -220,6 +244,36 @@ export let theme = createTheme({
         action: {
           padding: 0,
           alignItems: 'center',
+        },
+        // Filled
+        filledError: {
+          backgroundColor: darken(Color.RED, 0.1),
+        },
+        filledWarning: {
+          backgroundColor: darken(Color.ORANGE, 0.1),
+        },
+        filledInfo: {
+          backgroundColor: darken(Color.BLUE, 0.1),
+        },
+        filledSuccess: {
+          backgroundColor: darken(Color.GREEN, 0.1),
+        },
+        // Standard
+        standardError: {
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(5px)',
+        },
+        standardWarning: {
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(5px)',
+        },
+        standardInfo: {
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(5px)',
+        },
+        standardSuccess: {
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(5px)',
         },
       },
     },

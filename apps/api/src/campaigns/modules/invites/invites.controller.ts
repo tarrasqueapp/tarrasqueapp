@@ -79,9 +79,12 @@ export class InvitesController {
     // Get the campaign's memberships
     const memberships = await this.membershipsService.getCampaignMemberships(params.campaignId);
 
+    // Normalize the email
+    const email = data.email.toLowerCase();
+
     // Check that the user is not already in the campaign
     memberships.forEach((membership) => {
-      if (membership.user.email === data.email) {
+      if (membership.user.email === email) {
         throw new ConflictException('User already in campaign');
       }
     });
@@ -91,18 +94,18 @@ export class InvitesController {
 
     // Check that the user is not already invited to the campaign
     invites.forEach((invite) => {
-      if (invite.email === data.email) {
+      if (invite.email === email) {
         throw new ConflictException('User already invited to campaign');
       }
     });
 
     // Check if the user already exists in the database
-    const existingUser = await this.usersService.getUserByEmail(data.email);
+    const existingUser = await this.usersService.getUserByEmail(email);
 
     // Generate the invite token
     const token = await this.actionTokensService.createToken({
       type: ActionTokenType.INVITE,
-      email: data.email,
+      email,
       payload: { role: data.role },
       expiresAt: durationToDate('7d'),
       campaignId: params.campaignId,
@@ -121,7 +124,7 @@ export class InvitesController {
       await this.emailService.sendCampaignInviteNewUserEmail({
         hostName: user.displayName,
         campaignName: campaign.name,
-        to: data.email,
+        to: email,
         token: token.id,
       });
     }

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { expect, it } from 'vitest';
 
-import { TarrasquePlugin } from './plugin';
+import { TarrasquePlugin } from '../src/plugin';
 
 it('initializes with basic config', () => {
   const plugin = new TarrasquePlugin({

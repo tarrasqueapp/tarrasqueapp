@@ -18,6 +18,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
    * @returns The user
    */
   validate(email: string, password: string): Promise<UserEntity> {
-    return this.authService.signIn(email, password);
+    return this.authService.signIn(email.toLowerCase(), password);
   }
 }

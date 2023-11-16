@@ -14,6 +14,13 @@ import { SSRUtils } from '../../utils/SSRUtils';
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssr = new SSRUtils(context);
 
+  const setup = await ssr.getSetup();
+
+  // Redirect to the setup page if the setup is not completed
+  if (!setup?.completed) {
+    return { props: {}, redirect: { destination: AppNavigation.Setup } };
+  }
+
   const user = await ssr.getUser();
 
   // Redirect to the dashboard page if the user is signed in

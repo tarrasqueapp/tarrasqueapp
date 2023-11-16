@@ -1,45 +1,43 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { CampaignEntity, CampaignMemberEntity } from '@tarrasque/sdk';
+import { CampaignEntity, MembershipEntity } from '@tarrasque/sdk';
 
 import { api } from '../../../../lib/api';
 
-interface UpdateCampaignMemberInterface {
+interface DeleteCampaignMemberInterface {
   campaign: Partial<CampaignEntity>;
-  member: CampaignMemberEntity;
+  membership: MembershipEntity;
 }
 
 /**
- * Send a request to update a member of a campaign
- * @param campaign - The campaign to update a member on
- * @param member - The member to update
+ * Send a request to delete a member from a campaign
+ * @param campaign - The campaign to delete a member from
+ * @param membership - The member to delete
  * @returns The updated campaign
  */
-async function updateCampaignMember({ campaign, member }: UpdateCampaignMemberInterface) {
-  const { data } = await api.put<CampaignEntity>(`/api/campaigns/${campaign.id}/members/${member.id}`, {
-    role: member.role,
-  });
+async function deleteCampaignMember({ campaign, membership }: DeleteCampaignMemberInterface) {
+  const { data } = await api.delete<CampaignEntity>(`/api/campaigns/${campaign.id}/memberships/${membership.id}`);
   return data;
 }
 
 /**
- * Update a member of a campaign
- * @returns Update campaign member mutation
+ * Delete a member from a campaign
+ * @returns Delete campaign member mutation
  */
-export function useUpdateCampaignMember() {
+export function useDeleteCampaignMember() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateCampaignMember,
+    mutationFn: deleteCampaignMember,
     // Optimistic update
-    onMutate: async ({ campaign, member }) => {
+    onMutate: async ({ campaign, membership }) => {
       await queryClient.cancelQueries({ queryKey: ['campaigns'] });
       const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
       queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) =>
         old.map((c) =>
           c.id === campaign.id
-            ? { ...campaign, members: campaign.members?.map((i) => (i.id === member.id ? member : i)) }
+            ? { ...campaign, memberships: campaign.memberships?.filter((i) => i.id !== membership.id) }
             : c,
         ),
       );

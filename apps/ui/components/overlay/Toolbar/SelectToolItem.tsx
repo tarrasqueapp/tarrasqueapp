@@ -66,7 +66,7 @@ export const SelectToolItem = observer(function SelectToolItem() {
         <Popper {...bindPopper(popupState)} placement="right" transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <ToggleButtonGroup size="small" sx={{ background: alpha(Color.BlackLight, 0.9), ml: 0.5 }}>
+              <ToggleButtonGroup size="small" sx={{ background: alpha(Color.BLACK_LIGHT, 0.9), ml: 0.5 }}>
                 <SingleSelectTool
                   selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
                 />

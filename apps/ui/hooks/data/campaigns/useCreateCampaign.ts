@@ -32,7 +32,7 @@ export function useCreateCampaign() {
       const id = Math.random().toString(36).substring(2, 9);
       queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) => [
         ...old,
-        { id, ...campaign, createdById: user?.id, members: [] },
+        { id, ...campaign, createdById: user?.id, memberships: [] },
       ]);
       return { previousCampaigns };
     },

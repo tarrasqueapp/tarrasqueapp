@@ -62,7 +62,7 @@ export class UsersService {
     try {
       // Get the user
       const user = await this.prisma.user.findUnique({
-        where: { email },
+        where: { email: email.toLowerCase() },
         include: { avatar: true, memberships: { include: { campaign: true } } },
       });
 

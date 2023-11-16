@@ -21,7 +21,7 @@ export function NewMap({ campaign }: NewMapProps) {
         store.maps.setModal(MapModal.CreateUpdate);
       }}
       sx={{
-        border: `3px dashed ${Color.BrownDark}`,
+        border: `3px dashed ${Color.BROWN_DARK}`,
         width: 250,
         height: 200,
         borderRadius: '10px',

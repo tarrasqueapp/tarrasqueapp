@@ -50,7 +50,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
 
   const isGameMaster =
     campaign?.createdById === user?.id ||
-    campaign?.members.some((member) => member.id === user?.id && member.role === Role.GAME_MASTER);
+    campaign?.memberships.some((membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER);
 
   const width = 250;
   const height = 200;

@@ -28,8 +28,8 @@ import { CampaignEntity, Role } from '@tarrasque/sdk';
 
 import { useCreateCampaignInvite } from '../../hooks/data/campaigns/invites/useCreateCampaignInvite';
 import { useDeleteCampaignInvite } from '../../hooks/data/campaigns/invites/useDeleteCampaignInvite';
-import { useDeleteCampaignMember } from '../../hooks/data/campaigns/members/useDeleteCampaignMember';
-import { useUpdateCampaignMember } from '../../hooks/data/campaigns/members/useUpdateCampaignMember';
+import { useDeleteCampaignMember } from '../../hooks/data/campaigns/memberships/useDeleteCampaignMember';
+import { useUpdateCampaignMember } from '../../hooks/data/campaigns/memberships/useUpdateCampaignMember';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -133,30 +133,30 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
               disablePadding
             >
               <ListSubheader>Members</ListSubheader>
-              {Boolean(campaign?.members.length) ? (
-                campaign?.members.map((member) => (
+              {Boolean(campaign?.memberships.length) ? (
+                campaign?.memberships.map((membership) => (
                   <ListItem
-                    key={member.id}
+                    key={membership.id}
                     secondaryAction={
-                      <IconButton onClick={() => deleteCampaignMember.mutate({ campaign, member })}>
+                      <IconButton onClick={() => deleteCampaignMember.mutate({ campaign, membership })}>
                         <Delete />
                       </IconButton>
                     }
                   >
                     <ListItemAvatar>
-                      <Avatar src={member.user.avatar?.thumbnailUrl} />
+                      <Avatar src={membership.user.avatar?.thumbnailUrl} />
                     </ListItemAvatar>
-                    <ListItemText primary={member.user.displayName} secondary={member.user.email} />
+                    <ListItemText primary={membership.user.displayName} secondary={membership.user.email} />
 
                     <TextField
                       size="small"
                       label="Role"
                       select
-                      value={member.role}
+                      value={membership.role}
                       sx={{ mr: 2 }}
                       onChange={(event) => {
                         const role = event.target.value as Role;
-                        updateCampaignMember.mutate({ campaign, member: { ...member, role } });
+                        updateCampaignMember.mutate({ campaign, membership: { ...membership, role } });
                       }}
                     >
                       <MenuItem value={Role.GAME_MASTER}>Game Master</MenuItem>
