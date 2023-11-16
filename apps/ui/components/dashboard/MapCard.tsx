@@ -48,9 +48,9 @@ export function MapCard({ map, campaign }: MapCardProps) {
     ...(isDragging && { opacity: 0.5 }),
   };
 
-  const isGameMaster =
-    campaign?.createdById === user?.id ||
-    campaign?.memberships.some((membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER);
+  const isGameMaster = campaign?.memberships.some(
+    (membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER,
+  );
 
   const width = 250;
   const height = 200;

@@ -8,7 +8,6 @@ import { AuthModule } from '../auth/auth.module';
 import { CampaignsModule } from '../campaigns/campaigns.module';
 import { CharactersModule } from '../characters/characters.module';
 import { MapsModule } from '../maps/maps.module';
-import { TokensModule } from '../maps/modules/tokens/tokens.module';
 import { MediaModule } from '../media/media.module';
 import { SetupModule } from '../setup/setup.module';
 import { AppController } from './app.controller';
@@ -25,7 +24,6 @@ import { AppController } from './app.controller';
     MapsModule,
     MediaModule,
     SetupModule,
-    TokensModule,
   ],
   controllers: [AppController],
 })

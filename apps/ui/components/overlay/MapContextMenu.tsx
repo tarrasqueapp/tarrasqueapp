@@ -2,11 +2,11 @@ import { GpsFixed } from '@mui/icons-material';
 import { Chip, Fade, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
-import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
+// import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { store } from '../../store';
 
 export const MapContextMenu = observer(function MapContextMenu() {
-  const { data: map } = useGetCurrentMap();
+  // const { data: map } = useGetCurrentMap();
 
   const width = 230;
 
@@ -32,7 +32,7 @@ export const MapContextMenu = observer(function MapContextMenu() {
    * Ping the location
    */
   function handlePingLocation() {
-    store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.map.contextMenuAnchorPoint });
+    // store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.map.contextMenuAnchorPoint });
     store.map.setContextMenuVisible(false);
   }
 

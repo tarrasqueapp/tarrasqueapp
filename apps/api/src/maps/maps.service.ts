@@ -38,14 +38,13 @@ export class MapsService {
    * @param mapId - The map id
    * @returns The map
    */
-  async getMap(mapId: string): Promise<MapEntity> {
+  async getMapById(mapId: string): Promise<MapEntity> {
     this.logger.verbose(`📂 Getting map "${mapId}"`);
     try {
       // Get the map
       const map = await this.prisma.map.findUniqueOrThrow({
         where: { id: mapId },
         include: {
-          tokens: true,
           media: true,
           createdBy: { include: { avatar: true } },
           campaign: true,
@@ -101,10 +100,9 @@ export class MapsService {
   /**
    * Create a new map
    * @param data - The map data
-   * @param createdById - The user id
    * @returns The created map
    */
-  async createMap(data: CreateMapDto, createdById: string): Promise<MapEntity> {
+  async createMap(data: CreateMapDto): Promise<MapEntity> {
     this.logger.verbose(`📂 Creating map "${data.name} for campaign "${data.campaignId}"`);
     try {
       // Create the map
@@ -114,7 +112,7 @@ export class MapsService {
           media: { connect: data.mediaIds.map((id) => ({ id })) },
           selectedMediaId: data.selectedMediaId || data.mediaIds[0],
           campaign: { connect: { id: data.campaignId } },
-          createdBy: { connect: { id: createdById } },
+          createdBy: { connect: { id: data.createdById } },
         },
         include: { media: true, createdBy: { include: { avatar: true } } },
       });
@@ -133,7 +131,7 @@ export class MapsService {
    */
   async duplicateMap(mapId: string): Promise<MapEntity> {
     this.logger.verbose(`📂 Duplicating map "${mapId}"`);
-    const map = await this.getMap(mapId);
+    const map = await this.getMapById(mapId);
     try {
       // Create the new map
       const newMap = await this.prisma.map.create({
@@ -144,8 +142,7 @@ export class MapsService {
             create: map.tokens.map((token) => ({
               ...token,
               id: null,
-              createdAt: new Date(),
-              createdBy: { connect: { id: map.createdById } },
+              createdBy: { connect: { id: token.createdById } },
             })),
           },
           media: { connect: map.media.map((media) => ({ id: media.id })) },

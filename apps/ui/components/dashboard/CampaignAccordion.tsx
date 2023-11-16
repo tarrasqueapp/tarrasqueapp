@@ -78,9 +78,9 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
     ...(isDragging && { opacity: 0.5 }),
   };
 
-  const isGameMaster =
-    campaign?.createdById === user?.id ||
-    campaign?.memberships.some((membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER);
+  const isGameMaster = campaign?.memberships.some(
+    (membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER,
+  );
 
   /**
    * Set active map id for drag and drop

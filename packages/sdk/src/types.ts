@@ -97,6 +97,8 @@ export class MapEntity {
   // Created by
   createdBy: UserEntity;
   createdById: string;
+  // Tokens
+  tokens?: TokenEntity[];
 }
 
 export class CharacterEntity {
@@ -109,7 +111,7 @@ export class CharacterEntity {
   tokens?: TokenEntity[];
   // Media
   media?: MediaEntity[];
-  mediaIds: string[];
+  selectedMediaId: string;
   // Created by
   createdBy?: UserEntity;
   createdById: string;

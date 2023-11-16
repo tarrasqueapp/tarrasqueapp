@@ -23,7 +23,7 @@ export const RoleGuard = (campaignRole: Role): Type<CanActivate> => {
       // If the campaign id is not provided, get it from the map
       if (!user || !campaignId) {
         if (mapId) {
-          const map = await this.mapsService.getMap(mapId);
+          const map = await this.mapsService.getMapById(mapId);
           if (!map) return false;
           campaignId = map.campaignId;
         }
@@ -34,11 +34,9 @@ export const RoleGuard = (campaignRole: Role): Type<CanActivate> => {
       if (!campaign) return false;
 
       // Check that the user is a member of the campaign
-      const isGameMaster =
-        campaign.createdById === user.id ||
-        campaign.memberships.some(
-          (membership) => membership.userId === user.id && membership.role === Role.GAME_MASTER,
-        );
+      const isGameMaster = campaign.memberships.some(
+        (membership) => membership.userId === user.id && membership.role === Role.GAME_MASTER,
+      );
       const isPlayer = campaign.memberships.some(
         (membership) => membership.userId === user.id && membership.role === Role.PLAYER,
       );

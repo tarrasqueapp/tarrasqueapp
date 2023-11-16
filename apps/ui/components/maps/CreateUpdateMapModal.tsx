@@ -19,7 +19,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { CampaignEntity, MapEntity, MediaEntity } from '@tarrasque/sdk';
+import { CampaignEntity, MapEntity, MediaEntity, Role } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
@@ -54,7 +54,10 @@ export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
   const queryClient = useQueryClient();
 
   // Get campaigns where the user is a GM
-  const gmCampaigns = campaigns?.filter((campaign) => campaign.createdById === user?.id) || [];
+  const gmCampaigns =
+    campaigns?.filter((campaign) =>
+      campaign.memberships.some((membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER),
+    ) || [];
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 

@@ -1,20 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { Socket } from 'socket.io-client';
 
 class AppStore {
-  socket = null as unknown as Socket;
   isTrackpad = false;
 
   constructor() {
     makeAutoObservable(this);
-  }
-
-  /**
-   * Set Socket.IO client.
-   * @param socket - The Socket.IO client
-   */
-  setSocket(socket: Socket) {
-    this.socket = socket;
   }
 
   /**

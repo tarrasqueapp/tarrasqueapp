@@ -6,7 +6,6 @@ import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../../../campaigns/guards/role.guard';
 import { User } from '../../../users/decorators/user.decorator';
 import { UserEntity } from '../../../users/entities/user.entity';
-import { ConnectCampaignMapDto } from '../../dto/connect-campaign-map.dto';
 import { ConnectMapDto } from '../../dto/connect-map.dto';
 import { CreateTokensDto } from './dto/create-tokens.dto';
 import { DeleteTokensDto } from './dto/delete-tokens.dto';
@@ -14,8 +13,8 @@ import { UpdateTokensDto } from './dto/update-tokens.dto';
 import { TokenEntity } from './entities/token.entity';
 import { TokensService } from './tokens.service';
 
-@ApiTags('tokens')
-@Controller('tokens')
+@ApiTags('maps/:mapId/tokens')
+@Controller('maps/:mapId/tokens')
 export class TokensController {
   constructor(private tokensService: TokensService) {}
 
@@ -36,7 +35,7 @@ export class TokensController {
   @ApiCookieAuth()
   @ApiOkResponse({ type: [TokenEntity] })
   createTokens(
-    @Param() { mapId }: ConnectCampaignMapDto,
+    @Param() { mapId }: ConnectMapDto,
     @Body() data: CreateTokensDto,
     @User() user: UserEntity,
   ): Promise<TokenEntity[]> {

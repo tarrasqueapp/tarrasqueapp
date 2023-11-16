@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateCampaignDto } from './dto/create-campaign.dto';
@@ -22,7 +23,7 @@ export class CampaignsService {
     try {
       // User must be the creator of the campaign or a player
       const campaigns = await this.prisma.campaign.findMany({
-        where: { OR: [{ createdById: userId }, { memberships: { some: { userId } } }] },
+        where: { memberships: { some: { userId } } },
         include: {
           memberships: { include: { user: { include: { avatar: true } } } },
           characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
@@ -114,7 +115,6 @@ export class CampaignsService {
   /**
    * Create a new campaign
    * @param data - The campaign's data
-   * @param createdById - The user's id
    * @returns The created campaign
    */
   async createCampaign(data: CreateCampaignDto): Promise<CampaignEntity> {
@@ -125,6 +125,7 @@ export class CampaignsService {
         data: {
           name: data.name,
           createdById: data.createdById,
+          memberships: { create: { userId: data.createdById, role: Role.GAME_MASTER } },
         },
       });
       this.logger.debug(`✅️ Created campaign "${campaign.id}"`);

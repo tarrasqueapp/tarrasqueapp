@@ -18,7 +18,7 @@ const character: CharacterEntity = {
   updatedAt: '2023-01-01T00:00:00.000Z',
   createdById: 'user-1',
   campaignId: 'campaign-1',
-  mediaIds: [],
+  selectedMediaId: null,
 };
 
 // Create a Socket.IO server and listen on port 3000

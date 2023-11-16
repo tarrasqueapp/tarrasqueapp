@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateMapDto {
   @IsString()
@@ -12,4 +12,8 @@ export class CreateMapDto {
 
   @IsString()
   campaignId: string;
+
+  @IsOptional()
+  @IsString()
+  createdById: string;
 }

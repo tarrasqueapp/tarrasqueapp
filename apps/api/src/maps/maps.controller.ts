@@ -25,26 +25,33 @@ export class MapsController {
 
   /**
    * Get a map by its id
+   * @param mapId - The map's id
+   * @returns The map
    */
   @Get(':mapId')
   @ApiOkResponse({ type: MapEntity })
-  getMap(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
-    return this.mapsService.getMap(mapId);
+  getMapById(@Param() { mapId }: ConnectMapDto): Promise<MapEntity> {
+    return this.mapsService.getMapById(mapId);
   }
 
   /**
    * Create a new map
+   * @param data - The map's data
+   * @param user - The user that created the map
+   * @returns The new map
    */
   @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Post()
   @ApiCookieAuth()
   @ApiOkResponse({ type: MapEntity })
   createMap(@Body() data: CreateMapDto, @User() user: UserEntity): Promise<MapEntity> {
-    return this.mapsService.createMap(data, user.id);
+    return this.mapsService.createMap({ ...data, createdById: user.id });
   }
 
   /**
    * Duplicate a map
+   * @param mapId - The map's id
+   * @returns The new map
    */
   @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Post(':mapId/duplicate')
@@ -56,6 +63,9 @@ export class MapsController {
 
   /**
    * Update a map
+   * @param mapId - The map's id
+   * @param data - The map's data
+   * @returns The updated map
    */
   @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Put(':mapId')
@@ -63,7 +73,7 @@ export class MapsController {
   @ApiOkResponse({ type: MapEntity })
   async updateMap(@Param() { mapId }: ConnectMapDto, @Body() data: UpdateMapDto): Promise<MapEntity> {
     // Get the current map
-    const map = await this.mapsService.getMap(mapId);
+    const map = await this.mapsService.getMapById(mapId);
 
     // Check if media is being updated
     if (data.mediaIds) {
@@ -108,6 +118,8 @@ export class MapsController {
 
   /**
    * Delete a map
+   * @param mapId - The map's id
+   * @returns The deleted map
    */
   @UseGuards(JwtAuthGuard, RoleGuard(Role.GAME_MASTER))
   @Delete(':mapId')

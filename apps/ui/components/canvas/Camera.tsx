@@ -5,6 +5,8 @@ import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
 import useLocalStorage from 'use-local-storage';
 
+import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { store } from '../../store';
 import { CameraBase } from './CameraBase';
@@ -95,10 +97,11 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
    * Handle the double click event
    * @param event - The interaction event
    */
-  function handleDoubleClick(event: PIXI.FederatedPointerEvent) {
+  function handleDoubleClick() {
     console.debug('Double Click.');
     // Emit a "pingLocation" event to the server, passing the map ID and the global coordinates of the click event
-    store.app.socket.emit('pingLocation', { mapId, ...event.global });
+    // tarrasque.emit(TarrasqueEvent.PING_LOCATION, { mapId, ...event.global });
+    tarrasque.emit(TarrasqueEvent.PING_LOCATION, mapId);
   }
 
   /**

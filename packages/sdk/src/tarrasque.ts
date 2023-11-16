@@ -11,7 +11,7 @@ interface TarrasqueProps {
 
 class Tarrasque implements TarrasqueProps {
   // The URL of the Tarrasque App server
-  public url = 'https://tarrasque.app';
+  public url = process.env.HOST || 'https://tarrasque.app';
 
   // Socket.io client
   private socket: CustomSocket;
