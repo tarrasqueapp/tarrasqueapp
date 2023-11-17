@@ -1,12 +1,10 @@
-import { Box, CircularProgress, Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import { Center } from '../components/common/Center';
 import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
 import { DashboardModals } from '../components/dashboard/DashboardModals';
 import { TopBar } from '../components/dashboard/TopBar/TopBar';
-import { useGetUser } from '../hooks/data/auth/useGetUser';
 import { Gradient } from '../lib/colors';
 import { AppNavigation } from '../lib/navigation';
 import { SSRUtils } from '../utils/SSRUtils';
@@ -21,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {}, redirect: { destination: AppNavigation.Setup } };
   }
 
-  // Get the user
+  // Prefetch the user
   const user = await ssr.getUser();
 
   // Redirect to the sign-in page if the user is not signed in
@@ -29,20 +27,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {}, redirect: { destination: AppNavigation.SignIn } };
   }
 
+  // Prefetch campaigns and maps
+  const campaigns = await ssr.getUserCampaigns();
+  await Promise.all(campaigns.map((campaign) => ssr.getCampaignMaps(campaign.id)));
+
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
 export default function DashboardPage() {
-  const { isLoading } = useGetUser();
-
-  if (isLoading) {
-    return (
-      <Center>
-        <CircularProgress disableShrink />
-      </Center>
-    );
-  }
-
   return (
     <>
       <Head>

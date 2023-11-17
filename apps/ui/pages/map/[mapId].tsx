@@ -18,7 +18,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {}, redirect: { destination: AppNavigation.Setup } };
   }
 
-  return { props: {} };
+  // Prefetch the user
+  await ssr.getUser();
+
+  return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
 const Canvas = dynamic(() => import('../../components/canvas/Canvas'), { ssr: false });

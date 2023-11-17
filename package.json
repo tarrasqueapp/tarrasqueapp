@@ -35,11 +35,16 @@
     "react": "^18.2.0",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
-    "tsup": "^7.2.0",
+    "tsup": "^7.3.0",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2",
     "vite": "^4.5.0",
     "vitest": "^0.34.6"
   },
-  "packageManager": "pnpm@8.8.0"
+  "packageManager": "pnpm@8.8.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "pixi-viewport@5.0.2": "patches/pixi-viewport@5.0.2.patch"
+    }
+  }
 }

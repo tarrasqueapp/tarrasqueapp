@@ -1,17 +1,19 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
-
-// Show a toast message when an error occurs
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-      refetchOnWindowFocus: false,
-      retry: false,
-    },
-  },
-});
+import React, { useState } from 'react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: Infinity,
+            refetchOnWindowFocus: false,
+            retry: false,
+          },
+        },
+      }),
+  );
+
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

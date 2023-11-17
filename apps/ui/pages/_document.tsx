@@ -1,6 +1,7 @@
 import createEmotionServer from '@emotion/server/create-instance';
 import Document, { DocumentProps, Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
+import { Cookies } from 'react-cookie';
 
 import { config } from '@tarrasque/common';
 
@@ -258,6 +259,11 @@ MyDocument.getInitialProps = async (ctx) => {
         function EnhanceApp(props) {
           return <App emotionCache={cache} {...props} />;
         },
+      // https://github.com/bendotcodes/cookies/issues/299#issuecomment-1420316862
+      enhanceComponent: (Component) => {
+        (Component as any).universalCookies = new Cookies(ctx.req?.headers.cookie);
+        return Component;
+      },
     });
 
   const initialProps = await Document.getInitialProps(ctx);

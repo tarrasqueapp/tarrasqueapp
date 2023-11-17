@@ -11,6 +11,7 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 # Copy only the files needed to install dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches ./patches/
 COPY apps/api/package.json apps/api/prisma ./apps/api/
 COPY apps/ui/package.json ./apps/ui/
 COPY packages/common/package.json ./packages/common/

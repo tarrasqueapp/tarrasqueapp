@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { RawAxiosRequestConfig } from 'axios';
 
 import { CampaignEntity } from '@tarrasque/sdk';
 
@@ -6,10 +7,11 @@ import { api } from '../../../lib/api';
 
 /**
  * Send a request to get the user's campaigns
+ * @param requestConfig - Axios request config
  * @returns The user's campaigns
  */
-async function getUserCampaigns() {
-  const { data } = await api.get<CampaignEntity[]>(`/api/campaigns`);
+export async function getUserCampaigns(requestConfig?: RawAxiosRequestConfig) {
+  const { data } = await api.get<CampaignEntity[]>(`/api/campaigns`, requestConfig);
   return data;
 }
 

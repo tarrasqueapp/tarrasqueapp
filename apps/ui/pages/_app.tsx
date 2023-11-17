@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import { CookiesProvider } from 'react-cookie';
 import { Toaster } from 'react-hot-toast';
 
 import { Layout } from '../components/Layout';
@@ -63,15 +64,17 @@ export default function MyApp({ Component, pageProps, emotionCache = clientSideE
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
-        <Providers>
-          <HydrationBoundary state={pageProps.dehydratedState}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+        <CookiesProvider cookies={(Component as any).universalCookies}>
+          <Providers>
+            <HydrationBoundary state={pageProps.dehydratedState}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
 
-            <Toaster />
-          </HydrationBoundary>
-        </Providers>
+              <Toaster />
+            </HydrationBoundary>
+          </Providers>
+        </CookiesProvider>
       </ThemeProvider>
     </CacheProvider>
   );

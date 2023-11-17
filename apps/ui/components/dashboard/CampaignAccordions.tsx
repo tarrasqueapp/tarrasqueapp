@@ -13,7 +13,7 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useEffect, useState } from 'react';
-import useLocalStorage from 'use-local-storage';
+import { useCookies } from 'react-cookie';
 
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useReorderCampaigns } from '../../hooks/data/campaigns/useReorderCampaigns';
@@ -25,11 +25,13 @@ export function CampaignAccordions() {
   const reorderCampaigns = useReorderCampaigns();
 
   // Expand/collapse
-  const [collapsedCampaigns, setCollapsedCampaigns] = useLocalStorage<string[]>('campaigns-collapsed', []);
+  const [cookies, setCookie, removeCookie] = useCookies(['campaigns/collapsed']);
 
   // Drag and drop
   const [activeId, setActiveId] = useState<string | number | null>(null);
-  const [orderedCampaignIds, setOrderedCampaignIds] = useState<string[]>([]);
+  const [orderedCampaignIds, setOrderedCampaignIds] = useState<string[]>(
+    campaigns?.map((campaign) => campaign.id) || [],
+  );
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { delay: 500, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
@@ -43,6 +45,9 @@ export function CampaignAccordions() {
     setOrderedCampaignIds(campaigns.map((campaign) => campaign.id));
   }, [campaigns]);
 
+  // Get collapsed campaigns from cookies as array
+  const collapsedCampaigns = cookies['campaigns/collapsed']?.split(',') || [];
+
   /**
    * Handle toggling the expanded state of a campaign
    * @param campaignId - The ID of the campaign to toggle
@@ -51,16 +56,20 @@ export function CampaignAccordions() {
   function handleToggle(campaignId: string, expanded: boolean) {
     if (!campaignId) return;
 
-    const newCollapsedCampaigns = [...collapsedCampaigns];
-
     if (expanded) {
       const index = collapsedCampaigns.indexOf(campaignId);
-      if (index > -1) newCollapsedCampaigns.splice(index, 1);
+      if (index > -1) collapsedCampaigns.splice(index, 1);
     } else {
-      newCollapsedCampaigns.push(campaignId);
+      collapsedCampaigns.push(campaignId);
     }
 
-    setCollapsedCampaigns(newCollapsedCampaigns);
+    if (collapsedCampaigns.length === 0) {
+      // Remove cookie if no campaigns are collapsed
+      removeCookie('campaigns/collapsed', { path: '/' });
+    } else {
+      // Set cookie of collapsed campaigns as comma separated string
+      setCookie('campaigns/collapsed', collapsedCampaigns.join(','), { path: '/' });
+    }
   }
 
   /**
@@ -112,6 +121,7 @@ export function CampaignAccordions() {
   return (
     <>
       <DndContext
+        id="campaigns"
         sensors={sensors}
         modifiers={[restrictToParentElement]}
         collisionDetection={closestCenter}
@@ -125,7 +135,7 @@ export function CampaignAccordions() {
               <CampaignAccordion
                 key={campaignId}
                 campaign={campaigns?.find((campaign) => campaign.id === campaignId)}
-                expanded={!collapsedCampaigns.includes(campaignId)}
+                expanded={!collapsedCampaigns?.includes(campaignId)}
                 onToggle={(expanded) => handleToggle(campaignId, expanded)}
               />
             ))

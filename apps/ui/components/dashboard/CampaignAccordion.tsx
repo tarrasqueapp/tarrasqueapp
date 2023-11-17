@@ -55,7 +55,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
   // Drag and drop
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [orderedMapIds, setOrderedMapIds] = useState<string[]>([]);
+  const [orderedMapIds, setOrderedMapIds] = useState<string[]>(maps?.map((map) => map.id) || []);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: campaign?.id || '',
   });
@@ -238,6 +238,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
           }}
         >
           <DndContext
+            id={`campaign-${campaign?.id}-maps`}
             sensors={sensors}
             modifiers={[restrictToParentElement]}
             collisionDetection={closestCenter}
