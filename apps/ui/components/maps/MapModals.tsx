@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useDeleteMap } from '../../hooks/data/maps/useDeleteMap';
-import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
 import { store } from '../../store';
 import { MapModal } from '../../store/maps';
 import { ConfirmModal } from '../common/ConfirmModal';
@@ -11,11 +10,10 @@ import { CreateUpdateMapModal } from './CreateUpdateMapModal';
 
 export const MapModals = observer(function MapModals() {
   const { data: campaigns } = useGetUserCampaigns();
-  const { data: maps } = useGetCampaignMaps(store.campaigns.selectedCampaignId || undefined);
   const deleteMap = useDeleteMap();
 
   const selectedCampaign = campaigns?.find((campaign) => campaign.id === store.campaigns.selectedCampaignId);
-  const selectedMap = maps?.find((map) => map.id === store.maps.selectedMapId);
+  const selectedMap = selectedCampaign?.maps.find((map) => map.id === store.maps.selectedMapId);
 
   return (
     <>

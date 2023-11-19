@@ -16,6 +16,7 @@ class Tarrasque implements TarrasqueProps {
   // Socket.io client
   private socket: CustomSocket;
   public on: CustomSocket['on'];
+  public off: CustomSocket['off'];
   public emit: CustomSocket['emit'];
 
   /**
@@ -26,15 +27,28 @@ class Tarrasque implements TarrasqueProps {
     // Merge the config with the default config
     Object.assign(this, config);
 
-    // Disconnect from the Tarrasque server if already connected
-    this.disconnect();
-
     // Initialize the socket.io client
-    this.socket = io(this.url);
+    this.socket = io({ path: '/socket.io', transports: ['websocket'], autoConnect: false });
 
     // Attach the socket.io client's on and emit methods to the instance
     this.on = this.socket.on.bind(this.socket);
+    this.off = this.socket.off.bind(this.socket);
     this.emit = this.socket.emit.bind(this.socket);
+  }
+
+  /**
+   * Whether or not the Tarrasque SDK is connected to the server.
+   * @returns boolean
+   */
+  get connected() {
+    return this.socket?.connected;
+  }
+
+  /**
+   * Connect to the Tarrasque server.
+   */
+  connect() {
+    this.socket?.connect();
   }
 
   /**

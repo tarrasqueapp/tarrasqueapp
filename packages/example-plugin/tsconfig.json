@@ -1,0 +1,9 @@
+{
+  "extends": "@tronite/tsconfig/react",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "strictPropertyInitialization": false,
+    "incremental": false
+  },
+  "exclude": ["node_modules", ".next"]
+}

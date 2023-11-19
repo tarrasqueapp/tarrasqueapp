@@ -12,7 +12,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       {Boolean(isFetching || isMutating) && (
         <Tooltip title="Saving...">
-          <CircularProgress size={16} disableShrink sx={{ position: 'absolute', bottom: 4, right: 4 }} />
+          <CircularProgress size={16} disableShrink sx={{ position: 'absolute', bottom: 8, right: 8 }} />
         </Tooltip>
       )}
     </>

@@ -4,9 +4,6 @@ services:
   turbo:
     container_name: turbo
     restart: unless-stopped
-    networks:
-      - nginx_network
-      - api_network
     build:
       context: .
       dockerfile: ./Dockerfile.dev
@@ -16,6 +13,7 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
+      - ./data/plugins:/plugins
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads
     env_file:
@@ -25,8 +23,6 @@ services:
     container_name: postgres
     image: postgres:14-alpine
     restart: unless-stopped
-    networks:
-      - api_network
     volumes:
       - ./data/postgres:/var/lib/postgresql
     ports:
@@ -38,10 +34,9 @@ services:
     container_name: nginx
     image: nginx:alpine
     restart: unless-stopped
-    networks:
-      - nginx_network
     command: nginx -g 'daemon off;'
     volumes:
+      - ./data/plugins:/plugins
       - ./data/uploads:/uploads
       - ./nginx:/etc/nginx/templates
     ports:
@@ -53,8 +48,6 @@ services:
     container_name: tusd
     image: tusproject/tusd
     restart: unless-stopped
-    networks:
-      - nginx_network
     command: -behind-proxy -base-path=/tus/files -upload-dir=/tmp/uploads
     volumes:
       - ./data/tmp:/tmp/uploads
@@ -63,12 +56,6 @@ services:
     container_name: tusd
     image: tusproject/tusd
     restart: unless-stopped
-    networks:
-      - nginx_network
     command: -behind-proxy -base-path=/tus/files -s3-bucket=${AWS_S3_BUCKET} -s3-endpoint=${AWS_S3_ENDPOINT} -s3-object-prefix=tmp/
     env_file:
       - ./.env
-
-networks:
-  api_network:
-  nginx_network:

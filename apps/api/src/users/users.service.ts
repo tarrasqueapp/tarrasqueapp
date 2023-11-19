@@ -8,19 +8,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UsersGateway } from './users.gateway';
 
-export function serializeUser(user: UserEntity) {
-  if (!user) return null;
-
-  return Object.assign(user, {
-    // Hide password before sending to client
-    toJSON: () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...rest } = user;
-      return rest;
-    },
-  });
-}
-
 @Injectable()
 export class UsersService {
   private logger: Logger = new Logger(UsersService.name);
@@ -63,7 +50,7 @@ export class UsersService {
       // Get the user
       const user = await this.prisma.user.findUnique({
         where: { email: email.toLowerCase() },
-        include: { avatar: true, memberships: { include: { campaign: true } } },
+        include: { password: true, avatar: true, memberships: { include: { campaign: true } } },
       });
 
       if (!user) {
@@ -93,7 +80,7 @@ export class UsersService {
         data: {
           ...data,
           displayName: data.name.split(' ')[0],
-          password: await this.hashPassword(data.password),
+          password: { create: { hash: await this.hashPassword(data.password) } },
         },
         include: {
           avatar: true,
@@ -122,7 +109,7 @@ export class UsersService {
         where: { id: userId },
         data: {
           ...data,
-          ...(data.password && { password: await this.hashPassword(data.password) }),
+          ...(data.password && { password: { update: { hash: await this.hashPassword(data.password) } } }),
         },
         include: {
           avatar: true,

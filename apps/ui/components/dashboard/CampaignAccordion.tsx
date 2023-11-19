@@ -15,6 +15,7 @@ import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, useS
 import { CSS } from '@dnd-kit/utilities';
 import { Delete, Edit, ExpandLess, ExpandMore, MoreHoriz, People } from '@mui/icons-material';
 import {
+  Avatar,
   Box,
   Collapse,
   IconButton,
@@ -34,7 +35,6 @@ import { useEffect, useState } from 'react';
 import { CampaignEntity, Role } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useGetCampaignMaps } from '../../hooks/data/maps/useGetCampaignMaps';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
@@ -50,12 +50,11 @@ export interface CampaignAccordionProps {
 
 export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAccordionProps) {
   const { data: user } = useGetUser();
-  const { data: maps } = useGetCampaignMaps(campaign?.id);
   const reorderMaps = useReorderMaps();
 
   // Drag and drop
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [orderedMapIds, setOrderedMapIds] = useState<string[]>(maps?.map((map) => map.id) || []);
+  const [orderedMapIds, setOrderedMapIds] = useState<string[]>(campaign?.maps.map((map) => map.id) || []);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: campaign?.id || '',
   });
@@ -68,9 +67,9 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
   // Set initial order of map ids and update when maps change
   useEffect(() => {
-    if (!maps) return;
-    setOrderedMapIds(maps.map((map) => map.id));
-  }, [maps]);
+    if (!campaign?.maps) return;
+    setOrderedMapIds(campaign.maps.map((map) => map.id));
+  }, [campaign]);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -96,7 +95,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
    * @param event - Drag over event
    */
   function handleDragOver(event: DragOverEvent) {
-    if (!campaign || !maps || !event.over) return;
+    if (!campaign || !event.over) return;
 
     const activeId = event.active.id as string;
     const overId = event.over.id as string;
@@ -120,10 +119,10 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
    * @param event - Drag end event
    */
   function handleDragEnd(event: DragEndEvent) {
-    if (!campaign || !maps || !event.over) return;
+    if (!campaign || !event.over) return;
 
     // Check if order has changed
-    if (orderedMapIds.some((mapId, index) => mapId !== maps[index].id)) {
+    if (orderedMapIds.some((mapId, index) => mapId !== campaign.maps[index].id)) {
       reorderMaps.mutate({ campaignId: campaign.id, mapIds: orderedMapIds });
     }
   }
@@ -147,78 +146,96 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             {campaign ? campaign.name : <Skeleton width={MathUtils.getRandomBetween(100, 200)} />}
           </Typography>
 
-          <Typography variant="caption">
-            {maps ? maps.length : <Skeleton width={10} sx={{ display: 'inline-block' }} />} map
-            {!maps || maps.length === 1 ? '' : 's'}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+            <Typography variant="caption">
+              {campaign?.maps ? campaign.maps.length : <Skeleton width={10} sx={{ display: 'inline-block' }} />} map
+              {!campaign?.maps || campaign?.maps.length === 1 ? '' : 's'}
+            </Typography>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              {campaign?.memberships.map((membership) => (
+                <Tooltip key={membership.userId} title={membership.user.displayName}>
+                  <Avatar src={membership.user.avatar?.thumbnailUrl} sx={{ width: 20, height: 20 }} />
+                </Tooltip>
+              ))}
+
+              {campaign?.invites.map((invite) => (
+                <Tooltip key={invite.id} title={invite.email}>
+                  <Avatar sx={{ width: 20, height: 20, opacity: 0.5 }} />
+                </Tooltip>
+              ))}
+            </Box>
+          </Box>
         </Box>
 
-        <Box sx={{ display: 'flex' }} onClick={(event) => event.stopPropagation()}>
-          <Tooltip title="Update">
-            <span>
-              <IconButton
-                disabled={!isGameMaster}
-                onClick={() => {
-                  if (!campaign) return;
-                  store.campaigns.setSelectedCampaignId(campaign.id);
-                  store.campaigns.setModal(CampaignModal.CreateUpdate);
-                }}
-              >
-                <Edit />
-              </IconButton>
-            </span>
-          </Tooltip>
+        <Box sx={{ display: 'flex', alignItems: 'center' }} onClick={(event) => event.stopPropagation()}>
+          {isGameMaster && (
+            <>
+              <Tooltip title="Update">
+                <span>
+                  <IconButton
+                    onClick={() => {
+                      if (!campaign) return;
+                      store.campaigns.setSelectedCampaignId(campaign.id);
+                      store.campaigns.setModal(CampaignModal.CreateUpdate);
+                    }}
+                  >
+                    <Edit />
+                  </IconButton>
+                </span>
+              </Tooltip>
 
-          <Tooltip title="Members">
-            <span>
-              <IconButton
-                disabled={!isGameMaster}
-                onClick={() => {
-                  if (!campaign) return;
-                  store.campaigns.setSelectedCampaignId(campaign.id);
-                  store.campaigns.setModal(CampaignModal.Members);
-                }}
-              >
-                <People />
-              </IconButton>
-            </span>
-          </Tooltip>
+              <Tooltip title="Members">
+                <span>
+                  <IconButton
+                    onClick={() => {
+                      if (!campaign) return;
+                      store.campaigns.setSelectedCampaignId(campaign.id);
+                      store.campaigns.setModal(CampaignModal.Members);
+                    }}
+                  >
+                    <People />
+                  </IconButton>
+                </span>
+              </Tooltip>
 
-          <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
-            {(popupState) => (
-              <>
-                <Tooltip title="More">
-                  <span>
-                    <IconButton {...bindTrigger(popupState)} disabled={!isGameMaster}>
-                      <MoreHoriz />
-                    </IconButton>
-                  </span>
-                </Tooltip>
+              <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
+                {(popupState) => (
+                  <>
+                    <Tooltip title="More">
+                      <span>
+                        <IconButton {...bindTrigger(popupState)}>
+                          <MoreHoriz />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
 
-                <Popover
-                  {...bindPopover(popupState)}
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                  transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                >
-                  <MenuList>
-                    <MenuItem
-                      onClick={() => {
-                        if (!campaign) return;
-                        store.campaigns.setSelectedCampaignId(campaign.id);
-                        store.campaigns.setModal(CampaignModal.Delete);
-                        popupState.close();
-                      }}
+                    <Popover
+                      {...bindPopover(popupState)}
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                     >
-                      <ListItemIcon>
-                        <Delete />
-                      </ListItemIcon>
-                      <ListItemText>Delete</ListItemText>
-                    </MenuItem>
-                  </MenuList>
-                </Popover>
-              </>
-            )}
-          </PopupState>
+                      <MenuList>
+                        <MenuItem
+                          onClick={() => {
+                            if (!campaign) return;
+                            store.campaigns.setSelectedCampaignId(campaign.id);
+                            store.campaigns.setModal(CampaignModal.Delete);
+                            popupState.close();
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Delete />
+                          </ListItemIcon>
+                          <ListItemText>Delete</ListItemText>
+                        </MenuItem>
+                      </MenuList>
+                    </Popover>
+                  </>
+                )}
+              </PopupState>
+            </>
+          )}
 
           <Tooltip title={expanded ? 'Collapse' : 'Expand'}>
             <IconButton onClick={() => onToggle?.(!expanded)}>{expanded ? <ExpandLess /> : <ExpandMore />}</IconButton>
@@ -247,13 +264,13 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={orderedMapIds} strategy={rectSortingStrategy}>
-              {maps ? (
+              {campaign?.maps ? (
                 orderedMapIds?.map((mapId) => (
-                  <MapCard key={mapId} map={maps?.find((map) => map.id === mapId)} campaign={campaign} />
+                  <MapCard key={mapId} map={campaign.maps.find((map) => map.id === mapId)} campaign={campaign} />
                 ))
               ) : (
                 <>
-                  {[...Array(8)].map((item, index) => (
+                  {[...Array(4)].map((item, index) => (
                     <MapCard key={index} />
                   ))}
                 </>
@@ -261,7 +278,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             </SortableContext>
 
             <DragOverlay modifiers={[restrictToParentElement]}>
-              {activeId ? <MapCard key={activeId} map={maps?.find((map) => map.id === activeId)} /> : null}
+              {activeId ? <MapCard key={activeId} map={campaign?.maps.find((map) => map.id === activeId)} /> : null}
             </DragOverlay>
           </DndContext>
 

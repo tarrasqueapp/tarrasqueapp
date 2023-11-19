@@ -1,7 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
-import { serializeUser } from '../../../users/users.service';
 import { CreateMembershipDto } from './dto/create-membership.dto';
 import { UpdateMembershipDto } from './dto/update-membership.dto';
 import { MembershipEntity } from './entities/membership.entity';
@@ -31,11 +30,6 @@ export class MembershipsService {
         orderBy: { createdAt: 'asc' },
       });
 
-      // Exclude the password from the user
-      memberships.forEach((membership) => {
-        membership.user = serializeUser(membership.user);
-      });
-
       this.logger.debug(`✅️ Found campaign "${campaignId}" memberships`);
       return memberships;
     } catch (error) {
@@ -57,11 +51,6 @@ export class MembershipsService {
         where: { userId },
         include: { user: { include: { avatar: true } } },
         orderBy: { createdAt: 'asc' },
-      });
-
-      // Exclude the password from the user
-      memberships.forEach((membership) => {
-        membership.user = serializeUser(membership.user);
       });
 
       this.logger.debug(`✅️ Found user "${userId}" memberships`);
@@ -86,8 +75,6 @@ export class MembershipsService {
         include: { user: { include: { avatar: true } } },
       });
 
-      // Exclude the password from the user
-      membership.user = serializeUser(membership.user);
       this.membershipsGateway.createMembership(membership);
 
       this.logger.debug(`✅️ Created membership of user "${data.userId}" in campaign "${data.campaignId}"`);
@@ -118,8 +105,6 @@ export class MembershipsService {
         include: { user: { include: { avatar: true } } },
       });
 
-      // Exclude the password from the user
-      membership.user = serializeUser(membership.user);
       this.membershipsGateway.updateMembership(membership);
 
       this.logger.debug(`✅️ Updated membership of user "${userId}" in campaign "${campaignId}"`);

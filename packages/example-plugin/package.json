@@ -1,0 +1,48 @@
+{
+  "name": "@tarrasque/example-plugin",
+  "version": "0.0.1",
+  "description": "Example Plugin for Tarrasque App",
+  "keywords": [
+    "tarrasque",
+    "plugin"
+  ],
+  "homepage": "https://github.com/tarrasqueapp/tarrasqueapp/tree/main/packages/example-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/tarrasqueapp/tarrasqueapp/issues",
+    "email": "support@tarrasque.app"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "Richard Solomou",
+    "email": "richard@tarrasque.app",
+    "url": "https://tarrasque.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarrasqueapp/tarrasqueapp"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "pnpm build --watch",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "tsc --noEmit && eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@tarrasque/sdk": "workspace:*",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.3.96",
+    "@types/node": "^20.9.2",
+    "@types/react": "^18.2.37",
+    "typescript": "^5.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

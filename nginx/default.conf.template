@@ -60,16 +60,21 @@ server {
         proxy_pass http://turbo:3001;
     }
 
+    location /plugins {
+        alias /plugins;
+        autoindex on;
+    }
+
+    location /uploads {
+        alias /uploads;
+        autoindex on;
+    }
+
     location /tus {
         # Disable request and response buffering
         proxy_request_buffering off;
         proxy_buffering off;
         client_max_body_size 0;
         proxy_pass http://tusd:8080;
-    }
-
-    location /uploads {
-        alias /uploads;
-        autoindex on;
     }
 }

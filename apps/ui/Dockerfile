@@ -1,6 +1,8 @@
 FROM node:18-alpine AS base
 
-RUN npm install --global pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 RUN apk add --update --no-cache libc6-compat
 
@@ -26,7 +28,7 @@ COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/out/patches ./patches/
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy the rest of the files
 COPY --from=builder /app/out/full/ .

@@ -1,4 +1,12 @@
-import { ActionTokenEntity, CampaignEntity, CharacterEntity, MapEntity, MembershipEntity, UserEntity } from './types';
+import {
+  ActionTokenEntity,
+  CampaignEntity,
+  CharacterEntity,
+  MapEntity,
+  MembershipEntity,
+  NotificationEntity,
+  UserEntity,
+} from './types';
 
 // The event names that the Tarrasque SDK can emit and listen for
 export enum TarrasqueEvent {
@@ -11,10 +19,16 @@ export enum TarrasqueEvent {
   USER_DELETED = 'USER_DELETED',
   JOIN_USER_ROOM = 'JOIN_USER_ROOM',
 
+  // Notifications
+  NOTIFICATION_CREATED = 'NOTIFICATION_CREATED',
+  NOTIFICATION_UPDATED = 'NOTIFICATION_UPDATED',
+  NOTIFICATION_DELETED = 'NOTIFICATION_DELETED',
+
   // Campaigns
   CAMPAIGN_CREATED = 'CAMPAIGN_CREATED',
   CAMPAIGN_UPDATED = 'CAMPAIGN_UPDATED',
   CAMPAIGN_DELETED = 'CAMPAIGN_DELETED',
+  CAMPAIGNS_REORDERED = 'CAMPAIGNS_REORDERED',
   JOIN_CAMPAIGN_ROOM = 'JOIN_CAMPAIGN_ROOM',
 
   // Invites
@@ -50,10 +64,16 @@ export interface TarrasqueListenEvents {
   [TarrasqueEvent.USER_UPDATED]: (data: UserEntity) => void;
   [TarrasqueEvent.USER_DELETED]: (data: UserEntity) => void;
 
+  // Notifications
+  [TarrasqueEvent.NOTIFICATION_CREATED]: (data: NotificationEntity) => void;
+  [TarrasqueEvent.NOTIFICATION_UPDATED]: (data: NotificationEntity) => void;
+  [TarrasqueEvent.NOTIFICATION_DELETED]: (data: NotificationEntity) => void;
+
   // Campaigns
   [TarrasqueEvent.CAMPAIGN_CREATED]: (data: CampaignEntity) => void;
   [TarrasqueEvent.CAMPAIGN_UPDATED]: (data: CampaignEntity) => void;
   [TarrasqueEvent.CAMPAIGN_DELETED]: (data: CampaignEntity) => void;
+  [TarrasqueEvent.CAMPAIGNS_REORDERED]: (data: string[]) => void;
 
   // Invites
   [TarrasqueEvent.INVITE_CREATED]: (data: ActionTokenEntity) => void;

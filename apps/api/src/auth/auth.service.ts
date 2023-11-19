@@ -67,7 +67,7 @@ export class AuthService {
     if (!user.password) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    await this.verifyPassword(user.password, password);
+    await this.verifyPassword(user.password.hash, password);
     this.logger.debug(`✅️ Logged in user "${email}"`);
 
     // Return the user without the excluded fields

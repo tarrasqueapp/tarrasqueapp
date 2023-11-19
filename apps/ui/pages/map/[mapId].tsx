@@ -2,8 +2,12 @@ import { Box } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useEffect } from 'react';
+
+import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
 
 import { Overlay } from '../../components/overlay/Overlay';
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
@@ -18,8 +22,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {}, redirect: { destination: AppNavigation.Setup } };
   }
 
-  // Prefetch the user
-  await ssr.getUser();
+  // Get the map ID from the URL
+  const mapId = context.query.mapId as string;
+
+  // Prefetch the user and map
+  await Promise.all([ssr.getUser(), ssr.getMap(mapId)]);
 
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
@@ -28,6 +35,23 @@ const Canvas = dynamic(() => import('../../components/canvas/Canvas'), { ssr: fa
 
 export default function MapPage() {
   const { data: map } = useGetCurrentMap();
+  const { data: user } = useGetUser();
+
+  useEffect(() => {
+    if (!user || !map) return;
+
+    // Connect to the Tarrasque server
+    tarrasque.connect();
+
+    // Join the user room
+    tarrasque.emit(TarrasqueEvent.JOIN_USER_ROOM, user.id);
+
+    // Join the campaign room
+    tarrasque.emit(TarrasqueEvent.JOIN_CAMPAIGN_ROOM, map.campaignId);
+
+    // Join the map room
+    tarrasque.emit(TarrasqueEvent.JOIN_MAP_ROOM, map.id);
+  }, []);
 
   return (
     <>

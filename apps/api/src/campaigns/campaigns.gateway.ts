@@ -41,9 +41,9 @@ export class CampaignsGateway {
    * @param user - The user that created the campaign
    */
   @SubscribeMessage(TarrasqueEvent.CAMPAIGN_CREATED)
-  async createCampaign(@MessageBody() campaign: CampaignEntity, @UserWs() user: UserEntity) {
+  async createCampaign(@MessageBody() campaign: CampaignEntity) {
     // Instruct the user's active clients to join the campaign's room
-    this.server.to(`user/${user.id}`).socketsJoin(`campaign/${campaign.id}`);
+    this.server.to(`user/${campaign.createdById}`).socketsJoin(`campaign/${campaign.id}`);
     // Emit the new campaign to the campaign's room
     this.server.to(`campaign/${campaign.id}`).emit(TarrasqueEvent.CAMPAIGN_CREATED, campaign);
     this.logger.debug(`🚀 Campaign "${campaign.name}" created`);
@@ -69,5 +69,16 @@ export class CampaignsGateway {
     // Emit the deleted campaign to the campaign's room
     this.server.to(`campaign/${campaign.id}`).emit(TarrasqueEvent.CAMPAIGN_DELETED, campaign);
     this.logger.debug(`🚀 Campaign "${campaign.name}" deleted`);
+  }
+
+  /**
+   * Reorder campaigns in the client
+   * @param campaignIds - The new campaign order
+   */
+  @SubscribeMessage(TarrasqueEvent.CAMPAIGNS_REORDERED)
+  reorderCampaigns(@MessageBody() campaignIds: string[], @UserWs() user: UserEntity) {
+    // Emit the new campaign order to the user's room
+    this.server.to(`user/${user.id}`).emit(TarrasqueEvent.CAMPAIGNS_REORDERED, campaignIds);
+    this.logger.debug(`🚀 Campaigns for user ${user.id} reordered`);
   }
 }

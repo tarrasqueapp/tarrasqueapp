@@ -26,6 +26,8 @@ export function CampaignAccordions() {
 
   // Expand/collapse
   const [cookies, setCookie, removeCookie] = useCookies(['campaigns/collapsed']);
+  // Get collapsed campaigns from cookies as array
+  const collapsedCampaigns = cookies['campaigns/collapsed']?.split(',') || [];
 
   // Drag and drop
   const [activeId, setActiveId] = useState<string | number | null>(null);
@@ -44,9 +46,6 @@ export function CampaignAccordions() {
     if (!campaigns) return;
     setOrderedCampaignIds(campaigns.map((campaign) => campaign.id));
   }, [campaigns]);
-
-  // Get collapsed campaigns from cookies as array
-  const collapsedCampaigns = cookies['campaigns/collapsed']?.split(',') || [];
 
   /**
    * Handle toggling the expanded state of a campaign
@@ -97,10 +96,10 @@ export function CampaignAccordions() {
 
       // Update order of campaign ids
       setOrderedCampaignIds((orderedCampaignIds) => {
-        const newMapIds = [...orderedCampaignIds];
-        newMapIds.splice(oldIndex, 1);
-        newMapIds.splice(newIndex, 0, activeId);
-        return newMapIds;
+        const newCampaignIds = [...orderedCampaignIds];
+        newCampaignIds.splice(oldIndex, 1);
+        newCampaignIds.splice(newIndex, 0, activeId);
+        return newCampaignIds;
       });
     }
   }
@@ -130,22 +129,14 @@ export function CampaignAccordions() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={orderedCampaignIds} strategy={verticalListSortingStrategy}>
-          {campaigns ? (
-            orderedCampaignIds?.map((campaignId) => (
-              <CampaignAccordion
-                key={campaignId}
-                campaign={campaigns?.find((campaign) => campaign.id === campaignId)}
-                expanded={!collapsedCampaigns?.includes(campaignId)}
-                onToggle={(expanded) => handleToggle(campaignId, expanded)}
-              />
-            ))
-          ) : (
-            <>
-              {[...Array(4)].map((item, index) => (
-                <CampaignAccordion key={index} />
-              ))}
-            </>
-          )}
+          {orderedCampaignIds?.map((campaignId) => (
+            <CampaignAccordion
+              key={campaignId}
+              campaign={campaigns?.find((campaign) => campaign.id === campaignId)}
+              expanded={!collapsedCampaigns?.includes(campaignId)}
+              onToggle={(expanded) => handleToggle(campaignId, expanded)}
+            />
+          ))}
         </SortableContext>
 
         <DragOverlay modifiers={[restrictToParentElement]}>

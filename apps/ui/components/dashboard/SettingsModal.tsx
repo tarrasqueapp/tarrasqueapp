@@ -56,10 +56,13 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose, us
         name: ValidateUtils.Name,
         displayName: ValidateUtils.Name,
         email: ValidateUtils.Email,
-        avatar: yup.mixed<UploadedFile | MediaEntity>().test('isUppyFileOrMedia', 'Invalid avatar', (value) => {
-          if (!value) return true;
-          return store.media.isUploadedFile(value) || store.media.isMedia(value);
-        }),
+        avatar: yup
+          .mixed<UploadedFile | MediaEntity>()
+          .test('isUppyFileOrMedia', 'Invalid avatar', (value) => {
+            if (!value) return true;
+            return store.media.isUploadedFile(value) || store.media.isMedia(value);
+          })
+          .nullable(),
         password: yup
           .string()
           .trim()

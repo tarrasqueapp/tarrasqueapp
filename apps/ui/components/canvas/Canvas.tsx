@@ -1,8 +1,6 @@
 import { Stage } from '@pixi/react';
 import { Color as PixiColor } from 'pixi.js';
-import React, { useEffect } from 'react';
-
-import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+import React from 'react';
 
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { useGetTokens } from '../../hooks/data/tokens/useGetTokens';
@@ -18,22 +16,6 @@ export default function Canvas() {
   const { data: tokens } = useGetTokens(map?.id);
 
   const windowSize = useWindowSize();
-
-  // Set up event handlers for Socket.io events
-  useEffect(() => {
-    if (!tarrasque || !map) return;
-
-    tarrasque.on(TarrasqueEvent.CONNECT, () => {
-      if (!map) return;
-      console.debug('Connected');
-      // Emit a "joinMap" event to the server, passing the map ID
-      tarrasque.emit(TarrasqueEvent.JOIN_MAP_ROOM, map.id);
-    });
-
-    tarrasque.on(TarrasqueEvent.PINGED_LOCATION, (mapId) => {
-      console.debug('Pinged Location', mapId);
-    });
-  }, [tarrasque, map]);
 
   if (!map) return null;
 

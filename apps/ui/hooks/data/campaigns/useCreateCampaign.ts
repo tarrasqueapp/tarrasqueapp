@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { CampaignEntity, UserEntity } from '@tarrasque/sdk';
+import { CampaignEntity } from '@tarrasque/sdk';
 
 import { api } from '../../../lib/api';
 
@@ -24,23 +24,6 @@ export function useCreateCampaign() {
 
   return useMutation({
     mutationFn: createCampaign,
-    // Optimistic update
-    onMutate: async (campaign) => {
-      await queryClient.cancelQueries({ queryKey: ['campaigns'] });
-      const previousCampaigns = queryClient.getQueryData<CampaignEntity[]>(['campaigns']);
-      const user = queryClient.getQueryData<UserEntity>(['auth']);
-      const id = Math.random().toString(36).substring(2, 9);
-      queryClient.setQueryData(['campaigns'], (old: Partial<CampaignEntity>[] = []) => [
-        ...old,
-        { id, ...campaign, createdById: user?.id, memberships: [] },
-      ]);
-      return { previousCampaigns };
-    },
-    // Rollback
-    onError: (err, campaign, context) => {
-      queryClient.setQueryData(['campaigns'], context?.previousCampaigns);
-    },
-    // Refetch
     onSettled: (campaign, err: Error | null) => {
       if (err) {
         toast.error(err.message);

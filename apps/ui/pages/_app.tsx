@@ -7,6 +7,8 @@ import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import { useEffect, useState } from 'react';
+import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { Toaster } from 'react-hot-toast';
 
@@ -22,6 +24,12 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
+const ReactQueryDevtoolsProduction = React.lazy(() =>
+  import('@tanstack/react-query-devtools/build/modern/production.js').then((d) => ({
+    default: d.ReactQueryDevtools,
+  })),
+);
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -30,6 +38,12 @@ type MyAppProps = AppProps & {
 };
 
 export default function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
+  const [showDevtools, setShowDevtools] = useState(false);
+
+  useEffect(() => {
+    window.toggleDevtools = () => setShowDevtools((old) => !old);
+  }, []);
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -72,6 +86,12 @@ export default function MyApp({ Component, pageProps, emotionCache = clientSideE
               </Layout>
 
               <Toaster />
+
+              {showDevtools && (
+                <React.Suspense fallback={null}>
+                  <ReactQueryDevtoolsProduction />
+                </React.Suspense>
+              )}
             </HydrationBoundary>
           </Providers>
         </CookiesProvider>

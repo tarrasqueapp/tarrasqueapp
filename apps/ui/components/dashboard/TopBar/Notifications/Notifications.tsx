@@ -2,7 +2,9 @@ import { Notifications as NotificationsIcon } from '@mui/icons-material';
 import { Badge, Box, IconButton, List, Popover, Tooltip, Typography } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 
-import { useGetNotifications } from '../../../../hooks/data/auth/notifications/useGetNotifications';
+import { InviteNotificationEntity, NotificationTypeEnum } from '@tarrasque/sdk';
+
+import { useGetNotifications } from '../../../../hooks/data/notifications/useGetNotifications';
 import { CampaignInviteNotification } from './CampaignInviteNotification';
 
 export function Notifications() {
@@ -15,7 +17,7 @@ export function Notifications() {
           <>
             <Tooltip title="Notifications">
               <IconButton {...bindTrigger(popupState)}>
-                <Badge badgeContent={notifications?.campaignInvites.length} color="info">
+                <Badge badgeContent={notifications?.length} color="info">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -31,11 +33,16 @@ export function Notifications() {
                   Notifications
                 </Typography>
 
-                {Boolean(notifications?.campaignInvites.length) ? (
+                {notifications && notifications.length > 0 ? (
                   <List disablePadding dense>
-                    {notifications?.campaignInvites.map((invite) => (
-                      <CampaignInviteNotification key={invite.id} {...invite} />
-                    ))}
+                    {notifications
+                      .filter(
+                        (notification): notification is InviteNotificationEntity =>
+                          notification.type === NotificationTypeEnum.INVITE,
+                      )
+                      .map((notification) => (
+                        <CampaignInviteNotification key={notification.data.id} {...notification.data} />
+                      ))}
                   </List>
                 ) : (
                   <Typography align="center" sx={{ p: 2 }}>

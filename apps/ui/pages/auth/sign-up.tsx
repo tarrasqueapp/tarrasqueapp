@@ -8,6 +8,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
+import { ActionTokenEntity, ActionTokenType } from '@tarrasque/sdk';
+
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';
 import { NextLink } from '../../components/common/NextLink';
@@ -36,10 +38,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {}, redirect: { destination: AppNavigation.Dashboard } };
   }
 
-  return { props: { dehydratedState: ssr.dehydrate() } };
+  const token = (context.query.token as string) || '';
+  const actionToken = await ssr.getActionToken(token, ActionTokenType.INVITE);
+
+  return { props: { actionToken, dehydratedState: ssr.dehydrate() } };
 };
 
-export default function SignUpPage() {
+interface Props {
+  actionToken?: ActionTokenEntity;
+}
+
+export default function SignUpPage({ actionToken }: Props) {
   const signUp = useSignUp();
 
   const router = useRouter();
@@ -63,7 +72,7 @@ export default function SignUpPage() {
   const methods = useForm<Schema>({
     mode: 'onChange',
     resolver: yupResolver(schema),
-    defaultValues: { email: (router.query.email as string) || '' },
+    defaultValues: { email: (router.query.email as string) || actionToken?.email || '' },
   });
   const {
     handleSubmit,
@@ -76,7 +85,7 @@ export default function SignUpPage() {
    */
   async function handleSubmitForm(values: Schema) {
     try {
-      await signUp.mutateAsync(values);
+      await signUp.mutateAsync({ ...values, token: actionToken?.id });
       router.push(AppNavigation.VerifyEmail);
     } catch (error: any) {
       toast.error(error.message);
@@ -96,25 +105,34 @@ export default function SignUpPage() {
           </Typography>
 
           <Paper sx={{ p: 2, width: '100%', background: 'rgba(0, 0, 0, 0.4)' }}>
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(handleSubmitForm)}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', m: 1, gap: 2 }}>
-                  <ControlledTextField name="name" label="Name" autoFocus />
+            {actionToken ? (
+              <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(handleSubmitForm)}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', m: 1, gap: 2 }}>
+                    <ControlledTextField name="name" label="Name" autoFocus />
 
-                  <ControlledTextField name="email" label="Email" />
+                    <ControlledTextField name="email" label="Email" disabled />
 
-                  <ControlledPasswordField name="password" label="Password" />
+                    <ControlledPasswordField name="password" label="Password" />
 
-                  <ControlledPasswordField name="confirmPassword" label="Confirm Password" />
-                </Box>
+                    <ControlledPasswordField name="confirmPassword" label="Confirm Password" />
+                  </Box>
 
-                <Box sx={{ textAlign: 'center' }}>
-                  <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mt: 2, mb: 1 }}>
-                    Submit
-                  </LoadingButton>
-                </Box>
-              </form>
-            </FormProvider>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <LoadingButton loading={isSubmitting} variant="contained" type="submit" sx={{ mt: 2, mb: 1 }}>
+                      Submit
+                    </LoadingButton>
+                  </Box>
+                </form>
+              </FormProvider>
+            ) : (
+              <>
+                <Typography align="center">
+                  It appears the invitation link you&apos;ve tried to use is either <strong>expired or invalid</strong>.
+                  If the link has expired, you may need to request a new one from the sender.
+                </Typography>
+              </>
+            )}
           </Paper>
 
           <Typography variant="body2" align="center" sx={{ mt: 4 }}>

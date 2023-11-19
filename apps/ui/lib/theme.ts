@@ -180,6 +180,14 @@ export let theme = createTheme({
         },
       },
     },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          margin: 16,
+          marginTop: 0,
+        },
+      },
+    },
     // Lists
     MuiListSubheader: {
       styleOverrides: {

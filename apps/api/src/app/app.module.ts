@@ -9,6 +9,7 @@ import { CampaignsModule } from '../campaigns/campaigns.module';
 import { CharactersModule } from '../characters/characters.module';
 import { MapsModule } from '../maps/maps.module';
 import { MediaModule } from '../media/media.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { SetupModule } from '../setup/setup.module';
 import { AppController } from './app.controller';
 
@@ -23,6 +24,7 @@ import { AppController } from './app.controller';
     CharactersModule,
     MapsModule,
     MediaModule,
+    NotificationsModule,
     SetupModule,
   ],
   controllers: [AppController],

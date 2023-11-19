@@ -1,5 +1,6 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { ActionTokenType, PrismaClient, Role } from '@prisma/client';
 
+import { durationToDate } from '../src/helpers';
 import { SetupStep } from '../src/setup/setup-step.enum';
 
 const prisma = new PrismaClient();
@@ -26,7 +27,7 @@ async function main() {
     },
   });
 
-  // Create user
+  // Create primary user
   const user = await prisma.user.create({
     data: {
       id: 'clp1ko4hb000008l61vrphvpf',
@@ -34,7 +35,19 @@ async function main() {
       displayName: 'Richard',
       email: process.env.SEED_USER_EMAIL,
       isEmailVerified: true,
-      password: process.env.SEED_USER_PASSWORD,
+      password: { create: { hash: process.env.SEED_USER_PASSWORD } },
+    },
+  });
+
+  // Create secondary user
+  const secondaryUser = await prisma.user.create({
+    data: {
+      id: 'clp1ko4hb000008l61vrphvpg',
+      name: 'Richard Solomou',
+      displayName: 'Richard',
+      email: process.env.SEED_USER_EMAIL.replace('@', '+1@'),
+      isEmailVerified: true,
+      password: { create: { hash: process.env.SEED_USER_PASSWORD } },
     },
   });
 
@@ -48,6 +61,14 @@ async function main() {
         create: {
           userId: user.id,
           role: Role.GAME_MASTER,
+        },
+      },
+      invites: {
+        create: {
+          type: ActionTokenType.INVITE,
+          email: secondaryUser.email,
+          userId: secondaryUser.id,
+          expiresAt: durationToDate('7d'),
         },
       },
     },

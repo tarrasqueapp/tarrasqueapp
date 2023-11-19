@@ -26,10 +26,11 @@ import * as yup from 'yup';
 
 import { CampaignEntity, Role } from '@tarrasque/sdk';
 
-import { useCreateCampaignInvite } from '../../hooks/data/campaigns/invites/useCreateCampaignInvite';
-import { useDeleteCampaignInvite } from '../../hooks/data/campaigns/invites/useDeleteCampaignInvite';
-import { useDeleteCampaignMember } from '../../hooks/data/campaigns/memberships/useDeleteCampaignMember';
-import { useUpdateCampaignMember } from '../../hooks/data/campaigns/memberships/useUpdateCampaignMember';
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
+import { useCreateInvite } from '../../hooks/data/campaigns/invites/useCreateInvite';
+import { useDeleteInvite } from '../../hooks/data/campaigns/invites/useDeleteInvite';
+import { useDeleteMembership } from '../../hooks/data/campaigns/memberships/useDeleteMembership';
+import { useUpdateMembership } from '../../hooks/data/campaigns/memberships/useUpdateMembership';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -45,10 +46,11 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
   onClose,
   campaign,
 }: CampaignMembersModalProps) {
-  const createCampaignInvite = useCreateCampaignInvite();
-  const deleteCampaignInvite = useDeleteCampaignInvite();
-  const deleteCampaignMember = useDeleteCampaignMember();
-  const updateCampaignMember = useUpdateCampaignMember();
+  const { data: user } = useGetUser();
+  const createInvite = useCreateInvite();
+  const deleteInvite = useDeleteInvite();
+  const deleteMembership = useDeleteMembership();
+  const updateMembership = useUpdateMembership();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -83,7 +85,12 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
    */
   async function handleSubmitForm(values: Schema) {
     if (!campaign) return;
-    createCampaignInvite.mutate({ campaign, email: values.email });
+    try {
+      await createInvite.mutateAsync({ campaignId: campaign.id, email: values.email });
+    } catch (e) {
+      console.log(e);
+    }
+    reset({ email: '' });
   }
 
   return (
@@ -136,9 +143,12 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
               {Boolean(campaign?.memberships.length) ? (
                 campaign?.memberships.map((membership) => (
                   <ListItem
-                    key={membership.id}
+                    key={membership.userId}
                     secondaryAction={
-                      <IconButton onClick={() => deleteCampaignMember.mutate({ campaign, membership })}>
+                      <IconButton
+                        disabled={membership.userId === user?.id}
+                        onClick={() => deleteMembership.mutate(membership)}
+                      >
                         <Delete />
                       </IconButton>
                     }
@@ -149,6 +159,7 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                     <ListItemText primary={membership.user.displayName} secondary={membership.user.email} />
 
                     <TextField
+                      disabled={membership.userId === user?.id}
                       size="small"
                       label="Role"
                       select
@@ -156,7 +167,7 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                       sx={{ mr: 2 }}
                       onChange={(event) => {
                         const role = event.target.value as Role;
-                        updateCampaignMember.mutate({ campaign, membership: { ...membership, role } });
+                        updateMembership.mutate({ ...membership, role });
                       }}
                     >
                       <MenuItem value={Role.GAME_MASTER}>Game Master</MenuItem>
@@ -175,16 +186,18 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                 borderRadius: 2,
                 overflow: 'hidden',
                 border: (theme) => `1px solid ${theme.palette.divider}`,
+                pb: 1,
               }}
               disablePadding
             >
               <ListSubheader>Pending invites</ListSubheader>
-              {Boolean(campaign?.invites.length) ? (
+
+              {Boolean(campaign?.invites.length) &&
                 campaign?.invites.map((invite) => (
                   <ListItem
                     key={invite.id}
                     secondaryAction={
-                      <IconButton onClick={() => deleteCampaignInvite.mutate({ campaign, invite })}>
+                      <IconButton onClick={() => deleteInvite.mutate(invite)}>
                         <Delete />
                       </IconButton>
                     }
@@ -194,12 +207,12 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                         <Email />
                       </Avatar>
                     </ListItemAvatar>
+
                     <ListItemText primary={invite.email} />
                   </ListItem>
-                ))
-              ) : (
-                <ListItem>No pending invites found</ListItem>
-              )}
+                ))}
+
+              {!campaign?.invites.length && <ListItem>No pending invites found</ListItem>}
             </List>
           </DialogContent>
         </form>

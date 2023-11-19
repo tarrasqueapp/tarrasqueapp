@@ -23,7 +23,7 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
   const windowSize = useWindowSize();
 
   // Get the camera position from local storage
-  const [position, setPosition] = useLocalStorage(`map-position-${mapId}`, {
+  const [position, setPosition] = useLocalStorage(`map-position/${mapId}`, {
     x: width / 2,
     y: height / 2,
     scale: Math.min(windowSize.width / width, windowSize.height / height),

@@ -131,7 +131,15 @@ export class MapsService {
    */
   async duplicateMap(mapId: string): Promise<MapEntity> {
     this.logger.verbose(`📂 Duplicating map "${mapId}"`);
+
+    // Get the map
     const map = await this.getMapById(mapId);
+
+    // Get the map's tokens
+    const tokens = await this.prisma.token.findMany({
+      where: { mapId },
+    });
+
     try {
       // Create the new map
       const newMap = await this.prisma.map.create({
@@ -139,10 +147,15 @@ export class MapsService {
           name: `${map.name} - Copy`,
           createdAt: new Date(),
           tokens: {
-            create: map.tokens.map((token) => ({
-              ...token,
-              id: null,
+            create: tokens.map((token) => ({
+              width: token.width,
+              height: token.height,
+              x: token.x,
+              y: token.y,
+              createdAt: token.createdAt,
+              updatedAt: token.updatedAt,
               createdBy: { connect: { id: token.createdById } },
+              character: { connect: { id: token.characterId } },
             })),
           },
           media: { connect: map.media.map((media) => ({ id: media.id })) },

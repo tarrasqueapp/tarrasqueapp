@@ -29,6 +29,7 @@ export class CampaignsService {
           characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
           createdBy: { include: { avatar: true } },
           invites: true,
+          maps: { include: { media: true } },
         },
         orderBy: { createdAt: 'asc' },
       });
@@ -75,6 +76,7 @@ export class CampaignsService {
           characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
           createdBy: { include: { avatar: true } },
           invites: true,
+          maps: { include: { media: true } },
         },
         orderBy: { createdAt: 'asc' },
       });
@@ -102,6 +104,7 @@ export class CampaignsService {
           characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
           createdBy: { include: { avatar: true } },
           invites: true,
+          maps: { include: { media: true } },
         },
       });
       this.logger.debug(`✅️ Found campaign "${campaignId}"`);
@@ -127,6 +130,13 @@ export class CampaignsService {
           createdById: data.createdById,
           memberships: { create: { userId: data.createdById, role: Role.GAME_MASTER } },
         },
+        include: {
+          memberships: { include: { user: { include: { avatar: true } } } },
+          characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
+          createdBy: { include: { avatar: true } },
+          invites: true,
+          maps: { include: { media: true } },
+        },
       });
       this.logger.debug(`✅️ Created campaign "${campaign.id}"`);
       return campaign;
@@ -150,6 +160,13 @@ export class CampaignsService {
         where: { id: campaignId },
         data: {
           name: data.name,
+        },
+        include: {
+          memberships: { include: { user: { include: { avatar: true } } } },
+          characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
+          createdBy: { include: { avatar: true } },
+          invites: true,
+          maps: { include: { media: true } },
         },
       });
       this.logger.debug(`✅️ Updated campaign "${campaignId}"`);

@@ -61,6 +61,8 @@ export class CampaignEntity {
   createdById: string;
   // Invites
   invites: ActionTokenEntity[];
+  // Maps
+  maps: MapEntity[];
 }
 
 export enum Role {
@@ -69,7 +71,6 @@ export enum Role {
 }
 
 export class MembershipEntity {
-  id: string;
   role: Role;
   // User
   user: UserEntity;
@@ -173,4 +174,19 @@ export class TokenEntity {
   // Character
   character?: CharacterEntity;
   characterId?: string;
+}
+
+export enum NotificationTypeEnum {
+  INVITE = 'INVITE',
+}
+
+export class NotificationEntity {
+  userId: string;
+  type: NotificationTypeEnum;
+  data: { id: string };
+}
+
+export class InviteNotificationEntity extends NotificationEntity {
+  type = NotificationTypeEnum.INVITE;
+  declare data: ActionTokenEntity;
 }

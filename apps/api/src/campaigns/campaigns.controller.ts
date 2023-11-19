@@ -9,6 +9,7 @@ import { MediaService, ORIGINAL_FILENAME, THUMBNAIL_FILENAME } from '../media/me
 import { StorageService } from '../storage/storage.service';
 import { User } from '../users/decorators/user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
+import { CampaignsGateway } from './campaigns.gateway';
 import { CampaignsService } from './campaigns.service';
 import { ConnectCampaignDto } from './dto/connect-campaign.dto';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
@@ -26,6 +27,7 @@ export class CampaignsController {
     private mapsService: MapsService,
     private mediaService: MediaService,
     private storageService: StorageService,
+    private campaignsGateway: CampaignsGateway,
   ) {}
 
   /**
@@ -76,9 +78,15 @@ export class CampaignsController {
   @Post()
   @ApiCookieAuth()
   @ApiOkResponse({ type: CampaignEntity })
-  createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignEntity> {
+  async createCampaign(@Body() data: CreateCampaignDto, @User() user: UserEntity): Promise<CampaignEntity> {
     // Create the campaign
-    return this.campaignsService.createCampaign({ ...data, createdById: user.id });
+    const campaign = await this.campaignsService.createCampaign({ ...data, createdById: user.id });
+
+    // Send the campaign to the client
+    this.campaignsGateway.createCampaign(campaign);
+
+    // Return the created campaign
+    return campaign;
   }
 
   /**
@@ -91,12 +99,18 @@ export class CampaignsController {
   @Put(':campaignId')
   @ApiCookieAuth()
   @ApiOkResponse({ type: CampaignEntity })
-  updateCampaign(
+  async updateCampaign(
     @Param() { campaignId }: ConnectCampaignDto,
     @Body() data: UpdateCampaignDto,
   ): Promise<CampaignEntity> {
     // Update the campaign
-    return this.campaignsService.updateCampaign(campaignId, data);
+    const campaign = await this.campaignsService.updateCampaign(campaignId, data);
+
+    // Send the campaign to the client
+    this.campaignsGateway.updateCampaign(campaign);
+
+    // Return the updated campaign
+    return campaign;
   }
 
   /**
@@ -143,7 +157,13 @@ export class CampaignsController {
     );
 
     // Delete the campaign
-    return await this.campaignsService.deleteCampaign(campaignId);
+    const campaign = await this.campaignsService.deleteCampaign(campaignId);
+
+    // Send the campaign to the client
+    this.campaignsGateway.deleteCampaign(campaign);
+
+    // Return the deleted campaign
+    return campaign;
   }
 
   /**
@@ -156,9 +176,18 @@ export class CampaignsController {
   @Post('reorder')
   @ApiCookieAuth()
   @ApiOkResponse({ type: [CampaignEntity] })
-  reorderCampaigns(@Body() { campaignIds }: ReorderCampaignsDto, @User() user: UserEntity): Promise<CampaignEntity[]> {
+  async reorderCampaigns(
+    @Body() { campaignIds }: ReorderCampaignsDto,
+    @User() user: UserEntity,
+  ): Promise<CampaignEntity[]> {
     // Reorder the campaigns
-    return this.campaignsService.reorderCampaigns(campaignIds, user.id);
+    const campaigns = await this.campaignsService.reorderCampaigns(campaignIds, user.id);
+
+    // Send the reordered campaigns to the client
+    this.campaignsGateway.reorderCampaigns(campaignIds, user);
+
+    // Return the reordered campaigns
+    return campaigns;
   }
 
   /**

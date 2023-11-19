@@ -3,6 +3,7 @@ import { IsBoolean, IsDateString, IsEmail, IsOptional, IsString, ValidateNested 
 
 import { MembershipEntity } from '../../campaigns/modules/memberships/entities/membership.entity';
 import { MediaEntity } from '../../media/entities/media.entity';
+import { PasswordEntity } from './password.entity';
 
 export class UserEntity implements User {
   @IsString()
@@ -21,8 +22,8 @@ export class UserEntity implements User {
   isEmailVerified: boolean;
 
   @IsOptional()
-  @IsString()
-  password: string;
+  @ValidateNested()
+  password?: PasswordEntity | null;
 
   // Avatar
   @IsOptional()

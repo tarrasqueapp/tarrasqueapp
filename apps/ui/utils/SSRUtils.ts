@@ -6,7 +6,8 @@ import { ActionTokenEntity, ActionTokenType, CampaignEntity, SetupEntity, UserEn
 import { getActionToken } from '../hooks/data/action-tokens/useGetActionToken';
 import { getUser } from '../hooks/data/auth/useGetUser';
 import { getUserCampaigns } from '../hooks/data/campaigns/useGetUserCampaigns';
-import { getCampaignMaps } from '../hooks/data/maps/useGetCampaignMaps';
+import { getMap } from '../hooks/data/maps/useGetMap';
+import { getNotifications } from '../hooks/data/notifications/useGetNotifications';
 import { getSetup } from '../hooks/data/setup/useGetSetup';
 
 export class SSRUtils {
@@ -71,6 +72,18 @@ export class SSRUtils {
   }
 
   /**
+   * Prefetch the user's notifications
+   * @returns The user's notifications
+   */
+  async getNotifications() {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['notifications'],
+      queryFn: () => getNotifications({ withCredentials: true, headers: this.headers }) || [],
+    });
+    return this.queryClient.getQueryData<CampaignEntity[]>(['notifications']) || [];
+  }
+
+  /**
    * Prefetch the user's campaigns
    * @returns The user's campaigns
    */
@@ -83,19 +96,19 @@ export class SSRUtils {
   }
 
   /**
-   * Prefetch a campaign's maps
-   * @param campaignId - The ID of the campaign to fetch maps for
-   * @returns The campaign's maps
+   * Prefetch a map
+   * @param mapId - The ID of the map to fetch
+   * @returns The map
    */
-  async getCampaignMaps(campaignId: string) {
-    if (!campaignId) {
-      return [];
+  async getMap(mapId: string) {
+    if (!mapId) {
+      return null;
     }
 
     await this.queryClient.prefetchQuery({
-      queryKey: ['campaigns', campaignId, 'maps'],
-      queryFn: () => getCampaignMaps(campaignId, { withCredentials: true, headers: this.headers }) || [],
+      queryKey: ['maps', mapId],
+      queryFn: () => getMap(mapId, { withCredentials: true, headers: this.headers }) || null,
     });
-    return this.queryClient.getQueryData<CampaignEntity[]>(['campaigns', campaignId, 'maps']) || [];
+    return this.queryClient.getQueryData<CampaignEntity>(['maps', mapId]) || null;
   }
 }

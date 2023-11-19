@@ -11,7 +11,7 @@ This package contains the core logic for the Tarrasque SDK. You can use this pac
 ## Installation
 
 ```sh
-yarn add @tarrasque/sdk
+npm install --save-dev @tarrasque/sdk
 ```
 
 ## Usage

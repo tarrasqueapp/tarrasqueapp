@@ -24,12 +24,12 @@
     "start:ui": "turbo run start --filter=@tarrasque/ui..."
   },
   "devDependencies": {
-    "@testing-library/react": "^14.1.0",
+    "@testing-library/react": "^14.1.2",
     "@tronite/eslint-config": "^1.0.10",
     "@tronite/prettier-config": "^1.0.6",
     "@tronite/tsconfig": "^1.0.5",
     "@types/react": "^18.2.37",
-    "eslint": "^8.53.0",
+    "eslint": "^8.54.0",
     "jsdom": "^22.1.0",
     "prettier": "^3.1.0",
     "react": "^18.2.0",

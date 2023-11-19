@@ -101,77 +101,79 @@ export function MapCard({ map, campaign }: MapCardProps) {
               background: 'rgba(0, 0, 0, 0.65)',
             }}
           >
-            <Typography variant="body2" sx={{ wordBreak: 'break-word', mr: 0.5 }}>
+            <Typography variant="body2" sx={{ wordBreak: 'break-word', mr: 0.5, my: 1.5 }}>
               {map.name}
             </Typography>
 
-            <PopupState variant="popover" popupId={`map-card-${map.id}`}>
-              {(popupState) => (
-                <>
-                  <Tooltip title="More">
-                    <span>
-                      <IconButton {...bindTrigger(popupState)} disabled={!isGameMaster}>
-                        <MoreHoriz />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
+            {isGameMaster && (
+              <PopupState variant="popover" popupId={`map-card-${map.id}`}>
+                {(popupState) => (
+                  <>
+                    <Tooltip title="More">
+                      <span>
+                        <IconButton {...bindTrigger(popupState)}>
+                          <MoreHoriz />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
 
-                  <Popover
-                    {...bindPopover(popupState)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                  >
-                    <MenuList>
-                      <MenuItem
-                        onClick={() => {
-                          if (!map || !campaign) return;
-                          store.campaigns.setSelectedCampaignId(campaign.id);
-                          store.maps.setSelectedMapId(map.id);
-                          store.maps.setModal(MapModal.CreateUpdate);
-                          popupState.close();
-                        }}
-                      >
-                        <ListItemIcon>
-                          <Edit />
-                        </ListItemIcon>
-                        <ListItemText>Update</ListItemText>
-                      </MenuItem>
+                    <Popover
+                      {...bindPopover(popupState)}
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    >
+                      <MenuList>
+                        <MenuItem
+                          onClick={() => {
+                            if (!map || !campaign) return;
+                            store.campaigns.setSelectedCampaignId(campaign.id);
+                            store.maps.setSelectedMapId(map.id);
+                            store.maps.setModal(MapModal.CreateUpdate);
+                            popupState.close();
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Edit />
+                          </ListItemIcon>
+                          <ListItemText>Update</ListItemText>
+                        </MenuItem>
 
-                      <MenuItem
-                        disabled={duplicating}
-                        onClick={async () => {
-                          if (!map) return;
-                          setDuplicating(true);
-                          await duplicateMap.mutateAsync(map);
-                          setDuplicating(false);
-                          popupState.close();
-                        }}
-                      >
-                        <ListItemIcon>
-                          {duplicating ? <CircularProgress size={25.71} disableShrink /> : <FileCopy />}
-                        </ListItemIcon>
-                        <ListItemText>Duplicate</ListItemText>
-                      </MenuItem>
+                        <MenuItem
+                          disabled={duplicating}
+                          onClick={async () => {
+                            if (!map) return;
+                            setDuplicating(true);
+                            await duplicateMap.mutateAsync(map);
+                            setDuplicating(false);
+                            popupState.close();
+                          }}
+                        >
+                          <ListItemIcon>
+                            {duplicating ? <CircularProgress size={25.71} disableShrink /> : <FileCopy />}
+                          </ListItemIcon>
+                          <ListItemText>Duplicate</ListItemText>
+                        </MenuItem>
 
-                      <MenuItem
-                        onClick={() => {
-                          if (!map || !campaign) return;
-                          store.campaigns.setSelectedCampaignId(campaign.id);
-                          store.maps.setSelectedMapId(map.id);
-                          store.maps.setModal(MapModal.Delete);
-                          popupState.close();
-                        }}
-                      >
-                        <ListItemIcon>
-                          <Delete />
-                        </ListItemIcon>
-                        <ListItemText>Delete</ListItemText>
-                      </MenuItem>
-                    </MenuList>
-                  </Popover>
-                </>
-              )}
-            </PopupState>
+                        <MenuItem
+                          onClick={() => {
+                            if (!map || !campaign) return;
+                            store.campaigns.setSelectedCampaignId(campaign.id);
+                            store.maps.setSelectedMapId(map.id);
+                            store.maps.setModal(MapModal.Delete);
+                            popupState.close();
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Delete />
+                          </ListItemIcon>
+                          <ListItemText>Delete</ListItemText>
+                        </MenuItem>
+                      </MenuList>
+                    </Popover>
+                  </>
+                )}
+              </PopupState>
+            )}
           </CardContent>
         </>
       ) : (

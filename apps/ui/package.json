@@ -25,8 +25,10 @@
     "@mui/icons-material": "^5.14.18",
     "@mui/lab": "5.0.0-alpha.153",
     "@mui/material": "^5.14.18",
+    "@paciolan/remote-module-loader": "^3.0.2",
     "@pixi/react": "^7.1.1",
     "@tanstack/react-query": "^5.8.4",
+    "@tanstack/react-query-devtools": "^5.8.4",
     "@tarrasque/common": "workspace:*",
     "@tarrasque/sdk": "workspace:*",
     "@uppy/core": "^3.7.1",
@@ -53,7 +55,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@svgr/webpack": "^8.1.0",
-    "@types/node": "^20.9.1",
+    "@types/node": "^20.9.2",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^18.2.37"
   }

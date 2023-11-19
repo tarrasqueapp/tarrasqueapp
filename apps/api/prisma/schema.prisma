@@ -55,7 +55,7 @@ model User {
   displayName          String
   email                String        @unique
   isEmailVerified      Boolean       @default(false)
-  password             String
+  password             Password?     @relation("UserPassword")
   // Avatar
   avatar               Media?        @relation("UserAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
   avatarId             String?
@@ -78,6 +78,13 @@ model User {
   controlledCharacters Character[]   @relation("ControlledCharacters")
   // Action tokens
   actionTokens         ActionToken[] @relation("UserActionTokens")
+}
+
+model Password {
+  hash   String
+  // User
+  user   User   @relation("UserPassword", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 }
 
 ////////////////////

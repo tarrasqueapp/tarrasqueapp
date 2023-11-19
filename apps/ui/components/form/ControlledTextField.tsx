@@ -28,8 +28,8 @@ export function ControlledTextField({ name, ...props }: ControlledTextFieldProps
       render={({ field }) => (
         <TextField
           inputRef={inputRef}
-          {...props}
           {...field}
+          {...props}
           error={!!errors[name]}
           helperText={errors[name] ? <>{errors[name]?.message}</> : ''}
         />

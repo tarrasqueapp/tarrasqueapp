@@ -3,12 +3,11 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
-import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
+import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 
 import { config } from '@tarrasque/common';
 
 import { AppModule } from './app/app.module';
-import { serializeUser } from './users/users.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -27,20 +26,6 @@ async function bootstrap() {
 
   // Validate all requests
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-
-  // Prisma middleware to hide password before sending to client
-  const prismaService: PrismaService = app.get(PrismaService);
-  prismaService.$use(async (params, next) => {
-    const result = await next(params);
-    if (params.model === 'User') {
-      if (['findUnique', 'findUniqueOrThrow', 'update'].includes(params.action)) {
-        return serializeUser(result);
-      } else if (['findMany'].includes(params.action)) {
-        return result.map(serializeUser);
-      }
-    }
-    return result;
-  });
 
   // Handle Prisma client exceptions
   const { httpAdapter } = app.get(HttpAdapterHost);

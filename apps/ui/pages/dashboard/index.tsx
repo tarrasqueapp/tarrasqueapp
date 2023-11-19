@@ -1,13 +1,19 @@
 import { Box, Container } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import { useEffect } from 'react';
 
-import { CampaignAccordions } from '../components/dashboard/CampaignAccordions';
-import { DashboardModals } from '../components/dashboard/DashboardModals';
-import { TopBar } from '../components/dashboard/TopBar/TopBar';
-import { Gradient } from '../lib/colors';
-import { AppNavigation } from '../lib/navigation';
-import { SSRUtils } from '../utils/SSRUtils';
+import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+
+import { CampaignAccordions } from '../../components/dashboard/CampaignAccordions';
+import { DashboardModals } from '../../components/dashboard/DashboardModals';
+import { TopBar } from '../../components/dashboard/TopBar/TopBar';
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
+import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
+import { useReactQuerySubscription } from '../../hooks/data/useReactQuerySubscription';
+import { Gradient } from '../../lib/colors';
+import { AppNavigation } from '../../lib/navigation';
+import { SSRUtils } from '../../utils/SSRUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const ssr = new SSRUtils(context);
@@ -27,14 +33,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {}, redirect: { destination: AppNavigation.SignIn } };
   }
 
-  // Prefetch campaigns and maps
-  const campaigns = await ssr.getUserCampaigns();
-  await Promise.all(campaigns.map((campaign) => ssr.getCampaignMaps(campaign.id)));
+  // Prefetch campaigns and notifications
+  await Promise.all([ssr.getUserCampaigns(), ssr.getNotifications()]);
 
   return { props: { dehydratedState: ssr.dehydrate() } };
 };
 
 export default function DashboardPage() {
+  const { data: campaigns } = useGetUserCampaigns();
+  const { data: user } = useGetUser();
+  useReactQuerySubscription();
+
+  useEffect(() => {
+    if (!user || !campaigns) return;
+
+    // Connect to the Tarrasque server
+    tarrasque.connect();
+
+    // Join the user room
+    tarrasque.emit(TarrasqueEvent.JOIN_USER_ROOM, user.id);
+
+    // Join the campaign rooms
+    campaigns.forEach((campaign) => {
+      tarrasque.emit(TarrasqueEvent.JOIN_CAMPAIGN_ROOM, campaign.id);
+    });
+  }, []);
+
   return (
     <>
       <Head>

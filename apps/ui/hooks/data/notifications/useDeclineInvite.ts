@@ -1,17 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { ActionTokenEntity } from '@tarrasque/sdk';
+import { ActionTokenEntity, NotificationEntity } from '@tarrasque/sdk';
 
-import { api } from '../../../../lib/api';
-import { NotificationsInterface } from '../../auth/notifications/useGetNotifications';
+import { api } from '../../../lib/api';
 
 /**
  * Send a request to decline an invite of a user to a campaign
  * @param invite - The invite to decline
  * @returns The updated notifications
  */
-async function declineCampaignInvite(invite: ActionTokenEntity) {
+async function declineInvite(invite: ActionTokenEntity) {
   const { data } = await api.post<void>(`/api/campaigns/${invite.campaignId}/invites/${invite.id}/decline`);
   return data;
 }
@@ -20,19 +19,19 @@ async function declineCampaignInvite(invite: ActionTokenEntity) {
  * Decline an invite of a user to a campaign
  * @returns Decline campaign invite mutation
  */
-export function useDeclineCampaignInvite() {
+export function useDeclineInvite() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: declineCampaignInvite,
+    mutationFn: declineInvite,
     // Optimistic update
     onMutate: async (invite) => {
       await queryClient.cancelQueries({ queryKey: ['notifications'] });
-      const previousNotifications = queryClient.getQueryData<NotificationsInterface>(['notifications']);
-      queryClient.setQueryData(['notifications'], (old: NotificationsInterface = { campaignInvites: [] }) => ({
-        ...old,
-        campaignInvites: old.campaignInvites.filter((i) => i.id !== invite.id),
-      }));
+      const previousNotifications = queryClient.getQueryData<NotificationEntity[]>(['notifications']);
+      queryClient.setQueryData<NotificationEntity[] | undefined>(['notifications'], (notifications) => {
+        if (!notifications) return;
+        return notifications.filter((n) => n.data.id !== invite.id);
+      });
       return { previousNotifications };
     },
     // Rollback
@@ -45,7 +44,6 @@ export function useDeclineCampaignInvite() {
         toast.error(err.message);
       }
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
     },
   });
 }

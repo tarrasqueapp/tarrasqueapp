@@ -3,12 +3,12 @@ import { IconButton, ListItem, ListItemText } from '@mui/material';
 
 import { ActionTokenEntity } from '@tarrasque/sdk';
 
-import { useAcceptCampaignInvite } from '../../../../hooks/data/campaigns/invites/useAcceptCampaignInvite';
-import { useDeclineCampaignInvite } from '../../../../hooks/data/campaigns/invites/useDeclineCampaignInvite';
+import { useAcceptInvite } from '../../../../hooks/data/notifications/useAcceptInvite';
+import { useDeclineInvite } from '../../../../hooks/data/notifications/useDeclineInvite';
 
 export function CampaignInviteNotification(invite: ActionTokenEntity) {
-  const acceptCampaignInvite = useAcceptCampaignInvite();
-  const declineCampaignInvite = useDeclineCampaignInvite();
+  const acceptCampaignInvite = useAcceptInvite();
+  const declineCampaignInvite = useDeclineInvite();
 
   return (
     <ListItem

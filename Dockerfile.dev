@@ -1,7 +1,10 @@
 FROM node:18-slim
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 RUN apt-get update && apt-get -y install openssl procps exiftool
-RUN npm install --global pnpm
 
 WORKDIR /app
 
@@ -18,7 +21,7 @@ COPY packages/common/package.json ./packages/common/
 COPY packages/sdk/package.json ./packages/sdk/
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy the rest of the files
 COPY . .

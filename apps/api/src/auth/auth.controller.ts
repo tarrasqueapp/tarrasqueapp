@@ -18,6 +18,7 @@ import { Response } from 'express';
 
 import { ActionTokensService } from '../action-tokens/action-tokens.service';
 import { CampaignsService } from '../campaigns/campaigns.service';
+import { InvitesGateway } from '../campaigns/modules/invites/invites.gateway';
 import { MembershipsService } from '../campaigns/modules/memberships/memberships.service';
 import { EmailService } from '../email/email.service';
 import { durationToDate } from '../helpers';
@@ -46,6 +47,7 @@ export class AuthController {
     private storageService: StorageService,
     private campaignsService: CampaignsService,
     private mapsService: MapsService,
+    private invitesGateway: InvitesGateway,
   ) {}
 
   /**
@@ -102,7 +104,7 @@ export class AuthController {
       const role = (payload?.role as Role) || Role.PLAYER;
 
       // Create the user
-      const user = await this.usersService.createUser({
+      user = await this.usersService.createUser({
         name: data.name,
         email,
         password: data.password,
@@ -113,6 +115,7 @@ export class AuthController {
 
       // Delete the invite once used
       this.actionTokensService.deleteToken(invite.id);
+      this.invitesGateway.deleteInvite(invite);
     }
 
     // Assign existing campaign invites to the new user
