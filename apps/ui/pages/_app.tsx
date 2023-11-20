@@ -1,19 +1,17 @@
 import { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { HydrationBoundary } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { useEffect, useState } from 'react';
 import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { Toaster } from 'react-hot-toast';
 
 import { Layout } from '../components/Layout';
-import { Providers } from '../components/Providers';
+import { ReactQueryProvider } from '../components/ReactQueryProvider';
 import createEmotionCache from '../lib/createEmotionCache';
 import { theme } from '../lib/theme';
 import '../styles/globals.css';
@@ -24,12 +22,6 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-const ReactQueryDevtoolsProduction = React.lazy(() =>
-  import('@tanstack/react-query-devtools/build/modern/production.js').then((d) => ({
-    default: d.ReactQueryDevtools,
-  })),
-);
-
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -38,12 +30,6 @@ type MyAppProps = AppProps & {
 };
 
 export default function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }: MyAppProps) {
-  const [showDevtools, setShowDevtools] = useState(false);
-
-  useEffect(() => {
-    window.toggleDevtools = () => setShowDevtools((old) => !old);
-  }, []);
-
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -79,21 +65,13 @@ export default function MyApp({ Component, pageProps, emotionCache = clientSideE
         <CssBaseline />
 
         <CookiesProvider cookies={(Component as any).universalCookies}>
-          <Providers>
-            <HydrationBoundary state={pageProps.dehydratedState}>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
+          <ReactQueryProvider dehydratedState={pageProps.dehydratedState}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
 
-              <Toaster />
-
-              {showDevtools && (
-                <React.Suspense fallback={null}>
-                  <ReactQueryDevtoolsProduction />
-                </React.Suspense>
-              )}
-            </HydrationBoundary>
-          </Providers>
+            <Toaster />
+          </ReactQueryProvider>
         </CookiesProvider>
       </ThemeProvider>
     </CacheProvider>

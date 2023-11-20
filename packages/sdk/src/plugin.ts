@@ -3,14 +3,17 @@ export class TarrasquePlugin {
   version = '0.0.0';
 
   /**
-   * Creates an instance of TarrasquePlugin.
-   * @param config - The configuration for the plugin
+   * Creates an instance of TarrasquePlugin
    */
   constructor() {
     console.log('TarrasquePlugin constructor');
   }
 
-  renderDock(): JSX.Element {
+  /**
+   * Renders the plugin's dock element
+   * @returns The dock element
+   */
+  renderDockElement(): JSX.Element {
     return null;
   }
 }

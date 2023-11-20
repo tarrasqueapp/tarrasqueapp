@@ -78,7 +78,7 @@ export const BottomBar = observer(function BottomBar() {
         gap: 1,
       }}
     >
-      {plugins?.map((plugin) => <Box key={plugin.name}>{plugin.renderDock()}</Box>)}
+      {plugins?.map((plugin) => <Box key={plugin.name}>{plugin.renderDockElement()}</Box>)}
 
       <Box sx={{ display: 'flex', flex: '1 0 auto' }} />
 

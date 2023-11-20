@@ -33,6 +33,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@mui/icons-material": "^5.14.18",
+    "@mui/material": "^5.14.18",
     "@tarrasque/sdk": "workspace:*",
     "react": "^18.2.0"
   },

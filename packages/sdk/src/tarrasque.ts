@@ -1,32 +1,18 @@
 import { Socket, io } from 'socket.io-client';
 
 import { TarrasqueEmitEvents, TarrasqueListenEvents } from './events';
+import { CampaignEntity, MapEntity } from './types';
 
 type CustomSocket = Socket<TarrasqueListenEvents, TarrasqueEmitEvents>;
 
-// The config that the Tarrasque SDK can be initialized with
-interface TarrasqueProps {
-  url?: string;
-}
-
-class Tarrasque implements TarrasqueProps {
-  // The URL of the Tarrasque App server
-  public url = process.env.HOST || 'https://tarrasque.app';
-
+class Tarrasque {
   // Socket.io client
   private socket: CustomSocket;
   public on: CustomSocket['on'];
   public off: CustomSocket['off'];
   public emit: CustomSocket['emit'];
 
-  /**
-   * Initialize the Tarrasque SDK with an optional config.
-   * @param config - The config to use
-   */
-  constructor(config?: TarrasqueProps) {
-    // Merge the config with the default config
-    Object.assign(this, config);
-
+  constructor() {
     // Initialize the socket.io client
     this.socket = io({ path: '/socket.io', transports: ['websocket'], autoConnect: false });
 
@@ -37,35 +23,77 @@ class Tarrasque implements TarrasqueProps {
   }
 
   /**
-   * Whether or not the Tarrasque SDK is connected to the server.
-   * @returns boolean
+   * Connect to the Tarrasque server
    */
-  get connected() {
-    return this.socket?.connected;
-  }
-
-  /**
-   * Connect to the Tarrasque server.
-   */
-  connect() {
+  public connect() {
     this.socket?.connect();
   }
 
   /**
-   * Disconnect from the Tarrasque server.
+   * Disconnect from the Tarrasque server
    */
-  disconnect() {
+  public disconnect() {
     this.socket?.disconnect();
   }
 
   /**
-   * Re-initialize the Tarrasque SDK with a new config.
-   * @param config - The new config to use
+   * Get a cached value from the Tarrasque client
+   * @param key - The key to get
+   * @returns The value
    */
-  init(config?: TarrasqueProps) {
-    tarrasque = new Tarrasque(config);
+  public get<T>(key: string[]): T {
+    return window.__REACT_QUERY_CLIENT__.getQueryData<T>(key);
   }
+
+  public current = {
+    /**
+     * Get the current map ID
+     * @returns The map ID
+     */
+    get mapId(): string {
+      // Get the path segments from the URL
+      const pathSegments = window.location.pathname.split('/').filter(Boolean);
+      // Find the index of the map prefix segment
+      const mapIndex = pathSegments.indexOf('map');
+
+      // If the map prefix segment exists and there is another segment after it, that's the map ID
+      if (mapIndex !== -1 && pathSegments.length > mapIndex + 1) {
+        return pathSegments[mapIndex + 1];
+      }
+
+      return null;
+    },
+
+    /**
+     * Get the current map
+     * @returns The map object
+     */
+    get map(): MapEntity {
+      console.log(tarrasque.get<MapEntity>(['maps', this.mapId]));
+      return this.mapId ? tarrasque.get<MapEntity>(['maps', this.mapId]) : null;
+    },
+
+    /**
+     * Get the current campaign ID
+     * @returns The campaign ID
+     */
+    get campaignId(): string {
+      // Get the current map object
+      const map = this.map;
+
+      // If the map exists, return the campaign ID
+      return map?.campaignId;
+    },
+
+    /**
+     * Get the current campaign
+     * @returns The campaign object
+     */
+    get campaign(): CampaignEntity {
+      return this.campaignId ? tarrasque.get<CampaignEntity>(['campaigns', this.campaignId]) : null;
+    },
+  };
 }
 
 // Export the Tarrasque SDK instance
-export let tarrasque = new Tarrasque();
+export const tarrasque = new Tarrasque();
