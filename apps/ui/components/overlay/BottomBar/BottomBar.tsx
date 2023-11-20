@@ -33,7 +33,10 @@ import NextLink from 'next/link';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
+import { config } from '@tarrasque/common';
+
 import { useGetUser } from '../../../hooks/data/auth/useGetUser';
+import { usePlugins } from '../../../hooks/usePlugins';
 import { Color } from '../../../lib/colors';
 import { AppNavigation, ExternalNavigation } from '../../../lib/navigation';
 import { store } from '../../../store';
@@ -50,6 +53,7 @@ const CustomIconButton = styled(IconButton)({
 
 export const BottomBar = observer(function BottomBar() {
   const { data: user } = useGetUser();
+  const { data: plugins } = usePlugins([`${config.HOST}/plugins/@tarrasque/example-plugin/dist/index.js`]);
 
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
@@ -74,6 +78,8 @@ export const BottomBar = observer(function BottomBar() {
         gap: 1,
       }}
     >
+      {plugins?.map((plugin) => <Box key={plugin.name}>{plugin.renderDock()}</Box>)}
+
       <Box sx={{ display: 'flex', flex: '1 0 auto' }} />
 
       {user && (
