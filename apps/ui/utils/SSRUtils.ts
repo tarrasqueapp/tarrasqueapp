@@ -35,10 +35,10 @@ export class SSRUtils {
    */
   async getUser() {
     await this.queryClient.prefetchQuery({
-      queryKey: ['auth'],
+      queryKey: ['user'],
       queryFn: () => getUser({ withCredentials: true, headers: this.headers }) || null,
     });
-    return this.queryClient.getQueryData<UserEntity>(['auth']) || null;
+    return this.queryClient.getQueryData<UserEntity>(['user']) || null;
   }
 
   /**

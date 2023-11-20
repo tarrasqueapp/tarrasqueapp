@@ -30,7 +30,7 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['auth'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 }

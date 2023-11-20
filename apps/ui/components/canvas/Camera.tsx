@@ -7,6 +7,7 @@ import useLocalStorage from 'use-local-storage';
 
 import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
 
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { store } from '../../store';
 import { CameraBase } from './CameraBase';
@@ -19,6 +20,8 @@ interface CameraProps {
 }
 
 export const Camera = observer(function Camera({ mapId, width, height, children }: CameraProps) {
+  const { data: user } = useGetUser();
+
   const app = useApp();
   const windowSize = useWindowSize();
 
@@ -97,11 +100,18 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
    * Handle the double click event
    * @param event - The interaction event
    */
-  function handleDoubleClick() {
-    console.debug('Double Click.');
-    // Emit a "pingLocation" event to the server, passing the map ID and the global coordinates of the click event
-    // tarrasque.emit(TarrasqueEvent.PING_LOCATION, { mapId, ...event.global });
-    tarrasque.emit(TarrasqueEvent.PING_LOCATION, mapId);
+  function handleDoubleClick(event: PIXI.FederatedPointerEvent) {
+    console.debug('Double Click.', event.global);
+
+    // Get the coordinates of the double click event relative to the map
+    const coordinates = store.pixi.viewport.toWorld(event.global.x, event.global.y);
+
+    tarrasque.emit(TarrasqueEvent.PING_LOCATION, {
+      coordinates,
+      color: 'red',
+      mapId,
+      userId: user?.id || '',
+    });
   }
 
   /**

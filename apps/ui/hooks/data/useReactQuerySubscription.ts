@@ -67,7 +67,7 @@ export function useReactQuerySubscription() {
    * @param user - The updated user
    */
   function handleUserUpdated(user: UserEntity) {
-    queryClient.setQueryData<UserEntity>(['auth'], user);
+    queryClient.setQueryData<UserEntity>(['user'], user);
   }
 
   /**
@@ -75,7 +75,7 @@ export function useReactQuerySubscription() {
    * @param user - The deleted user
    */
   function handleUserDeleted() {
-    queryClient.setQueryData<UserEntity | null>(['auth'], null);
+    queryClient.setQueryData<UserEntity | null>(['user'], null);
     router.reload();
   }
 
@@ -188,7 +188,7 @@ export function useReactQuerySubscription() {
     });
 
     // Remove the campaign from the cache if the user is the current user
-    const user = queryClient.getQueryData<UserEntity>(['auth']);
+    const user = queryClient.getQueryData<UserEntity>(['user']);
     if (user?.id === membership.userId) {
       queryClient.setQueryData<MembershipEntity[]>(['campaigns', membership.campaignId], undefined);
       queryClient.setQueryData<CampaignEntity[]>(['campaigns'], (campaigns) => {

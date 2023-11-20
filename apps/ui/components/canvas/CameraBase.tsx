@@ -34,77 +34,90 @@ export const CameraBase = PixiComponent('Camera', {
     // State variables for tracking clicks and press events
     let clicks = 0;
     let pressed = false;
-    let clickTimer: ReturnType<typeof setTimeout>;
-    let longPressTimer: ReturnType<typeof setTimeout>;
+    let isDragging = false;
+    let clickTimer: number | undefined;
+    let longPressTimer: number | undefined;
+    let lastClickTime = 0;
     const doubleClickTimespan = 500;
     const longPressTimespan = 500;
 
-    // Handle pointer down events (e.g. mouse down or touch start)
     viewport.on('pointerdown', (event) => {
-      // Check if the event was a right click
+      // Trigger onRightClick for right mouse button click
       if (event.nativeEvent.button === 2) {
         props.onRightClick?.(event);
-        return;
+        event.stopPropagation();
+        return false;
       }
+
       pressed = true;
+      const timeSinceLastClick = event.timeStamp - lastClickTime;
+      lastClickTime = event.timeStamp;
       clicks++;
 
-      // If this was the first click, start a timer to track the length of the press
       if (clicks === 1) {
-        props.onBeforeSingleClick?.(event);
-        // Start a timer to detect a single click
-        clickTimer = setTimeout(() => {
+        props.onBeforeSingleClick?.(event); // Trigger onBeforeSingleClick
+
+        clickTimer = window.setTimeout(() => {
           clicks = 0;
-          // Check if the pointer is still pressed
-          if (!pressed) {
+          if (!pressed && !isDragging) {
             props.onSingleClick?.(event);
           }
         }, doubleClickTimespan);
 
-        // If this was the second click, reset the click count and clear the timer
-      } else if (clicks === 2) {
+        longPressTimer = window.setTimeout(() => {
+          if (pressed && !isDragging) {
+            props.onRightClick?.(event); // Trigger onRightClick on long press
+          }
+        }, longPressTimespan);
+      } else if (clicks === 2 && timeSinceLastClick < doubleClickTimespan) {
         clicks = 0;
-        clearTimeout(clickTimer);
-        props.onDoubleClick?.(event);
+        if (clickTimer !== undefined) {
+          window.clearTimeout(clickTimer);
+        }
+        if (!isDragging) {
+          props.onDoubleClick?.(event);
+        }
       }
-
-      // Start a timer to detect a long press
-      longPressTimer = setTimeout(() => {
-        props.onRightClick?.(event);
-      }, longPressTimespan);
     });
 
-    // Handle drag start events on the viewport
-    viewport.on('drag-start', () => {
-      clicks = 0;
-      clearTimeout(clickTimer);
-    });
-
-    // Handle pointer move events on the viewport
-    viewport.on('pointermove', () => {
-      clicks = 0;
-      clearTimeout(longPressTimer);
-    });
-
-    // Handle pointer up events on the viewport (e.g. mouse up or touch end)
     viewport.on('pointerup', () => {
+      if (isDragging) {
+        return;
+      }
       pressed = false;
-      clearTimeout(longPressTimer);
+      if (longPressTimer !== undefined) {
+        window.clearTimeout(longPressTimer);
+      }
     });
 
-    // Don't handle long press events on the viewport if pinching
+    viewport.on('drag-start', () => {
+      isDragging = true;
+      clicks = 0;
+      if (clickTimer !== undefined) {
+        window.clearTimeout(clickTimer);
+      }
+      if (longPressTimer !== undefined) {
+        window.clearTimeout(longPressTimer);
+      }
+    });
+
+    viewport.on('drag-end', () => {
+      isDragging = false;
+    });
+
     viewport.on('pinch-start', () => {
       clicks = 0;
       pressed = false;
-      clearTimeout(longPressTimer);
+      isDragging = true;
+      if (longPressTimer !== undefined) {
+        window.clearTimeout(longPressTimer);
+      }
     });
 
-    // Update local state when the viewport is moved
     viewport.on('moved-end', (event) => {
       props.onMove?.(event);
     });
 
-    // Update local state when the viewport is zoomed
     viewport.on('zoomed-end', (event) => {
       props.onMove?.(event);
     });

@@ -2,11 +2,15 @@ import { GpsFixed } from '@mui/icons-material';
 import { Chip, Fade, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
-// import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
+import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+
+import { useGetUser } from '../../hooks/data/auth/useGetUser';
+import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { store } from '../../store';
 
 export const MapContextMenu = observer(function MapContextMenu() {
-  // const { data: map } = useGetCurrentMap();
+  const { data: map } = useGetCurrentMap();
+  const { data: user } = useGetUser();
 
   const width = 230;
 
@@ -29,10 +33,24 @@ export const MapContextMenu = observer(function MapContextMenu() {
   }
 
   /**
-   * Ping the location
+   * Ping the location where the context menu was opened
    */
   function handlePingLocation() {
-    // store.app.socket.emit('pingLocation', { mapId: map?.id, ...store.map.contextMenuAnchorPoint });
+    if (!map || !user) return;
+
+    // Get the coordinates of the context menu relative to the map
+    const { x, y } = store.map.contextMenuAnchorPoint;
+    const coordinates = store.pixi.viewport.toWorld(x, y);
+
+    // Emit the ping location event
+    tarrasque.emit(TarrasqueEvent.PING_LOCATION, {
+      coordinates,
+      color: 'red',
+      mapId: map.id,
+      userId: user.id,
+    });
+
+    // Hide the context menu
     store.map.setContextMenuVisible(false);
   }
 

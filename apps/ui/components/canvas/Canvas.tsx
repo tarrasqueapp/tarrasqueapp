@@ -1,19 +1,21 @@
 import { Stage } from '@pixi/react';
+import { QueryClientContext } from '@tanstack/react-query';
 import { Color as PixiColor } from 'pixi.js';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { useGetTokens } from '../../hooks/data/tokens/useGetTokens';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { Color } from '../../lib/colors';
-import { Providers } from '../Providers';
 import { Grid } from './Grid';
 import { Map } from './Map';
+import PingLocation from './PingLocation';
 import { Token } from './Token';
 
 export default function Canvas() {
   const { data: map } = useGetCurrentMap();
   const { data: tokens } = useGetTokens(map?.id);
+  const context = useContext(QueryClientContext);
 
   const windowSize = useWindowSize();
 
@@ -32,7 +34,7 @@ export default function Canvas() {
         eventMode: 'dynamic',
       }}
     >
-      <Providers>
+      <QueryClientContext.Provider value={context}>
         <Map mapId={map.id} width={media.width} height={media.height} url={media.url}>
           <Grid width={media.width} height={media.height} size={70} color={Color.BLACK} />
           {tokens?.map((token) => (
@@ -48,8 +50,10 @@ export default function Canvas() {
               height={70}
             />
           ))}
+
+          <PingLocation />
         </Map>
-      </Providers>
+      </QueryClientContext.Provider>
     </Stage>
   );
 }

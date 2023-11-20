@@ -24,7 +24,7 @@ export function useVerifyEmail() {
   return useMutation({
     mutationFn: verifyEmail,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['auth'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 }

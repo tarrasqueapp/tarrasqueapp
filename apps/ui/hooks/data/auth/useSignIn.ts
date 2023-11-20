@@ -24,7 +24,7 @@ export function useSignIn() {
   return useMutation({
     mutationFn: signIn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['auth'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 }

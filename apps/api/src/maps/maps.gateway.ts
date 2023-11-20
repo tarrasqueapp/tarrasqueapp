@@ -1,8 +1,9 @@
 import { Logger, UseGuards } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { createId } from '@paralleldrive/cuid2';
 import { Server, Socket } from 'socket.io';
 
-import { TarrasqueEvent } from '@tarrasque/sdk';
+import { PingLocationEntity, TarrasqueEvent } from '@tarrasque/sdk';
 
 import { JwtWsAuthGuard } from '../auth/guards/jwt-ws-auth.guard';
 import { CampaignsService } from '../campaigns/campaigns.service';
@@ -51,10 +52,13 @@ export class MapsGateway {
    * @param map - The map to ping a location in the client
    */
   @SubscribeMessage(TarrasqueEvent.PING_LOCATION)
-  pingLocation(@MessageBody() mapId: string) {
+  pingLocation(@MessageBody() data: PingLocationEntity) {
+    // Generate a unique ID for the ping
+    const id = createId();
+
     // Emit the pinged location to the map's room
-    this.server.to(`map/${mapId}`).emit(TarrasqueEvent.PINGED_LOCATION, mapId);
-    this.logger.debug(`🚀 Map "${mapId}" pinged`);
+    this.server.to(`map/${data.mapId}`).emit(TarrasqueEvent.PINGED_LOCATION, { id, ...data });
+    this.logger.debug(`🚀 Map "${data.mapId}" pinged`);
   }
 
   /**

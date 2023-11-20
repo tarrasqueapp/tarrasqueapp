@@ -5,6 +5,7 @@ import {
   MapEntity,
   MembershipEntity,
   NotificationEntity,
+  PingLocationEntity,
   UserEntity,
 } from './types';
 
@@ -94,7 +95,7 @@ export interface TarrasqueListenEvents {
   [TarrasqueEvent.MAP_CREATED]: (data: MapEntity) => void;
   [TarrasqueEvent.MAP_UPDATED]: (data: MapEntity) => void;
   [TarrasqueEvent.MAP_DELETED]: (data: MapEntity) => void;
-  [TarrasqueEvent.PINGED_LOCATION]: (data: MapEntity) => void;
+  [TarrasqueEvent.PINGED_LOCATION]: (data: PingLocationEntity) => void;
 }
 
 // The events that the Tarrasque SDK can emit
@@ -112,5 +113,5 @@ export interface TarrasqueEmitEvents {
 
   // Maps
   [TarrasqueEvent.JOIN_MAP_ROOM]: (mapId: string) => void;
-  [TarrasqueEvent.PING_LOCATION]: (mapId: string) => void;
+  [TarrasqueEvent.PING_LOCATION]: (data: PingLocationEntity) => void;
 }

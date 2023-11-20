@@ -24,7 +24,7 @@ export function useUpdateUser() {
   return useMutation({
     mutationFn: updateUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['auth'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 }

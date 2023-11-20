@@ -20,7 +20,7 @@ export async function getUser(requestConfig?: RawAxiosRequestConfig) {
  */
 export function useGetUser() {
   return useQuery({
-    queryKey: ['auth'],
+    queryKey: ['user'],
     queryFn: getUser,
   });
 }

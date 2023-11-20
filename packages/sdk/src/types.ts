@@ -128,6 +128,19 @@ export class DimensionsEntity {
   height: number;
 }
 
+export class CoordinatesEntity {
+  x: number;
+  y: number;
+}
+
+export class PingLocationEntity {
+  id?: string;
+  coordinates: CoordinatesEntity;
+  color: string;
+  mapId: string;
+  userId: string;
+}
+
 export class FileEntity {
   id: string;
   name: string;
