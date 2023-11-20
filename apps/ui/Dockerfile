@@ -25,7 +25,7 @@ COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --from=builder /app/out/patches ./patches/
+COPY --from=builder /app/out/full/patches ./patches
 
 # Install dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
@@ -38,7 +38,6 @@ COPY turbo.json turbo.json
 ARG HOST
 ARG API_BASE_URL
 ARG NODE_ENV
-ARG JWT_EXPIRES_IN
 
 # Build the app
 RUN pnpm build:ui
