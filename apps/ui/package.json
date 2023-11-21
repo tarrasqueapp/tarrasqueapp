@@ -30,7 +30,7 @@
     "@tanstack/react-query": "^5.8.4",
     "@tanstack/react-query-devtools": "^5.8.4",
     "@tarrasque/common": "workspace:*",
-    "@tarrasque/sdk": "workspace:*",
+    "@tarrasque/sdk": "^0.0.3",
     "@uppy/core": "^3.7.1",
     "@uppy/tus": "^3.4.0",
     "axios": "^1.6.2",
@@ -54,8 +54,9 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@svgr/webpack": "^8.1.0",
-    "@types/node": "^20.9.2",
+    "@types/node": "^20.9.3",
     "@types/nprogress": "^0.2.3",
-    "@types/react": "^18.2.37"
+    "@types/react": "^18.2.38",
+    "eslint": "^8.54.0"
   }
 }
