@@ -1,17 +1,12 @@
 import { People } from '@mui/icons-material';
-import { IconButton, styled } from '@mui/material';
+import { IconButton } from '@mui/material';
 
-import { TarrasqueEvent, TarrasquePlugin, UserEntity, tarrasque } from '@tarrasque/sdk';
+import { TarrasqueEvent, TarrasquePlugin, tarrasque } from '@tarrasque/sdk';
 
 import packageJson from '../package.json';
 
-const CustomIconButton = styled(IconButton)({
-  background: 'rgba(255, 255, 255, 0.1)',
-  borderRadius: '10px',
-});
-
 export default class ExamplePlugin extends TarrasquePlugin {
-  name = '@tarrasque/example-plugin';
+  name = packageJson.name;
   version = packageJson.version;
   title = 'Example Plugin';
   description = 'An example plugin for Tarrasque';
@@ -25,29 +20,26 @@ export default class ExamplePlugin extends TarrasquePlugin {
     });
   }
 
+  /**
+   * Render the dock element for the plugin
+   * @returns The dock element
+   */
   renderDockElement() {
     return (
-      <CustomIconButton
+      <IconButton
+        sx={{ background: 'rgba(255, 255, 255, 0.1)', borderRadius: '10px' }}
         onClick={() => {
-          // Get the current user
-          const user = tarrasque.get<UserEntity>(['user']);
-
-          // Get the current map
-          const map = tarrasque.current.map;
-
-          console.log(tarrasque.current);
-
           // Emit the ping location event
           tarrasque.emit(TarrasqueEvent.PING_LOCATION, {
             coordinates: { x: 0, y: 0 },
             color: 'red',
-            mapId: map?.id,
-            userId: user?.id,
+            mapId: tarrasque.data.map.id,
+            userId: tarrasque.data.user.id,
           });
         }}
       >
         <People fontSize="large" />
-      </CustomIconButton>
+      </IconButton>
     );
   }
 }

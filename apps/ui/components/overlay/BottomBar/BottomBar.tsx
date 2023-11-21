@@ -33,8 +33,6 @@ import NextLink from 'next/link';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { config } from '@tarrasque/common';
-
 import { useGetUser } from '../../../hooks/data/auth/useGetUser';
 import { usePlugins } from '../../../hooks/usePlugins';
 import { Color } from '../../../lib/colors';
@@ -53,7 +51,7 @@ const CustomIconButton = styled(IconButton)({
 
 export const BottomBar = observer(function BottomBar() {
   const { data: user } = useGetUser();
-  const { data: plugins } = usePlugins([`${config.HOST}/plugins/@tarrasque/example-plugin/dist/index.js`]);
+  const { data: plugins } = usePlugins(['http://localhost:3000/dist/index.js']);
 
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
