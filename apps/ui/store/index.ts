@@ -1,6 +1,5 @@
 import { enableStaticRendering } from 'mobx-react-lite';
 
-import { appStore } from './app';
 import { campaignsStore } from './campaigns';
 import { dashboardStore } from './dashboard';
 import { mapStore } from './map';
@@ -13,7 +12,6 @@ const isServer = typeof window === 'undefined';
 enableStaticRendering(isServer);
 
 export const store = {
-  app: appStore,
   campaigns: campaignsStore,
   dashboard: dashboardStore,
   map: mapStore,

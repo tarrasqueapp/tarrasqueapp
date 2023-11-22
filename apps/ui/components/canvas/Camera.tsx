@@ -1,5 +1,4 @@
 import { useApp } from '@pixi/react';
-import { observer } from 'mobx-react-lite';
 import { Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
@@ -8,7 +7,9 @@ import useLocalStorage from 'use-local-storage';
 import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
+import { useIsTrackpad } from '../../hooks/useIsTrackpad';
 import { useWindowSize } from '../../hooks/useWindowSize';
+import { Color } from '../../lib/colors';
 import { store } from '../../store';
 import { CameraBase } from './CameraBase';
 
@@ -19,11 +20,12 @@ interface CameraProps {
   children?: React.ReactNode;
 }
 
-export const Camera = observer(function Camera({ mapId, width, height, children }: CameraProps) {
+export function Camera({ mapId, width, height, children }: CameraProps) {
   const { data: user } = useGetUser();
 
   const app = useApp();
   const windowSize = useWindowSize();
+  const isTrackpad = useIsTrackpad();
 
   // Get the camera position from local storage
   const [position, setPosition] = useLocalStorage(`map-position/${mapId}`, {
@@ -49,28 +51,6 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
 
     setMounted(true);
   }, [position]);
-
-  useEffect(() => {
-    /**
-     * Detect whether the user is using a trackpad
-     * @param event - The mouse wheel event
-     */
-    function detectTrackPad(event: Event) {
-      if ((event as any).wheelDeltaY) {
-        if ((event as any).wheelDeltaY === (event as any).deltaY * -3) {
-          store.app.setIsTrackpad(true);
-        }
-      } else if ((event as any).deltaMode === 0) {
-        store.app.setIsTrackpad(true);
-      } else {
-        store.app.setIsTrackpad(false);
-      }
-    }
-
-    // Add event listeners for mouse wheel and trackpad events
-    document.addEventListener('mousewheel', detectTrackPad);
-    document.addEventListener('DOMMouseScroll', detectTrackPad);
-  }, []);
 
   /**
    * Handle the load event
@@ -106,9 +86,15 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
     // Get the coordinates of the double click event relative to the map
     const coordinates = store.pixi.viewport.toWorld(event.global.x, event.global.y);
 
+    // Choose a random color from the list of available colors
+    const availableColors = [Color.RED, Color.GREEN, Color.BLUE, Color.ORANGE];
+    const additionalColors = ['#874AC4', '#C1C14E', '#17DE7A', '#966969', '#3232B8', '#E42FE4'];
+    const colors = [...availableColors, ...additionalColors];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
     tarrasque.emit(TarrasqueEvent.PING_LOCATION, {
       coordinates,
-      color: 'red',
+      color,
       mapId,
       userId: user?.id || '',
     });
@@ -153,9 +139,9 @@ export const Camera = observer(function Camera({ mapId, width, height, children 
       onDoubleClick={handleDoubleClick}
       onRightClick={handleRightClick}
       onMove={handleMove}
-      isTrackpad={store.app.isTrackpad}
+      isTrackpad={isTrackpad}
     >
       {children}
     </CameraBase>
   );
-});
+}

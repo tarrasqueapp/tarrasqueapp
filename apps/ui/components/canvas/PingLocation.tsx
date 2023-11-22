@@ -3,29 +3,37 @@ import React, { useEffect, useState } from 'react';
 
 import { PingLocationEntity, TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
 
-import { Color } from '../../lib/colors';
-
 export default function PingLocation() {
-  const [pings, setPings] = useState<PingLocationEntity[]>([]);
-
-  // Pulse the red circle, smoothly growing and shrinking in size, forever, smoothly repeating
-  const [size, setSize] = useState(0);
-  const minSize = 0;
-  const maxSize = 100;
-  const speed = 0.05; // Adjust the speed of the transition
+  const [pings, setPings] = useState<(PingLocationEntity & { size: number; frame: number })[]>([]);
 
   useEffect(() => {
     tarrasque.on(TarrasqueEvent.PINGED_LOCATION, (ping) => {
-      setPings((pings) => [...pings, ping]);
+      const pingWithAnimation = {
+        ...ping,
+        frame: 0,
+        size: 0,
+        timestamp: Date.now(),
+      };
+      setPings((currentPings) => [...currentPings, pingWithAnimation]);
+
+      // Set timeout to remove the ping after 1.5 seconds
+      setTimeout(() => {
+        setPings((currentPings) => currentPings.filter((p) => p.id !== pingWithAnimation.id));
+      }, 1750);
     });
+  }, []);
 
-    let frame = 0;
-
+  useEffect(() => {
     const interval = setInterval(() => {
-      // Use a sine wave to smoothly transition the size
-      const newSize = minSize + ((maxSize - minSize) * (Math.sin(frame * speed) + 1)) / 2;
-      setSize(newSize);
-      frame++;
+      setPings((currentPings) =>
+        currentPings.map((ping) => {
+          const minSize = 0;
+          const maxSize = 100;
+          const speed = 0.15;
+          const newSize = minSize + ((maxSize - minSize) * (Math.sin(ping.frame * speed) + 1)) / 2;
+          return { ...ping, size: newSize, frame: ping.frame + 1 };
+        }),
+      );
     }, 1000 / 60);
 
     return () => clearInterval(interval);
@@ -38,8 +46,10 @@ export default function PingLocation() {
           key={index}
           draw={(g) => {
             g.clear();
-            g.lineStyle(5, Color.RED);
-            g.drawCircle(0, 0, size);
+            g.lineStyle(5, ping.color, 0.5);
+            g.beginFill(ping.color, 0.5); // Begin the fill process
+            g.drawCircle(0, 0, ping.size); // Draw the circle
+            g.endFill(); // Complete the fill process
           }}
           x={ping.coordinates.x}
           y={ping.coordinates.y}

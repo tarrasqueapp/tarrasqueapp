@@ -96,20 +96,6 @@ export const ZoomControls = observer(function ZoomControls() {
     }
   });
 
-  // Disable the pinch to zoom gesture on non-canvas elements
-  useDocumentEventListener(
-    'wheel',
-    (event: WheelEvent) => {
-      const target = event.target as HTMLCanvasElement;
-      if (target?.nodeName !== 'CANVAS' && event.ctrlKey) {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
-      }
-    },
-    { passive: false },
-  );
-
   return (
     <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
       <ToggleButtonGroup orientation="vertical" sx={{ background: alpha(Color.BLACK_LIGHT, 0.9) }}>
