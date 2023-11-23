@@ -54,7 +54,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@svgr/webpack": "^8.1.0",
-    "@types/node": "^20.9.3",
+    "@types/node": "^20.9.4",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^18.2.38",
     "eslint": "^8.54.0"

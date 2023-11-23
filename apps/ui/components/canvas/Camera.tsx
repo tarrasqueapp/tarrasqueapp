@@ -7,7 +7,6 @@ import useLocalStorage from 'use-local-storage';
 import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useIsTrackpad } from '../../hooks/useIsTrackpad';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { Color } from '../../lib/colors';
 import { store } from '../../store';
@@ -25,7 +24,6 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
 
   const app = useApp();
   const windowSize = useWindowSize();
-  const isTrackpad = useIsTrackpad();
 
   // Get the camera position from local storage
   const [position, setPosition] = useLocalStorage(`map-position/${mapId}`, {
@@ -139,7 +137,6 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
       onDoubleClick={handleDoubleClick}
       onRightClick={handleRightClick}
       onMove={handleMove}
-      isTrackpad={isTrackpad}
     >
       {children}
     </CameraBase>

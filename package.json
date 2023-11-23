@@ -29,14 +29,10 @@
     "@tronite/tsconfig": "^1.0.5",
     "@types/react": "^18.2.38",
     "eslint": "^8.54.0",
-    "jsdom": "^22.1.0",
     "prettier": "^3.1.0",
-    "react": "^18.2.0",
-    "tsup": "^7.3.0",
+    "tsup": "^8.0.1",
     "turbo": "^1.10.16",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
-    "vitest": "^0.34.6"
+    "typescript": "^5.2.2"
   },
   "packageManager": "pnpm@8.8.0",
   "pnpm": {

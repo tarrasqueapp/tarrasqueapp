@@ -12,8 +12,6 @@ interface CameraBaseProps extends IViewportOptions {
   onDoubleClick?: (event: PIXI.FederatedPointerEvent) => void;
   onRightClick?: (event: PIXI.FederatedPointerEvent) => void;
   onMove?: (viewport: Viewport) => void;
-  isTrackpad?: boolean;
-  pressToDrag?: boolean;
   children?: React.ReactNode;
 }
 
@@ -128,11 +126,6 @@ export const CameraBase = PixiComponent('Camera', {
   },
   applyProps: (viewport: Viewport, oldProps, newProps) => {
     if (!oldProps) return;
-
-    // If the isTrackpad prop changed, update the wheel zoom behavior on the viewport
-    if (oldProps.isTrackpad !== newProps.isTrackpad) {
-      viewport.wheel({ trackpadPinch: true, wheelZoom: !newProps.isTrackpad });
-    }
 
     // If the screenWidth or screenHeight props changed, update the viewport dimensions
     if (oldProps.screenWidth !== newProps.screenWidth || oldProps.screenHeight !== newProps.screenHeight) {
