@@ -57,6 +57,42 @@ export function MapCard({ map, campaign }: MapCardProps) {
 
   const thumbnailUrl = map?.media.find((media) => media.id === map.selectedMediaId)?.thumbnailUrl;
 
+  if (!isGameMaster) {
+    return (
+      <Card sx={{ position: 'relative', width, height }}>
+        {map ? (
+          <>
+            <NextLink
+              href={`${AppNavigation.Map}/[mapId]`}
+              as={`${AppNavigation.Map}/${map.id}`}
+              passHref
+              legacyBehavior
+            >
+              <CardActionArea>
+                <CardContent
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width,
+                    height,
+                    background: 'rgba(255, 255, 255, 0.03)',
+                  }}
+                >
+                  <Typography variant="body2" sx={{ wordBreak: 'break-word', m: 1.5 }}>
+                    {map.name}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </NextLink>
+          </>
+        ) : (
+          <Skeleton width={width} height={height} />
+        )}
+      </Card>
+    );
+  }
+
   return (
     <Card
       sx={{ position: 'relative', width, height }}
@@ -67,12 +103,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
     >
       {map ? (
         <>
-          <NextLink
-            href={`${AppNavigation.Map}/[mapId]`}
-            as={`${AppNavigation.Map}/${map?.id}`}
-            passHref
-            legacyBehavior
-          >
+          <NextLink href={`${AppNavigation.Map}/[mapId]`} as={`${AppNavigation.Map}/${map.id}`} passHref legacyBehavior>
             <CardActionArea sx={{ position: 'static' }}>
               <CardMedia>
                 <Box

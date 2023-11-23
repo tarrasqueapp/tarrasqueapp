@@ -32,10 +32,11 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
-import { CampaignEntity, Role } from '@tarrasque/sdk';
+import { CampaignEntity, MembershipEntity, Role } from '@tarrasque/sdk';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
+import { Color } from '../../lib/colors';
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
@@ -80,6 +81,18 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
   const isGameMaster = campaign?.memberships.some(
     (membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER,
   );
+
+  /**
+   * Check if user is game master of campaign
+   * @param membership - Membership to check
+   * @returns True if user is game master of campaign
+   */
+  function isCampaignGameMaster(membership: MembershipEntity) {
+    return campaign?.memberships.some(
+      (campaignMembership) =>
+        campaignMembership.userId === membership.userId && campaignMembership.role === Role.GAME_MASTER,
+    );
+  }
 
   /**
    * Set active map id for drag and drop
@@ -153,15 +166,24 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              {campaign?.memberships.map((membership) => (
-                <Tooltip key={membership.userId} title={membership.user.displayName}>
-                  <Avatar src={membership.user.avatar?.thumbnailUrl} sx={{ width: 20, height: 20 }} />
-                </Tooltip>
-              ))}
+              {campaign?.memberships.map((membership) => {
+                const isGameMaster = isCampaignGameMaster(membership);
+
+                return (
+                  <Tooltip
+                    key={membership.userId}
+                    title={isGameMaster ? `${membership.user.displayName} (Game Master)` : membership.user.displayName}
+                  >
+                    <Box sx={{ ...(isGameMaster && { border: `2px dotted ${Color.ORANGE}`, borderRadius: 90 }) }}>
+                      <Avatar src={membership.user.avatar?.thumbnailUrl} sx={{ width: 24, height: 24 }} />
+                    </Box>
+                  </Tooltip>
+                );
+              })}
 
               {campaign?.invites.map((invite) => (
                 <Tooltip key={invite.id} title={invite.email}>
-                  <Avatar sx={{ width: 20, height: 20, opacity: 0.5 }} />
+                  <Avatar sx={{ width: 24, height: 24, opacity: 0.5 }} />
                 </Tooltip>
               ))}
             </Box>
