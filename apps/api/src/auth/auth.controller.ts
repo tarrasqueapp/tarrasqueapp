@@ -111,7 +111,12 @@ export class AuthController {
       });
 
       // Assign the user to the campaign
-      await this.membershipsService.createMembership({ userId: user.id, campaignId: invite.campaignId, role });
+      await this.membershipsService.createMembership({
+        userId: user.id,
+        campaignId: invite.campaignId,
+        role,
+        color: '#000000',
+      });
 
       // Delete the invite once used
       this.actionTokensService.deleteToken(invite.id);

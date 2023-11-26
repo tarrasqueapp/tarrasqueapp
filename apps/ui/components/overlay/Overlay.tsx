@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-import { BottomBar } from './BottomBar/BottomBar';
+import { Dock } from './Dock/Dock';
 import { MapContextMenu } from './MapContextMenu';
 import { Toolbar } from './Toolbar/Toolbar';
 import { ZoomControls } from './ZoomControls';
@@ -11,7 +11,7 @@ export function Overlay() {
       <MapContextMenu />
       <Toolbar />
       <ZoomControls />
-      <BottomBar />
+      <Dock />
     </Box>
   );
 }

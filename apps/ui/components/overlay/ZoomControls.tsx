@@ -1,5 +1,5 @@
 import { Add, FitScreen, Fullscreen, FullscreenExit, Remove } from '@mui/icons-material';
-import { Box, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
+import { Box, ButtonGroup, Paper, Tooltip, alpha } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
@@ -7,6 +7,7 @@ import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { useDocumentEventListener } from '../../hooks/useDocumentEventListener';
 import { Color } from '../../lib/colors';
 import { store } from '../../store';
+import { ToolButton } from './Toolbar/ToolButton';
 
 export const ZoomControls = observer(function ZoomControls() {
   const { data: map } = useGetCurrentMap();
@@ -97,32 +98,34 @@ export const ZoomControls = observer(function ZoomControls() {
   });
 
   return (
-    <Box sx={{ position: 'fixed', top: 4, right: 4, display: 'flex', flexDirection: 'column' }}>
-      <ToggleButtonGroup orientation="vertical" sx={{ background: alpha(Color.BLACK_LIGHT, 0.9) }}>
-        <Tooltip title="Zoom In" placement="left">
-          <ToggleButton value="zoom-in" size="small" onClick={handleZoomIn}>
-            <Add />
-          </ToggleButton>
-        </Tooltip>
+    <Box sx={{ position: 'fixed', top: 8, right: 8, display: 'flex', flexDirection: 'column' }}>
+      <Paper sx={{ background: alpha(Color.BLACK_LIGHT, 0.85) }}>
+        <ButtonGroup orientation="vertical" size="small">
+          <Tooltip title="Zoom In" placement="left">
+            <ToolButton onClick={handleZoomIn}>
+              <Add />
+            </ToolButton>
+          </Tooltip>
 
-        <Tooltip title="Zoom Out" placement="left">
-          <ToggleButton value="zoom-out" size="small" onClick={handleZoomOut}>
-            <Remove />
-          </ToggleButton>
-        </Tooltip>
+          <Tooltip title="Zoom Out" placement="left">
+            <ToolButton onClick={handleZoomOut}>
+              <Remove />
+            </ToolButton>
+          </Tooltip>
 
-        <Tooltip title="Fit Screen" placement="left">
-          <ToggleButton value="fit-screen" size="small" onClick={handleFitScreen}>
-            <FitScreen />
-          </ToggleButton>
-        </Tooltip>
+          <Tooltip title="Fit Screen" placement="left">
+            <ToolButton onClick={handleFitScreen}>
+              <FitScreen />
+            </ToolButton>
+          </Tooltip>
 
-        <Tooltip title="Full Screen" placement="left">
-          <ToggleButton value="full-screen" size="small" selected={isFullScreen} onChange={() => handleFullScreen()}>
-            {isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-          </ToggleButton>
-        </Tooltip>
-      </ToggleButtonGroup>
+          <Tooltip title="Full Screen" placement="left">
+            <ToolButton selected={isFullScreen} onClick={handleFullScreen}>
+              {isFullScreen ? <FullscreenExit /> : <Fullscreen />}
+            </ToolButton>
+          </Tooltip>
+        </ButtonGroup>
+      </Paper>
     </Box>
   );
 });

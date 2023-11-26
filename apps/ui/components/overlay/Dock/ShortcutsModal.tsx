@@ -32,10 +32,8 @@ import {
   ZoomOutMap,
 } from '@mui/icons-material';
 import {
-  Button,
   Chip,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -402,10 +400,6 @@ export function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {
           </Grid>
         </Grid>
       </DialogContent>
-
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-      </DialogActions>
     </Dialog>
   );
 }

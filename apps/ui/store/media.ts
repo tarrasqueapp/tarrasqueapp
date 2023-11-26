@@ -2,7 +2,7 @@ import { UploadedUppyFile, UppyFile } from '@uppy/core';
 import { makeAutoObservable } from 'mobx';
 
 import { config } from '@tarrasque/common';
-import { DimensionsEntity, FileEntity, MediaEntity } from '@tarrasque/sdk';
+import { DimensionsEntity, FileEntity, MediaEntity } from '@tarrasque/common';
 
 export type UploadingFile = UppyFile<Record<string, unknown>, Record<string, unknown>> & {
   progress?: { percentage: number };

@@ -1,20 +1,20 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Fade, Popper, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
+import { ButtonGroup, Fade, Paper, Popper, Tooltip } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { observer } from 'mobx-react-lite';
 import { useCallback } from 'react';
 
-import { Color } from '../../../lib/colors';
 import { store } from '../../../store';
 import { FogTool, Tool } from '../../../store/toolbar';
+import { ToolButton } from './ToolButton';
 
 export const FogToolItem = observer(function FogToolItem() {
   const popupState = usePopupState({ variant: 'popper', popupId: 'fogTool' });
 
   const HideFogTool = (props: any) => {
     return (
-      <Tooltip title="Hide">
-        <ToggleButton
+      <Tooltip title="Hide" disableInteractive>
+        <ToolButton
           value={FogTool.Hide}
           size="small"
           onClick={() => {
@@ -25,15 +25,15 @@ export const FogToolItem = observer(function FogToolItem() {
           {...props}
         >
           <VisibilityOff />
-        </ToggleButton>
+        </ToolButton>
       </Tooltip>
     );
   };
 
   const ShowFogTool = (props: any) => {
     return (
-      <Tooltip title="Show">
-        <ToggleButton
+      <Tooltip title="Show" disableInteractive>
+        <ToolButton
           value={FogTool.Show}
           size="small"
           onClick={() => {
@@ -44,7 +44,7 @@ export const FogToolItem = observer(function FogToolItem() {
           {...props}
         >
           <Visibility />
-        </ToggleButton>
+        </ToolButton>
       </Tooltip>
     );
   };
@@ -66,10 +66,12 @@ export const FogToolItem = observer(function FogToolItem() {
         <Popper {...bindPopper(popupState)} placement="right" transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <ToggleButtonGroup size="small" sx={{ background: alpha(Color.BLACK_LIGHT, 0.9), ml: 0.5 }}>
-                <HideFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Hide} />
-                <ShowFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Show} />
-              </ToggleButtonGroup>
+              <Paper sx={{ ml: 0.5 }}>
+                <ButtonGroup size="small">
+                  <HideFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Hide} />
+                  <ShowFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Show} />
+                </ButtonGroup>
+              </Paper>
             </Fade>
           )}
         </Popper>

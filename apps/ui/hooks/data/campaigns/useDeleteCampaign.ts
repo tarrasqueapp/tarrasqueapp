@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { CampaignEntity } from '@tarrasque/sdk';
+import { CampaignEntity } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

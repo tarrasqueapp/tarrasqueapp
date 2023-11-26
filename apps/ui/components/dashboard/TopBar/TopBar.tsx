@@ -3,7 +3,6 @@ import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import { Logo } from '../../common/Logo';
 import { Account } from './Account/Account';
 import { Notifications } from './Notifications/Notifications';
-import Plugins from './Plugins/Plugins';
 import { Version } from './Version';
 
 export function TopBar() {
@@ -22,8 +21,6 @@ export function TopBar() {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Notifications />
-
-          <Plugins />
 
           <Account />
         </Box>

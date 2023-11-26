@@ -1,10 +1,12 @@
 import { Extension } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 
-export default function Plugins() {
+export function Plugins() {
   return (
-    <IconButton>
-      <Extension />
-    </IconButton>
+    <Tooltip title="Plugins">
+      <IconButton>
+        <Extension />
+      </IconButton>
+    </Tooltip>
   );
 }

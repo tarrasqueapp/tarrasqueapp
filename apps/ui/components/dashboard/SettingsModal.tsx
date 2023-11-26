@@ -23,7 +23,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { MediaEntity, UserEntity } from '@tarrasque/sdk';
+import { MediaEntity, UserEntity } from '@tarrasque/common';
 
 import { useUpdateUser } from '../../hooks/data/auth/useUpdateUser';
 import { useCreateMedia } from '../../hooks/data/media/useCreateMedia';

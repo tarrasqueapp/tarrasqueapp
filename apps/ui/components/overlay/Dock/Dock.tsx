@@ -25,7 +25,6 @@ import {
   Popover,
   Tooltip,
   alpha,
-  styled,
 } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { observer } from 'mobx-react-lite';
@@ -34,7 +33,6 @@ import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { useGetUser } from '../../../hooks/data/auth/useGetUser';
-import { usePlugins } from '../../../hooks/usePlugins';
 import { Color } from '../../../lib/colors';
 import { AppNavigation, ExternalNavigation } from '../../../lib/navigation';
 import { store } from '../../../store';
@@ -42,16 +40,12 @@ import { HotkeysUtils } from '../../../utils/HotkeyUtils';
 import { SettingsModal } from '../../dashboard/SettingsModal';
 import { CampaignIcon } from '../../icons/CampaignIcon';
 import { DiscordIcon } from '../../icons/DiscordIcon';
+import { DockButton } from './DockButton';
+import { Plugins } from './Plugins';
 import { ShortcutsModal } from './ShortcutsModal';
 
-const CustomIconButton = styled(IconButton)({
-  background: 'rgba(255, 255, 255, 0.1)',
-  borderRadius: '10px',
-});
-
-export const BottomBar = observer(function BottomBar() {
+export const Dock = observer(function Dock() {
   const { data: user } = useGetUser();
-  const { data: plugins } = usePlugins(['http://localhost:3000/dist/index.js']);
 
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
@@ -76,16 +70,16 @@ export const BottomBar = observer(function BottomBar() {
         gap: 1,
       }}
     >
-      {plugins?.map((plugin) => <Box key={plugin.name}>{plugin.renderDockElement()}</Box>)}
+      <Plugins />
 
       <Box sx={{ display: 'flex', flex: '1 0 auto' }} />
 
       {user && (
-        <Tooltip title="Dashboard" followCursor={false}>
+        <Tooltip title="Dashboard">
           <NextLink href={AppNavigation.Dashboard} passHref>
-            <CustomIconButton>
-              <CampaignIcon fontSize="large" />
-            </CustomIconButton>
+            <DockButton>
+              <CampaignIcon sx={{ fontSize: '2rem' }} />
+            </DockButton>
           </NextLink>
         </Tooltip>
       )}
@@ -93,10 +87,10 @@ export const BottomBar = observer(function BottomBar() {
       <PopupState variant="popover" popupId="more">
         {(popupState) => (
           <>
-            <Tooltip title="More" followCursor={false}>
-              <CustomIconButton {...bindTrigger(popupState)}>
-                <MoreHoriz fontSize="large" />
-              </CustomIconButton>
+            <Tooltip title="More">
+              <DockButton {...bindTrigger(popupState)} active={popupState.isOpen}>
+                <MoreHoriz sx={{ fontSize: '2rem' }} />
+              </DockButton>
             </Tooltip>
 
             <Popover
@@ -208,10 +202,10 @@ export const BottomBar = observer(function BottomBar() {
       <PopupState variant="popover" popupId="account">
         {(popupState) => (
           <>
-            <Tooltip title="Account" followCursor={false}>
-              <CustomIconButton {...bindTrigger(popupState)}>
+            <Tooltip title="Account">
+              <IconButton {...bindTrigger(popupState)} size="small">
                 <Avatar src={user?.avatar?.thumbnailUrl} />
-              </CustomIconButton>
+              </IconButton>
             </Tooltip>
 
             <Popover

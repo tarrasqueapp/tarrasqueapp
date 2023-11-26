@@ -2,10 +2,11 @@ import { GpsFixed } from '@mui/icons-material';
 import { Chip, Fade, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
-import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+import { SocketEvent } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
+import { socket } from '../../lib/socket';
 import { store } from '../../store';
 
 export const MapContextMenu = observer(function MapContextMenu() {
@@ -40,11 +41,11 @@ export const MapContextMenu = observer(function MapContextMenu() {
 
     // Get the coordinates of the context menu relative to the map
     const { x, y } = store.map.contextMenuAnchorPoint;
-    const coordinates = store.pixi.viewport.toWorld(x, y);
+    const position = store.pixi.viewport.toWorld(x, y);
 
     // Emit the ping location event
-    tarrasque.emit(TarrasqueEvent.PING_LOCATION, {
-      coordinates,
+    socket.emit(SocketEvent.PING_LOCATION, {
+      position,
       color: 'red',
       mapId: map.id,
       userId: user.id,

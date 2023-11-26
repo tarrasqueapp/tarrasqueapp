@@ -10,6 +10,7 @@ import { CharactersModule } from '../characters/characters.module';
 import { MapsModule } from '../maps/maps.module';
 import { MediaModule } from '../media/media.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { PluginsModule } from '../plugins/plugins.module';
 import { SetupModule } from '../setup/setup.module';
 import { AppController } from './app.controller';
 
@@ -25,6 +26,7 @@ import { AppController } from './app.controller';
     MapsModule,
     MediaModule,
     NotificationsModule,
+    PluginsModule,
     SetupModule,
   ],
   controllers: [AppController],

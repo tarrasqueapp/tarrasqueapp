@@ -1,20 +1,20 @@
 import { SelectAll, TouchApp } from '@mui/icons-material';
-import { Fade, Popper, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
+import { ButtonGroup, Fade, Paper, Popper, Tooltip } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { observer } from 'mobx-react-lite';
 import { useCallback } from 'react';
 
-import { Color } from '../../../lib/colors';
 import { store } from '../../../store';
 import { SelectTool, Tool } from '../../../store/toolbar';
+import { ToolButton } from './ToolButton';
 
 export const SelectToolItem = observer(function SelectToolItem() {
   const popupState = usePopupState({ variant: 'popper', popupId: 'selectTool' });
 
   const SingleSelectTool = (props: any) => {
     return (
-      <Tooltip title="Single Select">
-        <ToggleButton
+      <Tooltip title="Single Select" disableInteractive>
+        <ToolButton
           value={SelectTool.Single}
           size="small"
           onClick={() => {
@@ -25,15 +25,15 @@ export const SelectToolItem = observer(function SelectToolItem() {
           {...props}
         >
           <TouchApp />
-        </ToggleButton>
+        </ToolButton>
       </Tooltip>
     );
   };
 
   const MultiSelectTool = (props: any) => {
     return (
-      <Tooltip title="Multiple Select">
-        <ToggleButton
+      <Tooltip title="Multiple Select" disableInteractive>
+        <ToolButton
           value={SelectTool.Multi}
           size="small"
           onClick={() => {
@@ -44,7 +44,7 @@ export const SelectToolItem = observer(function SelectToolItem() {
           {...props}
         >
           <SelectAll />
-        </ToggleButton>
+        </ToolButton>
       </Tooltip>
     );
   };
@@ -66,14 +66,16 @@ export const SelectToolItem = observer(function SelectToolItem() {
         <Popper {...bindPopper(popupState)} placement="right" transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <ToggleButtonGroup size="small" sx={{ background: alpha(Color.BLACK_LIGHT, 0.9), ml: 0.5 }}>
-                <SingleSelectTool
-                  selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
-                />
-                <MultiSelectTool
-                  selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Multi}
-                />
-              </ToggleButtonGroup>
+              <Paper sx={{ ml: 0.5 }}>
+                <ButtonGroup size="small">
+                  <SingleSelectTool
+                    selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
+                  />
+                  <MultiSelectTool
+                    selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Multi}
+                  />
+                </ButtonGroup>
+              </Paper>
             </Fade>
           )}
         </Popper>

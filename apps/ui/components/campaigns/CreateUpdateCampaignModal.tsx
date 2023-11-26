@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { CampaignEntity } from '@tarrasque/sdk';
+import { CampaignEntity } from '@tarrasque/common';
 
 import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
 import { useUpdateCampaign } from '../../hooks/data/campaigns/useUpdateCampaign';

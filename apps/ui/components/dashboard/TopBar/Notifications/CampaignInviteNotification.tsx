@@ -1,7 +1,7 @@
 import { Check, Close } from '@mui/icons-material';
 import { IconButton, ListItem, ListItemText } from '@mui/material';
 
-import { ActionTokenEntity } from '@tarrasque/sdk';
+import { ActionTokenEntity } from '@tarrasque/common';
 
 import { useAcceptInvite } from '../../../../hooks/data/notifications/useAcceptInvite';
 import { useDeclineInvite } from '../../../../hooks/data/notifications/useDeclineInvite';

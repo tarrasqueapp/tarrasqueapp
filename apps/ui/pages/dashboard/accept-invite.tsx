@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { ActionTokenEntity, ActionTokenType } from '@tarrasque/sdk';
+import { ActionTokenEntity, ActionTokenType } from '@tarrasque/common';
 
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';

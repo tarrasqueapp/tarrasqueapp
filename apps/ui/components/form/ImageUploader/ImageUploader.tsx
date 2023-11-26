@@ -5,7 +5,7 @@ import Tus from '@uppy/tus';
 import React, { useEffect, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import { MediaEntity } from '@tarrasque/sdk';
+import { MediaEntity } from '@tarrasque/common';
 
 import { Color } from '../../../lib/colors';
 import { store } from '../../../store';
@@ -130,7 +130,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
     onChange?.(null);
   }
 
-  const borderColor = isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : 'rgba(0, 0, 0, 0.19)';
+  const borderColor = isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.6) : 'rgba(0, 0, 0, 0.19)';
 
   return (
     <Box>
@@ -160,7 +160,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
               flex: '1 0 auto',
               alignItems: 'center',
               justifyContent: 'center',
-              background: isDragActive && !isDragReject ? alpha(Color.Brown, 0.05) : undefined,
+              background: isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.05) : undefined,
               overflow: 'hidden',
               flexWrap: 'wrap',
               height: 200,

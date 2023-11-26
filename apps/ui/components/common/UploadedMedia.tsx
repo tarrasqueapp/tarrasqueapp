@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { MediaEntity } from '@tarrasque/sdk';
+import { MediaEntity } from '@tarrasque/common';
 
 import { store } from '../../store';
 

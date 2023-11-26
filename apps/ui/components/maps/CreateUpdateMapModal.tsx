@@ -19,7 +19,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { CampaignEntity, MapEntity, MediaEntity, Role } from '@tarrasque/sdk';
+import { CampaignEntity, MapEntity, MediaEntity, Role } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';

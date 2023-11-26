@@ -80,9 +80,10 @@ CREATE TABLE "Campaign" (
 
 -- CreateTable
 CREATE TABLE "Membership" (
+    "role" "Role" NOT NULL DEFAULT 'PLAYER',
+    "color" TEXT NOT NULL DEFAULT '#000000',
     "userId" TEXT NOT NULL,
     "campaignId" TEXT NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'PLAYER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -130,6 +131,17 @@ CREATE TABLE "Token" (
     "characterId" TEXT NOT NULL,
 
     CONSTRAINT "Token_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Plugin" (
+    "id" TEXT NOT NULL,
+    "manifestUrl" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "campaignId" TEXT NOT NULL,
+
+    CONSTRAINT "Plugin_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -218,6 +230,9 @@ ALTER TABLE "Token" ADD CONSTRAINT "Token_mapId_fkey" FOREIGN KEY ("mapId") REFE
 
 -- AddForeignKey
 ALTER TABLE "Token" ADD CONSTRAINT "Token_characterId_fkey" FOREIGN KEY ("characterId") REFERENCES "Character"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Plugin" ADD CONSTRAINT "Plugin_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_MapMedia" ADD CONSTRAINT "_MapMedia_A_fkey" FOREIGN KEY ("A") REFERENCES "Map"("id") ON DELETE CASCADE ON UPDATE CASCADE;

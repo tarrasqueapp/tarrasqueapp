@@ -32,7 +32,7 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
-import { CampaignEntity, MembershipEntity, Role } from '@tarrasque/sdk';
+import { CampaignEntity, MembershipEntity, Role } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useReorderMaps } from '../../hooks/data/maps/useReorderMaps';
@@ -42,6 +42,7 @@ import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
 import { MapCard } from './MapCard';
 import { NewMap } from './NewMap';
+import { Plugins } from './TopBar/Plugins/Plugins';
 
 export interface CampaignAccordionProps {
   expanded?: boolean;
@@ -220,6 +221,8 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                   </IconButton>
                 </span>
               </Tooltip>
+
+              <Plugins />
 
               <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
                 {(popupState) => (

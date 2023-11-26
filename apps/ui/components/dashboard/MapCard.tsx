@@ -22,7 +22,7 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
-import { CampaignEntity, MapEntity, Role } from '@tarrasque/sdk';
+import { CampaignEntity, MapEntity, Role } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';

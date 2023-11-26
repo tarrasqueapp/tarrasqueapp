@@ -5,10 +5,11 @@ export enum Color {
   // White
   WHITE = '#ffffff',
   // Brown
-  Brown = '#9b7d65',
+  BROWN = '#9b7d65',
   BROWN_LIGHT = '#e3b38b',
   BROWN_DARK = '#5c443c',
   BROWN_VERY_DARK = '#241d18',
+  BROWN_BEIGE = '#8e725f',
   // Purple
   PURPLE = '#475268',
   PURPLE_DARK = '#242330',

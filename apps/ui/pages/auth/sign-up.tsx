@@ -8,7 +8,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { ActionTokenEntity, ActionTokenType } from '@tarrasque/sdk';
+import { ActionTokenEntity, ActionTokenType } from '@tarrasque/common';
 
 import { Center } from '../../components/common/Center';
 import { Logo } from '../../components/common/Logo';

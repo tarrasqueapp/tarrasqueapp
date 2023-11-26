@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { RawAxiosRequestConfig } from 'axios';
 
-import { CampaignEntity } from '@tarrasque/sdk';
+import { CampaignEntity } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

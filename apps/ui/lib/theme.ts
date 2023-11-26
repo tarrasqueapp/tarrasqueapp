@@ -45,17 +45,18 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: '10px',
+          background: alpha(lighten(Color.BLACK_LIGHT, 0.1), 0.9),
+          backdropFilter: 'blur(5px)',
+          boxShadow: 'none',
         },
       },
     },
     MuiTooltip: {
-      defaultProps: {
-        followCursor: true,
-      },
       styleOverrides: {
         tooltip: {
-          backgroundColor: Color.BROWN_DARK,
-          fontWeight: 500,
+          backgroundColor: Color.WHITE,
+          color: Color.BLACK,
+          fontWeight: 600,
         },
       },
     },
@@ -130,6 +131,43 @@ export let theme = createTheme({
           color: lighten(Color.PURPLE, 0.8),
           '&:hover': {
             backgroundColor: alpha(Color.PURPLE, 0.4),
+          },
+        },
+      },
+    },
+    MuiButtonGroup: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px',
+        },
+        groupedVertical: {
+          borderColor: 'transparent',
+          '&:hover': {
+            borderColor: Color.BROWN_BEIGE,
+            '+ .MuiButton-root': {
+              borderTopColor: Color.BROWN_BEIGE,
+            },
+          },
+          '&:first-of-type': {
+            borderRadius: '10px 10px 0 0',
+          },
+          '&:last-of-type': {
+            borderRadius: '0 0 10px 10px',
+          },
+        },
+        groupedHorizontal: {
+          borderColor: 'transparent',
+          '&:hover': {
+            borderColor: Color.BROWN_BEIGE,
+            '+ .MuiButton-root': {
+              borderLeftColor: Color.BROWN_BEIGE,
+            },
+          },
+          '&:first-of-type': {
+            borderRadius: '10px 0 0 10px',
+          },
+          '&:last-of-type': {
+            borderRadius: '0 10px 10px 0',
           },
         },
       },

@@ -1,16 +1,15 @@
 import { Box, Container } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { useEffect } from 'react';
 
-import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+import { SocketEvent } from '@tarrasque/common';
 
 import { CampaignAccordions } from '../../components/dashboard/CampaignAccordions';
 import { DashboardModals } from '../../components/dashboard/DashboardModals';
 import { TopBar } from '../../components/dashboard/TopBar/TopBar';
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
-import { useReactQuerySubscription } from '../../hooks/data/useReactQuerySubscription';
+import { useWebSocketCacheSync } from '../../hooks/data/useWebSocketCacheSync';
 import { Gradient } from '../../lib/colors';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
@@ -42,22 +41,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function DashboardPage() {
   const { data: campaigns } = useGetUserCampaigns();
   const { data: user } = useGetUser();
-  useReactQuerySubscription();
+  useWebSocketCacheSync({
+    onConnect(socket) {
+      if (!user || !campaigns) return;
 
-  useEffect(() => {
-    if (!user || !campaigns) return;
+      // Join the user room
+      socket.emit(SocketEvent.JOIN_USER_ROOM, user.id);
 
-    // Connect to the Tarrasque server
-    tarrasque.connect();
-
-    // Join the user room
-    tarrasque.emit(TarrasqueEvent.JOIN_USER_ROOM, user.id);
-
-    // Join the campaign rooms
-    campaigns.forEach((campaign) => {
-      tarrasque.emit(TarrasqueEvent.JOIN_CAMPAIGN_ROOM, campaign.id);
-    });
-  }, []);
+      // Join the campaign rooms
+      campaigns.forEach((campaign) => {
+        socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, campaign.id);
+      });
+    },
+  });
 
   return (
     <>

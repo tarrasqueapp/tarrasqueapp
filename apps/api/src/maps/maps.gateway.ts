@@ -3,7 +3,7 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSo
 import { createId } from '@paralleldrive/cuid2';
 import { Server, Socket } from 'socket.io';
 
-import { PingLocationEntity, TarrasqueEvent } from '@tarrasque/sdk';
+import { PingLocationEntity, SocketEvent } from '@tarrasque/common';
 
 import { JwtWsAuthGuard } from '../auth/guards/jwt-ws-auth.guard';
 import { CampaignsService } from '../campaigns/campaigns.service';
@@ -31,7 +31,7 @@ export class MapsGateway {
    * @param mapId - The map's ID
    * @param user - The user that joined the map's room
    */
-  @SubscribeMessage(TarrasqueEvent.JOIN_MAP_ROOM)
+  @SubscribeMessage(SocketEvent.JOIN_MAP_ROOM)
   async joinMapRoom(@ConnectedSocket() client: Socket, @MessageBody() mapId: string, @UserWs() user: UserEntity) {
     // Only allow a user to join a map's room if they are a member of a campaign that contains the map
     const map = await this.mapsService.getMapById(mapId);
@@ -51,13 +51,13 @@ export class MapsGateway {
    * Ping a location in the client
    * @param map - The map to ping a location in the client
    */
-  @SubscribeMessage(TarrasqueEvent.PING_LOCATION)
+  @SubscribeMessage(SocketEvent.PING_LOCATION)
   pingLocation(@MessageBody() data: PingLocationEntity) {
     // Generate a unique ID for the ping
     const id = createId();
 
     // Emit the pinged location to the map's room
-    this.server.to(`map/${data.mapId}`).emit(TarrasqueEvent.PINGED_LOCATION, { id, ...data });
+    this.server.to(`map/${data.mapId}`).emit(SocketEvent.PINGED_LOCATION, { id, ...data });
     this.logger.debug(`🚀 Map "${data.mapId}" pinged`);
   }
 
@@ -66,12 +66,12 @@ export class MapsGateway {
    * @param map - The map to create in the client
    * @param user - The user that created the map
    */
-  // @SubscribeMessage(TarrasqueEvent.MAP_CREATED)
+  // @SubscribeMessage(SocketEvent.MAP_CREATED)
   // async createMap(@MessageBody() map: MapEntity, @UserWs() user: UserEntity) {
   //   // Instruct the user's active clients to join the map's room
   //   this.server.to(`user/${user.id}`).socketsJoin(`map/${map.id}`);
   //   // Emit the new map to the map's room
-  //   this.server.to(`map/${map.id}`).emit(TarrasqueEvent.MAP_CREATED, map);
+  //   this.server.to(`map/${map.id}`).emit(SocketEvent.MAP_CREATED, map);
   //   this.logger.debug(`🚀 Map "${map.name}" created`);
   // }
 
@@ -79,10 +79,10 @@ export class MapsGateway {
    * Update a map in the client
    * @param map - The map to update in the client
    */
-  @SubscribeMessage(TarrasqueEvent.MAP_UPDATED)
+  @SubscribeMessage(SocketEvent.MAP_UPDATED)
   updateMap(@MessageBody() map: MapEntity) {
     // Emit the updated map to the map's room
-    this.server.to(`map/${map.id}`).emit(TarrasqueEvent.MAP_UPDATED, map);
+    this.server.to(`map/${map.id}`).emit(SocketEvent.MAP_UPDATED, map);
     this.logger.debug(`🚀 Map "${map.name}" updated`);
   }
 
@@ -90,10 +90,10 @@ export class MapsGateway {
    * Delete a map from the client
    * @param map - The map to delete from the client
    */
-  @SubscribeMessage(TarrasqueEvent.MAP_DELETED)
+  @SubscribeMessage(SocketEvent.MAP_DELETED)
   deleteMap(@MessageBody() map: MapEntity) {
     // Emit the deleted map to the map's room
-    this.server.to(`map/${map.id}`).emit(TarrasqueEvent.MAP_DELETED, map);
+    this.server.to(`map/${map.id}`).emit(SocketEvent.MAP_DELETED, map);
     this.logger.debug(`🚀 Map "${map.name}" deleted`);
   }
 }

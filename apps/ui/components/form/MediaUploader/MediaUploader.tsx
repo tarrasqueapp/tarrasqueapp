@@ -30,7 +30,7 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import { MediaEntity } from '@tarrasque/sdk';
+import { MediaEntity } from '@tarrasque/common';
 
 import { Color } from '../../../lib/colors';
 import { store } from '../../../store';
@@ -214,7 +214,7 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
     if (isSelected) onSelect?.(newFiles[0] || null);
   }
 
-  const borderColor = isDragActive && !isDragReject ? alpha(Color.Brown, 0.6) : 'rgba(0, 0, 0, 0.19)';
+  const borderColor = isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.6) : 'rgba(0, 0, 0, 0.19)';
 
   const addFile = (
     <Button
@@ -241,7 +241,7 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
           flex: '1 0 auto',
           alignItems: 'center',
           justifyContent: 'center',
-          background: isDragActive && !isDragReject ? alpha(Color.Brown, 0.05) : undefined,
+          background: isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.05) : undefined,
           flexWrap: 'wrap',
           height: 291.5,
           width: '100%',

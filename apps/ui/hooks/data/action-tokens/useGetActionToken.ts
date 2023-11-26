@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { RawAxiosRequestConfig } from 'axios';
 
-import { ActionTokenEntity, ActionTokenType } from '@tarrasque/sdk';
+import { ActionTokenEntity, ActionTokenType } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

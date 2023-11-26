@@ -25,7 +25,7 @@ export class CampaignsService {
       const campaigns = await this.prisma.campaign.findMany({
         where: { memberships: { some: { userId } } },
         include: {
-          memberships: { include: { user: { include: { avatar: true } } } },
+          memberships: { include: { user: { include: { avatar: true } } }, orderBy: { createdAt: 'asc' } },
           characters: { include: { controlledBy: { include: { avatar: true } }, media: true } },
           createdBy: { include: { avatar: true } },
           invites: true,

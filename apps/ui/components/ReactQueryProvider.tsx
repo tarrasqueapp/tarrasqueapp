@@ -32,12 +32,6 @@ export function ReactQueryProvider({ dehydratedState, children }: ReactQueryProv
     window.toggleDevtools = () => setShowDevtools((old) => !old);
   }, []);
 
-  // Set the query client on the window so that it can be accessed by the SDK
-  useEffect(() => {
-    if (!queryClient) return;
-    window.__REACT_QUERY_CLIENT__ = queryClient;
-  }, [queryClient]);
-
   return (
     <QueryClientProvider client={queryClient}>
       <HydrationBoundary state={dehydratedState}>

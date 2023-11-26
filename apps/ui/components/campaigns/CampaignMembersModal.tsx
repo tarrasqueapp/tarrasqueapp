@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Close, Delete, Email, Send } from '@mui/icons-material';
 import {
   Avatar,
+  Box,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -24,7 +25,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { CampaignEntity, Role } from '@tarrasque/sdk';
+import { CampaignEntity, Role } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useCreateInvite } from '../../hooks/data/campaigns/invites/useCreateInvite';
@@ -33,6 +34,7 @@ import { useDeleteMembership } from '../../hooks/data/campaigns/memberships/useD
 import { useUpdateMembership } from '../../hooks/data/campaigns/memberships/useUpdateMembership';
 import { store } from '../../store';
 import { ValidateUtils } from '../../utils/ValidateUtils';
+import { ColorPicker } from '../ColorPicker';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface CampaignMembersModalProps {
@@ -140,9 +142,11 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
               disablePadding
             >
               <ListSubheader>Members</ListSubheader>
+
               {Boolean(campaign?.memberships.length) ? (
                 campaign?.memberships.map((membership) => (
                   <ListItem
+                    sx={{ flexWrap: 'wrap' }}
                     key={membership.userId}
                     secondaryAction={
                       <IconButton
@@ -158,21 +162,38 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                     </ListItemAvatar>
                     <ListItemText primary={membership.user.displayName} secondary={membership.user.email} />
 
-                    <TextField
-                      disabled={membership.userId === user?.id}
-                      size="small"
-                      label="Role"
-                      select
-                      value={membership.role}
-                      sx={{ mr: 2 }}
-                      onChange={(event) => {
-                        const role = event.target.value as Role;
-                        updateMembership.mutate({ ...membership, role });
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flex: 1,
+                        gap: 2,
+                        mr: 2,
                       }}
                     >
-                      <MenuItem value={Role.GAME_MASTER}>Game Master</MenuItem>
-                      <MenuItem value={Role.PLAYER}>Player</MenuItem>
-                    </TextField>
+                      <TextField
+                        disabled={membership.userId === user?.id}
+                        size="small"
+                        label="Role"
+                        select
+                        value={membership.role}
+                        onChange={(event) => {
+                          const role = event.target.value as Role;
+                          updateMembership.mutate({ ...membership, role });
+                        }}
+                      >
+                        <MenuItem value={Role.GAME_MASTER}>Game Master</MenuItem>
+                        <MenuItem value={Role.PLAYER}>Player</MenuItem>
+                      </TextField>
+
+                      <ColorPicker
+                        value={membership.color}
+                        onChange={(color) => {
+                          updateMembership.mutate({ ...membership, color });
+                        }}
+                      />
+                    </Box>
                   </ListItem>
                 ))
               ) : (

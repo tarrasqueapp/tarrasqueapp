@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
-import { CampaignEntity } from '@tarrasque/sdk';
+import { CampaignEntity } from '@tarrasque/common';
 
 import { Color } from '../../lib/colors';
 import { store } from '../../store';

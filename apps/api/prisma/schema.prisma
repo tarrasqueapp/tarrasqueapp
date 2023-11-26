@@ -135,6 +135,8 @@ model Campaign {
   memberships Membership[]  @relation("Memberships")
   // Invites
   invites     ActionToken[] @relation("CampaignInvites")
+  // Plugins
+  plugins     Plugin[]      @relation("CampaignPlugins")
 }
 
 enum Role {
@@ -143,14 +145,15 @@ enum Role {
 }
 
 model Membership {
+  // Role
+  role       Role     @default(PLAYER)
+  color      String   @default("#000000")
   // User
   user       User     @relation("UserMemberships", fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   // Campaign
   campaign   Campaign @relation("Memberships", fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId String
-  // Role
-  role       Role     @default(PLAYER)
   // DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
@@ -222,4 +225,19 @@ model Token {
   // Character
   character   Character @relation("CharacterTokens", fields: [characterId], references: [id], onDelete: Cascade)
   characterId String
+}
+
+//////////////
+// Plugins //
+////////////
+
+model Plugin {
+  id          String   @id @default(cuid())
+  manifestUrl String
+  // DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  // Campaign
+  campaign    Campaign @relation("CampaignPlugins", fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId  String
 }

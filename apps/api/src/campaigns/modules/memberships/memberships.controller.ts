@@ -60,9 +60,9 @@ export class MembershipsController {
       throw new BadRequestException('User not in campaign');
     }
 
-    // Check that the user is not the current user
-    if (user.id === params.userId) {
-      throw new BadRequestException('Cannot update current user');
+    // Check that the user is not trying to promote or demote themselves
+    if (user.id === params.userId && membership.role !== data.role) {
+      throw new BadRequestException('Cannot change current user role');
     }
 
     // Update the user

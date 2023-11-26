@@ -2,7 +2,7 @@ import { Notifications as NotificationsIcon } from '@mui/icons-material';
 import { Badge, Box, IconButton, List, Popover, Tooltip, Typography } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 
-import { InviteNotificationEntity, NotificationTypeEnum } from '@tarrasque/sdk';
+import { InviteNotificationEntity, NotificationTypeEnum } from '@tarrasque/common';
 
 import { useGetNotifications } from '../../../../hooks/data/notifications/useGetNotifications';
 import { CampaignInviteNotification } from './CampaignInviteNotification';

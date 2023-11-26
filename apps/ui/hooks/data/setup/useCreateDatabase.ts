@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { SetupEntity } from '@tarrasque/sdk';
+import { SetupEntity } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

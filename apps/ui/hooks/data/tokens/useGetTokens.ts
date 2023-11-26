@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { TokenEntity } from '@tarrasque/sdk';
+import { TokenEntity } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

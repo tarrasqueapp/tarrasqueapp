@@ -7,58 +7,82 @@ import {
   CampaignEntity,
   MembershipEntity,
   NotificationEntity,
-  TarrasqueEvent,
+  SocketEvent,
   UserEntity,
-  tarrasque,
-} from '@tarrasque/sdk';
+} from '@tarrasque/common';
 
-export function useReactQuerySubscription() {
+import { CustomSocket, socket } from '../../lib/socket';
+
+interface Props {
+  onConnect?: (socket: CustomSocket) => void;
+}
+
+export function useWebSocketCacheSync({ onConnect }: Props) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   useEffect(() => {
     if (!queryClient) return;
 
-    tarrasque.on(TarrasqueEvent.USER_UPDATED, handleUserUpdated);
-    tarrasque.on(TarrasqueEvent.USER_DELETED, handleUserDeleted);
+    // Connect to the Tarrasque server
+    socket.connect();
 
-    tarrasque.on(TarrasqueEvent.CAMPAIGN_CREATED, handleCampaignCreated);
-    tarrasque.on(TarrasqueEvent.CAMPAIGN_UPDATED, handleCampaignUpdated);
-    tarrasque.on(TarrasqueEvent.CAMPAIGN_DELETED, handleCampaignDeleted);
-    tarrasque.on(TarrasqueEvent.CAMPAIGNS_REORDERED, handleCampaignsReordered);
+    let reconnectInterval: number | undefined;
 
-    tarrasque.on(TarrasqueEvent.INVITE_CREATED, handleInviteCreated);
-    tarrasque.on(TarrasqueEvent.INVITE_UPDATED, handleInviteUpdated);
-    tarrasque.on(TarrasqueEvent.INVITE_DELETED, handleInviteDeleted);
+    socket.on('connect', () => {
+      // Clear the reconnect interval if it exists
+      if (reconnectInterval) {
+        clearTimeout(reconnectInterval);
+      }
 
-    tarrasque.on(TarrasqueEvent.MEMBERSHIP_CREATED, handleMembershipCreated);
-    tarrasque.on(TarrasqueEvent.MEMBERSHIP_UPDATED, handleMembershipUpdated);
-    tarrasque.on(TarrasqueEvent.MEMBERSHIP_DELETED, handleMembershipDeleted);
+      onConnect?.(socket);
+    });
 
-    tarrasque.on(TarrasqueEvent.NOTIFICATION_CREATED, handleNotificationCreated);
-    tarrasque.on(TarrasqueEvent.NOTIFICATION_UPDATED, handleNotificationUpdated);
-    tarrasque.on(TarrasqueEvent.NOTIFICATION_DELETED, handleNotificationDeleted);
+    socket.on('disconnect', () => {
+      // Try to reconnect to the Tarrasque server every 5 seconds
+      reconnectInterval = window.setInterval(() => socket.connect(), 5000);
+    });
+
+    socket.on(SocketEvent.USER_UPDATED, handleUserUpdated);
+    socket.on(SocketEvent.USER_DELETED, handleUserDeleted);
+
+    socket.on(SocketEvent.CAMPAIGN_CREATED, handleCampaignCreated);
+    socket.on(SocketEvent.CAMPAIGN_UPDATED, handleCampaignUpdated);
+    socket.on(SocketEvent.CAMPAIGN_DELETED, handleCampaignDeleted);
+    socket.on(SocketEvent.CAMPAIGNS_REORDERED, handleCampaignsReordered);
+
+    socket.on(SocketEvent.INVITE_CREATED, handleInviteCreated);
+    socket.on(SocketEvent.INVITE_UPDATED, handleInviteUpdated);
+    socket.on(SocketEvent.INVITE_DELETED, handleInviteDeleted);
+
+    socket.on(SocketEvent.MEMBERSHIP_CREATED, handleMembershipCreated);
+    socket.on(SocketEvent.MEMBERSHIP_UPDATED, handleMembershipUpdated);
+    socket.on(SocketEvent.MEMBERSHIP_DELETED, handleMembershipDeleted);
+
+    socket.on(SocketEvent.NOTIFICATION_CREATED, handleNotificationCreated);
+    socket.on(SocketEvent.NOTIFICATION_UPDATED, handleNotificationUpdated);
+    socket.on(SocketEvent.NOTIFICATION_DELETED, handleNotificationDeleted);
 
     return () => {
-      tarrasque.off(TarrasqueEvent.USER_UPDATED, handleUserUpdated);
-      tarrasque.off(TarrasqueEvent.USER_DELETED, handleUserDeleted);
+      socket.off(SocketEvent.USER_UPDATED, handleUserUpdated);
+      socket.off(SocketEvent.USER_DELETED, handleUserDeleted);
 
-      tarrasque.off(TarrasqueEvent.CAMPAIGN_CREATED, handleCampaignCreated);
-      tarrasque.off(TarrasqueEvent.CAMPAIGN_UPDATED, handleCampaignUpdated);
-      tarrasque.off(TarrasqueEvent.CAMPAIGN_DELETED, handleCampaignDeleted);
-      tarrasque.on(TarrasqueEvent.CAMPAIGNS_REORDERED, handleCampaignsReordered);
+      socket.off(SocketEvent.CAMPAIGN_CREATED, handleCampaignCreated);
+      socket.off(SocketEvent.CAMPAIGN_UPDATED, handleCampaignUpdated);
+      socket.off(SocketEvent.CAMPAIGN_DELETED, handleCampaignDeleted);
+      socket.on(SocketEvent.CAMPAIGNS_REORDERED, handleCampaignsReordered);
 
-      tarrasque.off(TarrasqueEvent.INVITE_CREATED, handleInviteCreated);
-      tarrasque.off(TarrasqueEvent.INVITE_UPDATED, handleInviteUpdated);
-      tarrasque.off(TarrasqueEvent.INVITE_DELETED, handleInviteDeleted);
+      socket.off(SocketEvent.INVITE_CREATED, handleInviteCreated);
+      socket.off(SocketEvent.INVITE_UPDATED, handleInviteUpdated);
+      socket.off(SocketEvent.INVITE_DELETED, handleInviteDeleted);
 
-      tarrasque.off(TarrasqueEvent.MEMBERSHIP_CREATED, handleMembershipCreated);
-      tarrasque.off(TarrasqueEvent.MEMBERSHIP_UPDATED, handleMembershipUpdated);
-      tarrasque.off(TarrasqueEvent.MEMBERSHIP_DELETED, handleMembershipDeleted);
+      socket.off(SocketEvent.MEMBERSHIP_CREATED, handleMembershipCreated);
+      socket.off(SocketEvent.MEMBERSHIP_UPDATED, handleMembershipUpdated);
+      socket.off(SocketEvent.MEMBERSHIP_DELETED, handleMembershipDeleted);
 
-      tarrasque.off(TarrasqueEvent.NOTIFICATION_CREATED, handleNotificationCreated);
-      tarrasque.off(TarrasqueEvent.NOTIFICATION_UPDATED, handleNotificationUpdated);
-      tarrasque.off(TarrasqueEvent.NOTIFICATION_DELETED, handleNotificationDeleted);
+      socket.off(SocketEvent.NOTIFICATION_CREATED, handleNotificationCreated);
+      socket.off(SocketEvent.NOTIFICATION_UPDATED, handleNotificationUpdated);
+      socket.off(SocketEvent.NOTIFICATION_DELETED, handleNotificationDeleted);
     };
   }, [queryClient]);
 

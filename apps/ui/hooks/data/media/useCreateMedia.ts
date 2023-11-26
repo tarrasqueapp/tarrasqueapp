@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { FileEntity, MediaEntity } from '@tarrasque/sdk';
+import { FileEntity, MediaEntity } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

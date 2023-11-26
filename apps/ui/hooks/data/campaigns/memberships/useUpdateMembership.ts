@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { MembershipEntity } from '@tarrasque/sdk';
+import { MembershipEntity } from '@tarrasque/common';
 
 import { api } from '../../../../lib/api';
 
@@ -14,9 +14,7 @@ import { api } from '../../../../lib/api';
 async function updateMembership(membership: MembershipEntity) {
   const { data } = await api.put<MembershipEntity>(
     `/api/campaigns/${membership.campaignId}/memberships/${membership.userId}`,
-    {
-      role: membership.role,
-    },
+    { role: membership.role, color: membership.color },
   );
   return data;
 }

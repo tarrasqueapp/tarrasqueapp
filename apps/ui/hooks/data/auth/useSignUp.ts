@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { UserEntity } from '@tarrasque/sdk';
+import { UserEntity } from '@tarrasque/common';
 
 import { api } from '../../../lib/api';
 

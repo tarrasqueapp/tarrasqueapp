@@ -4,11 +4,13 @@ import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
 import useLocalStorage from 'use-local-storage';
 
-import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+import { SocketEvent } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { Color } from '../../lib/colors';
+import { socket } from '../../lib/socket';
+import { tarrasque } from '../../lib/tarrasque';
 import { store } from '../../store';
 import { CameraBase } from './CameraBase';
 
@@ -81,8 +83,8 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
   function handleDoubleClick(event: PIXI.FederatedPointerEvent) {
     console.debug('Double Click.', event.global);
 
-    // Get the coordinates of the double click event relative to the map
-    const coordinates = store.pixi.viewport.toWorld(event.global.x, event.global.y);
+    // Get the position of the double click event relative to the map
+    const position = store.pixi.viewport.toWorld(event.global.x, event.global.y);
 
     // Choose a random color from the list of available colors
     const availableColors = [Color.RED, Color.GREEN, Color.BLUE, Color.ORANGE];
@@ -90,8 +92,15 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     const colors = [...availableColors, ...additionalColors];
     const color = colors[Math.floor(Math.random() * colors.length)];
 
-    tarrasque.emit(TarrasqueEvent.PING_LOCATION, {
-      coordinates,
+    socket.emit(SocketEvent.PING_LOCATION, {
+      position,
+      color,
+      mapId,
+      userId: user?.id || '',
+    });
+
+    tarrasque.emit(SocketEvent.PING_LOCATION, {
+      position,
       color,
       mapId,
       userId: user?.id || '',

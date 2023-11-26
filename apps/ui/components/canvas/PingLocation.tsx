@@ -1,13 +1,15 @@
 import { Graphics } from '@pixi/react';
 import React, { useEffect, useState } from 'react';
 
-import { PingLocationEntity, TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+import { PingLocationEntity, SocketEvent } from '@tarrasque/common';
+
+import { socket } from '../../lib/socket';
 
 export default function PingLocation() {
   const [pings, setPings] = useState<(PingLocationEntity & { size: number; frame: number })[]>([]);
 
   useEffect(() => {
-    tarrasque.on(TarrasqueEvent.PINGED_LOCATION, (ping) => {
+    socket.on(SocketEvent.PINGED_LOCATION, (ping) => {
       const pingWithAnimation = {
         ...ping,
         frame: 0,
@@ -51,8 +53,8 @@ export default function PingLocation() {
             g.drawCircle(0, 0, ping.size); // Draw the circle
             g.endFill(); // Complete the fill process
           }}
-          x={ping.coordinates.x}
-          y={ping.coordinates.y}
+          x={ping.position.x}
+          y={ping.position.y}
         />
       ))}
     </>

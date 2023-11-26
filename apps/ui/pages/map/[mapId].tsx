@@ -2,13 +2,15 @@ import { Box } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useEffect } from 'react';
 
-import { TarrasqueEvent, tarrasque } from '@tarrasque/sdk';
+import { SocketEvent } from '@tarrasque/common';
 
 import { Overlay } from '../../components/overlay/Overlay';
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
+import { useGetCampaign } from '../../hooks/data/campaigns/useGetCampaign';
 import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
+import { useIframeDataSync } from '../../hooks/data/useIframeDataSync';
+import { useWebSocketCacheSync } from '../../hooks/data/useWebSocketCacheSync';
 import { AppNavigation } from '../../lib/navigation';
 import { SSRUtils } from '../../utils/SSRUtils';
 
@@ -35,23 +37,23 @@ const Canvas = dynamic(() => import('../../components/canvas/Canvas'), { ssr: fa
 
 export default function MapPage() {
   const { data: map } = useGetCurrentMap();
+  const { data: campaign } = useGetCampaign(map?.campaignId || '');
   const { data: user } = useGetUser();
+  useIframeDataSync();
+  useWebSocketCacheSync({
+    onConnect(socket) {
+      if (!user || !map) return;
 
-  useEffect(() => {
-    if (!user || !map) return;
+      // Join the user room
+      socket.emit(SocketEvent.JOIN_USER_ROOM, user.id);
 
-    // Connect to the Tarrasque server
-    tarrasque.connect();
+      // Join the campaign room
+      socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, map.campaignId);
 
-    // Join the user room
-    tarrasque.emit(TarrasqueEvent.JOIN_USER_ROOM, user.id);
-
-    // Join the campaign room
-    tarrasque.emit(TarrasqueEvent.JOIN_CAMPAIGN_ROOM, map.campaignId);
-
-    // Join the map room
-    tarrasque.emit(TarrasqueEvent.JOIN_MAP_ROOM, map.id);
-  }, []);
+      // Join the map room
+      socket.emit(SocketEvent.JOIN_MAP_ROOM, map.id);
+    },
+  });
 
   return (
     <>

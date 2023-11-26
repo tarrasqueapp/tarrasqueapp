@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { RawAxiosRequestConfig } from 'axios';
 
-import { MembershipEntity } from '@tarrasque/sdk';
+import { MembershipEntity } from '@tarrasque/common';
 
 import { api } from '../../../../lib/api';
 

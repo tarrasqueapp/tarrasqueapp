@@ -1,7 +1,7 @@
 import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
 
-import { ActionTokenEntity, ActionTokenType, CampaignEntity, SetupEntity, UserEntity } from '@tarrasque/sdk';
+import { ActionTokenEntity, ActionTokenType, CampaignEntity, SetupEntity, UserEntity } from '@tarrasque/common';
 
 import { getActionToken } from '../hooks/data/action-tokens/useGetActionToken';
 import { getUser } from '../hooks/data/auth/useGetUser';
