@@ -8,18 +8,13 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
-import { ActionTokenType, Prisma, Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 
-import { ActionTokensService } from '../../../action-tokens/action-tokens.service';
 import { ActionTokenEntity } from '../../../action-tokens/entities/action-token.entity';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { EmailService } from '../../../email/email.service';
-import { durationToDate } from '../../../helpers';
-import { NotificationTypeEnum } from '../../../notifications/notification-type.enum';
-import { NotificationsGateway } from '../../../notifications/notifications.gateway';
 import { User } from '../../../users/decorators/user.decorator';
 import { UserEntity } from '../../../users/entities/user.entity';
 import { UsersService } from '../../../users/users.service';
@@ -29,8 +24,6 @@ import { RoleGuard } from '../../guards/role.guard';
 import { MembershipsService } from '../memberships/memberships.service';
 import { ConnectCampaignInviteDto } from './dto/connect-campaign-invite.dto';
 import { CreateInviteDto } from './dto/create-invite.dto';
-import { UpdateInviteDto } from './dto/update-invite.dto';
-import { InvitesGateway } from './invites.gateway';
 import { InvitesService } from './invites.service';
 
 @UseGuards(JwtAuthGuard)
@@ -41,10 +34,7 @@ export class InvitesController {
     private campaignsService: CampaignsService,
     private membershipsService: MembershipsService,
     private emailService: EmailService,
-    private actionTokensService: ActionTokensService,
     private usersService: UsersService,
-    private invitesGateway: InvitesGateway,
-    private notificationsGateway: NotificationsGateway,
   ) {}
 
   /**
@@ -56,7 +46,7 @@ export class InvitesController {
   @Get()
   async getCampaignInvites(@Param() params: ConnectCampaignDto): Promise<ActionTokenEntity[] | undefined> {
     // Get the campaign with its invites
-    return await this.invitesService.getCampaignInvites(params.campaignId);
+    return await this.invitesService.getInvitesByCampaignId(params.campaignId);
   }
 
   /**
@@ -91,7 +81,7 @@ export class InvitesController {
     });
 
     // Get the campaign's invites
-    const invites = await this.invitesService.getCampaignInvites(params.campaignId);
+    const invites = await this.invitesService.getInvitesByCampaignId(params.campaignId);
 
     // Check that the user is not already invited to the campaign
     invites.forEach((invite) => {
@@ -104,14 +94,7 @@ export class InvitesController {
     const existingUser = await this.usersService.getUserByEmail(email);
 
     // Generate the invite token
-    const token = await this.actionTokensService.createToken({
-      type: ActionTokenType.INVITE,
-      email,
-      payload: { role: Role.PLAYER },
-      expiresAt: durationToDate('7d'),
-      userId: existingUser?.id,
-      campaignId: params.campaignId,
-    });
+    const invite = await this.invitesService.createInvite({ email, userId: existingUser?.id, campaign });
 
     // Send the email
     if (existingUser) {
@@ -120,75 +103,19 @@ export class InvitesController {
         hostName: user.displayName,
         campaignName: campaign.name,
         to: existingUser.email,
-        token: token.id,
-      });
-
-      // Send the notification to the user
-      this.notificationsGateway.createNotification({
-        userId: existingUser?.id,
-        type: NotificationTypeEnum.INVITE,
-        data: { ...token, campaign },
+        token: invite.id,
       });
     } else {
       await this.emailService.sendCampaignInviteNewUserEmail({
         hostName: user.displayName,
         campaignName: campaign.name,
         to: email,
-        token: token.id,
+        token: invite.id,
       });
     }
 
-    // Send the invite to the campaign
-    this.invitesGateway.createInvite(token);
-
     // Return the invite
-    return token;
-  }
-
-  /**
-   * Update a campaign invite
-   * @param params - The campaign's id and invite's id
-   * @param data - The invite's data
-   * @returns The updated invite
-   */
-  @UseGuards(RoleGuard(Role.GAME_MASTER))
-  @Put(':inviteId')
-  async updateInvite(
-    @Param() params: ConnectCampaignInviteDto,
-    @Body() data: UpdateInviteDto,
-  ): Promise<ActionTokenEntity> {
-    // Check that the campaign exists
-    const campaign = await this.campaignsService.getCampaignById(params.campaignId);
-    if (!campaign) {
-      throw new NotFoundException('Campaign not found');
-    }
-
-    // Check that invite exists
-    const invite = await this.actionTokensService.getTokenById(params.inviteId, ActionTokenType.INVITE);
-    if (!invite) {
-      throw new NotFoundException('Invalid or expired token');
-    }
-
-    // Check that invite belongs to the campaign
-    if (invite.campaignId !== params.campaignId) {
-      throw new BadRequestException('Invite is not for this campaign');
-    }
-
-    // Update the invite
-    const updatedInvite = await this.actionTokensService.updateToken(invite.id, { payload: { role: data.role } });
-
-    // Send the invite to the campaign
-    this.invitesGateway.updateInvite(updatedInvite);
-
-    // Send the notification to the user
-    this.notificationsGateway.updateNotification({
-      userId: updatedInvite.userId,
-      type: NotificationTypeEnum.INVITE,
-      data: updatedInvite,
-    });
-
-    // Return the updated invite
-    return updatedInvite;
+    return invite;
   }
 
   /**
@@ -206,7 +133,7 @@ export class InvitesController {
     }
 
     // Check that invite exists
-    const invite = await this.actionTokensService.getTokenById(params.inviteId, ActionTokenType.INVITE);
+    const invite = await this.invitesService.getInviteById(params.inviteId);
     if (!invite) {
       throw new NotFoundException('Invalid or expired token');
     }
@@ -217,17 +144,7 @@ export class InvitesController {
     }
 
     // Delete the invite
-    const deletedInvite = await this.actionTokensService.deleteToken(params.inviteId);
-
-    // Send the invite to the campaign
-    this.invitesGateway.deleteInvite(deletedInvite);
-
-    // Send the notification to the user
-    this.notificationsGateway.deleteNotification({
-      userId: deletedInvite.userId,
-      type: NotificationTypeEnum.INVITE,
-      data: deletedInvite,
-    });
+    const deletedInvite = await this.invitesService.deleteInvite(invite);
 
     // Return the deleted invite
     return deletedInvite;
@@ -248,7 +165,7 @@ export class InvitesController {
     }
 
     // Check that invite exists
-    const invite = await this.actionTokensService.getTokenById(params.inviteId, ActionTokenType.INVITE);
+    const invite = await this.invitesService.getInviteById(params.inviteId);
     if (!invite) {
       throw new NotFoundException('Invalid or expired token');
     }
@@ -283,17 +200,7 @@ export class InvitesController {
     });
 
     // Delete and return the invite
-    const deletedInvite = await this.actionTokensService.deleteToken(invite.id);
-
-    // Send the invite to the campaign
-    this.invitesGateway.deleteInvite(deletedInvite);
-
-    // Send the notification to the user
-    this.notificationsGateway.deleteNotification({
-      userId: deletedInvite.userId,
-      type: NotificationTypeEnum.INVITE,
-      data: deletedInvite,
-    });
+    const deletedInvite = await this.invitesService.deleteInvite(invite);
 
     // Return the deleted invite
     return deletedInvite;
@@ -313,7 +220,7 @@ export class InvitesController {
     }
 
     // Check that invite exists
-    const invite = await this.actionTokensService.getTokenById(params.inviteId, ActionTokenType.INVITE);
+    const invite = await this.invitesService.getInviteById(params.inviteId);
     if (!invite) {
       throw new NotFoundException('Invalid or expired token');
     }
@@ -329,17 +236,7 @@ export class InvitesController {
     }
 
     // Delete and return the invite
-    const deletedInvite = await this.actionTokensService.deleteToken(invite.id);
-
-    // Send the invite to the campaign
-    this.invitesGateway.deleteInvite(deletedInvite);
-
-    // Send the notification to the user
-    this.notificationsGateway.deleteNotification({
-      userId: deletedInvite.userId,
-      type: NotificationTypeEnum.INVITE,
-      data: deletedInvite,
-    });
+    const deletedInvite = await this.invitesService.deleteInvite(invite);
 
     // Return the deleted invite
     return deletedInvite;

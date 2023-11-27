@@ -23,6 +23,8 @@ export class UserEntity {
   // DateTime
   createdAt: string;
   updatedAt: string;
+  // Memberships
+  memberships: MembershipEntity[];
 }
 
 export enum ActionTokenType {

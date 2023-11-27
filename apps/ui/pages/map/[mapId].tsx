@@ -45,7 +45,7 @@ export default function MapPage() {
       if (!user || !map) return;
 
       // Join the user room
-      socket.emit(SocketEvent.JOIN_USER_ROOM, user.id);
+      socket.emit(SocketEvent.JOIN_USER_ROOM);
 
       // Join the campaign room
       socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, map.campaignId);

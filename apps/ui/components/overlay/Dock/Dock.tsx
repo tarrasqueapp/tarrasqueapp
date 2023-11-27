@@ -204,7 +204,7 @@ export const Dock = observer(function Dock() {
           <>
             <Tooltip title="Account">
               <IconButton {...bindTrigger(popupState)} size="small">
-                <Avatar src={user?.avatar?.thumbnailUrl} />
+                <Avatar src={user?.avatar?.thumbnailUrl}>{user?.displayName[0]}</Avatar>
               </IconButton>
             </Tooltip>
 
@@ -215,7 +215,7 @@ export const Dock = observer(function Dock() {
             >
               <ListItem sx={{ mt: 1 }}>
                 <ListItemAvatar>
-                  <Avatar src={user?.avatar?.thumbnailUrl} />
+                  <Avatar src={user?.avatar?.thumbnailUrl}>{user?.displayName[0]}</Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={user?.name || 'Guest'} />
               </ListItem>

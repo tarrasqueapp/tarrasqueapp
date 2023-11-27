@@ -46,7 +46,7 @@ export default function DashboardPage() {
       if (!user || !campaigns) return;
 
       // Join the user room
-      socket.emit(SocketEvent.JOIN_USER_ROOM, user.id);
+      socket.emit(SocketEvent.JOIN_USER_ROOM);
 
       // Join the campaign rooms
       campaigns.forEach((campaign) => {

@@ -19,7 +19,7 @@ export const Account = observer(function Account() {
           <>
             <Tooltip title="Account">
               <IconButton {...bindTrigger(popupState)}>
-                <Avatar src={user?.avatar?.thumbnailUrl} />
+                <Avatar src={user?.avatar?.thumbnailUrl}>{user?.displayName[0]}</Avatar>
               </IconButton>
             </Tooltip>
 

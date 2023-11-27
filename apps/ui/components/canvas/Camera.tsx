@@ -7,8 +7,8 @@ import useLocalStorage from 'use-local-storage';
 import { SocketEvent } from '@tarrasque/common';
 
 import { useGetUser } from '../../hooks/data/auth/useGetUser';
+import { useGetMap } from '../../hooks/data/maps/useGetMap';
 import { useWindowSize } from '../../hooks/useWindowSize';
-import { Color } from '../../lib/colors';
 import { socket } from '../../lib/socket';
 import { tarrasque } from '../../lib/tarrasque';
 import { store } from '../../store';
@@ -22,6 +22,7 @@ interface CameraProps {
 }
 
 export function Camera({ mapId, width, height, children }: CameraProps) {
+  const { data: map } = useGetMap(mapId);
   const { data: user } = useGetUser();
 
   const app = useApp();
@@ -51,6 +52,8 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
 
     setMounted(true);
   }, [position]);
+
+  const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaignId);
 
   /**
    * Handle the load event
@@ -86,22 +89,16 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     // Get the position of the double click event relative to the map
     const position = store.pixi.viewport.toWorld(event.global.x, event.global.y);
 
-    // Choose a random color from the list of available colors
-    const availableColors = [Color.RED, Color.GREEN, Color.BLUE, Color.ORANGE];
-    const additionalColors = ['#874AC4', '#C1C14E', '#17DE7A', '#966969', '#3232B8', '#E42FE4'];
-    const colors = [...availableColors, ...additionalColors];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-
     socket.emit(SocketEvent.PING_LOCATION, {
       position,
-      color,
+      color: membership?.color || '#000000',
       mapId,
       userId: user?.id || '',
     });
 
     tarrasque.emit(SocketEvent.PING_LOCATION, {
       position,
-      color,
+      color: membership?.color || '#000000',
       mapId,
       userId: user?.id || '',
     });

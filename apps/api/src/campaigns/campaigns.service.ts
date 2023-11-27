@@ -2,6 +2,8 @@ import { ConflictException, Injectable, InternalServerErrorException, Logger, No
 import { Role } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
+import { UserEntity } from '../users/entities/user.entity';
+import { CampaignsGateway } from './campaigns.gateway';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CampaignEntity } from './entities/campaign.entity';
@@ -10,7 +12,10 @@ import { CampaignEntity } from './entities/campaign.entity';
 export class CampaignsService {
   private logger: Logger = new Logger(CampaignsService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private campaignsGateway: CampaignsGateway,
+  ) {}
 
   /**
    * Get all campaigns that a user is a member of
@@ -138,6 +143,10 @@ export class CampaignsService {
           maps: { include: { media: true } },
         },
       });
+
+      // Send the campaign to the client
+      this.campaignsGateway.createCampaign(campaign);
+
       this.logger.debug(`✅️ Created campaign "${campaign.id}"`);
       return campaign;
     } catch (error) {
@@ -169,6 +178,10 @@ export class CampaignsService {
           maps: { include: { media: true } },
         },
       });
+
+      // Send the campaign to the client
+      this.campaignsGateway.updateCampaign(campaign);
+
       this.logger.debug(`✅️ Updated campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
@@ -187,6 +200,10 @@ export class CampaignsService {
     try {
       // Delete the campaign
       const campaign = await this.prisma.campaign.delete({ where: { id: campaignId } });
+
+      // Send the campaign to the client
+      this.campaignsGateway.deleteCampaign(campaign);
+
       this.logger.debug(`✅️ Deleted campaign "${campaignId}"`);
       return campaign;
     } catch (error) {
@@ -198,18 +215,48 @@ export class CampaignsService {
   /**
    * Reorder campaigns
    * @param campaignIds - The campaign ids
-   * @param userId - The user's id
+   * @param user - The user that reordered the campaigns
    * @returns The updated campaigns in the new order
    */
-  async reorderCampaigns(campaignIds: string[], userId: string): Promise<CampaignEntity[]> {
-    this.logger.verbose(`📂 Reordering campaigns for user "${userId}"`);
+  async reorderCampaigns(campaignIds: string[], user: UserEntity): Promise<CampaignEntity[]> {
+    this.logger.verbose(`📂 Reordering campaigns for user "${user.id}"`);
     try {
       // Update the user's campaign order
-      await this.prisma.user.update({ where: { id: userId }, data: { campaignOrder: campaignIds } });
-      this.logger.debug(`✅️ Reordered campaigns for user "${userId}"`);
+      await this.prisma.user.update({ where: { id: user.id }, data: { campaignOrder: campaignIds } });
+
+      // Send the reordered campaigns to the client
+      this.campaignsGateway.reorderCampaigns(campaignIds, user);
 
       // Return the campaigns in the new order
-      return this.getCampaignsByUserId(userId);
+      this.logger.debug(`✅️ Reordered campaigns for user "${user.id}"`);
+      return this.getCampaignsByUserId(user.id);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  /**
+   * Reorder maps for a campaign
+   * @param campaignId - The campaign id
+   * @param mapIds - The map ids
+   * @returns The updated maps in the new order
+   */
+  async reorderMaps(campaignId: string, mapIds: string[]): Promise<void> {
+    this.logger.verbose(`📂 Reordering maps for campaign "${campaignId}"`);
+    try {
+      // Update the map order
+      await this.prisma.$transaction(
+        mapIds.map((id, index) =>
+          this.prisma.map.update({
+            where: { id },
+            data: { order: index },
+          }),
+        ),
+      );
+
+      // Emit the updated maps to the campaign's room
+      this.campaignsGateway.reorderMaps({ campaignId, mapIds });
     } catch (error) {
       this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);

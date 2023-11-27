@@ -44,7 +44,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "sharp": "^0.32.6",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "uniqolor": "^1.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.2.1",

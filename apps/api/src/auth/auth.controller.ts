@@ -18,7 +18,7 @@ import { Response } from 'express';
 
 import { ActionTokensService } from '../action-tokens/action-tokens.service';
 import { CampaignsService } from '../campaigns/campaigns.service';
-import { InvitesGateway } from '../campaigns/modules/invites/invites.gateway';
+import { InvitesService } from '../campaigns/modules/invites/invites.service';
 import { MembershipsService } from '../campaigns/modules/memberships/memberships.service';
 import { EmailService } from '../email/email.service';
 import { durationToDate } from '../helpers';
@@ -47,7 +47,7 @@ export class AuthController {
     private storageService: StorageService,
     private campaignsService: CampaignsService,
     private mapsService: MapsService,
-    private invitesGateway: InvitesGateway,
+    private invitesService: InvitesService,
   ) {}
 
   /**
@@ -89,7 +89,7 @@ export class AuthController {
       });
     } else {
       // Get the invite
-      const invite = await this.actionTokensService.getTokenById(data.token, ActionTokenType.INVITE);
+      const invite = await this.invitesService.getInviteById(data.token);
       if (!invite) {
         throw new NotFoundException('Invalid or expired token');
       }
@@ -115,12 +115,10 @@ export class AuthController {
         userId: user.id,
         campaignId: invite.campaignId,
         role,
-        color: '#000000',
       });
 
       // Delete the invite once used
-      this.actionTokensService.deleteToken(invite.id);
-      this.invitesGateway.deleteInvite(invite);
+      this.invitesService.deleteInvite(invite);
     }
 
     // Assign existing campaign invites to the new user

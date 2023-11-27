@@ -5,7 +5,7 @@ import { PingLocationEntity, SocketEvent } from '@tarrasque/common';
 
 import { socket } from '../../lib/socket';
 
-export default function PingLocation() {
+export function PingLocation() {
   const [pings, setPings] = useState<(PingLocationEntity & { size: number; frame: number })[]>([]);
 
   useEffect(() => {

@@ -19,6 +19,7 @@ export enum SocketEvent {
   USER_UPDATED = 'USER_UPDATED',
   USER_DELETED = 'USER_DELETED',
   JOIN_USER_ROOM = 'JOIN_USER_ROOM',
+  LEAVE_USER_ROOM = 'LEAVE_USER_ROOM',
 
   // Notifications
   NOTIFICATION_CREATED = 'NOTIFICATION_CREATED',
@@ -31,6 +32,7 @@ export enum SocketEvent {
   CAMPAIGN_DELETED = 'CAMPAIGN_DELETED',
   CAMPAIGNS_REORDERED = 'CAMPAIGNS_REORDERED',
   JOIN_CAMPAIGN_ROOM = 'JOIN_CAMPAIGN_ROOM',
+  LEAVE_CAMPAIGN_ROOM = 'LEAVE_CAMPAIGN_ROOM',
 
   // Invites
   INVITE_CREATED = 'INVITE_CREATED',
@@ -51,8 +53,10 @@ export enum SocketEvent {
   MAP_CREATED = 'MAP_CREATED',
   MAP_UPDATED = 'MAP_UPDATED',
   MAP_DELETED = 'MAP_DELETED',
+  MAPS_REORDERED = 'MAPS_REORDERED',
   PINGED_LOCATION = 'PINGED_LOCATION',
   JOIN_MAP_ROOM = 'JOIN_MAP_ROOM',
+  LEAVE_MAP_ROOM = 'LEAVE_MAP_ROOM',
   PING_LOCATION = 'PING_LOCATION',
 }
 
@@ -92,18 +96,22 @@ export interface SocketListenEvents {
   [SocketEvent.MAP_CREATED]: (data: MapEntity) => void;
   [SocketEvent.MAP_UPDATED]: (data: MapEntity) => void;
   [SocketEvent.MAP_DELETED]: (data: MapEntity) => void;
+  [SocketEvent.MAPS_REORDERED]: (data: { campaignId: string; mapIds: string[] }) => void;
   [SocketEvent.PINGED_LOCATION]: (data: PingLocationEntity) => void;
 }
 
 // The events that the socket can emit
 export interface SocketEmitEvents {
   // Users
-  [SocketEvent.JOIN_USER_ROOM]: (userId: string) => void;
+  [SocketEvent.JOIN_USER_ROOM]: () => void;
+  [SocketEvent.LEAVE_USER_ROOM]: () => void;
 
   // Campaigns
   [SocketEvent.JOIN_CAMPAIGN_ROOM]: (campaignId: string) => void;
+  [SocketEvent.LEAVE_CAMPAIGN_ROOM]: (campaignId: string) => void;
 
   // Maps
   [SocketEvent.JOIN_MAP_ROOM]: (mapId: string) => void;
+  [SocketEvent.LEAVE_MAP_ROOM]: (mapId: string) => void;
   [SocketEvent.PING_LOCATION]: (data: PingLocationEntity) => void;
 }

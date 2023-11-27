@@ -9,7 +9,7 @@ import { useWindowSize } from '../../hooks/useWindowSize';
 import { Color } from '../../lib/colors';
 import { Grid } from './Grid';
 import { Map } from './Map';
-import PingLocation from './PingLocation';
+import { PingLocation } from './PingLocation';
 import { Token } from './Token';
 
 export default function Canvas() {

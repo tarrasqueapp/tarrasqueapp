@@ -27,17 +27,6 @@ export class InvitesGateway {
   }
 
   /**
-   * Update a invite in the client
-   * @param invite - The invite to update in the client
-   */
-  @SubscribeMessage(SocketEvent.INVITE_UPDATED)
-  updateInvite(@MessageBody() invite: ActionTokenEntity) {
-    // Emit the updated invite to the campaign's room
-    this.server.to(`campaign/${invite.campaignId}`).emit(SocketEvent.INVITE_UPDATED, invite);
-    this.logger.debug(`🚀 Invite for user "${invite.email}" updated in campaign "${invite.campaignId}"`);
-  }
-
-  /**
    * Delete a invite from the client
    * @param invite - The invite to delete from the client
    */

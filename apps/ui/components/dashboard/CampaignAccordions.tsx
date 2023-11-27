@@ -11,9 +11,17 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { Portal } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+
+import { CampaignEntity } from '@tarrasque/common';
 
 import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
 import { useReorderCampaigns } from '../../hooks/data/campaigns/useReorderCampaigns';
@@ -31,9 +39,7 @@ export function CampaignAccordions() {
 
   // Drag and drop
   const [activeId, setActiveId] = useState<string | number | null>(null);
-  const [orderedCampaignIds, setOrderedCampaignIds] = useState<string[]>(
-    campaigns?.map((campaign) => campaign.id) || [],
-  );
+  const [orderedCampaigns, setOrderedCampaigns] = useState<CampaignEntity[]>(campaigns || []);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { delay: 500, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
@@ -44,7 +50,7 @@ export function CampaignAccordions() {
   // Set initial order of campaign ids and update when campaigns change
   useEffect(() => {
     if (!campaigns) return;
-    setOrderedCampaignIds(campaigns.map((campaign) => campaign.id));
+    setOrderedCampaigns(campaigns);
   }, [campaigns]);
 
   /**
@@ -81,7 +87,7 @@ export function CampaignAccordions() {
   }
 
   /**
-   * Update order of campaign ids when campaign is dragged over another campaign
+   * Update order of campaigns when campaign is dragged over another campaign
    * @param event - Drag over event
    */
   function handleDragOver(event: DragOverEvent) {
@@ -91,15 +97,11 @@ export function CampaignAccordions() {
     const overId = event.over.id as string;
 
     if (event.active.id !== event.over.id) {
-      const oldIndex = orderedCampaignIds.indexOf(activeId);
-      const newIndex = orderedCampaignIds.indexOf(overId);
+      setOrderedCampaigns((orderedCampaigns) => {
+        const oldIndex = orderedCampaigns.findIndex((campaign) => campaign.id === activeId);
+        const newIndex = orderedCampaigns.findIndex((campaign) => campaign.id === overId);
 
-      // Update order of campaign ids
-      setOrderedCampaignIds((orderedCampaignIds) => {
-        const newCampaignIds = [...orderedCampaignIds];
-        newCampaignIds.splice(oldIndex, 1);
-        newCampaignIds.splice(newIndex, 0, activeId);
-        return newCampaignIds;
+        return arrayMove(orderedCampaigns, oldIndex, newIndex);
       });
     }
   }
@@ -112,8 +114,8 @@ export function CampaignAccordions() {
     if (!campaigns || !event.over) return;
 
     // Check if order has changed
-    if (orderedCampaignIds.some((campaignId, index) => campaignId !== campaigns[index].id)) {
-      reorderCampaigns.mutate(orderedCampaignIds);
+    if (orderedCampaigns.some((campaign, index) => campaign.id !== campaigns[index].id)) {
+      reorderCampaigns.mutate(orderedCampaigns.map((campaign) => campaign.id));
     }
   }
 
@@ -128,22 +130,24 @@ export function CampaignAccordions() {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={orderedCampaignIds} strategy={verticalListSortingStrategy}>
-          {orderedCampaignIds?.map((campaignId) => (
+        <SortableContext items={orderedCampaigns} strategy={verticalListSortingStrategy}>
+          {orderedCampaigns?.map((campaign) => (
             <CampaignAccordion
-              key={campaignId}
-              campaign={campaigns?.find((campaign) => campaign.id === campaignId)}
-              expanded={!collapsedCampaigns?.includes(campaignId)}
-              onToggle={(expanded) => handleToggle(campaignId, expanded)}
+              key={campaign.id}
+              campaign={campaigns?.find((c) => c.id === campaign.id)}
+              expanded={!collapsedCampaigns?.includes(campaign.id)}
+              onToggle={(expanded) => handleToggle(campaign.id, expanded)}
             />
           ))}
         </SortableContext>
 
-        <DragOverlay modifiers={[restrictToParentElement]}>
-          {activeId ? (
-            <CampaignAccordion key={activeId} campaign={campaigns?.find((campaign) => campaign.id === activeId)} />
-          ) : null}
-        </DragOverlay>
+        <Portal>
+          <DragOverlay modifiers={[restrictToParentElement]}>
+            {activeId ? (
+              <CampaignAccordion key={activeId} campaign={campaigns?.find((campaign) => campaign.id === activeId)} />
+            ) : null}
+          </DragOverlay>
+        </Portal>
       </DndContext>
 
       <NewCampaign />

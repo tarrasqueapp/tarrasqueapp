@@ -36,6 +36,19 @@ export class CampaignsGateway {
   }
 
   /**
+   * Leave a campaign's room
+   * @param client - The client that left the campaign's room
+   * @param campaignId - The campaign's ID
+   * @param user - The user that left the campaign's room
+   */
+  @SubscribeMessage(SocketEvent.LEAVE_CAMPAIGN_ROOM)
+  leaveCampaignRoom(@ConnectedSocket() client: Socket, @MessageBody() campaignId: string, @UserWs() user: UserEntity) {
+    // Leave the campaign's room
+    client.leave(`campaign/${campaignId}`);
+    this.logger.debug(`🚀 Campaign "${campaignId}" left by "${user.id}"`);
+  }
+
+  /**
    * Create a campaign in the client
    * @param campaign - The campaign to create in the client
    * @param user - The user that created the campaign
@@ -69,6 +82,8 @@ export class CampaignsGateway {
     // Emit the deleted campaign to the campaign's room
     this.server.to(`campaign/${campaign.id}`).emit(SocketEvent.CAMPAIGN_DELETED, campaign);
     this.logger.debug(`🚀 Campaign "${campaign.name}" deleted`);
+    // Instruct the user's active clients to leave the campaign's room
+    this.server.to(`campaign/${campaign.id}`).socketsLeave(`campaign/${campaign.id}`);
   }
 
   /**
@@ -80,5 +95,16 @@ export class CampaignsGateway {
     // Emit the new campaign order to the user's room
     this.server.to(`user/${user.id}`).emit(SocketEvent.CAMPAIGNS_REORDERED, campaignIds);
     this.logger.debug(`🚀 Campaigns for user ${user.id} reordered`);
+  }
+
+  /**
+   * Reorder maps in the client
+   * @param mapIds - The new map order
+   */
+  @SubscribeMessage(SocketEvent.MAPS_REORDERED)
+  reorderMaps(@MessageBody() { campaignId, mapIds }: { campaignId: string; mapIds: string[] }) {
+    // Emit the new campaign order to the user's room
+    this.server.to(`campaign/${campaignId}`).emit(SocketEvent.MAPS_REORDERED, { campaignId, mapIds });
+    this.logger.debug(`🚀 Maps for campaign ${campaignId} reordered`);
   }
 }

@@ -28,7 +28,7 @@ export default class MyDocument extends Document<MyDocumentProps> {
           <meta name="robots" content="noindex,nofollow" />
 
           {/* Android */}
-          <meta name="theme-color" content={Color.Brown} />
+          <meta name="theme-color" content={Color.BROWN_BEIGE} />
           <meta name="mobile-web-app-capable" content="yes" />
 
           {/* iOS */}

@@ -23,14 +23,25 @@ export class UsersGateway {
    * @param user - The user that joined the user's room
    */
   @SubscribeMessage(SocketEvent.JOIN_USER_ROOM)
-  joinUserRoom(@ConnectedSocket() client: Socket, @MessageBody() userId: string, @UserWs() user: UserEntity) {
-    // Only allow a user to join their own room
-    if (userId !== user.id) return;
+  joinUserRoom(@ConnectedSocket() client: Socket, @UserWs() user: UserEntity) {
+    if (!user) return;
     // Only allow a user to join their own room once
-    if (client.rooms.has(`user/${userId}`)) return;
+    if (client.rooms.has(`user/${user.id}`)) return;
     // Instruct the current client to join the user's room
-    client.join(`user/${userId}`);
-    this.logger.debug(`🚀 User "${userId}" joined`);
+    client.join(`user/${user.id}`);
+    this.logger.debug(`🚀 User "${user.id}" joined`);
+  }
+
+  /**
+   * Leave a user's room and all other rooms
+   * @param client - The client that left the user's room
+   * @param userId - The user's ID
+   */
+  @SubscribeMessage(SocketEvent.LEAVE_USER_ROOM)
+  leaveUserRoom(@ConnectedSocket() client: Socket, @UserWs() user: UserEntity) {
+    // Leave all rooms
+    client.rooms.forEach((room) => client.leave(room));
+    this.logger.debug(`🚀 User "${user.id}" left`);
   }
 
   /**
@@ -53,5 +64,7 @@ export class UsersGateway {
     // Emit the deleted user to the user's room
     this.server.to(`user/${user.id}`).emit(SocketEvent.USER_DELETED, user);
     this.logger.debug(`🚀 User "${user.name}" deleted`);
+    // Instruct the user's active clients to leave the user's room
+    this.server.to(`user/${user.id}`).socketsLeave(`user/${user.id}`);
   }
 }

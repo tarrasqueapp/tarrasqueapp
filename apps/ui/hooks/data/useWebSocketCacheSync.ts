@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import {
   ActionTokenEntity,
   CampaignEntity,
+  MapEntity,
   MembershipEntity,
   NotificationEntity,
   SocketEvent,
@@ -63,6 +64,11 @@ export function useWebSocketCacheSync({ onConnect }: Props) {
     socket.on(SocketEvent.NOTIFICATION_UPDATED, handleNotificationUpdated);
     socket.on(SocketEvent.NOTIFICATION_DELETED, handleNotificationDeleted);
 
+    socket.on(SocketEvent.MAP_CREATED, handleMapCreated);
+    socket.on(SocketEvent.MAP_UPDATED, handleMapUpdated);
+    socket.on(SocketEvent.MAP_DELETED, handleMapDeleted);
+    socket.on(SocketEvent.MAPS_REORDERED, handleMapsReordered);
+
     return () => {
       socket.off(SocketEvent.USER_UPDATED, handleUserUpdated);
       socket.off(SocketEvent.USER_DELETED, handleUserDeleted);
@@ -83,6 +89,11 @@ export function useWebSocketCacheSync({ onConnect }: Props) {
       socket.off(SocketEvent.NOTIFICATION_CREATED, handleNotificationCreated);
       socket.off(SocketEvent.NOTIFICATION_UPDATED, handleNotificationUpdated);
       socket.off(SocketEvent.NOTIFICATION_DELETED, handleNotificationDeleted);
+
+      socket.off(SocketEvent.MAP_CREATED, handleMapCreated);
+      socket.off(SocketEvent.MAP_UPDATED, handleMapUpdated);
+      socket.off(SocketEvent.MAP_DELETED, handleMapDeleted);
+      socket.off(SocketEvent.MAPS_REORDERED, handleMapsReordered);
     };
   }, [queryClient]);
 
@@ -262,5 +273,64 @@ export function useWebSocketCacheSync({ onConnect }: Props) {
         return notifications.filter((b) => b.data.id !== notification.data.id);
       },
     );
+  }
+
+  /**
+   * Add the map to the cache when it is created in the database
+   * @param map - The created map
+   */
+  function handleMapCreated() {
+    queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+  }
+
+  /**
+   * Update the map in the cache when it is updated in the database
+   * @param map - The updated map
+   */
+  function handleMapUpdated(map: MapEntity) {
+    queryClient.setQueryData<CampaignEntity[]>(['campaigns'], (campaigns) => {
+      if (!campaigns) return;
+      return campaigns.map((c) => {
+        if (c.id !== map.campaignId) return c;
+        return {
+          ...c,
+          maps: c.maps.map((m) => (m.id === map.id ? map : m)),
+        };
+      });
+    });
+  }
+
+  /**
+   * Remove the map from the cache when it is deleted from the database
+   * @param map - The deleted map
+   */
+  function handleMapDeleted(map: MapEntity) {
+    queryClient.setQueryData<CampaignEntity[]>(['campaigns'], (campaigns) => {
+      if (!campaigns) return;
+      return campaigns.map((c) => {
+        if (c.id !== map.campaignId) return c;
+        return {
+          ...c,
+          maps: c.maps.filter((m) => m.id !== map.id),
+        };
+      });
+    });
+  }
+
+  /**
+   * Reorder the maps in the cache when they are reordered in the database
+   * @param mapIds - The reordered map ids
+   */
+  function handleMapsReordered({ campaignId, mapIds }: { campaignId: string; mapIds: string[] }) {
+    queryClient.setQueryData<CampaignEntity[]>(['campaigns'], (campaigns) => {
+      if (!campaigns) return;
+      return campaigns.map((c) => {
+        if (c.id !== campaignId) return c;
+        return {
+          ...c,
+          maps: mapIds.map((id) => c.maps.find((m) => m.id === id)!),
+        };
+      });
+    });
   }
 }

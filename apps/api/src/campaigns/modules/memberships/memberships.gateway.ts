@@ -23,14 +23,8 @@ export class MembershipsGateway {
   createMembership(@MessageBody() membership: MembershipEntity) {
     // Emit the new membership to the campaign's room
     this.server.to(`campaign/${membership.campaignId}`).emit(SocketEvent.MEMBERSHIP_CREATED, membership);
-    // Get the clients in the added user's room
-    const clients = this.server.sockets.adapter.rooms.get(`user/${membership.userId}`);
-    // If there are clients in the added user's room, have them join the campaign's room
-    if (clients) {
-      clients.forEach((client) => {
-        this.server.sockets.sockets.get(client).join(`campaign/${membership.campaignId}`);
-      });
-    }
+    // Instruct the user's active clients to join the campaign's room
+    this.server.to(`user/${membership.userId}`).socketsJoin(`campaign/${membership.campaignId}`);
     this.logger.debug(`🚀 Membership of user "${membership.userId}" created in campaign "${membership.campaignId}"`);
   }
 
@@ -53,6 +47,7 @@ export class MembershipsGateway {
   deleteMembership(@MessageBody() membership: MembershipEntity) {
     // Emit the deleted membership to the campaign's room
     this.server.to(`campaign/${membership.campaignId}`).emit(SocketEvent.MEMBERSHIP_DELETED, membership);
+    this.server.to(`user/${membership.userId}`).socketsLeave(`campaign/${membership.campaignId}`);
     this.logger.debug(`🚀 Membership of user "${membership.userId}" deleted from campaign "${membership.campaignId}"`);
   }
 }

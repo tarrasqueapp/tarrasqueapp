@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import uniqolor from 'uniqolor';
 
 import { CreateMembershipDto } from './dto/create-membership.dto';
 import { UpdateMembershipDto } from './dto/update-membership.dto';
@@ -69,9 +70,12 @@ export class MembershipsService {
   async createMembership(data: CreateMembershipDto): Promise<MembershipEntity> {
     this.logger.verbose(`📂 Creating membership of user "${data.userId}" in campaign "${data.campaignId}"`);
     try {
+      // Create a random color for the user
+      const color = uniqolor.random({ format: 'hex' }).color;
+
       // Create the membership
       const membership = await this.prisma.membership.create({
-        data,
+        data: { ...data, color },
         include: { user: { include: { avatar: true } } },
       });
 

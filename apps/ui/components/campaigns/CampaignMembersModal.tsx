@@ -158,7 +158,7 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                     }
                   >
                     <ListItemAvatar>
-                      <Avatar src={membership.user.avatar?.thumbnailUrl} />
+                      <Avatar src={membership.user.avatar?.thumbnailUrl}>{membership.user.displayName[0]}</Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={membership.user.displayName} secondary={membership.user.email} />
 

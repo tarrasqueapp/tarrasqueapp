@@ -4,12 +4,16 @@ import { PrismaService } from 'nestjs-prisma';
 import { CreateMapDto } from './dto/create-map.dto';
 import { UpdateMapDto } from './dto/update-map.dto';
 import { MapEntity } from './entities/map.entity';
+import { MapsGateway } from './maps.gateway';
 
 @Injectable()
 export class MapsService {
   private logger: Logger = new Logger(MapsService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mapsGateway: MapsGateway,
+  ) {}
 
   /**
    * Get all maps for a campaign
@@ -116,6 +120,10 @@ export class MapsService {
         },
         include: { media: true, createdBy: { include: { avatar: true } } },
       });
+
+      // Emit the new map to the campaign's room
+      this.mapsGateway.createMap(map);
+
       this.logger.debug(`✅️ Created map "${data.name}"`);
       return map;
     } catch (error) {
@@ -168,6 +176,10 @@ export class MapsService {
           createdBy: { include: { avatar: true } },
         },
       });
+
+      // Emit the new map to the campaign's room
+      this.mapsGateway.createMap(map);
+
       this.logger.debug(`✅️ Duplicated map "${mapId}" to "${newMap.id}"`);
       return newMap;
     } catch (error) {
@@ -196,6 +208,10 @@ export class MapsService {
         },
         include: { media: true, createdBy: { include: { avatar: true } } },
       });
+
+      // Emit the updated map to the campaign's room
+      this.mapsGateway.updateMap(map);
+
       this.logger.debug(`✅️ Updated map "${mapId}"`);
       return map;
     } catch (error) {
@@ -217,37 +233,15 @@ export class MapsService {
         where: { id: mapId },
         include: { media: true, createdBy: { include: { avatar: true } } },
       });
+
+      // Emit the deleted map to the campaign's room
+      this.mapsGateway.deleteMap(map);
+
       this.logger.debug(`✅️ Deleted map "${mapId}"`);
       return map;
     } catch (error) {
       this.logger.error(`🚨 Map "${mapId}" not found`);
       throw new NotFoundException(error.message);
-    }
-  }
-
-  /**
-   * Reorder maps for a campaign
-   * @param campaignId - The campaign id
-   * @param mapIds - The map ids
-   * @returns The updated maps in the new order
-   */
-  async reorderMaps(campaignId: string, mapIds: string[]): Promise<MapEntity[]> {
-    this.logger.verbose(`📂 Reordering maps for campaign "${campaignId}"`);
-    try {
-      // Update the map order
-      await this.prisma.$transaction(
-        mapIds.map((id, index) =>
-          this.prisma.map.update({
-            where: { id },
-            data: { order: index },
-          }),
-        ),
-      );
-      // Return the maps in the new order
-      return this.getCampaignMaps(campaignId);
-    } catch (error) {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
     }
   }
 }
