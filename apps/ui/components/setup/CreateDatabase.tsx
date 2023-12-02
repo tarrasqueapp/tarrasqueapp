@@ -2,6 +2,7 @@ import { LoadingButton } from '@mui/lab';
 import { Typography } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 
 import { useCreateDatabase } from '../../hooks/data/setup/useCreateDatabase';
 
@@ -23,8 +24,12 @@ export function CreateDatabase({ onSubmit }: CreateDatabaseProps) {
    * Handle the form submission
    */
   async function handleSubmitForm() {
-    await createDatabase.mutateAsync();
-    onSubmit();
+    try {
+      await createDatabase.mutateAsync();
+      onSubmit();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   return (

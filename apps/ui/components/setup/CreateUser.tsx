@@ -3,6 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box } from '@mui/material';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
 import { SetupStep } from '@tarrasque/common';
@@ -42,9 +43,13 @@ export function CreateUser({ onSubmit }: CreateUserProps) {
    * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
-    await signUp.mutateAsync(values);
-    await updateSetup.mutateAsync({ step: SetupStep.COMPLETED, completed: true });
-    onSubmit();
+    try {
+      await signUp.mutateAsync(values);
+      await updateSetup.mutateAsync({ step: SetupStep.COMPLETED, completed: true });
+      onSubmit();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   return (
