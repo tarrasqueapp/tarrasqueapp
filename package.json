@@ -16,6 +16,7 @@
     "common": "pnpm --filter @tarrasque/common",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "FORCE_COLOR=1 turbo run lint",
+    "lint-staged": "lint-staged",
     "build": "turbo run build",
     "dev": "FORCE_COLOR=1 turbo run dev",
     "build:api": "turbo run build --filter=@tarrasque/api...",

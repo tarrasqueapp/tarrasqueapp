@@ -57,19 +57,19 @@ This will start the server and the local database service at `http://localhost`.
 
 To create the database, run:
 
-    pnpm api exec prisma db push
+    pnpm api prisma db push
 
 To generate the Prisma client types, run:
 
-    pnpm api exec prisma generate
+    pnpm api prisma generate
 
 To create a database migration, run:
 
-    pnpm api exec prisma migrate dev --name <migration-name>
+    pnpm api prisma migrate dev --name <migration-name>
 
 To browse the database using Prisma Studio, run:
 
-    pnpm api exec prisma studio
+    pnpm api prisma studio
 
 ## Contributing
 
