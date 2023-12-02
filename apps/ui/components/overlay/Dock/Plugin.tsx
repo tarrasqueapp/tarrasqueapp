@@ -20,19 +20,19 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
         <>
           <Tooltip title={plugin.name}>
             <DockButton active={popupState.isOpen} {...bindToggle(popupState)}>
-              <img src={`${plugin.url}/${plugin.icon}`} alt={plugin.name} width={32} height={32} />
+              <img src={`${plugin.plugin_url}/${plugin.icon}`} alt={plugin.name} width={32} height={32} />
             </DockButton>
           </Tooltip>
 
           <Popper {...bindPopper(popupState)} keepMounted transition placement="top-end">
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
-                <Paper sx={{ mb: '18px' }}>
+                <Paper sx={{ mb: '18px', lineHeight: 0, overflow: 'hidden' }}>
                   <Box
                     component="iframe"
                     key={plugin.id}
                     title={plugin.name}
-                    src={plugin.url}
+                    src={plugin.plugin_url}
                     onLoad={onLoad}
                     sx={{ border: 'none' }}
                   />

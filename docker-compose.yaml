@@ -13,7 +13,6 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-      - ./data/plugins:/plugins
       - ./data/tmp:/tmp/uploads
       - ./data/uploads:/uploads
     env_file:
@@ -36,7 +35,6 @@ services:
     restart: unless-stopped
     command: nginx -g 'daemon off;'
     volumes:
-      - ./data/plugins:/plugins
       - ./data/uploads:/uploads
       - ./nginx:/etc/nginx/templates
     ports:

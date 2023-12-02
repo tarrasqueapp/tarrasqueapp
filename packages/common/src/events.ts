@@ -6,6 +6,7 @@ import {
   MembershipEntity,
   NotificationEntity,
   PingLocationEntity,
+  PluginEntity,
   UserEntity,
 } from './types';
 
@@ -43,6 +44,10 @@ export enum SocketEvent {
   MEMBERSHIP_CREATED = 'MEMBERSHIP_CREATED',
   MEMBERSHIP_UPDATED = 'MEMBERSHIP_UPDATED',
   MEMBERSHIP_DELETED = 'MEMBERSHIP_DELETED',
+
+  // Plugins
+  PLUGIN_INSTALLED = 'PLUGIN_INSTALLED',
+  PLUGIN_UNINSTALLED = 'PLUGIN_UNINSTALLED',
 
   // Characters
   CHARACTER_CREATED = 'CHARACTER_CREATED',
@@ -86,6 +91,10 @@ export interface SocketListenEvents {
   [SocketEvent.MEMBERSHIP_CREATED]: (data: MembershipEntity) => void;
   [SocketEvent.MEMBERSHIP_UPDATED]: (data: MembershipEntity) => void;
   [SocketEvent.MEMBERSHIP_DELETED]: (data: MembershipEntity) => void;
+
+  // Plugins
+  [SocketEvent.PLUGIN_INSTALLED]: (data: PluginEntity) => void;
+  [SocketEvent.PLUGIN_UNINSTALLED]: (data: PluginEntity) => void;
 
   // Characters
   [SocketEvent.CHARACTER_CREATED]: (data: CharacterEntity) => void;

@@ -60,11 +60,6 @@ server {
         proxy_pass http://turbo:3001;
     }
 
-    location /plugins {
-        alias /plugins;
-        autoindex on;
-    }
-
     location /uploads {
         alias /uploads;
         autoindex on;

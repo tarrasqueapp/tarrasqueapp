@@ -65,6 +65,8 @@ export class CampaignEntity {
   invites: ActionTokenEntity[];
   // Maps
   maps: MapEntity[];
+  // Plugins
+  plugins: PluginEntity[];
 }
 
 export enum Role {
@@ -207,12 +209,29 @@ export class InviteNotificationEntity extends NotificationEntity {
   declare data: ActionTokenEntity;
 }
 
-export class RepositoryPluginEntity {
+export class PluginEntity {
+  id: string;
+  manifestUrl: string;
+  // DateTime
+  createdAt: string;
+  updatedAt: string;
+  // Campaign
+  campaign: CampaignEntity;
+  campaignId: string;
+}
+
+export class SubmittedPluginEntity {
   id: string;
   name: string;
-  author: string;
+  manifest_url: string;
+}
+
+export class ManifestEntity {
+  id: string;
+  name: string;
   description: string;
-  keywords: string[];
-  iconUrl: string;
-  manifestUrl: string;
+  author: string;
+  icon: string;
+  plugin_url: string;
+  homepage_url: string;
 }

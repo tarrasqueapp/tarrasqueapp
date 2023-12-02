@@ -3,7 +3,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { lastValueFrom } from 'rxjs';
 
-import { RepositoryPluginEntity } from './entities/repository-plugin.entity';
+import { SubmittedPluginEntity } from './entities/submitted-plugin.entity';
 
 @ApiTags('plugins')
 @Controller('plugins')
@@ -11,14 +11,14 @@ export class PluginsController {
   constructor(private httpService: HttpService) {}
 
   /**
-   * Get all available plugins from the repository
-   * @returns All available plugins
+   * Get all submitted plugins from the repository
+   * @returns All submitted plugins
    */
   @Get()
-  @ApiOkResponse({ type: [RepositoryPluginEntity] })
-  async getPlugins(): Promise<RepositoryPluginEntity[]> {
+  @ApiOkResponse({ type: [SubmittedPluginEntity] })
+  async getPlugins(): Promise<SubmittedPluginEntity[]> {
     const { data } = await lastValueFrom(
-      this.httpService.get<RepositoryPluginEntity[]>(
+      this.httpService.get<SubmittedPluginEntity[]>(
         'https://raw.githubusercontent.com/tarrasqueapp/plugins/main/plugins.json',
       ),
     );

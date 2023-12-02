@@ -49,7 +49,7 @@ import { CampaignModal } from '../../store/campaigns';
 import { MathUtils } from '../../utils/MathUtils';
 import { MapCard } from './MapCard';
 import { NewMap } from './NewMap';
-import { Plugins } from './TopBar/Plugins/Plugins';
+import { Plugins } from './Plugins/Plugins';
 
 export interface CampaignAccordionProps {
   expanded?: boolean;
@@ -237,7 +237,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                 </span>
               </Tooltip>
 
-              <Plugins />
+              <Plugins campaign={campaign} />
 
               <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
                 {(popupState) => (

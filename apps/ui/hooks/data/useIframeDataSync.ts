@@ -79,7 +79,6 @@ export function useIframeDataSync() {
   function postMessage<T>(event: string, data?: T) {
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach((iframe) => {
-      console.log('posting message', event, data);
       iframe.contentWindow?.postMessage({ event, data }, '*');
     });
   }

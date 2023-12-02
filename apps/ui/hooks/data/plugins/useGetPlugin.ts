@@ -1,22 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { api } from '../../../lib/api';
+import { ManifestEntity } from '@tarrasque/common';
 
-interface Manifest {
-  id: string;
-  name: string;
-  version: string;
-  description: string;
-  icon: string;
-  url: string;
-}
+import { api } from '../../../lib/api';
 
 /**
  * Send a request to get all available plugins
  * @returns The plugins
  */
 export async function getPlugin(manifestUrl: string) {
-  const { data } = await api.get<Manifest>(manifestUrl);
+  const { data } = await api.get<ManifestEntity>(manifestUrl);
   return data;
 }
 
@@ -28,5 +21,6 @@ export function useGetPlugin(manifestUrl: string) {
   return useQuery({
     queryKey: ['plugins', manifestUrl],
     queryFn: () => getPlugin(manifestUrl),
+    enabled: Boolean(manifestUrl),
   });
 }

@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 
+import { useGetCampaignPlugins } from '../../../hooks/data/campaigns/plugins/useGetCampaignPlugins';
+import { useGetCurrentMap } from '../../../hooks/data/maps/useGetCurrentMap';
 import { Plugin } from './Plugin';
 
 export function Plugins() {
+  const { data: map } = useGetCurrentMap();
+  const { data: plugins } = useGetCampaignPlugins(map?.campaignId || '');
+
   const [loadedPlugins, setLoadedPlugins] = useState<number>(0);
 
-  const plugins = [{ manifestUrl: 'http://localhost:5173/manifest.json' }];
-
   useEffect(() => {
-    if (plugins.length !== loadedPlugins) return;
+    if (plugins?.length !== loadedPlugins) return;
 
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach((iframe) => {
@@ -18,7 +21,7 @@ export function Plugins() {
 
   return (
     <>
-      {plugins.map((plugin) => (
+      {plugins?.map((plugin) => (
         <Plugin
           key={plugin.manifestUrl}
           manifestUrl={plugin.manifestUrl}

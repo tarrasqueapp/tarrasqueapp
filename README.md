@@ -1,7 +1,16 @@
-<h1 align="center">
-  <a href="https://tarrasque.app" target="_blank"><img src="apps/ui/public/images/logo.svg" width="150" /></a>
-  <p>Tarrasque App</p>
-</h1>
+<p align="center">
+  <a href="https://tarrasque.app">
+    <img src="apps/ui/public/images/logo.svg" width="150" />
+  </a>
+
+  <h1 align="center">Tarrasque App</h1>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/package-json/version/tarrasqueapp/tarrasqueapp" />
+  <img src="https://img.shields.io/github/actions/workflow/status/tarrasqueapp/tarrasqueapp/deploy-sandbox.yaml" />
+  <img src="https://img.shields.io/github/license/tarrasqueapp/tarrasqueapp" />
+</p>
 
 Tarrasque App is a free and open-source virtual tabletop software for playing Dungeons & Dragons. It allows you to create and manage your own campaigns, maps, and characters, and provides a simple and intuitive interface for playing D&D online or in-person.
 

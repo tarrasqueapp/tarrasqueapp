@@ -111,6 +111,9 @@ export let theme = createTheme({
           borderRadius: '90px',
           boxShadow: 'none !important',
         },
+        sizeSmall: {
+          padding: '6px 16px',
+        },
         sizeMedium: {
           padding: '12px 20px',
         },

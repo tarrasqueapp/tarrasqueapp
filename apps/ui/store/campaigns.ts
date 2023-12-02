@@ -4,6 +4,7 @@ export enum CampaignModal {
   CreateUpdate = 'create-update',
   Members = 'members',
   Delete = 'delete',
+  Plugins = 'plugins',
 }
 
 class CampaignsStore {

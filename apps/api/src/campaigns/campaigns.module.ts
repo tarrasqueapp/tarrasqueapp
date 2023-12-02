@@ -9,6 +9,7 @@ import { CampaignsGateway } from './campaigns.gateway';
 import { CampaignsService } from './campaigns.service';
 import { InvitesModule } from './modules/invites/invites.module';
 import { MembershipsModule } from './modules/memberships/memberships.module';
+import { PluginsModule } from './modules/plugins/plugins.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MembershipsModule } from './modules/memberships/memberships.module';
     UsersModule,
     forwardRef(() => MembershipsModule),
     forwardRef(() => InvitesModule),
+    forwardRef(() => PluginsModule),
   ],
   controllers: [CampaignsController],
   providers: [CampaignsService, CampaignsGateway],

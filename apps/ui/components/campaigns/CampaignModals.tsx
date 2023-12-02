@@ -6,6 +6,7 @@ import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampai
 import { store } from '../../store';
 import { CampaignModal } from '../../store/campaigns';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { PluginsModal } from '../dashboard/Plugins/PluginsModal';
 import { CampaignMembersModal } from './CampaignMembersModal';
 import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';
 
@@ -28,6 +29,12 @@ export const CampaignModals = observer(function CampaignModals() {
 
       <CampaignMembersModal
         open={store.campaigns.modal === CampaignModal.Members}
+        onClose={() => store.campaigns.setModal(null)}
+        campaign={selectedCampaign}
+      />
+
+      <PluginsModal
+        open={store.campaigns.modal === CampaignModal.Plugins}
         onClose={() => store.campaigns.setModal(null)}
         campaign={selectedCampaign}
       />
