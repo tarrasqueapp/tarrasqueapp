@@ -25,7 +25,6 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 - [Node.js](https://nodejs.org/en/) (v18.12.1 or higher)
 - [pnpm](https://pnpm.io/) (v8.8.0 or higher)
 - [Docker](https://docs.docker.com/get-docker/) (v20.10.21 or higher)
-- [Docker Compose](https://docs.docker.com/compose/) (v2.13.0 or higher)
 - Supported Platforms: MacOS, Linux, Windows with WSL 2
 
 ### WSL Requirements
