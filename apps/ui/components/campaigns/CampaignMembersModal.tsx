@@ -89,8 +89,8 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
     if (!campaign) return;
     try {
       await createInvite.mutateAsync({ campaignId: campaign.id, email: values.email });
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
     }
     reset({ email: '' });
   }

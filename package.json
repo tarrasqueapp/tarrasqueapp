@@ -29,7 +29,7 @@
     "@tronite/eslint-config": "^1.0.10",
     "@tronite/prettier-config": "^1.0.6",
     "@tronite/tsconfig": "^1.0.5",
-    "@types/react": "^18.2.40",
+    "@types/react": "^18.2.41",
     "eslint": "^8.55.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
