@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useEffect } from 'react';
 
 import { SocketEvent } from '@tarrasque/common';
 
@@ -12,6 +13,7 @@ import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
 import { useIframeDataSync } from '../../hooks/data/useIframeDataSync';
 import { useWebSocketCacheSync } from '../../hooks/data/useWebSocketCacheSync';
 import { AppNavigation } from '../../lib/navigation';
+import { socket } from '../../lib/socket';
 import { SSRUtils } from '../../utils/SSRUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -40,20 +42,20 @@ export default function MapPage() {
   const { data: campaign } = useGetCampaign(map?.campaignId || '');
   const { data: user } = useGetUser();
   useIframeDataSync();
-  useWebSocketCacheSync({
-    onConnect(socket) {
-      if (!user || !map) return;
+  useWebSocketCacheSync();
 
-      // Join the user room
-      socket.emit(SocketEvent.JOIN_USER_ROOM);
+  useEffect(() => {
+    if (!user || !map || !socket.connected) return;
 
-      // Join the campaign room
-      socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, map.campaignId);
+    // Join the user room
+    socket.emit(SocketEvent.JOIN_USER_ROOM);
 
-      // Join the map room
-      socket.emit(SocketEvent.JOIN_MAP_ROOM, map.id);
-    },
-  });
+    // Join the campaign room
+    socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, map.campaignId);
+
+    // Join the map room
+    socket.emit(SocketEvent.JOIN_MAP_ROOM, map.id);
+  }, [socket]);
 
   return (
     <>

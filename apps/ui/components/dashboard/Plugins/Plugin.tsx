@@ -16,13 +16,7 @@ export function Plugin({ manifestUrl, installed, onInstall, onUninstall }: Props
   return (
     <Card variant="outlined">
       <CardHeader
-        avatar={
-          plugin ? (
-            <img src={`${plugin?.plugin_url}/${plugin?.icon}`} alt="" width={30} height={30} />
-          ) : (
-            <Skeleton width={30} height={30} />
-          )
-        }
+        avatar={plugin ? <img src={plugin?.icon} alt="" width={30} height={30} /> : <Skeleton width={30} height={30} />}
         title={plugin?.name || <Skeleton width={150} height={15} />}
         subheader={plugin?.author || <Skeleton width={100} height={15} sx={{ mt: 0.5 }} />}
         action={

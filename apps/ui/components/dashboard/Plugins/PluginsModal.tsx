@@ -44,7 +44,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
     .object({
       manifestUrl: yup
         .string()
-        .url('Must be a valid URL')
+        .matches(/^https?:\/\/.+/, 'Must be a valid URL')
         .matches(/\/manifest\.json$/, 'Must be a manifest.json file')
         .required('Required'),
     })

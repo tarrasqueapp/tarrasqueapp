@@ -12,13 +12,9 @@ import {
   UserEntity,
 } from '@tarrasque/common';
 
-import { CustomSocket, socket } from '../../lib/socket';
+import { socket } from '../../lib/socket';
 
-interface Props {
-  onConnect?: (socket: CustomSocket) => void;
-}
-
-export function useWebSocketCacheSync({ onConnect }: Props) {
+export function useWebSocketCacheSync() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -35,8 +31,6 @@ export function useWebSocketCacheSync({ onConnect }: Props) {
       if (reconnectInterval) {
         clearTimeout(reconnectInterval);
       }
-
-      onConnect?.(socket);
     });
 
     socket.on('disconnect', () => {

@@ -20,7 +20,7 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
         <>
           <Tooltip title={plugin.name}>
             <DockButton active={popupState.isOpen} {...bindToggle(popupState)}>
-              <img src={`${plugin.plugin_url}/${plugin.icon}`} alt={plugin.name} width={32} height={32} />
+              <img src={plugin.icon} alt={plugin.name} width={32} height={32} />
             </DockButton>
           </Tooltip>
 
@@ -34,7 +34,7 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
                     title={plugin.name}
                     src={plugin.plugin_url}
                     onLoad={onLoad}
-                    sx={{ border: 'none' }}
+                    sx={{ border: 'none', width: plugin.iframe?.width, height: plugin.iframe?.height }}
                   />
                 </Paper>
               </Fade>

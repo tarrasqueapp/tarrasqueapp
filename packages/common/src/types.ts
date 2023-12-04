@@ -231,7 +231,11 @@ export class ManifestEntity {
   name: string;
   description: string;
   author: string;
-  icon: string;
-  plugin_url: string;
   homepage_url: string;
+  plugin_url: string;
+  icon: string;
+  iframe: {
+    width: number;
+    height: number;
+  };
 }

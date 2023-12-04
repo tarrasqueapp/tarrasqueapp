@@ -1,8 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 
-import { CampaignEntity, MapEntity } from '@tarrasque/common';
+import { CampaignEntity, MapEntity, PositionEntity, SocketEvent } from '@tarrasque/common';
 
+import { socket } from '../../lib/socket';
 import { useEffectAsync } from '../useEffectAsync';
 
 export function useIframeDataSync() {
@@ -28,7 +29,9 @@ export function useIframeDataSync() {
    * Listen for a message from child windows and respond
    * @param callback - The callback to run when a message is received
    */
-  function setupMessageHandler(callback: (message: { event: string; data?: unknown }) => () => unknown): () => void {
+  function setupMessageHandler(
+    callback: (message: { event: string; data?: unknown }) => (data?: unknown) => unknown,
+  ): () => void {
     // Listen for messages from child windows
     const handleMessage = (event: MessageEvent) => {
       const message = event.data as { event: string; data?: unknown };
@@ -39,7 +42,7 @@ export function useIframeDataSync() {
       if (!eventHandler) return;
 
       // Send the response back to the child window, with the resolved event handler
-      const response = { event: message.event, data: eventHandler() };
+      const response = { event: message.event, data: eventHandler(message.data) };
       event.source?.postMessage(response, { targetOrigin: event.origin });
     };
 
@@ -71,7 +74,7 @@ export function useIframeDataSync() {
      * @returns A function to unregister the listener
      */
     const unsubscribeFromWindowMessage = setupMessageHandler((message) => {
-      const eventHandlers: Record<string, () => void> = {
+      const eventHandlers: Record<string, (data?: any) => void> = {
         // Get the current campaign from the cache
         TARRASQUE_CAMPAIGN: () => {
           const map = queryClient.getQueryData<MapEntity>(['maps', router.query.mapId]);
@@ -79,6 +82,15 @@ export function useIframeDataSync() {
         },
         // Get the current map from the cache
         TARRASQUE_MAP: () => queryClient.getQueryData<CampaignEntity>(['maps', router.query.mapId]),
+        TARRASQUE_PING_LOCATION: (position: PositionEntity) => {
+          // Emit the ping location event
+          socket.emit(SocketEvent.PING_LOCATION, {
+            position,
+            color: 'red',
+            mapId: router.query.mapId as string,
+            userId: '',
+          });
+        },
       };
       return eventHandlers[message.event];
     });

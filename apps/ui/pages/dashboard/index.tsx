@@ -1,6 +1,7 @@
 import { Box, Container } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import { useEffect } from 'react';
 
 import { SocketEvent } from '@tarrasque/common';
 
@@ -12,6 +13,7 @@ import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampai
 import { useWebSocketCacheSync } from '../../hooks/data/useWebSocketCacheSync';
 import { Gradient } from '../../lib/colors';
 import { AppNavigation } from '../../lib/navigation';
+import { socket } from '../../lib/socket';
 import { SSRUtils } from '../../utils/SSRUtils';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -41,19 +43,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function DashboardPage() {
   const { data: campaigns } = useGetUserCampaigns();
   const { data: user } = useGetUser();
-  useWebSocketCacheSync({
-    onConnect(socket) {
-      if (!user || !campaigns) return;
+  useWebSocketCacheSync();
 
-      // Join the user room
-      socket.emit(SocketEvent.JOIN_USER_ROOM);
+  useEffect(() => {
+    if (!user || !campaigns || !socket.connected) return;
 
-      // Join the campaign rooms
-      campaigns.forEach((campaign) => {
-        socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, campaign.id);
-      });
-    },
-  });
+    // Join the user room
+    socket.emit(SocketEvent.JOIN_USER_ROOM);
+
+    // Join the campaign rooms
+    campaigns.forEach((campaign) => {
+      socket.emit(SocketEvent.JOIN_CAMPAIGN_ROOM, campaign.id);
+    });
+  }, [socket]);
 
   return (
     <>
