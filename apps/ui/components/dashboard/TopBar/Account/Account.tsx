@@ -2,24 +2,23 @@ import { Logout, Settings } from '@mui/icons-material';
 import { Avatar, IconButton, ListItemIcon, ListItemText, MenuItem, MenuList, Popover, Tooltip } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { observer } from 'mobx-react-lite';
-import NextLink from 'next/link';
 
-import { useGetUser } from '../../../../hooks/data/auth/useGetUser';
-import { AppNavigation } from '../../../../lib/navigation';
+import { signOut } from '../../../../app/auth/actions';
+import { useGetProfile } from '../../../../hooks/data/auth/useGetProfile';
 import { store } from '../../../../store';
 import { SettingsModal } from '../../SettingsModal';
 
 export const Account = observer(function Account() {
-  const { data: user } = useGetUser();
+  const { data: profile } = useGetProfile();
 
   return (
     <>
-      <PopupState variant="popover" popupId={`user`}>
+      <PopupState variant="popover" popupId="profile">
         {(popupState) => (
           <>
             <Tooltip title="Account">
               <IconButton {...bindTrigger(popupState)}>
-                <Avatar src={user?.avatar?.thumbnailUrl}>{user?.displayName[0]}</Avatar>
+                <Avatar src={profile?.avatar?.thumbnail_url}>{profile?.display_name[0]}</Avatar>
               </IconButton>
             </Tooltip>
 
@@ -41,14 +40,14 @@ export const Account = observer(function Account() {
                   <ListItemText primary="Settings" />
                 </MenuItem>
 
-                <NextLink href={AppNavigation.SignOut} passHref legacyBehavior>
-                  <MenuItem>
+                <form action={signOut}>
+                  <MenuItem component="button" type="submit">
                     <ListItemIcon>
                       <Logout />
                     </ListItemIcon>
                     <ListItemText primary="Sign out" />
                   </MenuItem>
-                </NextLink>
+                </form>
               </MenuList>
             </Popover>
           </>
@@ -58,7 +57,6 @@ export const Account = observer(function Account() {
       <SettingsModal
         open={store.dashboard.settingsModalOpen}
         onClose={() => store.dashboard.toggleSettingsModal(false)}
-        user={user}
       />
     </>
   );

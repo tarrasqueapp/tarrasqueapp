@@ -5,8 +5,6 @@ export enum AppNavigation {
   Setup = '/setup',
   SignIn = '/auth/sign-in',
   SignUp = '/auth/sign-up',
-  SignOut = '/auth/sign-out',
-  VerifyEmail = '/auth/verify-email',
   ForgotPassword = '/auth/forgot-password',
   ResetPassword = '/auth/reset-password',
 }

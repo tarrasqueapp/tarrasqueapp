@@ -160,7 +160,7 @@ export class MediaEntity {
   id: string;
   name: string;
   url: string;
-  thumbnailUrl: string;
+  thumbnail_url: string;
   width: number;
   height: number;
   size: number;

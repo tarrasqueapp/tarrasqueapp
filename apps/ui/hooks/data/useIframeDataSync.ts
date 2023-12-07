@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
 import { CampaignEntity, MapEntity, PositionEntity, SocketEvent } from '@tarrasque/common';
 
@@ -8,7 +8,8 @@ import { useEffectAsync } from '../useEffectAsync';
 
 export function useIframeDataSync() {
   const queryClient = useQueryClient();
-  const router = useRouter();
+
+  const params = useParams();
 
   /**
    * Post a message to child windows
@@ -77,17 +78,17 @@ export function useIframeDataSync() {
       const eventHandlers: Record<string, (data?: any) => void> = {
         // Get the current campaign from the cache
         TARRASQUE_CAMPAIGN: () => {
-          const map = queryClient.getQueryData<MapEntity>(['maps', router.query.mapId]);
+          const map = queryClient.getQueryData<MapEntity>(['maps', params?.mapId]);
           return map?.campaign;
         },
         // Get the current map from the cache
-        TARRASQUE_MAP: () => queryClient.getQueryData<CampaignEntity>(['maps', router.query.mapId]),
+        TARRASQUE_MAP: () => queryClient.getQueryData<CampaignEntity>(['maps', params?.mapId]),
         TARRASQUE_PING_LOCATION: (position: PositionEntity) => {
           // Emit the ping location event
           socket.emit(SocketEvent.PING_LOCATION, {
             position,
             color: 'red',
-            mapId: router.query.mapId as string,
+            mapId: params?.mapId as string,
             userId: '',
           });
         },
@@ -103,7 +104,7 @@ export function useIframeDataSync() {
       if (!event.query?.queryKey || (event.type !== 'added' && event.type !== 'updated')) return;
 
       // Get the current map from the cache
-      const map = queryClient.getQueryData<MapEntity>(['maps', router.query.mapId]);
+      const map = queryClient.getQueryData<MapEntity>(['maps', params?.mapId]);
       if (!map) return;
 
       // Create a map of query keys to event handlers
@@ -124,5 +125,5 @@ export function useIframeDataSync() {
       unsubscribeFromWindowMessage();
       unsubscribeFromQueryCache();
     };
-  }, [queryClient, router.isReady]);
+  }, [queryClient]);
 }

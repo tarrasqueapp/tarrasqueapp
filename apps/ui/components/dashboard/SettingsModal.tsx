@@ -17,7 +17,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { useRouter } from 'next/router';
+import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
@@ -46,7 +46,6 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose, us
   const updateUser = useUpdateUser();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
-  const router = useRouter();
 
   // Setup form validation schema
   const schema = yup
@@ -130,7 +129,7 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose, us
     // Sign out user if email is no longer verified
     if (!user.isEmailVerified) {
       toast('Your email address has been changed. Please sign in again with your new email address.', { icon: '✉️' });
-      router.push(AppNavigation.SignOut);
+      redirect(AppNavigation.SignOut);
     }
   }
 

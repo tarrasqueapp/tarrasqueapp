@@ -1,24 +1,22 @@
+import { SupabaseClient, User } from '@supabase/supabase-js';
 import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
-import { GetServerSidePropsContext } from 'next';
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { cookies } from 'next/headers';
 
-import { ActionTokenEntity, ActionTokenType, CampaignEntity, SetupEntity, UserEntity } from '@tarrasque/common';
-
-import { getActionToken } from '../hooks/data/action-tokens/useGetActionToken';
-import { getUser } from '../hooks/data/auth/useGetUser';
-import { getUserCampaigns } from '../hooks/data/campaigns/useGetUserCampaigns';
-import { getMap } from '../hooks/data/maps/useGetMap';
-import { getNotifications } from '../hooks/data/notifications/useGetNotifications';
-import { getSetup } from '../hooks/data/setup/useGetSetup';
+import { Profile, getProfile, getUser } from '../app/auth/actions';
+import { getSetup } from '../app/setup/actions';
+import { createClient } from './supabase/server';
+import { Database } from './supabase/types';
 
 export class SSRUtils {
   queryClient: QueryClient;
-  context: GetServerSidePropsContext;
-  headers: { cookie: string };
+  cookieStore: ReadonlyRequestCookies;
+  supabase: SupabaseClient<Database>;
 
-  constructor(context: GetServerSidePropsContext) {
+  constructor() {
     this.queryClient = new QueryClient();
-    this.context = context;
-    this.headers = { cookie: this.context.req.headers.cookie || '' };
+    this.cookieStore = cookies();
+    this.supabase = createClient(this.cookieStore);
   }
 
   /**
@@ -33,82 +31,54 @@ export class SSRUtils {
    * Prefetch the user
    * @returns The user object
    */
-  async getUser() {
+  async prefetchUser() {
     await this.queryClient.prefetchQuery({
       queryKey: ['user'],
-      queryFn: () => getUser({ withCredentials: true, headers: this.headers }) || null,
+      queryFn: getUser,
     });
-    return this.queryClient.getQueryData<UserEntity>(['user']) || null;
+
+    return this.queryClient.getQueryData<User>(['user']) || null;
+  }
+
+  /**
+   * Prefetch the user profile
+   * @returns The user profile
+   */
+  async prefetchProfile() {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['profile'],
+      queryFn: getProfile,
+    });
+
+    return this.queryClient.getQueryData<Profile>(['profile']) || null;
   }
 
   /**
    * Prefetch the application setup
    * @returns The setup data
    */
-  async getSetup() {
+  async prefetchSetup() {
     await this.queryClient.prefetchQuery({
       queryKey: ['setup'],
-      queryFn: () => getSetup({ withCredentials: true, headers: this.headers }) || null,
+      queryFn: getSetup,
     });
-    return this.queryClient.getQueryData<SetupEntity>(['setup']) || null;
-  }
-
-  /**
-   * Prefetch an action token
-   * @param tokenId - token id
-   * @param type - token type
-   * @returns token
-   */
-  async getActionToken(tokenId: string, type?: ActionTokenType): Promise<ActionTokenEntity | null> {
-    if (!tokenId) {
-      return null;
-    }
-
-    await this.queryClient.prefetchQuery({
-      queryKey: ['tokens', tokenId],
-      queryFn: () => getActionToken(tokenId, type, { withCredentials: true, headers: this.headers }) || null,
-    });
-    return this.queryClient.getQueryData<ActionTokenEntity>(['tokens', tokenId]) || null;
-  }
-
-  /**
-   * Prefetch the user's notifications
-   * @returns The user's notifications
-   */
-  async getNotifications() {
-    await this.queryClient.prefetchQuery({
-      queryKey: ['notifications'],
-      queryFn: () => getNotifications({ withCredentials: true, headers: this.headers }) || [],
-    });
-    return this.queryClient.getQueryData<CampaignEntity[]>(['notifications']) || [];
+    type Data = Awaited<ReturnType<typeof getSetup>>;
+    return this.queryClient.getQueryData<Data>(['setup']) || null;
   }
 
   /**
    * Prefetch the user's campaigns
    * @returns The user's campaigns
    */
-  async getUserCampaigns() {
+  async prefetchUserCampaigns() {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns'],
-      queryFn: () => getUserCampaigns({ withCredentials: true, headers: this.headers }) || [],
+      queryFn: async () => {
+        const { data } = await this.supabase.from('campaigns').select('*');
+        return data;
+      },
     });
+    type CampaignEntity = Database['public']['Tables']['campaigns']['Row'];
     return this.queryClient.getQueryData<CampaignEntity[]>(['campaigns']) || [];
-  }
-
-  /**
-   * Prefetch a map
-   * @param mapId - The ID of the map to fetch
-   * @returns The map
-   */
-  async getMap(mapId: string) {
-    if (!mapId) {
-      return null;
-    }
-
-    await this.queryClient.prefetchQuery({
-      queryKey: ['maps', mapId],
-      queryFn: () => getMap(mapId, { withCredentials: true, headers: this.headers }) || null,
-    });
-    return this.queryClient.getQueryData<CampaignEntity>(['maps', mapId]) || null;
   }
 }

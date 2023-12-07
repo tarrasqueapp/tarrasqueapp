@@ -52,24 +52,23 @@ server {
         proxy_pass http://turbo:3000;
     }
 
-    location /api {
-        proxy_pass http://turbo:3001;
+    location /supabase/rest {
+        rewrite ^/supabase/rest/(.*)$ /rest/$1 break;
+        proxy_pass http://host.docker.internal:54321;
     }
 
-    location /socket.io {
-        proxy_pass http://turbo:3001;
+    location /supabase/storage {
+        rewrite ^/supabase/storage/(.*)$ /storage/$1 break;
+        proxy_pass http://host.docker.internal:54321;
     }
 
-    location /uploads {
-        alias /uploads;
-        autoindex on;
+    location /supabase/realtime {
+        rewrite ^/supabase/realtime/(.*)$ /realtime/$1 break;
+        proxy_pass http://host.docker.internal:54321;
     }
 
-    location /tus {
-        # Disable request and response buffering
-        proxy_request_buffering off;
-        proxy_buffering off;
-        client_max_body_size 0;
-        proxy_pass http://tusd:8080;
+    location /supabase/auth {
+        rewrite ^/supabase/auth/(.*)$ /auth/$1 break;
+        proxy_pass http://host.docker.internal:54321;
     }
 }

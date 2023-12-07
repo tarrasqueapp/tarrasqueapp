@@ -1,13 +1,18 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
 import { Box, Button, IconButton, Typography, alpha } from '@mui/material';
-import Uppy, { FileProgress, SuccessResponse } from '@uppy/core';
+import Uppy, { FileProgress, SuccessResponse, UploadResult } from '@uppy/core';
 import Tus from '@uppy/tus';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { v4 as uuidv4 } from 'uuid';
 
-import { MediaEntity } from '@tarrasque/common';
+import { MediaEntity, config } from '@tarrasque/common';
 
+import { getSession } from '../../../app/auth/actions';
+import { useGetUser } from '../../../hooks/data/auth/useGetUser';
+import { useEffectAsync } from '../../../hooks/useEffectAsync';
 import { Color } from '../../../lib/colors';
+import { storageImageLoader } from '../../../lib/storageImageLoader';
 import { store } from '../../../store';
 import { UploadingFile } from '../../../store/media';
 import { MathUtils } from '../../../utils/MathUtils';
@@ -19,16 +24,39 @@ export interface ImageUploaderProps {
 }
 
 export function ImageUploader({ file, onChange }: ImageUploaderProps) {
+  const { data: user } = useGetUser();
+
+  // Get the access token
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffectAsync(async () => {
+    const session = await getSession();
+    const accessToken = session?.access_token || null;
+    setAccessToken(accessToken);
+  }, []);
+
   const allowedFileTypes = ['image/*'];
 
   // Setup the uploader
   const uppy = useMemo(() => {
     return (
-      new Uppy({ restrictions: { allowedFileTypes, maxNumberOfFiles: 1 }, autoProceed: true })
+      new Uppy({
+        restrictions: { allowedFileTypes, maxNumberOfFiles: 1 },
+        autoProceed: true,
+      })
         // Add the tus plugin
-        .use(Tus, { chunkSize: 1e6, endpoint: '/tus/files/' })
+        .use(Tus, {
+          endpoint: `${config.SUPABASE_URL}/storage/v1/upload/resumable`,
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+            apikey: accessToken!,
+          },
+          uploadDataDuringCreation: true,
+          chunkSize: 6 * 1024 * 1024,
+          allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],
+        })
     );
-  }, []);
+  }, [accessToken]);
 
   // Setup the dropzone
   const accept: Record<string, string[]> = {};
@@ -44,7 +72,24 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
    * @param file - The file that was added
    */
   function handleFileAdded(file: UploadingFile) {
-    if (!file) return;
+    if (!file || !user) return;
+
+    const STORAGE_BUCKET = 'tarrasqueapp';
+    const folder = user.id;
+    const extension = file.extension || file.name.split('.').pop() || '';
+    file.name = `${uuidv4()}.${extension}`;
+
+    const supabaseMetadata = {
+      bucketName: STORAGE_BUCKET,
+      objectName: folder ? `${folder}/${file.name}` : file.name,
+      contentType: file.type,
+    };
+
+    file.meta = {
+      ...file.meta,
+      ...supabaseMetadata,
+    };
+
     onChange?.(file);
   }
 
@@ -69,6 +114,17 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
     onChange?.({ ...file, progress: { ...file.progress!, percentage: 100 }, uploadURL: response.uploadURL });
   }
 
+  function handleComplete(result: UploadResult) {
+    const file = result.successful[0];
+    if (!file) return;
+    console.log(file);
+    onChange?.({
+      ...file,
+      progress: { ...file.progress!, percentage: 100 },
+      uploadURL: storageImageLoader({ src: file.meta.objectName as string, width: 250 }),
+    });
+  }
+
   /**
    * Clear the files when an error occurs
    */
@@ -78,18 +134,20 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
 
   // Setup the event listeners
   useEffect(() => {
-    uppy.once('file-added', handleFileAdded);
-    uppy.once('upload-progress', handleUploadProgress);
-    uppy.once('upload-success', handleUploadSuccess);
-    uppy.once('error', handleError);
+    uppy.on('file-added', handleFileAdded);
+    uppy.on('upload-progress', handleUploadProgress);
+    uppy.on('upload-success', handleUploadSuccess);
+    uppy.on('error', handleError);
+    uppy.on('complete', handleComplete);
 
     return () => {
       uppy.off('file-added', handleFileAdded);
       uppy.off('upload-progress', handleUploadProgress);
       uppy.off('upload-success', handleUploadSuccess);
       uppy.off('error', handleError);
+      uppy.off('complete', handleComplete);
     };
-  }, [file, onChange]);
+  }, [uppy, file, onChange]);
 
   /**
    * Select the file and add them to the uploader
@@ -188,7 +246,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
             )}
 
             {store.media.isMedia(file) && (
-              <>{file.thumbnailUrl && <Box component="img" src={file.thumbnailUrl} height={200} />}</>
+              <>{file.thumbnail_url && <Box component="img" src={file.thumbnail_url} height={200} />}</>
             )}
 
             {!file && (

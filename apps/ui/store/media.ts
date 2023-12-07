@@ -98,7 +98,7 @@ class MediaStore {
    * @returns If the file is of MediaEntity
    */
   isMedia(file: unknown): file is MediaEntity {
-    return (file as MediaEntity)?.thumbnailUrl !== undefined;
+    return (file as MediaEntity)?.thumbnail_url !== undefined;
   }
 
   /**

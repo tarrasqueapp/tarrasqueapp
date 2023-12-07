@@ -18,17 +18,6 @@ services:
     env_file:
       - ./.env
 
-  postgres:
-    container_name: postgres
-    image: postgres:14-alpine
-    restart: unless-stopped
-    volumes:
-      - ./data/postgres:/var/lib/postgresql
-    ports:
-      - '5432:5432'
-    env_file:
-      - ./.env
-
   nginx:
     container_name: nginx
     image: nginx:alpine
@@ -39,21 +28,5 @@ services:
       - ./nginx:/etc/nginx/templates
     ports:
       - '80:80'
-    env_file:
-      - ./.env
-
-  tusd-local:
-    container_name: tusd
-    image: tusproject/tusd
-    restart: unless-stopped
-    command: -behind-proxy -base-path=/tus/files -upload-dir=/tmp/uploads
-    volumes:
-      - ./data/tmp:/tmp/uploads
-
-  tusd-s3:
-    container_name: tusd
-    image: tusproject/tusd
-    restart: unless-stopped
-    command: -behind-proxy -base-path=/tus/files -s3-bucket=${AWS_S3_BUCKET} -s3-endpoint=${AWS_S3_ENDPOINT} -s3-object-prefix=tmp/
     env_file:
       - ./.env
