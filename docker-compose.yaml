@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  turbo:
-    container_name: turbo
+  tarrasqueapp:
+    container_name: tarrasqueapp
     restart: unless-stopped
     build:
       context: .
@@ -10,23 +10,15 @@ services:
       args:
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
+        - SUPABASE_PROTOCOL=${SUPABASE_URL}
+        - SUPABASE_HOST=${SUPABASE_HOST}
+        - SUPABASE_PORT=${SUPABASE_PORT}
+        - SUPABASE_URL=${SUPABASE_URL}
+        - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
     volumes:
       - ./:/app
       - /app/node_modules
-      - ./data/tmp:/tmp/uploads
-      - ./data/uploads:/uploads
-    env_file:
-      - ./.env
-
-  nginx:
-    container_name: nginx
-    image: nginx:alpine
-    restart: unless-stopped
-    command: nginx -g 'daemon off;'
-    volumes:
-      - ./data/uploads:/uploads
-      - ./nginx:/etc/nginx/templates
     ports:
-      - '80:80'
+      - '3000:3000'
     env_file:
       - ./.env

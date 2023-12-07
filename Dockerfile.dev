@@ -13,10 +13,7 @@ COPY --from=mwader/static-ffmpeg:5.1.2 /ffmpeg /usr/local/bin/
 COPY --from=mwader/static-ffmpeg:5.1.2 /ffprobe /usr/local/bin/
 
 # Copy only the files needed to install dependencies
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/api/package.json apps/api/prisma ./apps/api/
-COPY apps/ui/package.json ./apps/ui/
-COPY packages/common/package.json ./packages/common/
+COPY package.json pnpm-lock.yaml ./
 COPY patches ./patches
 
 # Install dependencies
@@ -24,9 +21,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy the rest of the files
 COPY . .
-
-# Generate prisma client
-RUN pnpm api prisma generate
 
 # Start the dev server
 CMD pnpm dev

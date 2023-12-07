@@ -69,58 +69,15 @@ INSERT INTO
       auth.users
   );
 
--- create user avatar
-INSERT INTO
-  public.media (
-    id,
-    name,
-    url,
-    thumbnail_url,
-    width,
-    height,
-    size,
-    format,
-    extension,
-    created_at,
-    user_id
-  ) (
-    select
-      uuid_generate_v4 (),
-      'avatar',
-      'https://avatars.githubusercontent.com/u/1004701?v=4',
-      'https://avatars.githubusercontent.com/u/1004701?v=4',
-      460,
-      460,
-      460,
-      'image/png',
-      'png',
-      current_timestamp,
-      id
-    from
-      auth.users
-  );
-
--- update user avatar
-UPDATE
-  public.profiles
-SET
-  avatar_id = (
-    select
-      id
-    from
-      public.media
-    where
-      name = 'avatar'
-  );
-
 -- create bucket
 INSERT INTO
-  storage.buckets (id, name, created_at, updated_at, public)
+  storage.buckets (id, name, created_at, updated_at, public, allowed_mime_types)
 VALUES
   (
     'tarrasqueapp',
     'tarrasqueapp',
     current_timestamp,
     current_timestamp,
-    true
+    true,
+    '{"image/*", "video/*"}'::text[]
   );
