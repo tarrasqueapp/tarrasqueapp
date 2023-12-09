@@ -20,38 +20,36 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useCreateInvite } from '../../hooks/data/campaigns/invites/useCreateInvite';
-import { useDeleteInvite } from '../../hooks/data/campaigns/invites/useDeleteInvite';
-import { useDeleteMembership } from '../../hooks/data/campaigns/memberships/useDeleteMembership';
-import { useUpdateMembership } from '../../hooks/data/campaigns/memberships/useUpdateMembership';
-import { CampaignEntity, Role } from '../../lib/types';
-import { store } from '../../store';
-import { ValidateUtils } from '../../utils/ValidateUtils';
+import { Campaign } from '@/actions/campaigns';
+import { CampaignMemberRole, deleteMembership, updateMembership } from '@/actions/memberships';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useCreateInvite } from '@/hooks/data/campaigns/invites/useCreateInvite';
+import { useDeleteInvite } from '@/hooks/data/campaigns/invites/useDeleteInvite';
+import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
+import { useCampaignStore } from '@/store/campaign';
+import { ValidateUtils } from '@/utils/ValidateUtils';
+
 import { ColorPicker } from '../ColorPicker';
+import { UserAvatar } from '../common/UserAvatar';
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface CampaignMembersModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: CampaignEntity | undefined;
+  campaign: Campaign | undefined;
 }
 
-export const CampaignMembersModal = observer(function CampaignMembersModal({
-  open,
-  onClose,
-  campaign,
-}: CampaignMembersModalProps) {
+export function CampaignMembersModal({ open, onClose, campaign }: CampaignMembersModalProps) {
+  const { data: memberships } = useGetMemberships(campaign?.id || '');
   const { data: user } = useGetUser();
   const createInvite = useCreateInvite();
   const deleteInvite = useDeleteInvite();
-  const deleteMembership = useDeleteMembership();
-  const updateMembership = useUpdateMembership();
+
+  const { modal } = useCampaignStore();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -78,7 +76,7 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
   // Reset the form when the campaign changes
   useEffect(() => {
     reset({ email: '' });
-  }, [campaign, reset, store.campaigns.modal]);
+  }, [campaign, reset, modal]);
 
   /**
    * Handle the form submission
@@ -142,24 +140,24 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
             >
               <ListSubheader>Members</ListSubheader>
 
-              {Boolean(campaign?.memberships.length) ? (
-                campaign?.memberships.map((membership) => (
+              {memberships?.length ? (
+                memberships?.map((membership) => (
                   <ListItem
                     sx={{ flexWrap: 'wrap' }}
-                    key={membership.userId}
+                    key={membership.user_id}
                     secondaryAction={
                       <IconButton
-                        disabled={membership.userId === user?.id}
-                        onClick={() => deleteMembership.mutate(membership)}
+                        disabled={membership.user_id === user?.id}
+                        onClick={() => deleteMembership(membership.id)}
                       >
                         <Delete />
                       </IconButton>
                     }
                   >
                     <ListItemAvatar>
-                      <Avatar src={membership.user.avatar?.thumbnail_url}>{membership.user.display_name[0]}</Avatar>
+                      <UserAvatar profile={membership.user} />
                     </ListItemAvatar>
-                    <ListItemText primary={membership.user.display_name} secondary={membership.user.email} />
+                    <ListItemText primary={membership.user?.display_name} secondary={membership.user?.email} />
 
                     <Box
                       sx={{
@@ -172,24 +170,24 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
                       }}
                     >
                       <TextField
-                        disabled={membership.userId === user?.id}
+                        disabled={membership.user_id === user?.id}
                         size="small"
                         label="Role"
                         select
                         value={membership.role}
                         onChange={(event) => {
-                          const role = event.target.value as Role;
-                          updateMembership.mutate({ ...membership, role });
+                          const role = event.target.value as CampaignMemberRole;
+                          updateMembership({ id: membership.id, role });
                         }}
                       >
-                        <MenuItem value={Role.GAME_MASTER}>Game Master</MenuItem>
-                        <MenuItem value={Role.PLAYER}>Player</MenuItem>
+                        <MenuItem value="GAME_MASTER">Game Master</MenuItem>
+                        <MenuItem value="PLAYER">Player</MenuItem>
                       </TextField>
 
                       <ColorPicker
                         value={membership.color}
                         onChange={(color) => {
-                          updateMembership.mutate({ ...membership, color });
+                          updateMembership({ id: membership.id, color });
                         }}
                       />
                     </Box>
@@ -239,4 +237,4 @@ export const CampaignMembersModal = observer(function CampaignMembersModal({
       </FormProvider>
     </Dialog>
   );
-});
+}

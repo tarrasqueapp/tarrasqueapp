@@ -3,21 +3,33 @@
 import { Box } from '@mui/material';
 import dynamic from 'next/dynamic';
 
-import { Overlay } from '../../../components/overlay/Overlay';
-import { useGetUser } from '../../../hooks/data/auth/useGetUser';
-import { useGetCampaign } from '../../../hooks/data/campaigns/useGetCampaign';
-import { useGetCurrentMap } from '../../../hooks/data/maps/useGetCurrentMap';
-import { useIframeDataSync } from '../../../hooks/data/useIframeDataSync';
-import { useWebSocketCacheSync } from '../../../hooks/data/useWebSocketCacheSync';
+import { Overlay } from '@/components/overlay/Overlay';
+import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
+import { useIframeDataSync } from '@/hooks/data/useIframeDataSync';
+import { useEffectAsync } from '@/hooks/useEffectAsync';
+import { useChannelStore } from '@/store/channels';
 
-const Canvas = dynamic(() => import('../../../components/canvas/Canvas'), { ssr: false });
+const Canvas = dynamic(() => import('@/components/canvas/Canvas'), { ssr: false });
 
 export function MapId() {
   const { data: map } = useGetCurrentMap();
-  const { data: campaign } = useGetCampaign(map?.campaignId || '');
-  const { data: user } = useGetUser();
   useIframeDataSync();
-  useWebSocketCacheSync();
+
+  const { joinChannel } = useChannelStore();
+
+  useEffectAsync(async () => {
+    if (!map) return;
+
+    // Join the map channel
+    const channel = await joinChannel(`map_${map.id}`);
+
+    console.log(channel, channel.presence, channel.presenceState);
+
+    // Unsubscribe from the channel when the component unmounts
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [map]);
 
   return (
     <>

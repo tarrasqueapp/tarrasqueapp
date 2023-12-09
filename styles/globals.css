@@ -59,7 +59,9 @@ html {
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px #e3b38b, 0 0 5px #e3b38b;
+  box-shadow:
+    0 0 10px #e3b38b,
+    0 0 5px #e3b38b;
 }
 
 /* Uppy */

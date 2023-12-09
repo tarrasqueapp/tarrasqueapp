@@ -1,11 +1,12 @@
-import { type CookieOptions, createServerClient } from '@supabase/ssr';
+import { CookieOptions, createServerClient as supabaseCreateServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-import { config } from '../../lib/config';
-import { Database } from './types';
+import { config } from '@/lib/config';
 
-export function createClient(cookieStore: ReturnType<typeof cookies>) {
-  return createServerClient<Database>(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
+import { Database } from './types.gen';
+
+export function createServerClient(cookieStore: ReturnType<typeof cookies>) {
+  return supabaseCreateServerClient<Database>(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value;

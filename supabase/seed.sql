@@ -81,3 +81,75 @@ VALUES
     true,
     '{"image/*", "video/*"}'::text[]
   );
+
+-- create first campaign
+INSERT INTO
+  public.campaigns (
+    id,
+    name,
+    created_at,
+    user_id
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'First Campaign',
+    current_timestamp,
+    (select id from auth.users limit 1)
+  );
+
+-- create first membership
+INSERT INTO
+  public.memberships (
+    id,
+    role,
+    color,
+    user_id,
+    campaign_id,
+    created_at
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'GAME_MASTER'::campaign_member_role,
+    '#000000',
+    (select id from auth.users limit 1),
+    (select id from public.campaigns limit 1),
+    current_timestamp
+  );
+
+-- create second campaign
+INSERT INTO
+  public.campaigns (
+    id,
+    name,
+    created_at,
+    user_id
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'Second Campaign',
+    current_timestamp,
+    (select id from auth.users limit 1)
+  );
+
+-- create second membership
+INSERT INTO
+  public.memberships (
+    id,
+    role,
+    color,
+    user_id,
+    campaign_id,
+    created_at
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'PLAYER'::campaign_member_role,
+    '#FF0000',
+    (select id from auth.users limit 1),
+    (select id from public.campaigns limit 1 offset 1),
+    current_timestamp
+  );

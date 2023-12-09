@@ -48,7 +48,8 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-import { HotkeysUtils } from '../../../utils/HotkeyUtils';
+import { HotkeysUtils } from '@/utils/HotkeyUtils';
+
 import { CharacterIcon } from '../../icons/CharacterIcon';
 import { MapIcon } from '../../icons/MapIcon';
 

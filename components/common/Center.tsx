@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 
-import { Gradient } from '../../lib/colors';
+import { Gradient } from '@/lib/colors';
 
 interface CenterProps {
   children: React.ReactNode;

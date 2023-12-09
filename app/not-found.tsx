@@ -1,10 +1,10 @@
 import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 
-import { Center } from '../components/common/Center';
-import { Logo } from '../components/common/Logo';
-import { NextButton } from '../components/common/NextButton';
-import { AppNavigation } from '../lib/navigation';
+import { Center } from '@/components/common/Center';
+import { Logo } from '@/components/common/Logo';
+import { NextButton } from '@/components/common/NextButton';
+import { AppNavigation } from '@/lib/navigation';
 
 export default function NotFound() {
   return (

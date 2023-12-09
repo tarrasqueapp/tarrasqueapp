@@ -30,12 +30,11 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import { Color } from '../../../lib/colors';
-import { MediaEntity } from '../../../lib/types';
-import { store } from '../../../store';
-import { UploadingFile } from '../../../store/media';
-import { MathUtils } from '../../../utils/MathUtils';
-import { CircularProgressWithLabel } from '../../common/CircularProgressWithLabel';
+import { CircularProgressWithLabel } from '@/components/common/CircularProgressWithLabel';
+import { Color } from '@/lib/colors';
+import { MediaEntity } from '@/lib/types';
+import { MathUtils } from '@/utils/MathUtils';
+import { MediaUtils, UploadingFile } from '@/utils/MediaUtils';
 
 /**
  * Generate a string of file types that can be uploaded
@@ -206,7 +205,7 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
    */
   function handleDelete(file: UploadingFile | MediaEntity) {
     if (!file || !files) return;
-    if (store.media.isUploadingFile(file)) uppy.removeFile(file.id);
+    if (MediaUtils.isUploadingFile(file)) uppy.removeFile(file.id);
     const newFiles = files.filter((existingFile) => existingFile.id !== file.id);
     onChange?.(newFiles);
     setActiveStep(0);
@@ -383,9 +382,9 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
             position: 'relative',
           }}
         >
-          {store.media.isUploadingFile(activeFile) && (
+          {MediaUtils.isUploadingFile(activeFile) && (
             <>
-              {store.media.isUploadedFile(activeFile) ? (
+              {MediaUtils.isUploadedFile(activeFile) ? (
                 <Box component="img" src={activeFile.uploadURL} height={200} />
               ) : (
                 <Box>
@@ -400,7 +399,7 @@ export function MediaUploader({ files, onChange, selectedMediaId, onSelect }: Me
             </>
           )}
 
-          {store.media.isMedia(activeFile) && (
+          {MediaUtils.isMedia(activeFile) && (
             <>{activeFile.thumbnail_url && <Box component="img" src={activeFile.thumbnail_url} height={200} />}</>
           )}
 

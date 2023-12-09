@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { api } from '../../../lib/api';
-import { CampaignEntity } from '../../../lib/types';
+import { api } from '@/lib/api';
+import { CampaignEntity } from '@/lib/types';
 
 /**
  * Send a request to delete a campaign

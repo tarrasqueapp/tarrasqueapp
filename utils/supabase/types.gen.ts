@@ -31,6 +31,34 @@ export interface Database {
           },
         ];
       };
+      invites: {
+        Row: {
+          campaign_id: string;
+          created_at: string;
+          email: string;
+          id: string;
+        };
+        Insert: {
+          campaign_id: string;
+          created_at?: string;
+          email: string;
+          id?: string;
+        };
+        Update: {
+          campaign_id?: string;
+          created_at?: string;
+          email?: string;
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'invites_campaign_id_fkey';
+            columns: ['campaign_id'];
+            referencedRelation: 'campaigns';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       maps: {
         Row: {
           campaign_id: string;

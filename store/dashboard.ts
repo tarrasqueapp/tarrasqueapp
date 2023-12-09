@@ -1,23 +1,17 @@
-import { makeAutoObservable } from 'mobx';
+import { create } from 'zustand';
 
-class DashboardStore {
-  settingsModalOpen = false;
+interface DashboardStore {
+  settingsModalOpen: boolean;
+  toggleSettingsModal: (open?: boolean) => void;
+}
 
-  constructor() {
-    makeAutoObservable(this);
-  }
+export const useDashboardStore = create<DashboardStore>((set, get) => ({
+  settingsModalOpen: false,
 
   /**
    * Toggle settings modal open state
    * @param open - The open state
    */
-  toggleSettingsModal(open?: boolean) {
-    if (open !== undefined) {
-      this.settingsModalOpen = open;
-    } else {
-      this.settingsModalOpen = !this.settingsModalOpen;
-    }
-  }
-}
-
-export const dashboardStore = new DashboardStore();
+  toggleSettingsModal: (open) =>
+    set(() => ({ settingsModalOpen: open !== undefined ? open : !get().settingsModalOpen })),
+}));

@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { api } from '../../../lib/api';
-import { CampaignEntity } from '../../../lib/types';
+import { api } from '@/lib/api';
+import { CampaignEntity } from '@/lib/types';
 
 /**
  * Send a request to reorder campaigns
@@ -34,7 +34,7 @@ export function useReorderCampaigns() {
           const bOrder = campaignOrder.findIndex((campaignId) => campaignId === b.id);
           // If the user has no campaign order or the campaign is not in the order, sort by creation date
           if (aOrder === -1 || bOrder === -1) {
-            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
           }
           // Sort by the user's campaign order
           return aOrder - bOrder;

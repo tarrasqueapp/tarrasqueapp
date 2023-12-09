@@ -1,17 +1,18 @@
 import { Logout, Settings } from '@mui/icons-material';
-import { Avatar, IconButton, ListItemIcon, ListItemText, MenuItem, MenuList, Popover, Tooltip } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, MenuItem, MenuList, Popover, Tooltip } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
-import { observer } from 'mobx-react-lite';
-import Image from 'next/image';
 
-import { signOut } from '../../../../app/auth/actions';
-import { useGetProfile } from '../../../../hooks/data/auth/useGetProfile';
-import { storageImageLoader } from '../../../../lib/storageImageLoader';
-import { store } from '../../../../store';
+import { signOut } from '@/actions/auth';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
+import { useDashboardStore } from '@/store/dashboard';
+
 import { SettingsModal } from '../../SettingsModal';
 
-export const Account = observer(function Account() {
+export function Account() {
   const { data: profile } = useGetProfile();
+
+  const { settingsModalOpen, toggleSettingsModal } = useDashboardStore();
 
   return (
     <>
@@ -20,13 +21,7 @@ export const Account = observer(function Account() {
           <>
             <Tooltip title="Account">
               <IconButton {...bindTrigger(popupState)}>
-                <Avatar>
-                  {profile?.avatar?.url ? (
-                    <Image loader={storageImageLoader} src={profile.avatar.url} width={40} height={40} alt="" />
-                  ) : (
-                    profile?.display_name[0]
-                  )}
-                </Avatar>
+                <UserAvatar profile={profile} />
               </IconButton>
             </Tooltip>
 
@@ -38,7 +33,7 @@ export const Account = observer(function Account() {
               <MenuList>
                 <MenuItem
                   onClick={() => {
-                    store.dashboard.toggleSettingsModal();
+                    toggleSettingsModal();
                     popupState.close();
                   }}
                 >
@@ -62,10 +57,7 @@ export const Account = observer(function Account() {
         )}
       </PopupState>
 
-      <SettingsModal
-        open={store.dashboard.settingsModalOpen}
-        onClose={() => store.dashboard.toggleSettingsModal(false)}
-      />
+      <SettingsModal open={settingsModalOpen} onClose={() => toggleSettingsModal(false)} />
     </>
   );
-});
+}

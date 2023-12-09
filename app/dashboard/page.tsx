@@ -1,8 +1,9 @@
 import { HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
-import { AppNavigation } from '../../lib/navigation';
-import { SSRUtils } from '../../utils/SSRUtils';
+import { AppNavigation } from '@/lib/navigation';
+import { SSRUtils } from '@/utils/SSRUtils';
+
 import { Dashboard } from './Dashboard';
 
 export const metadata = {

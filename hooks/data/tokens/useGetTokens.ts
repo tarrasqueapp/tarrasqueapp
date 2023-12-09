@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { api } from '../../../lib/api';
-import { TokenEntity } from '../../../lib/types';
+import { api } from '@/lib/api';
+import { TokenEntity } from '@/lib/types';
 
 /**
  * Send a request to get a map's tokens

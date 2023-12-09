@@ -1,21 +1,22 @@
 import { Extension } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 
-import { CampaignEntity } from '../../../lib/types';
-import { store } from '../../../store';
-import { CampaignModal } from '../../../store/campaigns';
+import { CampaignEntity } from '@/lib/types';
+import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
 interface Props {
   campaign?: CampaignEntity;
 }
 
 export function Plugins({ campaign }: Props) {
+  const { setModal, setSelectedCampaignId } = useCampaignStore();
+
   return (
     <Tooltip title="Plugins">
       <IconButton
         onClick={() => {
-          store.campaigns.setSelectedCampaignId(campaign?.id || '');
-          store.campaigns.setModal(CampaignModal.Plugins);
+          setSelectedCampaignId(campaign?.id || '');
+          setModal(CampaignModal.Plugins);
         }}
       >
         <Extension />

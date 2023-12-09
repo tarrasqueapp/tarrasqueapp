@@ -1,16 +1,18 @@
 import { Add, FitScreen, Fullscreen, FullscreenExit, Remove } from '@mui/icons-material';
 import { Box, ButtonGroup, Paper, Tooltip, alpha } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 
-import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
-import { useDocumentEventListener } from '../../hooks/useDocumentEventListener';
-import { Color } from '../../lib/colors';
-import { store } from '../../store';
+import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
+import { useDocumentEventListener } from '@/hooks/useDocumentEventListener';
+import { Color } from '@/lib/colors';
+import { usePixiStore } from '@/store/pixi';
+
 import { ToolButton } from './Toolbar/ToolButton';
 
-export const ZoomControls = observer(function ZoomControls() {
+export function ZoomControls() {
   const { data: map } = useGetCurrentMap();
+
+  const { viewport } = usePixiStore();
 
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -18,14 +20,18 @@ export const ZoomControls = observer(function ZoomControls() {
    * Handle zooming in with the mouse wheel
    */
   function handleZoomIn() {
-    store.pixi.viewport.animate({ scale: store.pixi.viewport.scaled + 0.2, time: 100 });
+    if (!viewport) return;
+
+    viewport.animate({ scale: viewport.scaled + 0.2, time: 100 });
   }
 
   /**
    * Handle zooming out with the mouse wheel
    */
   function handleZoomOut() {
-    store.pixi.viewport.animate({ scale: Math.max(store.pixi.viewport.scaled - 0.2, 0), time: 100 });
+    if (!viewport) return;
+
+    viewport.animate({ scale: Math.max(viewport.scaled - 0.2, 0), time: 100 });
   }
 
   /**
@@ -33,11 +39,11 @@ export const ZoomControls = observer(function ZoomControls() {
    * @param event - The mouse wheel event
    */
   function handleFitScreen() {
-    if (!map) return;
-    const media = map.media.find((media) => media.id === map.selectedMediaId)!;
-    store.pixi.viewport.animate({
-      position: { x: media.width / 2, y: media.height / 2 },
-      scale: Math.min(window.innerWidth / media.width, window.innerHeight / media.height),
+    if (!viewport || !map?.media || !map.media.width || !map.media.height) return;
+
+    viewport.animate({
+      position: { x: map.media.width / 2, y: map.media.height / 2 },
+      scale: Math.min(window.innerWidth / map.media.width, window.innerHeight / map.media.height),
       time: 100,
     });
   }
@@ -128,4 +134,4 @@ export const ZoomControls = observer(function ZoomControls() {
       </Paper>
     </Box>
   );
-});
+}

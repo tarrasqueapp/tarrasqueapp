@@ -2,15 +2,12 @@
 
 import { Box, Container } from '@mui/material';
 
-import { CampaignAccordions } from '../../components/dashboard/CampaignAccordions';
-import { DashboardModals } from '../../components/dashboard/DashboardModals';
-import { TopBar } from '../../components/dashboard/TopBar/TopBar';
-import { useWebSocketCacheSync } from '../../hooks/data/useWebSocketCacheSync';
-import { Gradient } from '../../lib/colors';
+import { CampaignAccordions } from '@/components/dashboard/CampaignAccordions';
+import { DashboardModals } from '@/components/dashboard/DashboardModals';
+import { TopBar } from '@/components/dashboard/TopBar/TopBar';
+import { Gradient } from '@/lib/colors';
 
 export function Dashboard() {
-  useWebSocketCacheSync();
-
   return (
     <>
       <Box

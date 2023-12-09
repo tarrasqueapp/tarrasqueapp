@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
 import { useGetMap } from './useGetMap';
 
@@ -7,6 +7,9 @@ import { useGetMap } from './useGetMap';
  * @returns Current map query
  */
 export function useGetCurrentMap() {
-  const router = useRouter();
-  return useGetMap(router.query.mapId as string);
+  const params = useParams();
+
+  const mapId = params.mapId as string;
+
+  return useGetMap(mapId);
 }

@@ -14,21 +14,21 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { createMedia } from '../../app/dashboard/actions';
-import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
-import { useCreateMap } from '../../hooks/data/maps/useCreateMap';
-import { useUpdateMap } from '../../hooks/data/maps/useUpdateMap';
-import { MapFactory } from '../../lib/factories/MapFactory';
-import { CampaignEntity, MapEntity, MediaEntity, Role } from '../../lib/types';
-import { store } from '../../store';
-import { UploadedFile } from '../../store/media';
-import { ValidateUtils } from '../../utils/ValidateUtils';
+import { createMedia } from '@/actions/media';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
+import { useCreateMap } from '@/hooks/data/maps/useCreateMap';
+import { useUpdateMap } from '@/hooks/data/maps/useUpdateMap';
+import { MapFactory } from '@/lib/factories/MapFactory';
+import { CampaignEntity, MapEntity, MediaEntity, Role } from '@/lib/types';
+import { useMapStore } from '@/store/map';
+import { MediaUtils, UploadedFile } from '@/utils/MediaUtils';
+import { ValidateUtils } from '@/utils/ValidateUtils';
+
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledMediaUploader } from '../form/MediaUploader/ControlledMediaUploader';
 
@@ -39,17 +39,14 @@ interface CreateUpdateMapModalProps {
   campaign: CampaignEntity | undefined;
 }
 
-export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
-  open,
-  onClose,
-  map,
-  campaign,
-}: CreateUpdateMapModalProps) {
+export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpdateMapModalProps) {
   const { data: campaigns } = useGetUserCampaigns();
   const { data: user } = useGetUser();
   const createMap = useCreateMap();
   const updateMap = useUpdateMap();
   const queryClient = useQueryClient();
+
+  const { modal } = useMapStore();
 
   // Get campaigns where the user is a GM
   const gmCampaigns =
@@ -71,7 +68,7 @@ export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
         .mixed<(UploadedFile | MediaEntity)[]>()
         .test('isUppyFileOrMedia', 'Invalid media', (value) => {
           if (!value || !Array.isArray(value) || !value.length) return false;
-          return value.every((file) => store.media.isUploadedFile(file) || store.media.isMedia(file));
+          return value.every((file) => MediaUtils.isUploadedFile(file) || MediaUtils.isMedia(file));
         })
         .required(),
       selectedMediaId: yup.string().required(),
@@ -96,7 +93,7 @@ export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
   // Reset the form when the map changes
   useEffect(() => {
     reset(map || new MapFactory());
-  }, [map, reset, store.maps.modal]);
+  }, [map, reset, modal]);
 
   /**
    * Handle the form submission
@@ -107,13 +104,13 @@ export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
 
     if (map) {
       // Get existing media
-      const existingMedia = values.media.filter((media) => store.media.isMedia(media));
+      const existingMedia = values.media.filter((media) => MediaUtils.isMedia(media));
       // Find new files that needs to be created as media
       const newMedia = await Promise.all(
         values.media
-          .filter((file): file is UploadedFile => store.media.isUploadedFile(file))
+          .filter((file): file is UploadedFile => MediaUtils.isUploadedFile(file))
           .map(async (uppyFile) => {
-            const file = await store.media.convertUppyToFile(uppyFile);
+            const file = await MediaUtils.convertUppyToFile(uppyFile);
             const media = await createMedia(file);
             if (values.selectedMediaId === uppyFile.id) {
               values.selectedMediaId = media.id;
@@ -141,9 +138,9 @@ export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
     // Create new media
     const media = await Promise.all(
       values.media
-        .filter((file): file is UploadedFile => store.media.isUploadedFile(file))
+        .filter((file): file is UploadedFile => MediaUtils.isUploadedFile(file))
         .map(async (uppyFile) => {
-          const file = await store.media.convertUppyToFile(uppyFile);
+          const file = await MediaUtils.convertUppyToFile(uppyFile);
           const media = await createMedia(file);
           if (values.selectedMediaId === uppyFile.id) {
             values.selectedMediaId = media.id;
@@ -218,4 +215,4 @@ export const CreateUpdateMapModal = observer(function CreateUpdateMapModal({
       </FormProvider>
     </Dialog>
   );
-});
+}

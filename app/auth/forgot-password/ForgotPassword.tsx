@@ -9,9 +9,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { ControlledTextField } from '../../../components/form/ControlledTextField';
-import { ValidateUtils } from '../../../utils/ValidateUtils';
-import { forgotPassword } from './actions';
+import { forgotPassword } from '@/actions/auth';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function ForgotPassword() {
   const searchParams = useSearchParams();

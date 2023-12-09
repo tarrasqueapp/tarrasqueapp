@@ -1,8 +1,7 @@
 import { Drag, Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 
-import { store } from '../../store';
-import { SelectTool, Tool } from '../../store/toolbar';
+import { SelectTool, Tool, useToolbarStore } from '@/store/toolbar';
 
 /**
  * Extends the Drag plugin to allow for custom drag behavior.
@@ -33,8 +32,10 @@ export class CustomDragPlugin extends Drag {
    * @returns {boolean} - Whether the event should be handled.
    */
   public override down(event: PIXI.FederatedPointerEvent): boolean {
+    const { tool, selectTool } = useToolbarStore.getState();
+
     // Check for specific tool selection or mouse button conditions
-    const isSingleSelectTool = store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single;
+    const isSingleSelectTool = tool === Tool.Select && selectTool === SelectTool.Single;
     const isMiddleMouseButton = event.nativeEvent.button === 1;
 
     // Initiate drag for the applicable conditions

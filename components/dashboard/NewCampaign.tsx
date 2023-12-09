@@ -1,15 +1,16 @@
 import { Add } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
-import { store } from '../../store';
-import { CampaignModal } from '../../store/campaigns';
+import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
 export function NewCampaign() {
+  const { setSelectedCampaignId, setModal } = useCampaignStore();
+
   return (
     <Button
       onClick={() => {
-        store.campaigns.setSelectedCampaignId(null);
-        store.campaigns.setModal(CampaignModal.CreateUpdate);
+        setSelectedCampaignId(null);
+        setModal(CampaignModal.CreateUpdate);
       }}
       sx={{
         height: 200,

@@ -9,10 +9,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { ControlledPasswordField } from '../../../components/form/ControlledPasswordField';
-import { AppNavigation } from '../../../lib/navigation';
-import { ValidateUtils } from '../../../utils/ValidateUtils';
-import { updateUser } from '../actions';
+import { updateUser } from '@/actions/auth';
+import { ControlledPasswordField } from '@/components/form/ControlledPasswordField';
+import { AppNavigation } from '@/lib/navigation';
+import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function ResetPassword() {
   const router = useRouter();

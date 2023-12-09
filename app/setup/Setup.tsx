@@ -4,8 +4,9 @@ import { CircularProgress, Paper, Step, StepContent, StepLabel, Stepper } from '
 import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
-import { useGetSetup } from '../../hooks/data/setup/useGetSetup';
-import { AppNavigation } from '../../lib/navigation';
+import { useGetSetup } from '@/hooks/data/setup/useGetSetup';
+import { AppNavigation } from '@/lib/navigation';
+
 import { CreateDatabase } from './CreateDatabase';
 import { CreateUser } from './CreateUser';
 

@@ -1,20 +1,17 @@
-import { makeAutoObservable } from 'mobx';
 import { Viewport } from 'pixi-viewport';
+import { create } from 'zustand';
 
-class PixiStore {
-  viewport = null as unknown as Viewport;
+interface PixiStore {
+  viewport: Viewport | null;
+  setViewport: (viewport: Viewport) => void;
+}
 
-  constructor() {
-    makeAutoObservable(this);
-  }
+export const usePixiStore = create<PixiStore>((set) => ({
+  viewport: null,
 
   /**
    * Set pixi-viewport instance.
    * @param viewport - The pixi-viewport instance
    */
-  setViewport(viewport: Viewport) {
-    this.viewport = viewport;
-  }
-}
-
-export const pixiStore = new PixiStore();
+  setViewport: (viewport) => set(() => ({ viewport })),
+}));

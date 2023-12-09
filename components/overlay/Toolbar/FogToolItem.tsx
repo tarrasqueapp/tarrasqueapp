@@ -1,14 +1,14 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { ButtonGroup, Fade, Paper, Popper, Tooltip } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { observer } from 'mobx-react-lite';
 import { useCallback } from 'react';
 
-import { store } from '../../../store';
-import { FogTool, Tool } from '../../../store/toolbar';
+import { FogTool, Tool, useToolbarStore } from '@/store/toolbar';
+
 import { ToolButton } from './ToolButton';
 
-export const FogToolItem = observer(function FogToolItem() {
+export function FogToolItem() {
+  const { tool, setTool, fogTool, setFogTool } = useToolbarStore();
   const popupState = usePopupState({ variant: 'popper', popupId: 'fogTool' });
 
   const HideFogTool = (props: any) => {
@@ -18,8 +18,8 @@ export const FogToolItem = observer(function FogToolItem() {
           value={FogTool.Hide}
           size="small"
           onClick={() => {
-            store.toolbar.setTool(Tool.Fog);
-            store.toolbar.setFogTool(FogTool.Hide);
+            setTool(Tool.Fog);
+            setFogTool(FogTool.Hide);
             popupState.close();
           }}
           {...props}
@@ -37,8 +37,8 @@ export const FogToolItem = observer(function FogToolItem() {
           value={FogTool.Show}
           size="small"
           onClick={() => {
-            store.toolbar.setTool(Tool.Fog);
-            store.toolbar.setFogTool(FogTool.Show);
+            setTool(Tool.Fog);
+            setFogTool(FogTool.Show);
             popupState.close();
           }}
           {...props}
@@ -50,7 +50,7 @@ export const FogToolItem = observer(function FogToolItem() {
   };
 
   const ActiveTool = useCallback((props: any) => {
-    switch (store.toolbar.fogTool) {
+    switch (fogTool) {
       case FogTool.Hide:
         return <HideFogTool {...props} />;
       case FogTool.Show:
@@ -60,7 +60,7 @@ export const FogToolItem = observer(function FogToolItem() {
 
   return (
     <>
-      <ActiveTool selected={store.toolbar.tool === Tool.Fog} {...bindHover(popupState)} />
+      <ActiveTool selected={tool === Tool.Fog} {...bindHover(popupState)} />
 
       {popupState.isOpen && (
         <Popper {...bindPopper(popupState)} placement="right" transition>
@@ -68,8 +68,8 @@ export const FogToolItem = observer(function FogToolItem() {
             <Fade {...TransitionProps} timeout={350}>
               <Paper sx={{ ml: 0.5 }}>
                 <ButtonGroup size="small">
-                  <HideFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Hide} />
-                  <ShowFogTool selected={store.toolbar.tool === Tool.Fog && store.toolbar.fogTool === FogTool.Show} />
+                  <HideFogTool selected={tool === Tool.Fog && fogTool === FogTool.Hide} />
+                  <ShowFogTool selected={tool === Tool.Fog && fogTool === FogTool.Show} />
                 </ButtonGroup>
               </Paper>
             </Fade>
@@ -78,4 +78,4 @@ export const FogToolItem = observer(function FogToolItem() {
       )}
     </>
   );
-});
+}

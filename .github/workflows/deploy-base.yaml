@@ -55,6 +55,12 @@ jobs:
             NODE_ENV=production
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
             SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+            SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+            SMTP_HOST=${{ secrets.SMTP_HOST }}
+            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
+            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+            SMTP_FROM=${{ secrets.SMTP_FROM }}
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -71,6 +77,12 @@ jobs:
             --set env.NODE_ENV="production" \
             --set env.SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
             --set env.SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}" \
+            --set env.SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            --set env.SMTP_HOST="${{ secrets.SMTP_HOST }}" \
+            --set env.SMTP_PORT="${{ secrets.SMTP_PORT }}" \
+            --set env.SMTP_USERNAME="${{ secrets.SMTP_USERNAME }}" \
+            --set env.SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}" \
+            --set env.SMTP_FROM="${{ secrets.SMTP_FROM }}" \
             ${{ inputs.HELM_ARGS }}
 
       - name: Verify deployment

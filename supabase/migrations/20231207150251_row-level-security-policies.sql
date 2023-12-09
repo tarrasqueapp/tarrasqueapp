@@ -1,13 +1,13 @@
 alter table "public"."profiles" enable row level security;
 
-create policy "Users can view their own profile"
+create policy "Profiles can be viewed by anyone"
 on "public"."profiles"
 as permissive
 for select
 to authenticated
 using ((auth.uid() = id));
 
-create policy "Users can update their own profile"
+create policy "Profiles can be updated by their owners"
 on "public"."profiles"
 as permissive
 for update

@@ -8,13 +8,19 @@ services:
       context: .
       dockerfile: ./Dockerfile.dev
       args:
+        # Global
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
-        - SUPABASE_PROTOCOL=${SUPABASE_URL}
-        - SUPABASE_HOST=${SUPABASE_HOST}
-        - SUPABASE_PORT=${SUPABASE_PORT}
+        # Supabase
         - SUPABASE_URL=${SUPABASE_URL}
         - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+        - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+        # Email
+        - SMTP_HOST=${SMTP_HOST}
+        - SMTP_PORT=${SMTP_PORT}
+        - SMTP_USERNAME=${SMTP_USERNAME}
+        - SMTP_PASSWORD=${SMTP_PASSWORD}
+        - SMTP_FROM=${SMTP_FROM}
     volumes:
       - ./:/app
       - /app/node_modules

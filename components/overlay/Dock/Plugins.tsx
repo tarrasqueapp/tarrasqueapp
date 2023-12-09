@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { useGetCampaignPlugins } from '../../../hooks/data/campaigns/plugins/useGetCampaignPlugins';
-import { useGetCurrentMap } from '../../../hooks/data/maps/useGetCurrentMap';
+import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
+import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
+
 import { Plugin } from './Plugin';
 
 export function Plugins() {
   const { data: map } = useGetCurrentMap();
-  const { data: plugins } = useGetCampaignPlugins(map?.campaignId || '');
+  const { data: plugins } = useGetCampaignPlugins(map?.campaign_id || '');
 
   const [loadedPlugins, setLoadedPlugins] = useState<number>(0);
 
@@ -23,8 +24,8 @@ export function Plugins() {
     <>
       {plugins?.map((plugin) => (
         <Plugin
-          key={plugin.manifestUrl}
-          manifestUrl={plugin.manifestUrl}
+          key={plugin.manifest_url}
+          manifestUrl={plugin.manifest_url}
           onLoad={() => setLoadedPlugins(loadedPlugins + 1)}
         />
       ))}

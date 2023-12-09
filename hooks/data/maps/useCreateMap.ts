@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { api } from '../../../lib/api';
-import { MapEntity } from '../../../lib/types';
+import { api } from '@/lib/api';
+import { MapEntity } from '@/lib/types';
 
 /**
  * Send a request to create a map

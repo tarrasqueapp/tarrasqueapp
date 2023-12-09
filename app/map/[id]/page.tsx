@@ -2,8 +2,9 @@ import { Box } from '@mui/material';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
-import { AppNavigation } from '../../../lib/navigation';
-import { SSRUtils } from '../../../utils/SSRUtils';
+import { AppNavigation } from '@/lib/navigation';
+import { SSRUtils } from '@/utils/SSRUtils';
+
 import { MapId } from './MapId';
 
 export const metadata = {

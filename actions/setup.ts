@@ -1,20 +1,25 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { z } from 'zod';
 
-import { createClient } from '../../utils/supabase/server';
-import { Database } from '../../utils/supabase/types';
+import { createServerClient } from '@/utils/supabase/server';
+import { Database } from '@/utils/supabase/types.gen';
 
-type SetupStep = Database['public']['Enums']['setup_step'];
+export type SetupStep = Database['public']['Enums']['setup_step'];
 
 /**
  * Get the setup progress
  * @returns The setup progress
  */
 export async function getSetup() {
+  // Connect to Supabase
   const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createServerClient(cookieStore);
+
+  // Get the setup progress
   const { data } = await supabase.from('setup').select('step').single();
+
   return data;
 }
 
@@ -22,9 +27,13 @@ export async function getSetup() {
  * Create the initial database
  */
 export async function createDatabase() {
+  // Connect to Supabase
   const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createServerClient(cookieStore);
+
+  // Create the database
   const { error } = await supabase.from('setup').insert({ id: 1, step: 'CREATED_DATABASE' });
+
   if (error) {
     throw error;
   }
@@ -35,9 +44,17 @@ export async function createDatabase() {
  * @param setup - The setup to update with
  */
 export async function updateSetup(step: SetupStep) {
+  // Validate the data
+  const schema = z.enum(['CREATED_DATABASE', 'CREATED_USER', 'COMPLETED']);
+  schema.parse(step);
+
+  // Connect to Supabase
   const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = createServerClient(cookieStore);
+
+  // Update the setup progress
   const { error } = await supabase.from('setup').update({ step }).eq('id', 1);
+
   if (error) {
     throw error;
   }

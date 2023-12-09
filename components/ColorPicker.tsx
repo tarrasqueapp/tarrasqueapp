@@ -25,7 +25,8 @@ import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useDebouncyEffect } from 'use-debouncy';
 
-import { Color } from '../lib/colors';
+import { Color } from '@/lib/colors';
+
 import { Swatch } from './ColorPicker/Swatch';
 
 interface Props {

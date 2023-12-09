@@ -1,16 +1,19 @@
 import { GpsFixed } from '@mui/icons-material';
 import { Chip, Fade, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 
-import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useGetCurrentMap } from '../../hooks/data/maps/useGetCurrentMap';
-import { SocketEvent } from '../../lib/events';
-import { socket } from '../../lib/socket';
-import { store } from '../../store';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
+import { SocketEvent } from '@/lib/events';
+import { socket } from '@/lib/socket';
+import { useMapStore } from '@/store/map';
+import { usePixiStore } from '@/store/pixi';
 
-export const MapContextMenu = observer(function MapContextMenu() {
+export function MapContextMenu() {
   const { data: map } = useGetCurrentMap();
   const { data: user } = useGetUser();
+
+  const { contextMenuVisible, setContextMenuVisible, contextMenuAnchorPoint } = useMapStore();
+  const { viewport } = usePixiStore();
 
   const width = 230;
 
@@ -20,14 +23,14 @@ export const MapContextMenu = observer(function MapContextMenu() {
    */
   function getBoundingClientRect() {
     return {
-      x: store.map.contextMenuAnchorPoint.x,
-      y: store.map.contextMenuAnchorPoint.y,
+      x: contextMenuAnchorPoint.x,
+      y: contextMenuAnchorPoint.y,
       width,
       height: 0,
-      top: store.map.contextMenuAnchorPoint.y,
+      top: contextMenuAnchorPoint.y,
       right: 0,
       bottom: 0,
-      left: store.map.contextMenuAnchorPoint.x,
+      left: contextMenuAnchorPoint.x,
       toJSON: () => null,
     };
   }
@@ -36,11 +39,11 @@ export const MapContextMenu = observer(function MapContextMenu() {
    * Ping the location where the context menu was opened
    */
   function handlePingLocation() {
-    if (!map || !user) return;
+    if (!map || !user || !viewport) return;
 
     // Get the coordinates of the context menu relative to the map
-    const { x, y } = store.map.contextMenuAnchorPoint;
-    const position = store.pixi.viewport.toWorld(x, y);
+    const { x, y } = contextMenuAnchorPoint;
+    const position = viewport.toWorld(x, y);
 
     // Emit the ping location event
     socket.emit(SocketEvent.PING_LOCATION, {
@@ -51,11 +54,11 @@ export const MapContextMenu = observer(function MapContextMenu() {
     });
 
     // Hide the context menu
-    store.map.setContextMenuVisible(false);
+    setContextMenuVisible(false);
   }
 
   return (
-    <Popper open={store.map.contextMenuVisible} anchorEl={{ getBoundingClientRect }} transition>
+    <Popper open={contextMenuVisible} anchorEl={{ getBoundingClientRect }} transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper>
@@ -73,4 +76,4 @@ export const MapContextMenu = observer(function MapContextMenu() {
       )}
     </Popper>
   );
-});
+}

@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { getSetup } from '../../../app/setup/actions';
-import { createClient } from '../../../utils/supabase/client';
+import { getSetup } from '@/actions/setup';
+import { createBrowserClient } from '@/utils/supabase/client';
 
 /**
  * Get the setup
@@ -13,7 +13,7 @@ export function useGetSetup() {
 
   // Listen for changes to the setup and update the cache
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = createBrowserClient();
     const channel = supabase
       .channel('setup')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'setup' }, (payload) => {

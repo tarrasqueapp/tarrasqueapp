@@ -1,10 +1,9 @@
 'use client';
 
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
-import * as React from 'react';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
-import { theme } from '../lib/theme';
+import { theme } from '@/lib/theme';
+
 import { EmotionCacheProvider } from './EmotionCacheProvider';
 
 export function ThemeRegistry({ children }: { children: React.ReactNode }) {

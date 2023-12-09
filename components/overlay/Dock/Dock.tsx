@@ -11,7 +11,6 @@ import {
   Storefront,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Chip,
   Divider,
@@ -27,25 +26,31 @@ import {
   alpha,
 } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
-import { observer } from 'mobx-react-lite';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { useGetUser } from '../../../hooks/data/auth/useGetUser';
-import { Color } from '../../../lib/colors';
-import { AppNavigation, ExternalNavigation } from '../../../lib/navigation';
-import { store } from '../../../store';
-import { HotkeysUtils } from '../../../utils/HotkeyUtils';
-import { SettingsModal } from '../../dashboard/SettingsModal';
-import { CampaignIcon } from '../../icons/CampaignIcon';
-import { DiscordIcon } from '../../icons/DiscordIcon';
+import { signOut } from '@/actions/auth';
+import { UserAvatar } from '@/components/common/UserAvatar';
+import { SettingsModal } from '@/components/dashboard/SettingsModal';
+import { CampaignIcon } from '@/components/icons/CampaignIcon';
+import { DiscordIcon } from '@/components/icons/DiscordIcon';
+import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { Color } from '@/lib/colors';
+import { AppNavigation, ExternalNavigation } from '@/lib/navigation';
+import { useDashboardStore } from '@/store/dashboard';
+import { HotkeysUtils } from '@/utils/HotkeyUtils';
+
 import { DockButton } from './DockButton';
 import { Plugins } from './Plugins';
 import { ShortcutsModal } from './ShortcutsModal';
 
-export const Dock = observer(function Dock() {
+export function Dock() {
   const { data: user } = useGetUser();
+  const { data: profile } = useGetProfile();
+
+  const { settingsModalOpen, toggleSettingsModal } = useDashboardStore();
 
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
@@ -204,7 +209,7 @@ export const Dock = observer(function Dock() {
           <>
             <Tooltip title="Account">
               <IconButton {...bindTrigger(popupState)} size="small">
-                <Avatar src={user?.avatar?.thumbnail_url}>{user?.display_name[0]}</Avatar>
+                <UserAvatar profile={profile} />
               </IconButton>
             </Tooltip>
 
@@ -215,16 +220,16 @@ export const Dock = observer(function Dock() {
             >
               <ListItem sx={{ mt: 1 }}>
                 <ListItemAvatar>
-                  <Avatar src={user?.avatar?.thumbnail_url}>{user?.display_name[0]}</Avatar>
+                  <UserAvatar profile={profile} />
                 </ListItemAvatar>
-                <ListItemText primary={user?.name || 'Guest'} />
+                <ListItemText primary={profile?.display_name || 'Guest'} />
               </ListItem>
 
               {user ? (
                 <MenuList>
                   <MenuItem
                     onClick={() => {
-                      store.dashboard.toggleSettingsModal();
+                      toggleSettingsModal();
                       popupState.close();
                     }}
                   >
@@ -234,14 +239,14 @@ export const Dock = observer(function Dock() {
                     <ListItemText primary="Settings" />
                   </MenuItem>
 
-                  <NextLink href={AppNavigation.SignOut} passHref legacyBehavior>
-                    <MenuItem component="a" onClick={() => popupState.close()}>
+                  <form action={signOut}>
+                    <MenuItem component="button" type="submit" onClick={() => popupState.close()}>
                       <ListItemIcon>
                         <Logout />
                       </ListItemIcon>
                       <ListItemText primary="Sign out" />
                     </MenuItem>
-                  </NextLink>
+                  </form>
                 </MenuList>
               ) : (
                 <MenuList>
@@ -262,11 +267,7 @@ export const Dock = observer(function Dock() {
 
       <ShortcutsModal open={shortcutsModalOpen} onClose={() => setShortcutsModalOpen(false)} />
 
-      <SettingsModal
-        open={store.dashboard.settingsModalOpen}
-        onClose={() => store.dashboard.toggleSettingsModal(false)}
-        user={user}
-      />
+      <SettingsModal open={settingsModalOpen} onClose={() => toggleSettingsModal(false)} />
     </Box>
   );
-});
+}

@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { getUser } from '../../../app/auth/actions';
-import { createClient } from '../../../utils/supabase/client';
+import { getUser } from '@/actions/auth';
+import { createBrowserClient } from '@/utils/supabase/client';
 
 /**
  * Get the user
@@ -12,7 +12,7 @@ export function useGetUser() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = createBrowserClient();
     supabase.auth.onAuthStateChange((event, session) => {
       // Update the user when their details change
       if (session && event === 'USER_UPDATED') {

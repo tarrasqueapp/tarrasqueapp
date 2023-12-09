@@ -1,16 +1,17 @@
-import { type CookieOptions, createServerClient } from '@supabase/ssr';
+import { CookieOptions, createServerClient } from '@supabase/ssr';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-import { config } from '../../lib/config';
-import { Database } from './types';
+import { config } from '@/lib/config';
+
+import { Database } from './types.gen';
 
 interface Response {
   supabase: SupabaseClient<Database>;
   response: NextResponse;
 }
 
-export function createClient(request: NextRequest): Response {
+export function createMiddlewareClient(request: NextRequest): Response {
   // Create an unmodified response
   let response = NextResponse.next({
     request: {

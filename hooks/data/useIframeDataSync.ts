@@ -1,9 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
-import { SocketEvent } from '../../lib/events';
-import { socket } from '../../lib/socket';
-import { CampaignEntity, MapEntity, PositionEntity } from '../../lib/types';
+import { SocketEvent } from '@/lib/events';
+import { socket } from '@/lib/socket';
+import { CampaignEntity, MapEntity, PositionEntity } from '@/lib/types';
+
 import { useEffectAsync } from '../useEffectAsync';
 
 export function useIframeDataSync() {

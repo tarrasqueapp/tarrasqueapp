@@ -9,11 +9,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { ControlledPasswordField } from '../../../components/form/ControlledPasswordField';
-import { ControlledTextField } from '../../../components/form/ControlledTextField';
-import { AppNavigation } from '../../../lib/navigation';
-import { ValidateUtils } from '../../../utils/ValidateUtils';
-import { signUp } from './actions';
+import { signUp } from '@/actions/auth';
+import { ControlledPasswordField } from '@/components/form/ControlledPasswordField';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { AppNavigation } from '@/lib/navigation';
+import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function SignUp() {
   const router = useRouter();

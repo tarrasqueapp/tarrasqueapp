@@ -9,10 +9,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { ControlledPasswordField } from '../../../components/form/ControlledPasswordField';
-import { ControlledTextField } from '../../../components/form/ControlledTextField';
-import { ValidateUtils } from '../../../utils/ValidateUtils';
-import { signIn } from './actions';
+import { signIn } from '@/actions/auth';
+import { ControlledPasswordField } from '@/components/form/ControlledPasswordField';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function SignIn() {
   const searchParams = useSearchParams();

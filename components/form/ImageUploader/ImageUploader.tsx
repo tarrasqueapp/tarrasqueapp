@@ -7,17 +7,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getSession } from '../../../app/auth/actions';
-import { useGetUser } from '../../../hooks/data/auth/useGetUser';
-import { useEffectAsync } from '../../../hooks/useEffectAsync';
-import { Color } from '../../../lib/colors';
-import { config } from '../../../lib/config';
-import { storageImageLoader } from '../../../lib/storageImageLoader';
-import { MediaEntity } from '../../../lib/types';
-import { store } from '../../../store';
-import { UploadingFile } from '../../../store/media';
-import { MathUtils } from '../../../utils/MathUtils';
-import { CircularProgressWithLabel } from '../../common/CircularProgressWithLabel';
+import { getSession } from '@/actions/auth';
+import { CircularProgressWithLabel } from '@/components/common/CircularProgressWithLabel';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useEffectAsync } from '@/hooks/useEffectAsync';
+import { Color } from '@/lib/colors';
+import { config } from '@/lib/config';
+import { storageImageLoader } from '@/lib/storageImageLoader';
+import { MediaEntity } from '@/lib/types';
+import { MathUtils } from '@/utils/MathUtils';
+import { MediaUtils, UploadingFile } from '@/utils/MediaUtils';
 
 export interface ImageUploaderProps {
   file?: UploadingFile | MediaEntity;
@@ -191,7 +190,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
    */
   function handleDelete(file: UploadingFile | MediaEntity) {
     if (!file) return;
-    if (store.media.isUploadingFile(file)) uppy.removeFile(file.id);
+    if (MediaUtils.isUploadingFile(file)) uppy.removeFile(file.id);
     onChange?.(null);
   }
 
@@ -235,9 +234,9 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
           >
             <input {...getInputProps()} />
 
-            {store.media.isUploadingFile(file) && (
+            {MediaUtils.isUploadingFile(file) && (
               <>
-                {store.media.isUploadedFile(file) ? (
+                {MediaUtils.isUploadedFile(file) ? (
                   <Box component="img" src={file.uploadURL} height={200} />
                 ) : (
                   <Box>
@@ -252,7 +251,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
               </>
             )}
 
-            {store.media.isMedia(file) && (
+            {MediaUtils.isMedia(file) && (
               <>
                 {file.url && <NextImage loader={storageImageLoader} src={file.url} width={200} height={200} alt="" />}
               </>

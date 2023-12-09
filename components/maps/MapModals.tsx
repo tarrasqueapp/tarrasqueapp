@@ -1,29 +1,33 @@
 import { Alert } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 
-import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
-import { useDeleteMap } from '../../hooks/data/maps/useDeleteMap';
-import { store } from '../../store';
-import { MapModal } from '../../store/maps';
+import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
+import { useDeleteMap } from '@/hooks/data/maps/useDeleteMap';
+import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
+import { useCampaignStore } from '@/store/campaign';
+import { MapModal, useMapStore } from '@/store/map';
+
 import { ConfirmModal } from '../common/ConfirmModal';
 import { CreateUpdateMapModal } from './CreateUpdateMapModal';
 
-export const MapModals = observer(function MapModals() {
+export function MapModals() {
+  const { selectedCampaignId, setSelectedCampaignId } = useCampaignStore();
+  const { selectedMapId, setSelectedMapId, modal, setModal } = useMapStore();
   const { data: campaigns } = useGetUserCampaigns();
+  const { data: maps } = useGetCampaignMaps(selectedCampaignId!);
   const deleteMap = useDeleteMap();
 
-  const selectedCampaign = campaigns?.find((campaign) => campaign.id === store.campaigns.selectedCampaignId);
-  const selectedMap = selectedCampaign?.maps.find((map) => map.id === store.maps.selectedMapId);
+  const selectedCampaign = campaigns?.find((campaign) => campaign.id === selectedCampaignId);
+  const selectedMap = maps?.find((map) => map.id === selectedMapId);
 
   return (
     <>
       <CreateUpdateMapModal
-        open={store.maps.modal === MapModal.CreateUpdate}
+        open={modal === MapModal.CreateUpdate}
         onClose={() => {
-          store.maps.setModal(null);
+          setModal(null);
           setTimeout(() => {
-            store.maps.setSelectedMapId(null);
-            store.campaigns.setSelectedCampaignId(null);
+            setSelectedMapId(null);
+            setSelectedCampaignId(null);
           }, 500);
         }}
         map={selectedMap}
@@ -32,16 +36,16 @@ export const MapModals = observer(function MapModals() {
 
       <ConfirmModal
         title="Delete Map"
-        open={store.maps.modal === MapModal.Delete}
+        open={modal === MapModal.Delete}
         onConfirm={async () => {
           if (!selectedMap) return;
           deleteMap.mutate(selectedMap);
         }}
         onClose={() => {
-          store.maps.setModal(null);
+          setModal(null);
           setTimeout(() => {
-            store.maps.setSelectedMapId(null);
-            store.campaigns.setSelectedCampaignId(null);
+            setSelectedMapId(null);
+            setSelectedCampaignId(null);
           }, 500);
         }}
       >
@@ -52,4 +56,4 @@ export const MapModals = observer(function MapModals() {
       </ConfirmModal>
     </>
   );
-});
+}

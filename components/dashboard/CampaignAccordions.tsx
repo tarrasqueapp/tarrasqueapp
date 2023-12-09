@@ -19,11 +19,13 @@ import {
 } from '@dnd-kit/sortable';
 import { Portal } from '@mui/material';
 import { useEffect, useState } from 'react';
+import React from 'react';
 import { useCookies } from 'react-cookie';
 
-import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
-import { useReorderCampaigns } from '../../hooks/data/campaigns/useReorderCampaigns';
-import { CampaignEntity } from '../../lib/types';
+import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
+import { useReorderCampaigns } from '@/hooks/data/campaigns/useReorderCampaigns';
+import { CampaignEntity } from '@/lib/types';
+
 import { CampaignAccordion } from './CampaignAccordion';
 import { NewCampaign } from './NewCampaign';
 
@@ -131,12 +133,14 @@ export function CampaignAccordions() {
       >
         <SortableContext items={orderedCampaigns} strategy={verticalListSortingStrategy}>
           {orderedCampaigns?.map((campaign) => (
-            <CampaignAccordion
-              key={campaign.id}
-              campaign={campaigns?.find((c) => c.id === campaign.id)}
-              expanded={!collapsedCampaigns?.includes(campaign.id)}
-              onToggle={(expanded) => handleToggle(campaign.id, expanded)}
-            />
+            <React.Fragment key={campaign.id}>
+              {campaign.name}
+              {/* <CampaignAccordion
+                campaign={campaigns?.find((c) => c.id === campaign.id)}
+                expanded={!collapsedCampaigns?.includes(campaign.id)}
+                onToggle={(expanded) => handleToggle(campaign.id, expanded)}
+              /> */}
+            </React.Fragment>
           ))}
         </SortableContext>
 

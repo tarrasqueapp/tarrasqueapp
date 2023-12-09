@@ -17,20 +17,22 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { updateProfile, updateUser } from '../../app/auth/actions';
-import { createMedia, deleteStorageObject, getObjectId } from '../../app/dashboard/actions';
-import { useGetProfile } from '../../hooks/data/auth/useGetProfile';
-import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { MediaEntity } from '../../lib/types';
-import { store } from '../../store';
-import { UploadedFile } from '../../store/media';
-import { ValidateUtils } from '../../utils/ValidateUtils';
+import { updateUser } from '@/actions/auth';
+import { createMedia } from '@/actions/media';
+import { updateProfile } from '@/actions/profiles';
+import { deleteStorageObject, getObjectId } from '@/actions/storage';
+import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { MediaEntity } from '@/lib/types';
+import { useDashboardStore } from '@/store/dashboard';
+import { MediaUtils, UploadedFile } from '@/utils/MediaUtils';
+import { ValidateUtils } from '@/utils/ValidateUtils';
+
 import { ControlledPasswordField } from '../form/ControlledPasswordField';
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledImageUploader } from '../form/ImageUploader/ControlledImageUploader';
@@ -40,9 +42,11 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
-export const SettingsModal = observer(function SettingsModal({ open, onClose }: SettingsModalProps) {
+export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const { data: user } = useGetUser();
   const { data: profile } = useGetProfile();
+
+  const { settingsModalOpen } = useDashboardStore();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -58,7 +62,7 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose }: 
           .mixed<UploadedFile | MediaEntity>()
           .test('isUppyFileOrMedia', 'Invalid avatar', (value) => {
             if (!value) return true;
-            return store.media.isUploadedFile(value) || store.media.isMedia(value);
+            return MediaUtils.isUploadedFile(value) || MediaUtils.isMedia(value);
           })
           .nullable(),
         password: yup
@@ -115,7 +119,7 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose }: 
       password: '',
       confirmPassword: '',
     });
-  }, [user, profile, reset, store.dashboard.settingsModalOpen]);
+  }, [user, profile, reset, settingsModalOpen]);
 
   /**
    * Handle the form submission
@@ -125,9 +129,9 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose }: 
     if (!user || !profile) return;
 
     // Create the avatar
-    if (values.avatar && store.media.isUploadedFile(values.avatar)) {
+    if (values.avatar && MediaUtils.isUploadedFile(values.avatar)) {
       // Get the normalized file from Uppy
-      const file = await store.media.convertUppyToFile(values.avatar);
+      const file = await MediaUtils.convertUppyToFile(values.avatar);
 
       // Get the uploaded storage object's ID to use as the media ID foreign key
       const objectId = await getObjectId(file.url);
@@ -164,7 +168,6 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose }: 
     }
 
     await updateProfile({
-      id: profile.id,
       name: values.name,
       display_name: values.display_name,
       avatar_id: values.avatar?.id,
@@ -280,4 +283,4 @@ export const SettingsModal = observer(function SettingsModal({ open, onClose }: 
       </FormProvider>
     </Dialog>
   );
-});
+}

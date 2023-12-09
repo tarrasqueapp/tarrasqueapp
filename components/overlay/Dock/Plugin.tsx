@@ -1,7 +1,9 @@
 import { Box, Fade, Paper, Popper, Tooltip } from '@mui/material';
 import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
+import Image from 'next/image';
 
-import { useGetPlugin } from '../../../hooks/data/plugins/useGetPlugin';
+import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
+
 import { DockButton } from './DockButton';
 
 interface Props {
@@ -20,7 +22,7 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
         <>
           <Tooltip title={plugin.name}>
             <DockButton active={popupState.isOpen} {...bindToggle(popupState)}>
-              <img src={plugin.icon} alt={plugin.name} width={32} height={32} />
+              <Image src={plugin.icon} alt={plugin.name} width={32} height={32} />
             </DockButton>
           </Tooltip>
 

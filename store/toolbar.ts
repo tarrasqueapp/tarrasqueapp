@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { create } from 'zustand';
 
 export enum Tool {
   Select = 'select',
@@ -30,56 +30,53 @@ export enum ShapeTool {
   Triangle = 'triangle',
 }
 
-class ToolbarStore {
-  tool = Tool.Select;
-  selectTool = SelectTool.Single;
-  fogTool = FogTool.Hide;
-  drawTool = DrawTool.Brush;
-  shapeTool = ShapeTool.Circle;
+interface ToolbarStore {
+  tool: Tool;
+  selectTool: SelectTool;
+  fogTool: FogTool;
+  drawTool: DrawTool;
+  shapeTool: ShapeTool;
+  setTool: (tool: Tool) => void;
+  setSelectTool: (selectTool: SelectTool) => void;
+  setFogTool: (fogTool: FogTool) => void;
+  setDrawTool: (drawTool: DrawTool) => void;
+  setShapeTool: (shapeTool: ShapeTool) => void;
+}
 
-  constructor() {
-    makeAutoObservable(this);
-  }
+export const useToolbarStore = create<ToolbarStore>((set) => ({
+  tool: Tool.Select,
+  selectTool: SelectTool.Single,
+  fogTool: FogTool.Hide,
+  drawTool: DrawTool.Brush,
+  shapeTool: ShapeTool.Circle,
 
   /**
    * Set selected tool
    * @param tool - The tool to select
    */
-  setTool(tool: Tool) {
-    this.tool = tool;
-  }
+  setTool: (tool) => set(() => ({ tool })),
 
   /**
    * Set selected select tool
    * @param selectTool - The select tool variant to select
    */
-  setSelectTool(selectTool: SelectTool) {
-    this.selectTool = selectTool;
-  }
+  setSelectTool: (selectTool) => set(() => ({ selectTool })),
 
   /**
    * Set selected fog tool
    * @param fogTool - The fog tool variant to select
    */
-  setFogTool(fogTool: FogTool) {
-    this.fogTool = fogTool;
-  }
+  setFogTool: (fogTool) => set(() => ({ fogTool })),
 
   /**
    * Set selected draw tool
    * @param drawTool - The draw tool variant to select
    */
-  setDrawTool(drawTool: DrawTool) {
-    this.drawTool = drawTool;
-  }
+  setDrawTool: (drawTool) => set(() => ({ drawTool })),
 
   /**
    * Set selected shape tool
    * @param shapeTool - The shape tool variant to select
    */
-  setShapeTool(shapeTool: ShapeTool) {
-    this.shapeTool = shapeTool;
-  }
-}
-
-export const toolbarStore = new ToolbarStore();
+  setShapeTool: (shapeTool) => set(() => ({ shapeTool })),
+}));

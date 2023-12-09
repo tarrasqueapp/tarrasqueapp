@@ -1,7 +1,6 @@
 import { UploadedUppyFile, UppyFile } from '@uppy/core';
-import { makeAutoObservable } from 'mobx';
 
-import { DimensionsEntity, FileEntity, MediaEntity } from '../lib/types';
+import { DimensionsEntity, FileEntity, MediaEntity } from '@/lib/types';
 
 export type UploadingFile = UppyFile<Record<string, unknown>, Record<string, unknown>> & {
   progress?: { percentage: number };
@@ -10,18 +9,14 @@ export type UploadingFile = UppyFile<Record<string, unknown>, Record<string, unk
 
 export type UploadedFile = UploadedUppyFile<Record<string, unknown>, Record<string, unknown>>;
 
-class MediaStore {
-  constructor() {
-    makeAutoObservable(this);
-  }
-
+export class MediaUtils {
   /**
    * Convert an Uppy file to a FileEntity
    * @param uppyFile - The Uppy file to convert
    * @returns The converted file
    * @throws Error
    */
-  async convertUppyToFile(uppyFile: UploadedFile): Promise<FileEntity> {
+  static async convertUppyToFile(uppyFile: UploadedFile): Promise<FileEntity> {
     // Get the id from the file name (object_id.extension)
     const id = uppyFile.name.split('.')[0];
     const objectName = (uppyFile.meta as any).objectName;
@@ -51,7 +46,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is an image
    */
-  isImage(file?: FileEntity | UploadingFile): boolean {
+  static isImage(file?: FileEntity | UploadingFile): boolean {
     if (!file) return false;
     return file.type?.startsWith('image/') || false;
   }
@@ -61,7 +56,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is a video
    */
-  isVideo(file?: FileEntity | UploadingFile): boolean {
+  static isVideo(file?: FileEntity | UploadingFile): boolean {
     if (!file) return false;
     return file.type?.startsWith('video/') || false;
   }
@@ -71,7 +66,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is an uploaded Uppy file
    */
-  isUploadedFile(file: unknown): file is UploadedFile {
+  static isUploadedFile(file: unknown): file is UploadedFile {
     return (file as UploadingFile)?.uploadURL !== undefined;
   }
 
@@ -80,7 +75,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is an uploading Uppy file
    */
-  isUploadingFile(file: unknown): file is UploadingFile {
+  static isUploadingFile(file: unknown): file is UploadingFile {
     return (file as UploadingFile)?.data !== undefined;
   }
 
@@ -89,7 +84,7 @@ class MediaStore {
    * @param file - The file to check
    * @returns If the file is of MediaEntity
    */
-  isMedia(file: unknown): file is MediaEntity {
+  static isMedia(file: unknown): file is MediaEntity {
     return (file as MediaEntity)?.user_id !== undefined;
   }
 
@@ -99,7 +94,7 @@ class MediaStore {
    * @param decimals - The number of decimals
    * @returns The human readable string
    */
-  formatBytes(bytes: number, decimals = 2) {
+  static formatBytes(bytes: number, decimals = 2) {
     if (bytes === 0) return '0 B';
 
     const k = 1024;
@@ -116,7 +111,7 @@ class MediaStore {
    * @param file - The image file
    * @returns The image dimensions
    */
-  getImageDimensions(file: File | Blob): Promise<DimensionsEntity> {
+  static getImageDimensions(file: File | Blob): Promise<DimensionsEntity> {
     return new Promise((resolve) => {
       const reader = new FileReader();
 
@@ -138,7 +133,7 @@ class MediaStore {
    * @param file - The video file
    * @returns The video dimensions
    */
-  getVideoDimensions(file: File | Blob): Promise<DimensionsEntity> {
+  static getVideoDimensions(file: File | Blob): Promise<DimensionsEntity> {
     return new Promise((resolve) => {
       const reader = new FileReader();
 
@@ -155,5 +150,3 @@ class MediaStore {
     });
   }
 }
-
-export const mediaStore = new MediaStore();

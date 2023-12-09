@@ -1,11 +1,12 @@
 import { Box, Container, Paper, Typography } from '@mui/material';
 import { redirect } from 'next/navigation';
 
-import { Center } from '../../../components/common/Center';
-import { Logo } from '../../../components/common/Logo';
-import { NextLink } from '../../../components/common/NextLink';
-import { AppNavigation } from '../../../lib/navigation';
-import { SSRUtils } from '../../../utils/SSRUtils';
+import { Center } from '@/components/common/Center';
+import { Logo } from '@/components/common/Logo';
+import { NextLink } from '@/components/common/NextLink';
+import { AppNavigation } from '@/lib/navigation';
+import { SSRUtils } from '@/utils/SSRUtils';
+
 import { SignIn } from './SignIn';
 
 export default async function SignInPage() {

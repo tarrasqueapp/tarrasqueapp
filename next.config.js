@@ -12,10 +12,12 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: process.env.SUPABASE_PROTOCOL,
-        hostname: process.env.SUPABASE_HOST,
-        port: process.env.SUPABASE_PORT,
-        pathname: '/storage/v1/**',
+        protocol: 'http',
+        hostname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },

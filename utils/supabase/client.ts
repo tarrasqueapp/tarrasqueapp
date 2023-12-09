@@ -1,9 +1,10 @@
-import { createBrowserClient } from '@supabase/ssr';
+import { createBrowserClient as supabaseCreateBrowserClient } from '@supabase/ssr';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-import { config } from '../../lib/config';
-import { Database } from './types';
+import { config } from '@/lib/config';
 
-export function createClient(): SupabaseClient<Database> {
-  return createBrowserClient<Database>(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
+import { Database } from './types.gen';
+
+export function createBrowserClient(): SupabaseClient<Database> {
+  return supabaseCreateBrowserClient<Database>(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
 }

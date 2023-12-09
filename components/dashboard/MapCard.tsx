@@ -2,7 +2,6 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Delete, Edit, FileCopy, MoreHoriz } from '@mui/icons-material';
 import {
-  Box,
   Card,
   CardActionArea,
   CardContent,
@@ -19,24 +18,32 @@ import {
   Typography,
 } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
-import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useDuplicateMap } from '../../hooks/data/maps/useDuplicateMap';
-import { AppNavigation } from '../../lib/navigation';
-import { CampaignEntity, MapEntity, Role } from '../../lib/types';
-import { store } from '../../store';
-import { MapModal } from '../../store/maps';
+import { Map } from '@/actions/maps';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
+import { useDuplicateMap } from '@/hooks/data/maps/useDuplicateMap';
+import { AppNavigation } from '@/lib/navigation';
+import { storageImageLoader } from '@/lib/storageImageLoader';
+import { CampaignEntity, Role } from '@/lib/types';
+import { useCampaignStore } from '@/store/campaign';
+import { MapModal, useMapStore } from '@/store/map';
 
 interface MapCardProps {
-  map?: MapEntity;
+  map?: Map;
   campaign?: CampaignEntity;
 }
 
 export function MapCard({ map, campaign }: MapCardProps) {
   const { data: user } = useGetUser();
+  const { data: memberships } = useGetMemberships(campaign?.id || '');
   const duplicateMap = useDuplicateMap();
+
+  const { setSelectedMapId, setModal } = useMapStore();
+  const { setSelectedCampaignId } = useCampaignStore();
 
   const [duplicating, setDuplicating] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: map?.id || '' });
@@ -47,14 +54,12 @@ export function MapCard({ map, campaign }: MapCardProps) {
     ...(isDragging && { opacity: 0.5 }),
   };
 
-  const isGameMaster = campaign?.memberships.some(
-    (membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER,
+  const isGameMaster = memberships?.some(
+    (membership) => membership.user_id === user?.id && membership.role === Role.GAME_MASTER,
   );
 
   const width = 250;
   const height = 200;
-
-  const thumbnailUrl = map?.media.find((media) => media.id === map.selectedMediaId)?.thumbnail_url;
 
   if (!isGameMaster) {
     return (
@@ -105,10 +110,14 @@ export function MapCard({ map, campaign }: MapCardProps) {
           <NextLink href={`${AppNavigation.Map}/[mapId]`} as={`${AppNavigation.Map}/${map.id}`} passHref legacyBehavior>
             <CardActionArea sx={{ position: 'static' }}>
               <CardMedia>
-                <Box
-                  component="img"
-                  src={thumbnailUrl}
-                  sx={{
+                <Image
+                  loader={storageImageLoader}
+                  src={map.media!.url}
+                  width={width}
+                  height={height}
+                  layout="responsive"
+                  alt=""
+                  style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
@@ -156,9 +165,9 @@ export function MapCard({ map, campaign }: MapCardProps) {
                         <MenuItem
                           onClick={() => {
                             if (!map || !campaign) return;
-                            store.campaigns.setSelectedCampaignId(campaign.id);
-                            store.maps.setSelectedMapId(map.id);
-                            store.maps.setModal(MapModal.CreateUpdate);
+                            setSelectedCampaignId(campaign.id);
+                            setSelectedMapId(map.id);
+                            setModal(MapModal.CreateUpdate);
                             popupState.close();
                           }}
                         >
@@ -173,7 +182,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
                           onClick={async () => {
                             if (!map) return;
                             setDuplicating(true);
-                            await duplicateMap.mutateAsync(map);
+                            // await duplicateMap.mutateAsync(map);
                             setDuplicating(false);
                             popupState.close();
                           }}
@@ -187,9 +196,9 @@ export function MapCard({ map, campaign }: MapCardProps) {
                         <MenuItem
                           onClick={() => {
                             if (!map || !campaign) return;
-                            store.campaigns.setSelectedCampaignId(campaign.id);
-                            store.maps.setSelectedMapId(map.id);
-                            store.maps.setModal(MapModal.Delete);
+                            setSelectedCampaignId(campaign.id);
+                            setSelectedMapId(map.id);
+                            setModal(MapModal.Delete);
                             popupState.close();
                           }}
                         >

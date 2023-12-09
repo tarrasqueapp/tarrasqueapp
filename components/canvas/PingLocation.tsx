@@ -1,14 +1,19 @@
 import { Graphics } from '@pixi/react';
 import React, { useEffect, useState } from 'react';
 
-import { SocketEvent } from '../../lib/events';
-import { socket } from '../../lib/socket';
-import { PingLocationEntity } from '../../lib/types';
+import { SocketEvent } from '@/lib/events';
+import { socket } from '@/lib/socket';
+import { PingLocationEntity } from '@/lib/types';
+import { createBrowserClient } from '@/utils/supabase/client';
 
 export function PingLocation() {
   const [pings, setPings] = useState<(PingLocationEntity & { size: number; frame: number })[]>([]);
 
   useEffect(() => {
+    const supabase = createBrowserClient();
+
+    supabase.channel('').subscribe((payload) => {});
+
     socket.on(SocketEvent.PINGED_LOCATION, (ping) => {
       const pingWithAnimation = {
         ...ping,

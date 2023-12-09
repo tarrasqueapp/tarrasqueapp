@@ -1,8 +1,7 @@
-import { Box } from '@mui/material';
+import { Dock } from '@mui/icons-material';
+import { Box, Toolbar } from '@mui/material';
 
-import { Dock } from './Dock/Dock';
 import { MapContextMenu } from './MapContextMenu';
-import { Toolbar } from './Toolbar/Toolbar';
 import { ZoomControls } from './ZoomControls';
 
 export function Overlay() {

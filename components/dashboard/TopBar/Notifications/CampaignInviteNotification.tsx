@@ -1,9 +1,9 @@
 import { Check, Close } from '@mui/icons-material';
 import { IconButton, ListItem, ListItemText } from '@mui/material';
 
-import { useAcceptInvite } from '../../../../hooks/data/notifications/useAcceptInvite';
-import { useDeclineInvite } from '../../../../hooks/data/notifications/useDeclineInvite';
-import { ActionTokenEntity } from '../../../../lib/types';
+import { useAcceptInvite } from '@/hooks/data/notifications/useAcceptInvite';
+import { useDeclineInvite } from '@/hooks/data/notifications/useDeclineInvite';
+import { ActionTokenEntity } from '@/lib/types';
 
 export function CampaignInviteNotification(invite: ActionTokenEntity) {
   const acceptCampaignInvite = useAcceptInvite();

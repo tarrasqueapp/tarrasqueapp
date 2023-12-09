@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { api } from '../../../../lib/api';
-import { ActionTokenEntity } from '../../../../lib/types';
+import { api } from '@/lib/api';
+import { ActionTokenEntity } from '@/lib/types';
 
 /**
  * Send a request to delete an invite of a user to a campaign

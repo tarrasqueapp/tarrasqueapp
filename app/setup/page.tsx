@@ -3,10 +3,11 @@ import { HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
-import { Center } from '../../components/common/Center';
-import { Logo } from '../../components/common/Logo';
-import { AppNavigation } from '../../lib/navigation';
-import { SSRUtils } from '../../utils/SSRUtils';
+import { Center } from '@/components/common/Center';
+import { Logo } from '@/components/common/Logo';
+import { AppNavigation } from '@/lib/navigation';
+import { SSRUtils } from '@/utils/SSRUtils';
+
 import { Setup } from './Setup';
 
 export default async function SetupPage() {

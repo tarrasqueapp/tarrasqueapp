@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Button, ButtonProps } from '@mui/material';
 import { forwardRef } from 'react';
 
-import { Color } from '../../../lib/colors';
+import { Color } from '@/lib/colors';
 
 interface DockButtonProps extends ButtonProps<any> {
   active?: boolean;

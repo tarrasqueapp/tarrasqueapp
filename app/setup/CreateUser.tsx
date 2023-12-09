@@ -6,10 +6,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { ControlledTextField } from '../../components/form/ControlledTextField';
-import { ValidateUtils } from '../../utils/ValidateUtils';
-import { signUp } from '../auth/sign-up/actions';
-import { updateSetup } from './actions';
+import { signUp } from '@/actions/auth';
+import { updateSetup } from '@/actions/setup';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { ValidateUtils } from '@/utils/ValidateUtils';
 
 interface CreateUserProps {
   onSubmit: () => void;

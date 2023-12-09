@@ -1,18 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { RawAxiosRequestConfig } from 'axios';
 
-import { api } from '../../../lib/api';
-import { MapEntity } from '../../../lib/types';
-
-/**
- * Send a request to get a map by id
- * @param mapId - The id of the map to get
- * @returns The map data
- */
-export async function getMap(mapId: string, requestConfig?: RawAxiosRequestConfig) {
-  const { data } = await api.get<MapEntity>(`/api/maps/${mapId}`, requestConfig);
-  return data;
-}
+import { getMap } from '@/actions/maps';
 
 /**
  * Get a map by ID

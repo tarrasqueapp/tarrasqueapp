@@ -3,10 +3,14 @@ import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { cookies } from 'next/headers';
 
-import { Profile, getProfile, getUser } from '../app/auth/actions';
-import { getSetup } from '../app/setup/actions';
-import { createClient } from './supabase/server';
-import { Database } from './supabase/types';
+import { getUser } from '@/actions/auth';
+import { getUserCampaigns } from '@/actions/campaigns';
+import { getMap } from '@/actions/maps';
+import { getProfile } from '@/actions/profiles';
+import { getSetup } from '@/actions/setup';
+
+import { createServerClient } from './supabase/server';
+import { Database } from './supabase/types.gen';
 
 export class SSRUtils {
   queryClient: QueryClient;
@@ -16,7 +20,7 @@ export class SSRUtils {
   constructor() {
     this.queryClient = new QueryClient();
     this.cookieStore = cookies();
-    this.supabase = createClient(this.cookieStore);
+    this.supabase = createServerClient(this.cookieStore);
   }
 
   /**
@@ -36,7 +40,6 @@ export class SSRUtils {
       queryKey: ['user'],
       queryFn: getUser,
     });
-
     return this.queryClient.getQueryData<User>(['user']) || null;
   }
 
@@ -49,8 +52,8 @@ export class SSRUtils {
       queryKey: ['profile'],
       queryFn: getProfile,
     });
-
-    return this.queryClient.getQueryData<Profile>(['profile']) || null;
+    type Data = Awaited<ReturnType<typeof getProfile>>;
+    return this.queryClient.getQueryData<Data>(['profile']) || null;
   }
 
   /**
@@ -73,13 +76,10 @@ export class SSRUtils {
   async prefetchUserCampaigns() {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns'],
-      queryFn: async () => {
-        const { data } = await this.supabase.from('campaigns').select('*');
-        return data;
-      },
+      queryFn: getUserCampaigns,
     });
-    type CampaignEntity = Database['public']['Tables']['campaigns']['Row'];
-    return this.queryClient.getQueryData<CampaignEntity[]>(['campaigns']) || [];
+    type Data = Awaited<ReturnType<typeof getUserCampaigns>>;
+    return this.queryClient.getQueryData<Data>(['campaigns']) || [];
   }
 
   /**
@@ -89,12 +89,9 @@ export class SSRUtils {
   async prefetchMap(id: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['maps', id],
-      queryFn: async () => {
-        const { data } = await this.supabase.from('maps').select('*').eq('id', id).single();
-        return data;
-      },
+      queryFn: () => getMap(id),
     });
-    type MapEntity = Database['public']['Tables']['maps']['Row'];
-    return this.queryClient.getQueryData<MapEntity>(['maps']) || null;
+    type Data = Awaited<ReturnType<typeof getMap>>;
+    return this.queryClient.getQueryData<Data>(['maps', id]) || null;
   }
 }

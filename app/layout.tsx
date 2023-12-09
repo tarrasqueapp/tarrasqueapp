@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 
-import { Color } from '../lib/colors';
-import { config } from '../lib/config';
+import { Color } from '@/lib/colors';
+import { config } from '@/lib/config';
+
 import '../styles/globals.css';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import { ThemeRegistry } from './ThemeRegistry';

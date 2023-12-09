@@ -26,7 +26,7 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
 
   // Add a global function to toggle the devtools
   useEffect(() => {
-    window.toggleDevtools = () => setShowDevtools((old) => !old);
+    (window as any).toggleDevtools = () => setShowDevtools((old) => !old);
   }, []);
 
   return (

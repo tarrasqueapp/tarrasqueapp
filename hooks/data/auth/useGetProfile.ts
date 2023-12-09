@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { getProfile } from '../../../app/auth/actions';
-import { createClient } from '../../../utils/supabase/client';
+import { getProfile } from '@/actions/profiles';
+import { createBrowserClient } from '@/utils/supabase/client';
 
 /**
  * Get the user profile
@@ -13,7 +13,7 @@ export function useGetProfile() {
 
   // Listen for changes to the user profile and update the cache
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = createBrowserClient();
     const channel = supabase
       .channel('profile')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, async () => {

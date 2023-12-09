@@ -1,54 +1,51 @@
 import { Alert } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 
-import { useDeleteCampaign } from '../../hooks/data/campaigns/useDeleteCampaign';
-import { useGetUserCampaigns } from '../../hooks/data/campaigns/useGetUserCampaigns';
-import { store } from '../../store';
-import { CampaignModal } from '../../store/campaigns';
+import { useDeleteCampaign } from '@/hooks/data/campaigns/useDeleteCampaign';
+import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
+import { CampaignModal, useCampaignStore } from '@/store/campaign';
+
 import { ConfirmModal } from '../common/ConfirmModal';
 import { PluginsModal } from '../dashboard/Plugins/PluginsModal';
 import { CampaignMembersModal } from './CampaignMembersModal';
 import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';
 
-export const CampaignModals = observer(function CampaignModals() {
+export function CampaignModals() {
   const { data: campaigns } = useGetUserCampaigns();
   const deleteCampaign = useDeleteCampaign();
 
-  const selectedCampaign = campaigns?.find((campaign) => campaign.id === store.campaigns.selectedCampaignId);
+  const { selectedCampaignId, setSelectedCampaignId, modal, setModal } = useCampaignStore();
+
+  const selectedCampaign = campaigns?.find((campaign) => campaign.id === selectedCampaignId);
 
   return (
     <>
       <CreateUpdateCampaignModal
-        open={store.campaigns.modal === CampaignModal.CreateUpdate}
+        open={modal === CampaignModal.CreateUpdate}
         onClose={() => {
-          store.campaigns.setModal(null);
-          setTimeout(() => store.campaigns.setSelectedCampaignId(null), 500);
+          setModal(null);
+          setTimeout(() => setSelectedCampaignId(null), 500);
         }}
         campaign={selectedCampaign}
       />
 
       <CampaignMembersModal
-        open={store.campaigns.modal === CampaignModal.Members}
-        onClose={() => store.campaigns.setModal(null)}
+        open={modal === CampaignModal.Members}
+        onClose={() => setModal(null)}
         campaign={selectedCampaign}
       />
 
-      <PluginsModal
-        open={store.campaigns.modal === CampaignModal.Plugins}
-        onClose={() => store.campaigns.setModal(null)}
-        campaign={selectedCampaign}
-      />
+      <PluginsModal open={modal === CampaignModal.Plugins} onClose={() => setModal(null)} campaign={selectedCampaign} />
 
       <ConfirmModal
         title="Delete Campaign"
-        open={store.campaigns.modal === CampaignModal.Delete}
+        open={modal === CampaignModal.Delete}
         onConfirm={async () => {
           if (!selectedCampaign) return;
           deleteCampaign.mutate(selectedCampaign);
         }}
         onClose={() => {
-          store.campaigns.setModal(null);
-          setTimeout(() => store.campaigns.setSelectedCampaignId(null), 500);
+          setModal(null);
+          setTimeout(() => setSelectedCampaignId(null), 500);
         }}
       >
         <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>
@@ -59,4 +56,4 @@ export const CampaignModals = observer(function CampaignModals() {
       </ConfirmModal>
     </>
   );
-});
+}

@@ -11,17 +11,17 @@ import {
   Theme,
   useMediaQuery,
 } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { useCreateCampaign } from '../../hooks/data/campaigns/useCreateCampaign';
-import { useUpdateCampaign } from '../../hooks/data/campaigns/useUpdateCampaign';
-import { CampaignFactory } from '../../lib/factories/CampaignFactory';
-import { CampaignEntity } from '../../lib/types';
-import { store } from '../../store';
-import { ValidateUtils } from '../../utils/ValidateUtils';
+import { useCreateCampaign } from '@/hooks/data/campaigns/useCreateCampaign';
+import { useUpdateCampaign } from '@/hooks/data/campaigns/useUpdateCampaign';
+import { CampaignFactory } from '@/lib/factories/CampaignFactory';
+import { CampaignEntity } from '@/lib/types';
+import { useCampaignStore } from '@/store/campaign';
+import { ValidateUtils } from '@/utils/ValidateUtils';
+
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface CreateUpdateCampaignModalProps {
@@ -30,13 +30,11 @@ interface CreateUpdateCampaignModalProps {
   campaign: CampaignEntity | undefined;
 }
 
-export const CreateUpdateCampaignModal = observer(function CreateUpdateCampaignModal({
-  open,
-  onClose,
-  campaign,
-}: CreateUpdateCampaignModalProps) {
+export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpdateCampaignModalProps) {
   const createCampaign = useCreateCampaign();
   const updateCampaign = useUpdateCampaign();
+
+  const { modal } = useCampaignStore();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -63,7 +61,7 @@ export const CreateUpdateCampaignModal = observer(function CreateUpdateCampaignM
   // Reset the form when the campaign changes
   useEffect(() => {
     reset(campaign || new CampaignFactory());
-  }, [campaign, reset, store.campaigns.modal]);
+  }, [campaign, reset, modal]);
 
   /**
    * Handle the form submission
@@ -110,4 +108,4 @@ export const CreateUpdateCampaignModal = observer(function CreateUpdateCampaignM
       </FormProvider>
     </Dialog>
   );
-});
+}

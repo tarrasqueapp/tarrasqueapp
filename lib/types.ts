@@ -4,12 +4,12 @@ export enum SetupStep {
   COMPLETED = 3,
 }
 
-export class SetupEntity {
+export interface SetupEntity {
   step: SetupStep;
   completed: boolean;
 }
 
-export class UserEntity {
+export interface UserEntity {
   id: string;
   name: string;
   display_name: string;
@@ -33,7 +33,7 @@ export enum ActionTokenType {
   INVITE = 'INVITE',
 }
 
-export class ActionTokenEntity {
+export interface ActionTokenEntity {
   id: string;
   type: ActionTokenType;
   email: string;
@@ -50,23 +50,22 @@ export class ActionTokenEntity {
   campaignId: string | null;
 }
 
-export class CampaignEntity {
+export interface CampaignEntity {
   id: string;
   name: string;
   // DateTime
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
   // Memberships
-  memberships: MembershipEntity[];
+  // memberships: MembershipEntity[];
   // Created by
-  createdBy: UserEntity;
-  createdById: string;
+  // createdBy: UserEntity;
+  user_id: string;
   // Invites
-  invites: ActionTokenEntity[];
+  // invites: ActionTokenEntity[];
   // Maps
-  maps: MapEntity[];
+  // maps: MapEntity[];
   // Plugins
-  plugins: PluginEntity[];
+  // plugins: PluginEntity[];
 }
 
 export enum Role {
@@ -74,7 +73,7 @@ export enum Role {
   PLAYER = 'PLAYER',
 }
 
-export class MembershipEntity {
+export interface MembershipEntity {
   role: Role;
   color: string;
   // User
@@ -87,7 +86,7 @@ export class MembershipEntity {
   updatedAt: string;
 }
 
-export class MapEntity {
+export interface MapEntity {
   id: string;
   name: string;
   // DateTime
@@ -95,7 +94,7 @@ export class MapEntity {
   updatedAt: string;
   // Media
   media: MediaEntity[];
-  mediaIds: string[];
+  media_id: string;
   selectedMediaId: string;
   // Campaign
   campaign: CampaignEntity;
@@ -107,7 +106,7 @@ export class MapEntity {
   tokens?: TokenEntity[];
 }
 
-export class CharacterEntity {
+export interface CharacterEntity {
   id: string;
   name: string;
   // DateTime
@@ -128,17 +127,17 @@ export class CharacterEntity {
   campaignId: string;
 }
 
-export class DimensionsEntity {
+export interface DimensionsEntity {
   width: number;
   height: number;
 }
 
-export class PositionEntity {
+export interface PositionEntity {
   x: number;
   y: number;
 }
 
-export class PingLocationEntity {
+export interface PingLocationEntity {
   id?: string;
   position: PositionEntity;
   color: string;
@@ -146,7 +145,7 @@ export class PingLocationEntity {
   userId: string;
 }
 
-export class FileEntity {
+export interface FileEntity {
   id: string;
   url: string;
   type: string;
@@ -156,7 +155,7 @@ export class FileEntity {
   height?: number;
 }
 
-export class MediaEntity {
+export interface MediaEntity {
   id: string;
   url: string;
   width: number | null;
@@ -166,7 +165,7 @@ export class MediaEntity {
   user_id: string;
 }
 
-export class TokenEntity {
+export interface TokenEntity {
   id: string;
   width: number;
   height: number;
@@ -190,18 +189,13 @@ export enum NotificationTypeEnum {
   INVITE = 'INVITE',
 }
 
-export class NotificationEntity {
+export interface NotificationEntity {
   userId: string;
   type: NotificationTypeEnum;
   data: { id: string };
 }
 
-export class InviteNotificationEntity extends NotificationEntity {
-  type = NotificationTypeEnum.INVITE;
-  declare data: ActionTokenEntity;
-}
-
-export class PluginEntity {
+export interface PluginEntity {
   id: string;
   manifestUrl: string;
   // DateTime
@@ -212,13 +206,13 @@ export class PluginEntity {
   campaignId: string;
 }
 
-export class SubmittedPluginEntity {
+export interface SubmittedPluginEntity {
   id: string;
   name: string;
   manifest_url: string;
 }
 
-export class ManifestEntity {
+export interface ManifestEntity {
   id: string;
   name: string;
   description: string;

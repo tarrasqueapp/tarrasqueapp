@@ -4,13 +4,15 @@ import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
 import useLocalStorage from 'use-local-storage';
 
-import { useGetUser } from '../../hooks/data/auth/useGetUser';
-import { useGetMap } from '../../hooks/data/maps/useGetMap';
-import { useWindowSize } from '../../hooks/useWindowSize';
-import { SocketEvent } from '../../lib/events';
-import { socket } from '../../lib/socket';
-import { tarrasque } from '../../lib/tarrasque';
-import { store } from '../../store';
+import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useGetMap } from '@/hooks/data/maps/useGetMap';
+import { useWindowSize } from '@/hooks/useWindowSize';
+import { SocketEvent } from '@/lib/events';
+import { socket } from '@/lib/socket';
+import { tarrasque } from '@/lib/tarrasque';
+import { useMapStore } from '@/store/map';
+import { usePixiStore } from '@/store/pixi';
+
 import { CameraBase } from './CameraBase';
 
 interface CameraProps {
@@ -23,6 +25,9 @@ interface CameraProps {
 export function Camera({ mapId, width, height, children }: CameraProps) {
   const { data: map } = useGetMap(mapId);
   const { data: user } = useGetUser();
+
+  const { viewport, setViewport } = usePixiStore();
+  const { setContextMenuVisible, setContextMenuAnchorPoint } = useMapStore();
 
   const app = useApp();
   const windowSize = useWindowSize();
@@ -38,9 +43,9 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
 
   // Center the viewport on the map when it is first rendered
   useEffect(() => {
-    if (mounted) return;
+    if (mounted || !viewport) return;
 
-    store.pixi.viewport.animate({
+    viewport.animate({
       position: {
         x: position.x,
         y: position.y,
@@ -52,7 +57,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     setMounted(true);
   }, [position]);
 
-  const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaignId);
+  const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaign_id);
 
   /**
    * Handle the load event
@@ -60,7 +65,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    */
   function handleLoad(viewport: Viewport) {
     console.debug('Map loaded.');
-    store.pixi.setViewport(viewport);
+    setViewport(viewport);
   }
 
   /**
@@ -68,7 +73,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    */
   function handleBeforeSingleClick() {
     console.debug('Before Single Click.');
-    store.map.setContextMenuVisible(false);
+    setContextMenuVisible(false);
   }
 
   /**
@@ -83,10 +88,12 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * @param event - The interaction event
    */
   function handleDoubleClick(event: PIXI.FederatedPointerEvent) {
+    if (!viewport) return;
+
     console.debug('Double Click.', event.global);
 
     // Get the position of the double click event relative to the map
-    const position = store.pixi.viewport.toWorld(event.global.x, event.global.y);
+    const position = viewport.toWorld(event.global.x, event.global.y);
 
     socket.emit(SocketEvent.PING_LOCATION, {
       position,
@@ -109,10 +116,10 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    */
   function handleRightClick(event: PIXI.FederatedPointerEvent) {
     console.debug('Right Click.', event.global);
-    store.map.setContextMenuVisible(false);
+    setContextMenuVisible(false);
     // Update the app state with the global coordinates of the right click event
-    store.map.setContextMenuAnchorPoint(event.global.x, event.global.y);
-    store.map.setContextMenuVisible(true);
+    setContextMenuAnchorPoint(event.global.x, event.global.y);
+    setContextMenuVisible(true);
   }
 
   /**

@@ -1,14 +1,14 @@
 import { SelectAll, TouchApp } from '@mui/icons-material';
 import { ButtonGroup, Fade, Paper, Popper, Tooltip } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { observer } from 'mobx-react-lite';
 import { useCallback } from 'react';
 
-import { store } from '../../../store';
-import { SelectTool, Tool } from '../../../store/toolbar';
+import { SelectTool, Tool, useToolbarStore } from '@/store/toolbar';
+
 import { ToolButton } from './ToolButton';
 
-export const SelectToolItem = observer(function SelectToolItem() {
+export function SelectToolItem() {
+  const { tool, setTool, selectTool, setSelectTool } = useToolbarStore();
   const popupState = usePopupState({ variant: 'popper', popupId: 'selectTool' });
 
   const SingleSelectTool = (props: any) => {
@@ -18,8 +18,8 @@ export const SelectToolItem = observer(function SelectToolItem() {
           value={SelectTool.Single}
           size="small"
           onClick={() => {
-            store.toolbar.setTool(Tool.Select);
-            store.toolbar.setSelectTool(SelectTool.Single);
+            setTool(Tool.Select);
+            setSelectTool(SelectTool.Single);
             popupState.close();
           }}
           {...props}
@@ -37,8 +37,8 @@ export const SelectToolItem = observer(function SelectToolItem() {
           value={SelectTool.Multi}
           size="small"
           onClick={() => {
-            store.toolbar.setTool(Tool.Select);
-            store.toolbar.setSelectTool(SelectTool.Multi);
+            setTool(Tool.Select);
+            setSelectTool(SelectTool.Multi);
             popupState.close();
           }}
           {...props}
@@ -50,7 +50,7 @@ export const SelectToolItem = observer(function SelectToolItem() {
   };
 
   const ActiveTool = useCallback((props: any) => {
-    switch (store.toolbar.selectTool) {
+    switch (selectTool) {
       case SelectTool.Single:
         return <SingleSelectTool {...props} />;
       case SelectTool.Multi:
@@ -60,7 +60,7 @@ export const SelectToolItem = observer(function SelectToolItem() {
 
   return (
     <>
-      <ActiveTool selected={store.toolbar.tool === Tool.Select} {...bindHover(popupState)} />
+      <ActiveTool selected={tool === Tool.Select} {...bindHover(popupState)} />
 
       {popupState.isOpen && (
         <Popper {...bindPopper(popupState)} placement="right" transition>
@@ -68,12 +68,8 @@ export const SelectToolItem = observer(function SelectToolItem() {
             <Fade {...TransitionProps} timeout={350}>
               <Paper sx={{ ml: 0.5 }}>
                 <ButtonGroup size="small">
-                  <SingleSelectTool
-                    selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Single}
-                  />
-                  <MultiSelectTool
-                    selected={store.toolbar.tool === Tool.Select && store.toolbar.selectTool === SelectTool.Multi}
-                  />
+                  <SingleSelectTool selected={tool === Tool.Select && selectTool === SelectTool.Single} />
+                  <MultiSelectTool selected={tool === Tool.Select && selectTool === SelectTool.Multi} />
                 </ButtonGroup>
               </Paper>
             </Fade>
@@ -82,4 +78,4 @@ export const SelectToolItem = observer(function SelectToolItem() {
       )}
     </>
   );
-});
+}

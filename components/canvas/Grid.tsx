@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import React, { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { HotkeysUtils } from '../../utils/HotkeyUtils';
+import { HotkeysUtils } from '@/utils/HotkeyUtils';
 
 interface GridProps {
   width: number;

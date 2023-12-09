@@ -3,11 +3,12 @@ import { HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
-import { Center } from '../../../components/common/Center';
-import { Logo } from '../../../components/common/Logo';
-import { NextLink } from '../../../components/common/NextLink';
-import { AppNavigation } from '../../../lib/navigation';
-import { SSRUtils } from '../../../utils/SSRUtils';
+import { Center } from '@/components/common/Center';
+import { Logo } from '@/components/common/Logo';
+import { NextLink } from '@/components/common/NextLink';
+import { AppNavigation } from '@/lib/navigation';
+import { SSRUtils } from '@/utils/SSRUtils';
+
 import { ResetPassword } from './ResetPassword';
 
 export default async function ResetPasswordPage() {

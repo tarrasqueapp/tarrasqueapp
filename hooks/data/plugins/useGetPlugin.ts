@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { api } from '../../../lib/api';
-import { ManifestEntity } from '../../../lib/types';
+import { api } from '@/lib/api';
+import { ManifestEntity } from '@/lib/types';
 
 /**
  * Send a request to get all available plugins

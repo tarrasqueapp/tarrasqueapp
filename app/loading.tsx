@@ -1,6 +1,6 @@
 import { CircularProgress } from '@mui/material';
 
-import { Center } from '../components/common/Center';
+import { Center } from '@/components/common/Center';
 
 export default function Loading() {
   return (

@@ -1,7 +1,8 @@
 import { Add, Info, Remove } from '@mui/icons-material';
 import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
+import Image from 'next/image';
 
-import { useGetPlugin } from '../../../hooks/data/plugins/useGetPlugin';
+import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
 
 interface Props {
   manifestUrl: string;
@@ -16,7 +17,13 @@ export function Plugin({ manifestUrl, installed, onInstall, onUninstall }: Props
   return (
     <Card variant="outlined">
       <CardHeader
-        avatar={plugin ? <img src={plugin?.icon} alt="" width={30} height={30} /> : <Skeleton width={30} height={30} />}
+        avatar={
+          plugin ? (
+            <Image src={plugin.icon} alt={plugin.name} width={30} height={30} />
+          ) : (
+            <Skeleton width={30} height={30} />
+          )
+        }
         title={plugin?.name || <Skeleton width={150} height={15} />}
         subheader={plugin?.author || <Skeleton width={100} height={15} sx={{ mt: 0.5 }} />}
         action={

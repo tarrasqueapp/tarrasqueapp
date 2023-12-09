@@ -16,12 +16,13 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { useGetCampaignPlugins } from '../../../hooks/data/campaigns/plugins/useGetCampaignPlugins';
-import { useInstallPlugin } from '../../../hooks/data/campaigns/plugins/useInstallPlugin';
-import { useUninstallPlugin } from '../../../hooks/data/campaigns/plugins/useUninstallPlugin';
-import { useGetSubmittedPlugins } from '../../../hooks/data/plugins/useGetSubmittedPlugins';
-import { CampaignEntity, PluginEntity, SubmittedPluginEntity } from '../../../lib/types';
-import { ControlledTextField } from '../../form/ControlledTextField';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
+import { useInstallPlugin } from '@/hooks/data/campaigns/plugins/useInstallPlugin';
+import { useUninstallPlugin } from '@/hooks/data/campaigns/plugins/useUninstallPlugin';
+import { useGetSubmittedPlugins } from '@/hooks/data/plugins/useGetSubmittedPlugins';
+import { CampaignEntity, PluginEntity, SubmittedPluginEntity } from '@/lib/types';
+
 import { Plugin } from './Plugin';
 
 interface PluginsModalProps {
@@ -123,7 +124,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
               ? campaignPlugins.map((plugin) => (
                   <Plugin
                     key={plugin.id}
-                    manifestUrl={plugin.manifestUrl}
+                    manifestUrl={plugin.manifest_url}
                     installed
                     onUninstall={() => handleUninstall(plugin)}
                   />
@@ -132,7 +133,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
 
             {submittedPlugins
               ? submittedPlugins
-                  .filter((plugin) => !campaignPlugins?.find((p) => p.manifestUrl === plugin.manifest_url))
+                  .filter((plugin) => !campaignPlugins?.find((p) => p.manifest_url === plugin.manifest_url))
                   .map((plugin) => (
                     <Plugin key={plugin.id} manifestUrl={plugin.manifest_url} onInstall={() => handleInstall(plugin)} />
                   ))
