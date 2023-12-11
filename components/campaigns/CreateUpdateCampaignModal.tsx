@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Campaign, createCampaign, updateCampaign } from '@/actions/campaigns';
@@ -57,14 +58,20 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
    * @param values - The campaign values
    */
   async function handleSubmitForm(values: Schema) {
-    if (campaign) {
-      await updateCampaign({ id: campaign.id, name: values.name });
-      onClose();
-      return;
-    }
+    try {
+      if (campaign) {
+        await updateCampaign({ id: campaign.id, name: values.name });
+        onClose();
+        return;
+      }
 
-    await createCampaign(values);
-    onClose();
+      await createCampaign(values);
+      onClose();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
   }
 
   return (

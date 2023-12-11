@@ -18,6 +18,11 @@ export async function getProfile() {
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
+  const user = await getUser();
+  if (!user) {
+    throw new Error('User not found');
+  }
+
   // Get the user
   const { data, error } = await supabase
     .from('profiles')
@@ -29,6 +34,7 @@ export async function getProfile() {
       )
     `,
     )
+    .eq('id', user.id)
     .single();
 
   if (error) {

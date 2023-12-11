@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export class ValidateUtils {
-  static fields = {
+export const validate = {
+  fields: {
     uppyFile: z.object({
       name: z.string().min(1),
       type: z.string().min(1).optional(),
@@ -11,6 +11,7 @@ export class ValidateUtils {
       meta: z.object({ objectName: z.string().min(1).optional() }).optional(),
       uploadURL: z.string().min(1),
     }),
+
     media: z.object({
       id: z.string().min(1),
       url: z.string().min(1),
@@ -20,5 +21,15 @@ export class ValidateUtils {
       created_at: z.string().min(1),
       user_id: z.string().min(1),
     }),
-  };
-}
+
+    manifestUrl: z
+      .string()
+      .url()
+      .min(1)
+      .regex(/^https?:\/\/.+\/manifest\.json$/, 'Must be a manifest.json file'),
+
+    campaignMemberRole: z.enum(['GAME_MASTER', 'PLAYER']),
+
+    setupStep: z.enum(['CREATED_DATABASE', 'CREATED_USER', 'COMPLETED']),
+  },
+};

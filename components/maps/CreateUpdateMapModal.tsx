@@ -23,9 +23,9 @@ import { Map, createMap, updateMap } from '@/actions/maps';
 import { Media, createMedia } from '@/actions/media';
 import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
+import { validate } from '@/lib/validate';
 import { useMapStore } from '@/store/map';
 import { MediaUtils } from '@/utils/MediaUtils';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledMediaUploader } from '../form/Uploader/ControlledMediaUploader';
@@ -49,7 +49,7 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
     name: z.string().min(1),
     campaign_id: z.string().min(1),
     media: z
-      .union([ValidateUtils.fields.uppyFile, ValidateUtils.fields.media])
+      .union([validate.fields.uppyFile, validate.fields.media])
       .nullable()
       .refine(
         (value) => {
@@ -87,55 +87,61 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
   async function handleSubmitForm(values: Schema) {
     if (!campaign) return;
 
-    // Create the media
-    if (values.media && MediaUtils.isUploadedFile(values.media)) {
-      // Get the normalized file from Uppy
-      const file = await MediaUtils.convertUppyToFile(values.media);
+    try {
+      // Create the media
+      if (values.media && MediaUtils.isUploadedFile(values.media)) {
+        // Get the normalized file from Uppy
+        const file = await MediaUtils.convertUppyToFile(values.media);
 
-      // Get the uploaded storage object's ID to use as the media ID foreign key
-      const objectId = await getObjectId(file.url);
-      if (!objectId) {
-        toast.error('Failed to upload media');
+        // Get the uploaded storage object's ID to use as the media ID foreign key
+        const objectId = await getObjectId(file.url);
+        if (!objectId) {
+          toast.error('Failed to upload media');
+          return;
+        }
+
+        // Create the media entity
+        const media = await createMedia({
+          id: objectId,
+          url: file.url,
+          width: file.width,
+          height: file.height,
+          size: file.size,
+        });
+
+        // Update the media with the final media entity
+        values.media = media;
+
+        // Delete the previous media if it exists
+        if (map?.media) {
+          deleteStorageObject(map.media.url);
+        }
+      }
+
+      // Update map
+      if (map) {
+        await updateMap({
+          id: map.id,
+          name: values.name,
+          campaign_id: values.campaign_id,
+          media_id: (values.media as Media)?.id,
+        });
+        onClose();
         return;
       }
 
-      // Create the media entity
-      const media = await createMedia({
-        id: objectId,
-        url: file.url,
-        width: file.width,
-        height: file.height,
-        size: file.size,
-      });
-
-      // Update the media with the final media entity
-      values.media = media;
-
-      // Delete the previous media if it exists
-      if (map?.media) {
-        deleteStorageObject(map.media.url);
-      }
-    }
-
-    // Update map
-    if (map) {
-      await updateMap({
-        id: map.id,
+      // Create map
+      await createMap({
         name: values.name,
-        campaign_id: values.campaign_id,
+        campaign_id: campaign.id,
         media_id: (values.media as Media)?.id,
       });
       onClose();
-      return;
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
-
-    // Create map
-    await createMap({
-      name: values.name,
-      campaign_id: campaign.id,
-      media_id: (values.media as Media)?.id,
-    });
-    onClose();
   }
 
   return (

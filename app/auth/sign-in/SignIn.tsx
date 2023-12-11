@@ -16,7 +16,7 @@ import { ControlledTextField } from '@/components/form/ControlledTextField';
 export function SignIn() {
   const searchParams = useSearchParams();
 
-  const confirmEmail = searchParams?.get('confirm-email');
+  const confirmEmail = searchParams.get('confirm-email');
 
   // Setup form validation schema
   const schema = z.object({
@@ -39,8 +39,10 @@ export function SignIn() {
   async function handleSubmitForm(values: Schema) {
     try {
       await signIn(values);
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   }
 

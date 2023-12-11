@@ -12,7 +12,7 @@ import { createServerClient } from '@/utils/supabase/server';
  */
 export async function getObjectId(url: string) {
   // Validate the URL
-  const schema = z.string();
+  const schema = z.string().min(1);
   schema.parse(url);
 
   // Connect to Supabase
@@ -40,7 +40,7 @@ export async function getObjectId(url: string) {
  */
 export async function deleteStorageObject(url: string) {
   // Validate the URL
-  const schema = z.string();
+  const schema = z.string().min(1);
   schema.parse(url);
 
   // Connect to Supabase

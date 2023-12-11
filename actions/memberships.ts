@@ -3,11 +3,12 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
+import { validate } from '@/lib/validate';
 import { createServerClient } from '@/utils/supabase/server';
-import { Database } from '@/utils/supabase/types.gen';
+import { Enums } from '@/utils/supabase/types.gen';
 
 export type Membership = Awaited<ReturnType<typeof getMemberships>>[number];
-export type CampaignMemberRole = Database['public']['Enums']['campaign_member_role'];
+export type CampaignMemberRole = Enums<'campaign_member_role'>;
 
 /**
  * Get campaign's memberships
@@ -58,7 +59,7 @@ export async function updateMembership({ id, color, role }: { id: string; color?
   const schema = z.object({
     id: z.string().uuid(),
     color: z.string().optional(),
-    role: z.enum(['GAME_MASTER', 'PLAYER']).optional(),
+    role: validate.fields.campaignMemberRole.optional(),
   });
   schema.parse({ id, color, role });
 

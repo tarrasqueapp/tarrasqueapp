@@ -17,12 +17,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Campaign } from '@/actions/campaigns';
+import { installPlugin, uninstallPlugin } from '@/actions/plugins';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
-import { useInstallPlugin } from '@/hooks/data/campaigns/plugins/useInstallPlugin';
-import { useUninstallPlugin } from '@/hooks/data/campaigns/plugins/useUninstallPlugin';
 import { useGetSubmittedPlugins } from '@/hooks/data/plugins/useGetSubmittedPlugins';
 import { PluginEntity, SubmittedPluginEntity } from '@/lib/types';
+import { validate } from '@/lib/validate';
 
 import { Plugin } from './Plugin';
 
@@ -35,18 +35,12 @@ interface PluginsModalProps {
 export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
   const { data: submittedPlugins } = useGetSubmittedPlugins();
   const { data: campaignPlugins } = useGetCampaignPlugins(campaign?.id || '');
-  const installPlugin = useInstallPlugin();
-  const uninstallPlugin = useUninstallPlugin();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
   const schema = z.object({
-    manifestUrl: z
-      .string()
-      .url()
-      .min(1)
-      .regex(/^https?:\/\/.+\/manifest\.json$/, 'Must be a manifest.json file'),
+    manifest_url: validate.fields.manifestUrl,
   });
   type Schema = z.infer<typeof schema>;
 
@@ -54,7 +48,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
   const methods = useForm<Schema>({
     mode: 'onChange',
     resolver: zodResolver(schema),
-    defaultValues: { manifestUrl: '' },
+    defaultValues: { manifest_url: '' },
   });
   const {
     handleSubmit,
@@ -64,7 +58,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
 
   // Reset the form when the map changes
   useEffect(() => {
-    reset({ manifestUrl: '' });
+    reset({ manifest_url: '' });
   }, [campaign, reset, open]);
 
   /**
@@ -75,14 +69,14 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
     if (!campaign) return;
 
     // Update the plugin
-    const plugin = await installPlugin.mutateAsync({
-      campaignId: campaign.id,
-      manifestUrl: values.manifestUrl,
+    const plugin = await installPlugin({
+      campaign_id: campaign.id,
+      manifest_url: values.manifest_url,
     });
 
     console.log(plugin);
 
-    reset({ manifestUrl: '' });
+    reset({ manifest_url: '' });
   }
 
   /**
@@ -92,9 +86,9 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
   function handleInstall(plugin: SubmittedPluginEntity) {
     if (!campaign) return;
 
-    installPlugin.mutateAsync({
-      campaignId: campaign.id,
-      manifestUrl: plugin.manifest_url,
+    installPlugin({
+      campaign_id: campaign.id,
+      manifest_url: plugin.manifest_url,
     });
   }
 
@@ -103,7 +97,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
    * @param plugin - The plugin to uninstall
    */
   function handleUninstall(plugin: PluginEntity) {
-    uninstallPlugin.mutateAsync(plugin);
+    uninstallPlugin(plugin.id);
   }
 
   return (
@@ -147,7 +141,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
               style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
             >
               <ControlledTextField
-                name="manifestUrl"
+                name="manifest_url"
                 label="Manifest URL"
                 fullWidth
                 InputProps={{

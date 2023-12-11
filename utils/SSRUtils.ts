@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 
 import { getUser } from '@/actions/auth';
 import { getUserCampaigns } from '@/actions/campaigns';
-import { getInvites } from '@/actions/invites';
+import { getInvite, getInvites } from '@/actions/invites';
 import { getMap, getMaps } from '@/actions/maps';
 import { getMemberships } from '@/actions/memberships';
 import { getProfile } from '@/actions/profiles';
@@ -124,6 +124,20 @@ export class SSRUtils {
     });
     type Data = Awaited<ReturnType<typeof getInvites>>;
     return this.queryClient.getQueryData<Data>(['campaigns', campaignId, 'invites']) || [];
+  }
+
+  /**
+   * Prefetch an invite
+   * @param inviteId - The ID of the invite to prefetch
+   * @returns The invite
+   */
+  async prefetchInvite(inviteId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['invites', inviteId],
+      queryFn: () => getInvite(inviteId),
+    });
+    type Data = Awaited<ReturnType<typeof getInvite>>;
+    return this.queryClient.getQueryData<Data>(['invites', inviteId]) || null;
   }
 
   /**

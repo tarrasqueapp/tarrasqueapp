@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { api } from '@/lib/api';
 import { ManifestEntity } from '@/lib/types';
 
 /**
@@ -8,7 +7,8 @@ import { ManifestEntity } from '@/lib/types';
  * @returns The plugins
  */
 export async function getPlugin(manifestUrl: string) {
-  const { data } = await api.get<ManifestEntity>(manifestUrl);
+  const response = await fetch(manifestUrl);
+  const data = (await response.json()) as ManifestEntity;
   return data;
 }
 

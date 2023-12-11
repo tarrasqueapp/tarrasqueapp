@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Campaign } from '@/actions/campaigns';
@@ -83,7 +84,9 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
     try {
       await createInvite({ campaign_id: campaign.id, email: values.email });
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
     reset({ email: '' });
   }

@@ -4,12 +4,12 @@ import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { createServerClient } from '@/utils/supabase/server';
-import { Database } from '@/utils/supabase/types.gen';
+import { TablesInsert } from '@/utils/supabase/types.gen';
 
 import { getUser } from './auth';
 
 export type Media = Awaited<ReturnType<typeof createMedia>>;
-type CreateMediaDto = Omit<Database['public']['Tables']['media']['Insert'], 'user_id'>;
+type CreateMediaDto = Omit<TablesInsert<'media'>, 'user_id'>;
 
 /**
  * Create a media item

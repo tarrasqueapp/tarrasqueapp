@@ -4,8 +4,8 @@ create policy "Profiles can be viewed by anyone"
 on "public"."profiles"
 as permissive
 for select
-to authenticated
-using ((auth.uid() = id));
+to public
+using (true);
 
 create policy "Profiles can be updated by their owners"
 on "public"."profiles"

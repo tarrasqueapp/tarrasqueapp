@@ -28,9 +28,9 @@ import { updateProfile } from '@/actions/profiles';
 import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { validate } from '@/lib/validate';
 import { useDashboardStore } from '@/store/dashboard';
 import { MediaUtils } from '@/utils/MediaUtils';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 import { ControlledPasswordField } from '../form/ControlledPasswordField';
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -56,7 +56,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       display_name: z.string().min(1),
       email: z.string().email().min(1),
       avatar: z
-        .union([ValidateUtils.fields.uppyFile, ValidateUtils.fields.media])
+        .union([validate.fields.uppyFile, validate.fields.media])
         .nullable()
         .refine(
           (value) => {
@@ -112,52 +112,58 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   async function handleSubmitForm(values: Schema) {
     if (!user || !profile) return;
 
-    // Create the avatar
-    if (values.avatar && MediaUtils.isUploadedFile(values.avatar)) {
-      // Get the normalized file from Uppy
-      const file = await MediaUtils.convertUppyToFile(values.avatar);
+    try {
+      // Create the avatar
+      if (values.avatar && MediaUtils.isUploadedFile(values.avatar)) {
+        // Get the normalized file from Uppy
+        const file = await MediaUtils.convertUppyToFile(values.avatar);
 
-      // Get the uploaded storage object's ID to use as the media ID foreign key
-      const objectId = await getObjectId(file.url);
-      if (!objectId) {
-        toast.error('Failed to upload avatar');
-        return;
+        // Get the uploaded storage object's ID to use as the media ID foreign key
+        const objectId = await getObjectId(file.url);
+        if (!objectId) {
+          toast.error('Failed to upload avatar');
+          return;
+        }
+
+        // Create the media entity
+        const media = await createMedia({
+          id: objectId,
+          url: file.url,
+          width: file.width,
+          height: file.height,
+          size: file.size,
+        });
+
+        // Update the avatar with the final media entity
+        values.avatar = media;
+
+        // Delete the previous avatar if it exists
+        if (profile.avatar) {
+          deleteStorageObject(profile.avatar.url);
+        }
       }
 
-      // Create the media entity
-      const media = await createMedia({
-        id: objectId,
-        url: file.url,
-        width: file.width,
-        height: file.height,
-        size: file.size,
+      if (values.email !== user.email) {
+        await updateUser({ email: values.email });
+        toast.success('Email updated. Please check your inbox for a confirmation email.');
+      }
+
+      if (values.password) {
+        await updateUser({ password: values.password });
+      }
+
+      await updateProfile({
+        name: values.name,
+        display_name: values.display_name,
+        avatar_id: (values.avatar as Media)?.id || null,
       });
 
-      // Update the avatar with the final media entity
-      values.avatar = media;
-
-      // Delete the previous avatar if it exists
-      if (profile.avatar) {
-        deleteStorageObject(profile.avatar.url);
+      onClose();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
       }
     }
-
-    if (values.email !== user.email) {
-      await updateUser({ email: values.email });
-      toast.success('Email updated. Please check your inbox for a confirmation email.');
-    }
-
-    if (values.password) {
-      await updateUser({ password: values.password });
-    }
-
-    await updateProfile({
-      name: values.name,
-      display_name: values.display_name,
-      avatar_id: (values.avatar as Media)?.id || null,
-    });
-
-    onClose();
   }
 
   return (

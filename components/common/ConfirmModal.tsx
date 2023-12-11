@@ -11,6 +11,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export interface ConfirmModalProps {
   open: boolean;
@@ -29,7 +30,13 @@ export function ConfirmModal({ open, onConfirm, onClose, title, children }: Conf
    */
   async function handleConfirm() {
     setLoading(true);
-    await onConfirm();
+    try {
+      await onConfirm();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
     onClose();
     setLoading(false);
   }

@@ -2,6 +2,7 @@
 
 import { UserAttributes } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
@@ -60,11 +61,27 @@ export async function getSession() {
  * @param name - The user's name
  * @param email - The user's email
  * @param password - The user's password
+ * @param token - The invite token
  */
-export async function signUp({ name, email, password }: { name: string; email: string; password: string }) {
+export async function signUp({
+  name,
+  email,
+  password,
+  token,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  token?: string;
+}) {
   // Validate the user details
-  const schema = z.object({ name: z.string().min(1), email: z.string().email(), password: z.string().min(8) });
-  schema.parse({ name, email, password });
+  const schema = z.object({
+    name: z.string().min(1),
+    email: z.string().email(),
+    password: z.string().min(8),
+    token: z.string().uuid().optional(),
+  });
+  schema.parse({ name, email, password, token });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -77,7 +94,6 @@ export async function signUp({ name, email, password }: { name: string; email: s
     password,
     options: {
       data: { name },
-      redirectTo: `${config.HOST}/auth/callback?next=/dashboard`,
     },
   });
 
@@ -85,9 +101,38 @@ export async function signUp({ name, email, password }: { name: string; email: s
     throw error;
   }
 
+  const searchParams = new URLSearchParams({
+    token_hash: data.properties.hashed_token,
+    next: '/dashboard',
+  });
+  const link = `${config.HOST}/auth/sign-up/callback?${searchParams}`;
+
+  // Associate invites for this email address with the new user
+  supabase.from('invites').update({ user_id: data.user.id }).eq('email', email);
+
+  // If the user signed up with an invite token, add them to the campaign
+  if (token) {
+    // Get the invite
+    const { data: invite } = await supabase.from('invites').select().eq('id', token).single();
+
+    if (invite) {
+      // Delete the invite
+      supabase.from('invites').delete().eq('id', token);
+
+      // Create the user's campaign membership
+      const uniqueUserColor = uniqolor(data.user.id, { format: 'hex' });
+      supabase.from('memberships').insert({
+        role: 'PLAYER',
+        color: uniqueUserColor.color,
+        user_id: data.user.id,
+        campaign_id: invite.campaign_id,
+      });
+    }
+  }
+
   // Send the welcome email with the verification link
   const firstName = name.split(' ')[0]!;
-  await sendWelcomeEmail({ firstName, to: email, verifyEmailUrl: data.properties.action_link });
+  await sendWelcomeEmail({ firstName, to: email, verifyEmailUrl: link });
 }
 
 /**
@@ -160,19 +205,22 @@ export async function updateUser({ email, password }: UserAttributes) {
       type: 'email_change_new',
       email: user.email,
       newEmail: email,
-      options: {
-        redirectTo: `${config.HOST}/auth/callback?next=/dashboard`,
-      },
     });
 
     if (error) {
       throw error;
     }
 
+    const searchParams = new URLSearchParams({
+      token_hash: data.properties.hashed_token,
+      next: '/dashboard',
+    });
+    const link = `${config.HOST}/auth/change-email/callback?${searchParams}`;
+
     // Send an email with the verification link
     const profile = await getProfile();
     const firstName = profile!.name.split(' ')[0]!;
-    await sendEmailVerificationEmail({ firstName, to: email, verifyEmailUrl: data.properties.action_link });
+    await sendEmailVerificationEmail({ firstName, to: email, verifyEmailUrl: link });
   }
 
   // Update the user's password if it has been changed
@@ -198,20 +246,20 @@ export async function forgotPassword(email: string) {
   const cookieStore = cookies();
   const supabase = createAdminServerClient(cookieStore);
 
-  const { data, error } = await supabase.auth.admin.generateLink({
-    type: 'recovery',
-    email,
-    options: {
-      redirectTo: `${config.HOST}/auth/callback?next=/auth/reset-password`,
-    },
-  });
+  const { data, error } = await supabase.auth.admin.generateLink({ type: 'recovery', email });
 
   if (error) {
     throw error;
   }
 
+  const searchParams = new URLSearchParams({
+    token_hash: data.properties.hashed_token,
+    next: '/auth/reset-password',
+  });
+  const link = `${config.HOST}/auth/forgot-password/callback?${searchParams}`;
+
   // Send the password reset email with the verification link
-  const profile = await getProfile();
+  const { data: profile } = await supabase.from('profiles').select('name').eq('email', email).single();
   const firstName = profile!.name.split(' ')[0]!;
-  await sendPasswordResetEmail({ firstName, to: email, resetPasswordUrl: data.properties.action_link });
+  await sendPasswordResetEmail({ firstName, to: email, resetPasswordUrl: link });
 }

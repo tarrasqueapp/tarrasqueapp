@@ -2,6 +2,7 @@ create table "public"."invites" (
     "id" uuid not null default gen_random_uuid(),
     "email" character varying not null,
     "campaign_id" uuid not null,
+    "user_id" uuid,
     "created_at" timestamp with time zone not null default now()
 );
 
@@ -15,6 +16,10 @@ alter table "public"."invites" add constraint "invites_pkey" PRIMARY KEY using i
 alter table "public"."invites" add constraint "invites_campaign_id_fkey" FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
 
 alter table "public"."invites" validate constraint "invites_campaign_id_fkey";
+
+alter table "public"."invites" add constraint "invites_user_id_fkey" FOREIGN KEY (user_id) REFERENCES profiles(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
+
+alter table "public"."invites" validate constraint "invites_user_id_fkey";
 
 create policy "Invites can be viewed by anyone"
 on "public"."invites"

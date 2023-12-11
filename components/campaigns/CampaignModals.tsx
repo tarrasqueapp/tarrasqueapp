@@ -1,6 +1,7 @@
 'use client';
 
 import { Alert } from '@mui/material';
+import { toast } from 'react-hot-toast';
 
 import { deleteCampaign } from '@/actions/campaigns';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
@@ -42,7 +43,13 @@ export function CampaignModals() {
         open={modal === CampaignModal.Delete}
         onConfirm={async () => {
           if (!selectedCampaign) return;
-          await deleteCampaign(selectedCampaign.id);
+          try {
+            await deleteCampaign(selectedCampaign.id);
+          } catch (error) {
+            if (error instanceof Error) {
+              toast.error(error.message);
+            }
+          }
         }}
         onClose={() => {
           setModal(null);

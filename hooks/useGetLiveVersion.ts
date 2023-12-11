@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { api } from '@/lib/api';
 import { ExternalNavigation } from '@/lib/navigation';
 
 /**
@@ -8,7 +7,8 @@ import { ExternalNavigation } from '@/lib/navigation';
  * @returns The version data
  */
 async function getLiveVersion() {
-  const { data } = await api.get<{ version: string }>(`${ExternalNavigation.Website}/api/version`);
+  const response = await fetch(`${ExternalNavigation.Website}/api/version`);
+  const data = await response.json();
   return data;
 }
 

@@ -12,7 +12,7 @@ import { useEffect } from 'react';
  * }, [doSomething]);
  * ```
  */
-export function useEffectAsync<T>(callback: () => Promise<T>, deps: any[] = []) {
+export function useEffectAsync<T>(callback: () => Promise<T>, deps: unknown[] = []) {
   useEffect(() => {
     callback();
   }, deps);

@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { updateUser } from '@/actions/auth';
@@ -47,8 +47,10 @@ export function ResetPassword() {
       await updateUser({ password: values.password });
       router.push(AppNavigation.Dashboard);
       toast.success('Password updated');
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   }
 

@@ -1,9 +1,11 @@
+'use client';
+
+import { Notifications } from '@mui/icons-material';
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 
 import { Logo } from '@/components/common/Logo';
 
 import { Account } from './Account/Account';
-import { Notifications } from './Notifications/Notifications';
 import { Version } from './Version';
 
 export function TopBar() {

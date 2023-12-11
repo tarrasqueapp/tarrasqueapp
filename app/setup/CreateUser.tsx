@@ -39,8 +39,10 @@ export function CreateUser({ onSubmit }: CreateUserProps) {
       await signUp(values);
       await updateSetup('COMPLETED');
       onSubmit();
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   }
 

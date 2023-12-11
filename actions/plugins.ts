@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
+import { validate } from '@/lib/validate';
 import { createServerClient } from '@/utils/supabase/server';
 
 /**
@@ -30,11 +31,47 @@ export async function getCampaignPlugins(campaignId: string) {
 }
 
 /**
- * Get submitted plugins from the GitHub repository
- * @returns The submitted plugins
+ * Install a plugin
+ * @param campaign_id - The campaign to install the plugin for
+ * @param manifest_url - The plugin's manifest URL
  */
-export async function getSubmittedPlugins() {
-  const response = await fetch('https://raw.githubusercontent.com/tarrasqueapp/plugins/main/plugins.json');
-  const data = await response.json();
-  return data;
+export async function installPlugin({ campaign_id, manifest_url }: { campaign_id: string; manifest_url: string }) {
+  // Validate inputs
+  const schema = z.object({
+    campaign_id: z.string().uuid(),
+    manifest_url: validate.fields.manifestUrl,
+  });
+  schema.parse({ campaign_id, manifest_url });
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Create the plugin
+  const { error } = await supabase.from('plugins').insert({ campaign_id, manifest_url });
+
+  if (error) {
+    throw error;
+  }
+}
+
+/**
+ * Uninstall a plugin
+ * @param pluginId - The plugin to uninstall
+ */
+export async function uninstallPlugin(pluginId: string) {
+  // Validate inputs
+  const schema = z.string().uuid();
+  schema.parse(pluginId);
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Delete the plugin
+  const { error } = await supabase.from('plugins').delete().eq('id', pluginId);
+
+  if (error) {
+    throw error;
+  }
 }

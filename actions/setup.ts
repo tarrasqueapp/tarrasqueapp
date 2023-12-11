@@ -1,12 +1,12 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { z } from 'zod';
 
+import { validate } from '@/lib/validate';
 import { createServerClient } from '@/utils/supabase/server';
-import { Database } from '@/utils/supabase/types.gen';
+import { Enums } from '@/utils/supabase/types.gen';
 
-export type SetupStep = Database['public']['Enums']['setup_step'];
+export type SetupStep = Enums<'setup_step'>;
 
 /**
  * Get the setup progress
@@ -45,7 +45,7 @@ export async function createDatabase() {
  */
 export async function updateSetup(step: SetupStep) {
   // Validate the data
-  const schema = z.enum(['CREATED_DATABASE', 'CREATED_USER', 'COMPLETED']);
+  const schema = validate.fields.setupStep;
   schema.parse(step);
 
   // Connect to Supabase

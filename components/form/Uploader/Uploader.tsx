@@ -213,8 +213,10 @@ export function Uploader({
     // Add the files to the uploader
     try {
       uppy.addFile(files[0]!);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error);
+      }
     }
   }
 

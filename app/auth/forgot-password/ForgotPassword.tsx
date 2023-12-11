@@ -14,7 +14,7 @@ import { ControlledTextField } from '@/components/form/ControlledTextField';
 
 export function ForgotPassword() {
   const searchParams = useSearchParams();
-  const email = searchParams?.get('email') || '';
+  const email = searchParams.get('email') || '';
 
   // Setup form validation schema
   const schema = z.object({ email: z.string().email().min(1) });
@@ -40,8 +40,10 @@ export function ForgotPassword() {
     try {
       await forgotPassword(values.email);
       reset();
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   }
 
@@ -51,7 +53,7 @@ export function ForgotPassword() {
         <Box sx={{ display: 'flex', flexDirection: 'column', m: 1, gap: 2 }}>
           {isSubmitSuccessful && (
             <Alert severity="info" variant="outlined" sx={{ mb: 1 }}>
-              If an account with that email exists, we&apos;ve sent you an email with a link to reset your password.
+              We&apos;ve just sent you an email with a link to reset your password. Please check your inbox.
             </Alert>
           )}
 

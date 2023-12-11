@@ -3,6 +3,8 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
+import { Color } from '@/lib/colors';
+import { validate } from '@/lib/validate';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
@@ -16,7 +18,7 @@ export type Campaign = Awaited<ReturnType<typeof getCampaign>>;
  */
 export async function getUserCampaigns(role?: CampaignMemberRole) {
   // Validate the role
-  const schema = z.enum(['GAME_MASTER', 'PLAYER']).optional();
+  const schema = validate.fields.campaignMemberRole.optional();
   schema.parse(role);
 
   // Connect to Supabase
@@ -102,7 +104,7 @@ export async function getCampaign(campaignId: string) {
 /**
  * Create a campaign
  * @param name - The campaign's name
- * @returns The campaign
+ * @returns The created campaign
  */
 export async function createCampaign({ name }: { name: string }) {
   // Validate the data
@@ -125,6 +127,14 @@ export async function createCampaign({ name }: { name: string }) {
   if (error) {
     throw error;
   }
+
+  // Add the user as a game master
+  await supabase.from('memberships').insert({
+    role: 'GAME_MASTER',
+    color: Color.BLACK,
+    campaign_id: data.id,
+    user_id: user.id,
+  });
 
   return data;
 }

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export function useDocumentEventListener<K extends keyof DocumentEventMap>(
   eventType: K,
-  listener: (this: Document, ev: DocumentEventMap[K]) => any,
+  listener: (this: Document, ev: DocumentEventMap[K]) => unknown,
   options?: boolean | AddEventListenerOptions,
 ) {
   useEffect(() => {

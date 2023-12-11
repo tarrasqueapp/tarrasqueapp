@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
     await supabase.auth.getSession();
 
     return response;
-  } catch (e) {
+  } catch (error) {
     return NextResponse.next({
       request: {
         headers: request.headers,

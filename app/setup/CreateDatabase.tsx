@@ -25,8 +25,10 @@ export function CreateDatabase({ onSubmit }: CreateDatabaseProps) {
     try {
       await createDatabase();
       onSubmit();
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   }
 

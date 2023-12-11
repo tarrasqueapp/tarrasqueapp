@@ -10,7 +10,11 @@ import { SSRUtils } from '@/utils/SSRUtils';
 
 import { SignUp } from './SignUp';
 
-export default async function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const ssr = new SSRUtils();
 
   const setup = await ssr.prefetchSetup();
@@ -25,6 +29,10 @@ export default async function SignUpPage() {
     redirect(AppNavigation.Dashboard);
   }
 
+  // Get the invite token if it exists
+  const inviteToken = typeof searchParams.token === 'string' ? searchParams.token : undefined;
+  const invite = inviteToken ? await ssr.prefetchInvite(inviteToken) : undefined;
+
   return (
     <Center>
       <Container maxWidth="xs">
@@ -38,7 +46,7 @@ export default async function SignUpPage() {
           </Typography>
 
           <Paper sx={{ p: 2, width: '100%', background: 'rgba(0, 0, 0, 0.4)' }}>
-            <SignUp />
+            <SignUp invite={invite} />
           </Paper>
 
           <Typography variant="body2" align="center" sx={{ mt: 4 }}>

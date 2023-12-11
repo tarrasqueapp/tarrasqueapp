@@ -7,6 +7,7 @@ import useLocalStorage from 'use-local-storage';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetMap } from '@/hooks/data/maps/useGetMap';
 import { useWindowSize } from '@/hooks/useWindowSize';
+import { Color } from '@/lib/colors';
 import { SocketEvent } from '@/lib/events';
 import { socket } from '@/lib/socket';
 import { tarrasque } from '@/lib/tarrasque';
@@ -97,14 +98,14 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
 
     socket.emit(SocketEvent.PING_LOCATION, {
       position,
-      color: membership?.color || '#000000',
+      color: membership?.color || Color.BLACK,
       mapId,
       userId: user?.id || '',
     });
 
     tarrasque.emit(SocketEvent.PING_LOCATION, {
       position,
-      color: membership?.color || '#000000',
+      color: membership?.color || Color.BLACK,
       mapId,
       userId: user?.id || '',
     });
