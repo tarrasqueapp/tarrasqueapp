@@ -1,9 +1,9 @@
 import { FormControl } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { MediaUploader, MediaUploaderProps } from './MediaUploader';
+import { Uploader, UploaderProps } from './Uploader';
 
-type ControlledMediaUploaderProps = MediaUploaderProps & {
+type ControlledMediaUploaderProps = UploaderProps & {
   name: string;
 };
 
@@ -16,7 +16,9 @@ export function ControlledMediaUploader({ name, ...props }: ControlledMediaUploa
         control={control}
         name={name}
         defaultValue={null}
-        render={({ field: { value, onChange } }) => <MediaUploader {...props} files={value} onChange={onChange} />}
+        render={({ field: { value, onChange } }) => (
+          <Uploader {...props} file={value} onChange={onChange} allowedFileTypes={['image/*', 'video/*']} />
+        )}
       />
     </FormControl>
   );

@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Close, Delete, Email, Send } from '@mui/icons-material';
 import {
   Avatar,
@@ -22,16 +22,15 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { Campaign } from '@/actions/campaigns';
+import { createInvite, deleteInvite } from '@/actions/invites';
 import { CampaignMemberRole, deleteMembership, updateMembership } from '@/actions/memberships';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
-import { useCreateInvite } from '@/hooks/data/campaigns/invites/useCreateInvite';
-import { useDeleteInvite } from '@/hooks/data/campaigns/invites/useDeleteInvite';
+import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useCampaignStore } from '@/store/campaign';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 import { ColorPicker } from '../ColorPicker';
 import { UserAvatar } from '../common/UserAvatar';
@@ -45,26 +44,23 @@ interface CampaignMembersModalProps {
 
 export function CampaignMembersModal({ open, onClose, campaign }: CampaignMembersModalProps) {
   const { data: memberships } = useGetMemberships(campaign?.id || '');
+  const { data: invites } = useGetInvites(campaign?.id || '');
   const { data: user } = useGetUser();
-  const createInvite = useCreateInvite();
-  const deleteInvite = useDeleteInvite();
 
   const { modal } = useCampaignStore();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
-  const schema = yup
-    .object({
-      email: ValidateUtils.Email,
-    })
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z.object({
+    email: z.string().email(),
+  });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
     defaultValues: { email: '' },
   });
   const {
@@ -85,7 +81,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
   async function handleSubmitForm(values: Schema) {
     if (!campaign) return;
     try {
-      await createInvite.mutateAsync({ campaignId: campaign.id, email: values.email });
+      await createInvite({ campaign_id: campaign.id, email: values.email });
     } catch (error) {
       console.error(error);
     }
@@ -210,27 +206,26 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
             >
               <ListSubheader>Pending invites</ListSubheader>
 
-              {Boolean(campaign?.invites.length) &&
-                campaign?.invites.map((invite) => (
-                  <ListItem
-                    key={invite.id}
-                    secondaryAction={
-                      <IconButton onClick={() => deleteInvite.mutate(invite)}>
-                        <Delete />
-                      </IconButton>
-                    }
-                  >
-                    <ListItemAvatar>
-                      <Avatar>
-                        <Email />
-                      </Avatar>
-                    </ListItemAvatar>
+              {invites?.map((invite) => (
+                <ListItem
+                  key={invite.id}
+                  secondaryAction={
+                    <IconButton onClick={() => deleteInvite(invite.id)}>
+                      <Delete />
+                    </IconButton>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Email />
+                    </Avatar>
+                  </ListItemAvatar>
 
-                    <ListItemText primary={invite.email} />
-                  </ListItem>
-                ))}
+                  <ListItemText primary={invite.email} />
+                </ListItem>
+              ))}
 
-              {!campaign?.invites.length && <ListItem>No pending invites found</ListItem>}
+              {!invites?.length && <ListItem>No pending invites found</ListItem>}
             </List>
           </DialogContent>
         </form>

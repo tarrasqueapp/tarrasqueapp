@@ -1,11 +1,11 @@
 import { Extension } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 
-import { CampaignEntity } from '@/lib/types';
+import { Campaign } from '@/actions/campaigns';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
 interface Props {
-  campaign?: CampaignEntity;
+  campaign?: Campaign;
 }
 
 export function Plugins({ campaign }: Props) {

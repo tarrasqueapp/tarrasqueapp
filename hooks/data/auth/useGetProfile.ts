@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-import { getProfile } from '@/actions/profiles';
+import { Profile, getProfile } from '@/actions/profiles';
 import { createBrowserClient } from '@/utils/supabase/client';
 
 /**
@@ -17,11 +17,18 @@ export function useGetProfile() {
     const channel = supabase
       .channel('profile')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, async () => {
+        const previousProfile = queryClient.getQueryData<Profile>(['profile']);
+
         // Refetch the profile to get the joined data
         const profile = await getProfile();
 
         // Update the cache
         queryClient.setQueryData(['profile'], profile);
+
+        // If the campaign order changed, refetch the campaigns
+        if (previousProfile?.campaign_order !== profile.campaign_order) {
+          queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+        }
       })
       .subscribe();
 
@@ -32,6 +39,6 @@ export function useGetProfile() {
 
   return useQuery({
     queryKey: ['profile'],
-    queryFn: getProfile,
+    queryFn: () => getProfile(),
   });
 }

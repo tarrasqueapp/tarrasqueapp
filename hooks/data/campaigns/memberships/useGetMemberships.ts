@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { getMemberships } from '@/actions/memberships';
@@ -10,15 +10,17 @@ import { createBrowserClient } from '@/utils/supabase/client';
  * @returns Memberships query
  */
 export function useGetMemberships(campaignId: string | undefined) {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   // Listen for changes to the memberships and update the cache
   useEffect(() => {
+    if (!campaignId) return;
+
     const supabase = createBrowserClient();
     const channel = supabase
-      .channel(`${campaignId}_memberships`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'memberships' }, (payload) => {
-        queryClient.setQueryData(['campaigns', campaignId, 'memberships'], payload.new);
+      .channel(`campaign_${campaignId}_memberships`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'memberships' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'memberships'] });
       })
       .subscribe();
 

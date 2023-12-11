@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Close } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -13,44 +13,33 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { z } from 'zod';
 
-import { useCreateCampaign } from '@/hooks/data/campaigns/useCreateCampaign';
-import { useUpdateCampaign } from '@/hooks/data/campaigns/useUpdateCampaign';
-import { CampaignFactory } from '@/lib/factories/CampaignFactory';
-import { CampaignEntity } from '@/lib/types';
+import { Campaign, createCampaign, updateCampaign } from '@/actions/campaigns';
 import { useCampaignStore } from '@/store/campaign';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 import { ControlledTextField } from '../form/ControlledTextField';
 
 interface CreateUpdateCampaignModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: CampaignEntity | undefined;
+  campaign: Campaign | undefined;
 }
 
 export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpdateCampaignModalProps) {
-  const createCampaign = useCreateCampaign();
-  const updateCampaign = useUpdateCampaign();
-
   const { modal } = useCampaignStore();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
-  const schema = yup
-    .object({
-      name: ValidateUtils.Name,
-    })
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z.object({ name: z.string().min(1) }).required();
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
-    defaultValues: campaign || new CampaignFactory(),
+    resolver: zodResolver(schema),
+    defaultValues: campaign || { name: '' },
   });
   const {
     handleSubmit,
@@ -60,7 +49,7 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
 
   // Reset the form when the campaign changes
   useEffect(() => {
-    reset(campaign || new CampaignFactory());
+    reset(campaign || { name: '' });
   }, [campaign, reset, modal]);
 
   /**
@@ -69,12 +58,12 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
    */
   async function handleSubmitForm(values: Schema) {
     if (campaign) {
-      updateCampaign.mutate({ ...values, id: campaign.id });
+      await updateCampaign({ id: campaign.id, name: values.name });
       onClose();
       return;
     }
 
-    createCampaign.mutate(values);
+    await createCampaign(values);
     onClose();
   }
 

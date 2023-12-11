@@ -16,6 +16,12 @@ alter table "public"."invites" add constraint "invites_campaign_id_fkey" FOREIGN
 
 alter table "public"."invites" validate constraint "invites_campaign_id_fkey";
 
+create policy "Invites can be viewed by anyone"
+on "public"."invites"
+as permissive
+for select
+to public
+using (true);
 
 create policy "Invites can be created by game masters of the campaign"
 on "public"."invites"

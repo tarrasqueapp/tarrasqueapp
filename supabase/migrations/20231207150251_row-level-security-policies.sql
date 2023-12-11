@@ -96,7 +96,7 @@ to authenticated
 using (auth.uid() IN (
     SELECT memberships.user_id
     FROM memberships
-    WHERE (memberships.campaign_id = id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+    WHERE (memberships.campaign_id = campaigns.id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
 
 create policy "Campaigns can be deleted by their game masters"
 on "public"."campaigns"
@@ -106,7 +106,7 @@ to authenticated
 using (auth.uid() IN (
     SELECT memberships.user_id
     FROM memberships
-    WHERE (memberships.campaign_id = id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+    WHERE (memberships.campaign_id = campaigns.id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
 
 
 alter table "public"."memberships" enable row level security;

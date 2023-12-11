@@ -2,10 +2,10 @@ import { Avatar } from '@mui/material';
 import Image from 'next/image';
 
 import { Profile } from '@/actions/profiles';
-import { storageImageLoader } from '@/lib/storageImageLoader';
+import { supabaseLoader } from '@/lib/supabaseLoader';
 
 interface Props {
-  profile: Profile | null | undefined;
+  profile?: Partial<Profile> | null;
   size?: 'small' | 'medium';
 }
 
@@ -26,9 +26,9 @@ export function UserAvatar({ profile, size = 'medium' }: Props) {
     return (
       <Avatar sx={{ width: 24, height: 24, fontSize: '1rem' }}>
         {profile?.avatar?.url ? (
-          <Image loader={storageImageLoader} src={profile.avatar.url} width={24} height={24} alt="" />
+          <Image loader={supabaseLoader} src={profile.avatar.url} width={24} height={24} alt="" />
         ) : (
-          profile?.display_name[0]
+          profile?.display_name?.[0]
         )}
       </Avatar>
     );
@@ -37,9 +37,9 @@ export function UserAvatar({ profile, size = 'medium' }: Props) {
   return (
     <Avatar sx={{ width: 40, height: 40 }}>
       {profile?.avatar?.url ? (
-        <Image loader={storageImageLoader} src={profile.avatar.url} width={40} height={40} alt="" />
+        <Image loader={supabaseLoader} src={profile.avatar.url} width={40} height={40} alt="" />
       ) : (
-        profile?.display_name[0]
+        profile?.display_name?.[0]
       )}
     </Avatar>
   );

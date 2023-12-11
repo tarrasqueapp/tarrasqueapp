@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "id" "uuid" NOT NULL,
     "name" character varying NOT NULL,
     "display_name" character varying NOT NULL,
+    "email" character varying NOT NULL,
     "avatar_id" "uuid",
     "campaign_order" jsonb NOT NULL DEFAULT '[]'::jsonb,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL

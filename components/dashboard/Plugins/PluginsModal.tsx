@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Add, Close } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import {
@@ -14,21 +14,22 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { z } from 'zod';
 
+import { Campaign } from '@/actions/campaigns';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useInstallPlugin } from '@/hooks/data/campaigns/plugins/useInstallPlugin';
 import { useUninstallPlugin } from '@/hooks/data/campaigns/plugins/useUninstallPlugin';
 import { useGetSubmittedPlugins } from '@/hooks/data/plugins/useGetSubmittedPlugins';
-import { CampaignEntity, PluginEntity, SubmittedPluginEntity } from '@/lib/types';
+import { PluginEntity, SubmittedPluginEntity } from '@/lib/types';
 
 import { Plugin } from './Plugin';
 
 interface PluginsModalProps {
   open: boolean;
   onClose: () => void;
-  campaign?: CampaignEntity;
+  campaign?: Campaign;
 }
 
 export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
@@ -40,21 +41,19 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
-  const schema = yup
-    .object({
-      manifestUrl: yup
-        .string()
-        .matches(/^https?:\/\/.+/, 'Must be a valid URL')
-        .matches(/\/manifest\.json$/, 'Must be a manifest.json file')
-        .required('Required'),
-    })
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z.object({
+    manifestUrl: z
+      .string()
+      .url()
+      .min(1)
+      .regex(/^https?:\/\/.+\/manifest\.json$/, 'Must be a manifest.json file'),
+  });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
     defaultValues: { manifestUrl: '' },
   });
   const {

@@ -1,13 +1,13 @@
 import { Add } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
+import { Campaign } from '@/actions/campaigns';
 import { Color } from '@/lib/colors';
-import { CampaignEntity } from '@/lib/types';
 import { useCampaignStore } from '@/store/campaign';
 import { MapModal, useMapStore } from '@/store/map';
 
 interface NewMapProps {
-  campaign: CampaignEntity | null;
+  campaign: Campaign | null;
 }
 
 export function NewMap({ campaign }: NewMapProps) {

@@ -1,6 +1,7 @@
 import { UploadedUppyFile, UppyFile } from '@uppy/core';
 
-import { DimensionsEntity, FileEntity, MediaEntity } from '@/lib/types';
+import { Media } from '@/actions/media';
+import { Dimensions, FileEntity } from '@/lib/types';
 
 export type UploadingFile = UppyFile<Record<string, unknown>, Record<string, unknown>> & {
   progress?: { percentage: number };
@@ -18,8 +19,8 @@ export class MediaUtils {
    */
   static async convertUppyToFile(uppyFile: UploadedFile): Promise<FileEntity> {
     // Get the id from the file name (object_id.extension)
-    const id = uppyFile.name.split('.')[0];
-    const objectName = (uppyFile.meta as any).objectName;
+    const id = uppyFile.name.split('.')[0]!;
+    const objectName = uppyFile.meta.objectName as string;
 
     let file: FileEntity = {
       id,
@@ -80,12 +81,12 @@ export class MediaUtils {
   }
 
   /**
-   * Check if file is of MediaEntity
+   * Check if file is a Media entity
    * @param file - The file to check
-   * @returns If the file is of MediaEntity
+   * @returns If the file is a Media entity
    */
-  static isMedia(file: unknown): file is MediaEntity {
-    return (file as MediaEntity)?.user_id !== undefined;
+  static isMedia(file: unknown): file is Media {
+    return (file as Media)?.user_id !== undefined;
   }
 
   /**
@@ -111,7 +112,7 @@ export class MediaUtils {
    * @param file - The image file
    * @returns The image dimensions
    */
-  static getImageDimensions(file: File | Blob): Promise<DimensionsEntity> {
+  static getImageDimensions(file: File | Blob): Promise<Dimensions> {
     return new Promise((resolve) => {
       const reader = new FileReader();
 
@@ -133,7 +134,7 @@ export class MediaUtils {
    * @param file - The video file
    * @returns The video dimensions
    */
-  static getVideoDimensions(file: File | Blob): Promise<DimensionsEntity> {
+  static getVideoDimensions(file: File | Blob): Promise<Dimensions> {
     return new Promise((resolve) => {
       const reader = new FileReader();
 

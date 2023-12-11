@@ -1,3 +1,5 @@
+'use client';
+
 import { Logout, Settings } from '@mui/icons-material';
 import { IconButton, ListItemIcon, ListItemText, MenuItem, MenuList, Popover, Tooltip } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';

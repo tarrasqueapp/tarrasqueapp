@@ -28,3 +28,13 @@ export async function getCampaignPlugins(campaignId: string) {
 
   return data;
 }
+
+/**
+ * Get submitted plugins from the GitHub repository
+ * @returns The submitted plugins
+ */
+export async function getSubmittedPlugins() {
+  const response = await fetch('https://raw.githubusercontent.com/tarrasqueapp/plugins/main/plugins.json');
+  const data = await response.json();
+  return data;
+}

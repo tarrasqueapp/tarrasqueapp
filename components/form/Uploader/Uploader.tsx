@@ -1,6 +1,6 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
-import { Box, Button, IconButton, Typography, alpha } from '@mui/material';
-import Uppy, { FileProgress, SuccessResponse, UploadResult } from '@uppy/core';
+import { Box, BoxProps, Button, ButtonProps, IconButton, Typography, alpha } from '@mui/material';
+import { FileProgress, SuccessResponse, UploadResult, Uppy } from '@uppy/core';
 import Tus from '@uppy/tus';
 import NextImage from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -8,22 +8,59 @@ import { useDropzone } from 'react-dropzone';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getSession } from '@/actions/auth';
+import { Media } from '@/actions/media';
 import { CircularProgressWithLabel } from '@/components/common/CircularProgressWithLabel';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useEffectAsync } from '@/hooks/useEffectAsync';
 import { Color } from '@/lib/colors';
 import { config } from '@/lib/config';
-import { storageImageLoader } from '@/lib/storageImageLoader';
-import { MediaEntity } from '@/lib/types';
+import { supabaseLoader } from '@/lib/supabaseLoader';
 import { MathUtils } from '@/utils/MathUtils';
 import { MediaUtils, UploadingFile } from '@/utils/MediaUtils';
 
-export interface ImageUploaderProps {
-  file?: UploadingFile | MediaEntity;
-  onChange?: (file: UploadingFile | null) => void;
+/**
+ * Generate a string of file types that can be uploaded
+ * @param fileTypes - The file types that can be uploaded
+ * @returns A formatted string of file types
+ */
+function generateFileTypesString(fileTypes: string[]) {
+  if (!fileTypes.length) return '';
+
+  // If the file type ends with /*, keep the part before the /*, otherwise convert it to an extension
+  fileTypes = fileTypes.map((fileType) => {
+    if (fileType.endsWith('/*')) return fileType.replace(/\/\*$/, '');
+    return `.${fileType.replace(/.*\//, '')}`;
+  });
+
+  // Remove duplicates
+  fileTypes = [...new Set(fileTypes)];
+
+  // Generate the string
+  if (fileTypes.length === 2) return fileTypes.join(' and ');
+  if (fileTypes.length > 2) {
+    return `${fileTypes.slice(0, -1).join(', ')}, and ${fileTypes.slice(-1)}`;
+  }
+  if (fileTypes.length === 1) return fileTypes[0];
+  return '';
 }
 
-export function ImageUploader({ file, onChange }: ImageUploaderProps) {
+export interface UploaderProps {
+  file?: UploadingFile | Media;
+  onChange?: (file: UploadingFile | null) => void;
+  allowedFileTypes?: string[];
+  showAllowedFileTypes?: boolean;
+  ButtonProps?: ButtonProps;
+  ContainerProps?: BoxProps;
+}
+
+export function Uploader({
+  file,
+  onChange,
+  allowedFileTypes,
+  showAllowedFileTypes,
+  ButtonProps,
+  ContainerProps,
+}: UploaderProps) {
   const { data: user } = useGetUser();
 
   // Get the access token
@@ -34,8 +71,6 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
     const accessToken = session?.access_token || null;
     setAccessToken(accessToken);
   }, []);
-
-  const allowedFileTypes = ['image/*'];
 
   // Setup the uploader
   const uppy = useMemo(() => {
@@ -64,7 +99,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     accept,
     multiple: false,
-    onDropAccepted: handleSelect,
+    onDropAccepted: handleDrop,
   });
 
   /**
@@ -127,7 +162,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
     onChange?.({
       ...file,
       progress: { ...file.progress!, percentage: 100 },
-      uploadURL: storageImageLoader({ src: objectName, width: 250 }),
+      uploadURL: supabaseLoader({ src: objectName, width: 250 }),
     });
   }
 
@@ -159,7 +194,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
    * Select the file and add them to the uploader
    * @param acceptedFiles - The files that were selected
    */
-  function handleSelect(acceptedFiles: File[]) {
+  function handleDrop(acceptedFiles: File[]) {
     // Convert the file to the format that Uppy expects
     const files = acceptedFiles.map((file) => ({
       name: file.name,
@@ -177,7 +212,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
 
     // Add the files to the uploader
     try {
-      uppy.addFile(files[0]);
+      uppy.addFile(files[0]!);
     } catch (err) {
       console.error(err);
     }
@@ -188,7 +223,7 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
    * @param file
    * @returns
    */
-  function handleDelete(file: UploadingFile | MediaEntity) {
+  function handleDelete(file: UploadingFile | Media) {
     if (!file) return;
     if (MediaUtils.isUploadingFile(file)) uppy.removeFile(file.id);
     onChange?.(null);
@@ -197,90 +232,95 @@ export function ImageUploader({ file, onChange }: ImageUploaderProps) {
   const borderColor = isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.6) : 'rgba(0, 0, 0, 0.19)';
 
   return (
-    <Box>
-      <Box sx={{ position: 'relative' }}>
-        <Button
-          fullWidth
+    <Box sx={{ position: 'relative' }}>
+      <Button
+        fullWidth
+        {...ButtonProps}
+        sx={{
+          p: 0.5,
+          overflow: 'hidden',
+          textTransform: 'none',
+          color: Color.WHITE,
+          borderRadius: '10px',
+
+          background: 'rgba(255, 255, 255, 0.09)',
+          '&:hover': {
+            background: 'rgba(255, 255, 255, 0.13)',
+          },
+          ...ButtonProps?.sx,
+        }}
+      >
+        <Box
+          {...ContainerProps}
           sx={{
-            m: 0.2,
-            p: 0.5,
+            borderRadius: '10px',
+            border: `3px dashed ${borderColor}`,
+            display: 'flex',
+            flexDirection: 'column',
+            flex: '1 0 auto',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.05) : undefined,
             overflow: 'hidden',
-            textTransform: 'none',
-            color: Color.WHITE,
-            borderRadius: '50%',
-
-            background: 'rgba(255, 255, 255, 0.09)',
-            '&:hover': {
-              background: 'rgba(255, 255, 255, 0.13)',
-            },
+            flexWrap: 'wrap',
+            height: 200,
+            width: '100%',
+            ...ContainerProps?.sx,
           }}
+          {...getRootProps()}
         >
-          <Box
-            sx={{
-              borderRadius: '50%',
-              border: `3px dashed ${borderColor}`,
-              display: 'flex',
-              flexDirection: 'column',
-              flex: '1 0 auto',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.05) : undefined,
-              overflow: 'hidden',
-              flexWrap: 'wrap',
-              height: 200,
-              width: '100%',
-            }}
-            {...getRootProps()}
-          >
-            <input {...getInputProps()} />
+          <input {...getInputProps()} />
 
-            {MediaUtils.isUploadingFile(file) && (
-              <>
-                {MediaUtils.isUploadedFile(file) ? (
-                  <Box component="img" src={file.uploadURL} height={200} />
-                ) : (
-                  <Box>
-                    {file.progress && (
-                      <CircularProgressWithLabel
-                        color={file.progress.percentage === 100 && file.uploadURL ? 'success' : 'info'}
-                        value={file.progress.percentage || 0}
-                      />
-                    )}
-                  </Box>
-                )}
-              </>
-            )}
+          {MediaUtils.isUploadingFile(file) && (
+            <>
+              {MediaUtils.isUploadedFile(file) ? (
+                <Box component="img" src={file.uploadURL} height={200} />
+              ) : (
+                <Box>
+                  {file.progress && (
+                    <CircularProgressWithLabel
+                      color={file.progress.percentage === 100 && file.uploadURL ? 'success' : 'info'}
+                      value={file.progress.percentage || 0}
+                    />
+                  )}
+                </Box>
+              )}
+            </>
+          )}
 
-            {MediaUtils.isMedia(file) && (
-              <>
-                {file.url && <NextImage loader={storageImageLoader} src={file.url} width={200} height={200} alt="" />}
-              </>
-            )}
+          {MediaUtils.isMedia(file) && (
+            <>{file.url && <NextImage loader={supabaseLoader} src={file.url} width={200} height={200} alt="" />}</>
+          )}
 
-            {!file && (
-              <Box sx={{ p: 4 }}>
-                <CloudUpload fontSize="large" htmlColor={Color.BROWN_LIGHT} sx={{ mt: -2 }} />
+          {!file && (
+            <Box sx={{ p: 4 }}>
+              <CloudUpload fontSize="large" htmlColor={Color.BROWN_LIGHT} sx={{ mt: -2 }} />
 
-                <Typography variant="h5" sx={{ mt: 2 }}>
-                  {isDragActive && !isDragReject && 'Drop the file here'}
-                  {isDragReject && 'File type not accepted'}
-                  {!isDragActive && 'Click to select or drag and drop'}
+              <Typography variant="h5" sx={{ mt: 2 }}>
+                {isDragActive && !isDragReject && 'Drop the file here'}
+                {isDragReject && 'File type not accepted'}
+                {!isDragActive && 'Click to select or drag and drop'}
+              </Typography>
+
+              {showAllowedFileTypes && (
+                <Typography variant="caption">
+                  {allowedFileTypes && `Only ${generateFileTypesString(allowedFileTypes)} files are allowed`}
                 </Typography>
-              </Box>
-            )}
-          </Box>
-        </Button>
+              )}
+            </Box>
+          )}
+        </Box>
+      </Button>
 
-        {file && (
-          <IconButton
-            color="error"
-            sx={{ position: 'absolute', top: 4, right: 4, zIndex: 1 }}
-            onClick={() => handleDelete(file)}
-          >
-            <Delete />
-          </IconButton>
-        )}
-      </Box>
+      {file && (
+        <IconButton
+          color="error"
+          sx={{ position: 'absolute', top: 4, right: 4, zIndex: 1 }}
+          onClick={() => handleDelete(file)}
+        >
+          <Delete />
+        </IconButton>
+      )}
     </Box>
   );
 }

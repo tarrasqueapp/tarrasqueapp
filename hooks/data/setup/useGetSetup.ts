@@ -28,6 +28,6 @@ export function useGetSetup() {
 
   return useQuery({
     queryKey: ['setup'],
-    queryFn: getSetup,
+    queryFn: () => getSetup(),
   });
 }

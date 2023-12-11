@@ -49,13 +49,13 @@ export async function updateProfile({
 }: {
   name?: string;
   display_name?: string;
-  avatar_id?: string;
+  avatar_id?: string | null;
 }) {
   // Validate the data
   const schema = z.object({
     name: z.string().optional(),
     display_name: z.string().optional(),
-    avatar_id: z.string().uuid().optional(),
+    avatar_id: z.string().uuid().nullable().optional(),
   });
   schema.parse({ name, display_name, avatar_id });
 

@@ -1,19 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { RawAxiosRequestConfig } from 'axios';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
-import { api } from '@/lib/api';
-import { ActionTokenEntity } from '@/lib/types';
-
-/**
- * Send a request to get the campaign's invites
- * @param campaignId - The campaign to get invites for
- * @param requestConfig - The request config
- * @returns The campaign's invites
- */
-export async function getInvites(campaignId: string, requestConfig?: RawAxiosRequestConfig) {
-  const { data } = await api.get<ActionTokenEntity[]>(`/api/campaigns/${campaignId}/invites`, requestConfig);
-  return data;
-}
+import { getInvites } from '@/actions/invites';
+import { createBrowserClient } from '@/utils/supabase/client';
 
 /**
  * Get the campaign's invites
@@ -21,6 +10,25 @@ export async function getInvites(campaignId: string, requestConfig?: RawAxiosReq
  * @returns Invites query
  */
 export function useGetInvites(campaignId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  // Listen for changes to the invites and update the cache
+  useEffect(() => {
+    if (!campaignId) return;
+
+    const supabase = createBrowserClient();
+    const channel = supabase
+      .channel(`campaign_${campaignId}_invites`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'invites' }, async () => {
+        queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'invites'] });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [campaignId]);
+
   return useQuery({
     queryKey: ['campaigns', campaignId, 'invites'],
     queryFn: () => getInvites(campaignId!),

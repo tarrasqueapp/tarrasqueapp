@@ -1,42 +1,24 @@
-import * as yup from 'yup';
+import { z } from 'zod';
 
 export class ValidateUtils {
-  static Name = yup.string().trim().required('Name is required');
-
-  static Email = yup.string().lowercase().trim().email('Invalid email address').required('Email is required');
-
-  static Password = yup
-    .string()
-    .trim()
-    .min(8, 'Password must have at least 8 characters')
-    .required('Password is required');
-
-  static UppyFile = yup
-    .object({
-      id: yup.string().min(1).required(),
-      name: yup.string().min(1).required(),
-      type: yup.string().min(1).required(),
-      extension: yup.string().min(1).required(),
-      size: yup.number().min(0).required(),
-      uploadURL: yup.string().min(1).required(),
-      data: yup.mixed().required(),
-      isRemote: yup.boolean().required(),
-      meta: yup.object({ name: yup.string().min(1).required() }).required(),
-    })
-    .required();
-
-  static Media = yup
-    .object({
-      id: yup.string().min(1).required(),
-      url: yup.string().min(1).required(),
-      thumbnailUrl: yup.string().min(1).required(),
-      width: yup.number().min(0).required(),
-      height: yup.number().min(0).required(),
-      size: yup.number().min(0).required(),
-      format: yup.string().min(1).required(),
-      extension: yup.string().min(1).required(),
-    })
-    .required();
-
-  static Url = yup.string().trim().url('Invalid URL').required('URL is required');
+  static fields = {
+    uppyFile: z.object({
+      name: z.string().min(1),
+      type: z.string().min(1).optional(),
+      extension: z.string().min(1),
+      size: z.number().min(0),
+      data: z.union([z.instanceof(Blob), z.instanceof(File)]),
+      meta: z.object({ objectName: z.string().min(1).optional() }).optional(),
+      uploadURL: z.string().min(1),
+    }),
+    media: z.object({
+      id: z.string().min(1),
+      url: z.string().min(1),
+      width: z.number().min(0).nullable(),
+      height: z.number().min(0).nullable(),
+      size: z.number().min(0).nullable(),
+      created_at: z.string().min(1),
+      user_id: z.string().min(1),
+    }),
+  };
 }

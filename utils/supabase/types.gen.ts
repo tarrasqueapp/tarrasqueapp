@@ -225,6 +225,7 @@ export interface Database {
           campaign_order: Json;
           created_at: string;
           display_name: string;
+          email: string;
           id: string;
           name: string;
         };
@@ -233,6 +234,7 @@ export interface Database {
           campaign_order?: Json;
           created_at?: string;
           display_name: string;
+          email: string;
           id: string;
           name: string;
         };
@@ -241,6 +243,7 @@ export interface Database {
           campaign_order?: Json;
           created_at?: string;
           display_name?: string;
+          email?: string;
           id?: string;
           name?: string;
         };

@@ -59,7 +59,7 @@ export function EmotionCacheProvider(props: EmotionCacheProviderProps) {
 
       if (typeof style !== 'boolean') {
         if (isGlobal) {
-          globals.push({ name, style });
+          globals.push({ name, style: style! });
         } else {
           styles += style;
           dataEmotionAttribute += ` ${name}`;
@@ -73,17 +73,10 @@ export function EmotionCacheProvider(props: EmotionCacheProviderProps) {
           <style
             key={name}
             data-emotion={`${registry.cache.key}-global ${name}`}
-            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: style }}
           />
         ))}
-        {styles && (
-          <style
-            data-emotion={dataEmotionAttribute}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: styles }}
-          />
-        )}
+        {styles && <style data-emotion={dataEmotionAttribute} dangerouslySetInnerHTML={{ __html: styles }} />}
       </React.Fragment>
     );
   });

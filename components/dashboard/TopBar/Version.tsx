@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge, Tooltip, Typography, badgeClasses } from '@mui/material';
 
 import { ExternalLink } from '@/components/common/ExternalLink';

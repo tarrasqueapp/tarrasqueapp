@@ -39,13 +39,14 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
+import { Campaign } from '@/actions/campaigns';
+import { reorderMaps } from '@/actions/maps';
 import { Membership } from '@/actions/memberships';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
-import { useReorderMaps } from '@/hooks/data/maps/useReorderMaps';
 import { Color } from '@/lib/colors';
-import { CampaignEntity, Role } from '@/lib/types';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 import { MathUtils } from '@/utils/MathUtils';
 
@@ -57,14 +58,14 @@ import { Plugins } from './Plugins/Plugins';
 export interface CampaignAccordionProps {
   expanded?: boolean;
   onToggle?: (expanded: boolean) => void;
-  campaign?: CampaignEntity;
+  campaign?: Campaign;
 }
 
 export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAccordionProps) {
+  const { data: invites } = useGetInvites(campaign?.id || '');
   const { data: maps } = useGetCampaignMaps(campaign?.id || '');
   const { data: memberships } = useGetMemberships(campaign?.id || '');
   const { data: user } = useGetUser();
-  const reorderMaps = useReorderMaps();
 
   const { setSelectedCampaignId, setModal } = useCampaignStore();
 
@@ -83,8 +84,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
   // Set initial order of map ids and update when maps change
   useEffect(() => {
-    if (!maps?.length) return;
-    setOrderedMaps(maps);
+    setOrderedMaps(maps || []);
   }, [maps]);
 
   const style = {
@@ -94,7 +94,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
   };
 
   const isGameMaster = memberships?.some(
-    (membership) => membership.user_id === user?.id && membership.role === Role.GAME_MASTER,
+    (membership) => membership.user_id === user?.id && membership.role === 'GAME_MASTER',
   );
 
   /**
@@ -105,7 +105,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
   function isCampaignGameMaster(membership: Membership) {
     return memberships?.some(
       (campaignMembership) =>
-        campaignMembership.user_id === membership.user_id && campaignMembership.role === Role.GAME_MASTER,
+        campaignMembership.user_id === membership.user_id && campaignMembership.role === 'GAME_MASTER',
     );
   }
 
@@ -147,8 +147,8 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
     if (!campaign || !maps || !orderedMaps || !event.over) return;
 
     // Check if order has changed
-    if (orderedMaps.some((map, index) => map.id !== maps[index].id)) {
-      reorderMaps.mutate({ campaignId: campaign.id, mapIds: orderedMaps.map((map) => map.id) });
+    if (orderedMaps.some((map, index) => map.id !== maps[index]!.id)) {
+      reorderMaps({ campaignId: campaign.id, mapIds: orderedMaps.map((map) => map.id) });
     }
   }
 
@@ -200,7 +200,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                 );
               })}
 
-              {campaign?.invites.map((invite) => (
+              {invites?.map((invite) => (
                 <Tooltip key={invite.id} title={invite.email}>
                   <Box sx={{ border: '2px dashed transparent', borderRadius: 90 }}>
                     <Avatar sx={{ width: 24, height: 24, opacity: 0.5 }} />
@@ -309,10 +309,12 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={orderedMaps!} strategy={rectSortingStrategy}>
-              {maps ? (
-                orderedMaps?.map((map) => (
-                  <MapCard key={map.id} map={maps!.find((m) => m.id === map.id)} campaign={campaign} />
-                ))
+              {orderedMaps ? (
+                <>
+                  {orderedMaps?.map((map) => (
+                    <MapCard key={map.id} map={orderedMaps!.find((m) => m.id === map.id)} campaign={campaign} />
+                  ))}
+                </>
               ) : (
                 <>
                   {[...Array(4)].map((item, index) => (
@@ -325,7 +327,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             <Portal>
               <DragOverlay modifiers={[restrictToParentElement]}>
                 {activeId ? (
-                  <MapCard key={activeId} map={maps?.find((map) => map.id === activeId)} campaign={campaign} />
+                  <MapCard key={activeId} map={orderedMaps?.find((map) => map.id === activeId)} campaign={campaign} />
                 ) : null}
               </DragOverlay>
             </Portal>

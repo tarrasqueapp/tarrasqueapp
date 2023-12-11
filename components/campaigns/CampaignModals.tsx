@@ -1,6 +1,8 @@
+'use client';
+
 import { Alert } from '@mui/material';
 
-import { useDeleteCampaign } from '@/hooks/data/campaigns/useDeleteCampaign';
+import { deleteCampaign } from '@/actions/campaigns';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
@@ -11,7 +13,6 @@ import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';
 
 export function CampaignModals() {
   const { data: campaigns } = useGetUserCampaigns();
-  const deleteCampaign = useDeleteCampaign();
 
   const { selectedCampaignId, setSelectedCampaignId, modal, setModal } = useCampaignStore();
 
@@ -41,7 +42,7 @@ export function CampaignModals() {
         open={modal === CampaignModal.Delete}
         onConfirm={async () => {
           if (!selectedCampaign) return;
-          deleteCampaign.mutate(selectedCampaign);
+          await deleteCampaign(selectedCampaign.id);
         }}
         onClose={() => {
           setModal(null);

@@ -10,6 +10,9 @@ export class DateTimeUtils {
       throw new Error(`Invalid duration: ${duration}`);
     }
     const [, value, unit] = match;
+    if (!value || !unit) {
+      throw new Error(`Invalid duration: ${duration}`);
+    }
     return parseInt(value, 10) * DateTimeUtils.getMillisecondsMultiplier(unit);
   }
 

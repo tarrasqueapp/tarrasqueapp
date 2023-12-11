@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Close, Info } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -20,22 +20,21 @@ import {
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { updateUser } from '@/actions/auth';
-import { createMedia } from '@/actions/media';
+import { Media, createMedia } from '@/actions/media';
 import { updateProfile } from '@/actions/profiles';
 import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
-import { MediaEntity } from '@/lib/types';
 import { useDashboardStore } from '@/store/dashboard';
-import { MediaUtils, UploadedFile } from '@/utils/MediaUtils';
+import { MediaUtils } from '@/utils/MediaUtils';
 import { ValidateUtils } from '@/utils/ValidateUtils';
 
 import { ControlledPasswordField } from '../form/ControlledPasswordField';
 import { ControlledTextField } from '../form/ControlledTextField';
-import { ControlledImageUploader } from '../form/ImageUploader/ControlledImageUploader';
+import { ControlledAvatarUploader } from '../form/Uploader/ControlledAvatarUploader';
 
 interface SettingsModalProps {
   open: boolean;
@@ -51,49 +50,34 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
-  const schema = yup
-    .object()
-    .shape(
-      {
-        name: ValidateUtils.Name,
-        display_name: ValidateUtils.Name,
-        email: ValidateUtils.Email,
-        avatar: yup
-          .mixed<UploadedFile | MediaEntity>()
-          .test('isUppyFileOrMedia', 'Invalid avatar', (value) => {
+  const schema = z
+    .object({
+      name: z.string().min(1),
+      display_name: z.string().min(1),
+      email: z.string().email().min(1),
+      avatar: z
+        .union([ValidateUtils.fields.uppyFile, ValidateUtils.fields.media])
+        .nullable()
+        .refine(
+          (value) => {
             if (!value) return true;
             return MediaUtils.isUploadedFile(value) || MediaUtils.isMedia(value);
-          })
-          .nullable(),
-        password: yup
-          .string()
-          .trim()
-          .when('password', {
-            is: (password: string) => password && password.length > 0,
-            then: () => yup.string().min(8, 'Password must have at least 8 characters'),
-          }),
-        confirmPassword: yup
-          .string()
-          .trim()
-          .when('password', {
-            is: (password: string) => (password && password.length > 0 ? true : false),
-            then: () =>
-              yup
-                .string()
-                .trim()
-                .required('Please confirm your password')
-                .oneOf([yup.ref('password')], 'Passwords must match'),
-          }),
-      },
-      [['password', 'password']],
-    )
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+          },
+          { message: 'Invalid avatar' },
+        ),
+      password: z.string().trim().min(8).optional().or(z.literal('')),
+      confirmPassword: z.string().trim().min(8).optional().or(z.literal('')),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: 'Passwords do not match',
+      path: ['confirmPassword'],
+    });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: profile?.name,
       display_name: profile?.display_name,
@@ -170,7 +154,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     await updateProfile({
       name: values.name,
       display_name: values.display_name,
-      avatar_id: values.avatar?.id,
+      avatar_id: (values.avatar as Media)?.id || null,
     });
 
     onClose();
@@ -197,7 +181,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 Avatar
               </Typography>
 
-              <ControlledImageUploader name="avatar" />
+              <ControlledAvatarUploader name="avatar" />
             </Box>
 
             <Typography variant="h6">Account</Typography>

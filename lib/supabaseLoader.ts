@@ -15,7 +15,7 @@ interface Props {
  * @param quality - The image quality (default: 75)
  * @returns The transformed image URL
  */
-export function storageImageLoader({ src, width, quality }: Props) {
+export function supabaseLoader({ src, width, quality }: Props) {
   return `${config.SUPABASE_URL}/storage/v1/render/image/public/tarrasqueapp/${src}?width=${width}&quality=${
     quality || 75
   }`;

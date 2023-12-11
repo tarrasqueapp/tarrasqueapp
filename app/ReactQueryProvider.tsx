@@ -3,6 +3,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, lazy, useEffect, useState } from 'react';
 
+declare global {
+  interface Window {
+    toggleDevtools: () => void;
+  }
+}
+
 const ReactQueryDevtoolsProduction = lazy(() =>
   import('@tanstack/react-query-devtools/build/modern/production.js').then((d) => ({
     default: d.ReactQueryDevtools,
@@ -26,7 +32,7 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
 
   // Add a global function to toggle the devtools
   useEffect(() => {
-    (window as any).toggleDevtools = () => setShowDevtools((old) => !old);
+    window.toggleDevtools = () => setShowDevtools((old) => !old);
   }, []);
 
   return (

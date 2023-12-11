@@ -1,9 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
+import { Campaign } from '@/actions/campaigns';
+import { Map as MapEntity } from '@/actions/maps';
 import { SocketEvent } from '@/lib/events';
 import { socket } from '@/lib/socket';
-import { CampaignEntity, MapEntity, PositionEntity } from '@/lib/types';
+import { Position } from '@/lib/types';
 
 import { useEffectAsync } from '../useEffectAsync';
 
@@ -83,8 +85,8 @@ export function useIframeDataSync() {
           return map?.campaign;
         },
         // Get the current map from the cache
-        TARRASQUE_MAP: () => queryClient.getQueryData<CampaignEntity>(['maps', params?.mapId]),
-        TARRASQUE_PING_LOCATION: (position: PositionEntity) => {
+        TARRASQUE_MAP: () => queryClient.getQueryData<Campaign>(['maps', params?.mapId]),
+        TARRASQUE_PING_LOCATION: (position: Position) => {
           // Emit the ping location event
           socket.emit(SocketEvent.PING_LOCATION, {
             position,
@@ -110,7 +112,7 @@ export function useIframeDataSync() {
 
       // Create a map of query keys to event handlers
       const eventHandlers = new Map();
-      eventHandlers.set(['campaigns', map.campaignId], () => broadcast('CAMPAIGN_CHANGED', event.query.state.data));
+      eventHandlers.set(['campaigns', map.campaign_id], () => broadcast('CAMPAIGN_CHANGED', event.query.state.data));
       eventHandlers.set(['maps', map.id], () => broadcast('MAP_CHANGED', event.query.state.data));
 
       // Loop through all the event handlers and call them if the query key matches

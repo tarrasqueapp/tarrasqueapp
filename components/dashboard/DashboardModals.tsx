@@ -6,7 +6,7 @@ export function DashboardModals() {
     <>
       <CampaignModals />
 
-      {/* <MapModals /> */}
+      <MapModals />
     </>
   );
 }

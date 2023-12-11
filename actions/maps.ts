@@ -5,6 +5,8 @@ import { z } from 'zod';
 
 import { createServerClient } from '@/utils/supabase/server';
 
+import { getUser } from './auth';
+
 export type Map = Awaited<ReturnType<typeof getMaps>>[number];
 
 /**
@@ -32,6 +34,7 @@ export async function getMaps(campaignId: string) {
       )
       `,
     )
+    .order('order')
     .eq('campaign_id', campaignId);
 
   if (error) {
@@ -74,4 +77,151 @@ export async function getMap(mapId: string) {
   }
 
   return data;
+}
+
+/**
+ * Create a map
+ * @param name - The map's name
+ * @param campaign_id - The campaign to create the map for
+ * @param media_id - The map's media ID
+ * @returns The created map
+ */
+export async function createMap({
+  name,
+  campaign_id,
+  media_id,
+}: {
+  name: string;
+  campaign_id: string;
+  media_id: string;
+}) {
+  // Validate inputs
+  const schema = z.object({ name: z.string().min(1), campaign_id: z.string().uuid(), media_id: z.string().uuid() });
+  schema.parse({ name, campaign_id, media_id });
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Get user
+  const user = await getUser();
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Get the order of the last map, if one exists
+  const { data: lastMap } = await supabase
+    .from('maps')
+    .select('order')
+    .eq('campaign_id', campaign_id)
+    .order('order', { ascending: false })
+    .limit(1);
+
+  const order = lastMap?.[0]?.order || 0;
+
+  // Create the map
+  const { data, error } = await supabase.from('maps').insert({
+    name,
+    campaign_id,
+    media_id: media_id,
+    user_id: user.id,
+    order: order + 1,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/**
+ * Update a map
+ * @param id - The map to update
+ * @param name - The map's name
+ * @param campaign_id - The campaign to update the map for
+ * @param media_id - The map's media ID
+ * @returns The updated map
+ */
+export async function updateMap({
+  id,
+  name,
+  campaign_id,
+  media_id,
+}: {
+  id: string;
+  name: string;
+  campaign_id: string;
+  media_id: string;
+}) {
+  // Validate inputs
+  const schema = z.object({
+    id: z.string().uuid(),
+    name: z.string().min(1),
+    campaign_id: z.string().uuid(),
+    media_id: z.string().uuid(),
+  });
+  schema.parse({ id, name, campaign_id, media_id });
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Update the map
+  const { data, error } = await supabase.from('maps').update({ name, campaign_id, media_id }).eq('id', id);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/**
+ * Delete a map
+ * @param mapId - The map to delete
+ */
+export async function deleteMap(mapId: string) {
+  // Validate inputs
+  const schema = z.string().uuid();
+  schema.parse(mapId);
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Delete the map
+  const { error } = await supabase.from('maps').delete().eq('id', mapId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+/**
+ * Reorder maps
+ * @param mapIds - The new order of map ids
+ */
+export async function reorderMaps({ campaignId, mapIds }: { campaignId: string; mapIds: string[] }) {
+  // Validate inputs
+  const schema = z.object({ campaignId: z.string().uuid(), mapIds: z.array(z.string().uuid()) });
+  schema.parse({ campaignId, mapIds });
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  for (let i = 0; i < mapIds.length; i++) {
+    const mapId = mapIds[i]!;
+    const newOrder = i + 1;
+
+    // Update the order of the map
+    const { error } = await supabase
+      .from('maps')
+      .update({ order: newOrder })
+      .eq('id', mapId)
+      .eq('campaign_id', campaignId);
+
+    if (error) throw error;
+  }
 }

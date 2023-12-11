@@ -1,3 +1,5 @@
+'use client';
+
 import { Notifications as NotificationsIcon } from '@mui/icons-material';
 import { Badge, Box, IconButton, List, Popover, Tooltip, Typography } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';

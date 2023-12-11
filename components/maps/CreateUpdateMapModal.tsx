@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Close } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -13,86 +13,71 @@ import {
   Theme,
   useMediaQuery,
 } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 
-import { createMedia } from '@/actions/media';
-import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { Campaign } from '@/actions/campaigns';
+import { Map, createMap, updateMap } from '@/actions/maps';
+import { Media, createMedia } from '@/actions/media';
+import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
-import { useCreateMap } from '@/hooks/data/maps/useCreateMap';
-import { useUpdateMap } from '@/hooks/data/maps/useUpdateMap';
-import { MapFactory } from '@/lib/factories/MapFactory';
-import { CampaignEntity, MapEntity, MediaEntity, Role } from '@/lib/types';
 import { useMapStore } from '@/store/map';
-import { MediaUtils, UploadedFile } from '@/utils/MediaUtils';
+import { MediaUtils } from '@/utils/MediaUtils';
 import { ValidateUtils } from '@/utils/ValidateUtils';
 
 import { ControlledTextField } from '../form/ControlledTextField';
-import { ControlledMediaUploader } from '../form/MediaUploader/ControlledMediaUploader';
+import { ControlledMediaUploader } from '../form/Uploader/ControlledMediaUploader';
 
 interface CreateUpdateMapModalProps {
   open: boolean;
   onClose: () => void;
-  map: MapEntity | undefined;
-  campaign: CampaignEntity | undefined;
+  map: Map | undefined;
+  campaign: Campaign | undefined;
 }
 
 export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpdateMapModalProps) {
-  const { data: campaigns } = useGetUserCampaigns();
-  const { data: user } = useGetUser();
-  const createMap = useCreateMap();
-  const updateMap = useUpdateMap();
-  const queryClient = useQueryClient();
+  const { data: campaigns } = useGetUserCampaigns('GAME_MASTER');
 
   const { modal } = useMapStore();
-
-  // Get campaigns where the user is a GM
-  const gmCampaigns =
-    campaigns?.filter((campaign) =>
-      campaign.memberships.some((membership) => membership.userId === user?.id && membership.role === Role.GAME_MASTER),
-    ) || [];
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
-  const schema = yup
-    .object({
-      name: ValidateUtils.Name,
-      campaignId: yup.string().when('campaign', {
-        is: (campaign: CampaignEntity | undefined) => Boolean(campaign),
-        then: () => yup.string().required(),
-      }),
-      media: yup
-        .mixed<(UploadedFile | MediaEntity)[]>()
-        .test('isUppyFileOrMedia', 'Invalid media', (value) => {
-          if (!value || !Array.isArray(value) || !value.length) return false;
-          return value.every((file) => MediaUtils.isUploadedFile(file) || MediaUtils.isMedia(file));
-        })
-        .required(),
-      selectedMediaId: yup.string().required(),
-    })
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z.object({
+    name: z.string().min(1),
+    campaign_id: z.string().min(1),
+    media: z
+      .union([ValidateUtils.fields.uppyFile, ValidateUtils.fields.media])
+      .nullable()
+      .refine(
+        (value) => {
+          if (!value) return false;
+          return MediaUtils.isUploadedFile(value) || MediaUtils.isMedia(value);
+        },
+        {
+          message: 'Invalid media',
+        },
+      ),
+  });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
-    defaultValues: map || new MapFactory(),
+    resolver: zodResolver(schema),
+    defaultValues: map || { name: '', campaign_id: campaign?.id, media: undefined },
   });
   const {
     handleSubmit,
     reset,
     formState: { isSubmitting, isValid },
-    watch,
-    setValue,
   } = methods;
 
   // Reset the form when the map changes
   useEffect(() => {
-    reset(map || new MapFactory());
+    reset(map || { name: '', campaign_id: campaign?.id, media: undefined });
   }, [map, reset, modal]);
 
   /**
@@ -102,70 +87,56 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
   async function handleSubmitForm(values: Schema) {
     if (!campaign) return;
 
-    if (map) {
-      // Get existing media
-      const existingMedia = values.media.filter((media) => MediaUtils.isMedia(media));
-      // Find new files that needs to be created as media
-      const newMedia = await Promise.all(
-        values.media
-          .filter((file): file is UploadedFile => MediaUtils.isUploadedFile(file))
-          .map(async (uppyFile) => {
-            const file = await MediaUtils.convertUppyToFile(uppyFile);
-            const media = await createMedia(file);
-            if (values.selectedMediaId === uppyFile.id) {
-              values.selectedMediaId = media.id;
-            }
-            return media;
-          }),
-      );
-      // Merge existing and new media
-      const media = [...existingMedia, ...newMedia] as MediaEntity[];
-      // Update map
-      await updateMap.mutateAsync({
-        name: values.name,
-        id: map.id,
-        campaignId: values.campaignId,
-        ...(media.length > 0 && { mediaIds: media.map((media) => media.id) }),
-        selectedMediaId: values.selectedMediaId,
-      });
-      if (values.campaignId !== map.campaignId) {
-        queryClient.invalidateQueries({ queryKey: ['campaigns', map.campaignId, 'maps'] });
+    // Create the media
+    if (values.media && MediaUtils.isUploadedFile(values.media)) {
+      // Get the normalized file from Uppy
+      const file = await MediaUtils.convertUppyToFile(values.media);
+
+      // Get the uploaded storage object's ID to use as the media ID foreign key
+      const objectId = await getObjectId(file.url);
+      if (!objectId) {
+        toast.error('Failed to upload media');
+        return;
       }
+
+      // Create the media entity
+      const media = await createMedia({
+        id: objectId,
+        url: file.url,
+        width: file.width,
+        height: file.height,
+        size: file.size,
+      });
+
+      // Update the media with the final media entity
+      values.media = media;
+
+      // Delete the previous media if it exists
+      if (map?.media) {
+        deleteStorageObject(map.media.url);
+      }
+    }
+
+    // Update map
+    if (map) {
+      await updateMap({
+        id: map.id,
+        name: values.name,
+        campaign_id: values.campaign_id,
+        media_id: (values.media as Media)?.id,
+      });
       onClose();
       return;
     }
 
-    // Create new media
-    const media = await Promise.all(
-      values.media
-        .filter((file): file is UploadedFile => MediaUtils.isUploadedFile(file))
-        .map(async (uppyFile) => {
-          const file = await MediaUtils.convertUppyToFile(uppyFile);
-          const media = await createMedia(file);
-          if (values.selectedMediaId === uppyFile.id) {
-            values.selectedMediaId = media.id;
-          }
-          return media;
-        }),
-    );
     // Create map
-    await createMap.mutateAsync({
+    await createMap({
       name: values.name,
-      campaignId: campaign.id,
-      mediaIds: media.map((media) => media.id),
-      selectedMediaId: values.selectedMediaId,
+      campaign_id: campaign.id,
+      media_id: (values.media as Media)?.id,
     });
     onClose();
   }
-
-  const media = watch('media');
-  const selectedMediaId = watch('selectedMediaId');
-  useEffect(() => {
-    if (selectedMediaId || !media?.length) return;
-    const firstMedia = media[media.length - 1];
-    if (!firstMedia) return;
-    setValue('selectedMediaId', firstMedia.id, { shouldValidate: true });
-  }, [media]);
 
   return (
     <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
@@ -185,9 +156,9 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
           <DialogContent>
             <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
 
-            {map && (
+            {Boolean(campaigns && map) && (
               <ControlledTextField name="campaignId" label="Campaign" sx={{ my: 1 }} fullWidth select>
-                {gmCampaigns.map((campaign) => (
+                {campaigns!.map((campaign) => (
                   <MenuItem key={campaign.id} value={campaign.id}>
                     {campaign.name}
                   </MenuItem>
@@ -196,11 +167,7 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
             )}
 
             <Box sx={{ my: 1 }}>
-              <ControlledMediaUploader
-                name="media"
-                selectedMediaId={selectedMediaId}
-                onSelect={(file) => setValue('selectedMediaId', file?.id, { shouldValidate: true })}
-              />
+              <ControlledMediaUploader name="media" />
             </Box>
           </DialogContent>
 

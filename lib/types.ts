@@ -1,148 +1,24 @@
-export enum SetupStep {
-  DATABASE = 1,
-  USER = 2,
-  COMPLETED = 3,
-}
+import { User } from '@supabase/supabase-js';
 
-export interface SetupEntity {
-  step: SetupStep;
-  completed: boolean;
-}
+import { Campaign } from '@/actions/campaigns';
+import { Map } from '@/actions/maps';
 
-export interface UserEntity {
-  id: string;
-  name: string;
-  display_name: string;
-  email: string;
-  isEmailVerified: boolean;
-  // Avatar
-  avatar?: MediaEntity;
-  avatarId?: string;
-  // Order of campaigns
-  campaignOrder: string[];
-  // DateTime
-  createdAt: string;
-  updatedAt: string;
-  // Memberships
-  memberships: MembershipEntity[];
-}
-
-export enum ActionTokenType {
-  VERIFY_EMAIL = 'VERIFY_EMAIL',
-  RESET_PASSWORD = 'RESET_PASSWORD',
-  INVITE = 'INVITE',
-}
-
-export interface ActionTokenEntity {
-  id: string;
-  type: ActionTokenType;
-  email: string;
-  payload: Record<string, any>;
-  // DateTime
-  createdAt: Date;
-  updatedAt: Date;
-  expiresAt: Date;
-  // User
-  user?: UserEntity | null;
-  userId: string | null;
-  // Campaign
-  campaign?: CampaignEntity | null;
-  campaignId: string | null;
-}
-
-export interface CampaignEntity {
-  id: string;
-  name: string;
-  // DateTime
-  created_at: string;
-  // Memberships
-  // memberships: MembershipEntity[];
-  // Created by
-  // createdBy: UserEntity;
-  user_id: string;
-  // Invites
-  // invites: ActionTokenEntity[];
-  // Maps
-  // maps: MapEntity[];
-  // Plugins
-  // plugins: PluginEntity[];
-}
-
-export enum Role {
-  GAME_MASTER = 'GAME_MASTER',
-  PLAYER = 'PLAYER',
-}
-
-export interface MembershipEntity {
-  role: Role;
-  color: string;
-  // User
-  user: UserEntity;
-  userId: string;
-  // Campaign
-  campaignId: string;
-  // DateTime
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MapEntity {
-  id: string;
-  name: string;
-  // DateTime
-  createdAt: string;
-  updatedAt: string;
-  // Media
-  media: MediaEntity[];
-  media_id: string;
-  selectedMediaId: string;
-  // Campaign
-  campaign: CampaignEntity;
-  campaignId: string;
-  // Created by
-  createdBy: UserEntity;
-  createdById: string;
-  // Tokens
-  tokens?: TokenEntity[];
-}
-
-export interface CharacterEntity {
-  id: string;
-  name: string;
-  // DateTime
-  createdAt: string;
-  updatedAt: string;
-  // Tokens
-  tokens?: TokenEntity[];
-  // Media
-  media?: MediaEntity[];
-  selectedMediaId: string;
-  // Created by
-  createdBy?: UserEntity;
-  createdById: string;
-  // Controlled by
-  controlledBy?: UserEntity[];
-  // Campaign
-  campaign?: CampaignEntity;
-  campaignId: string;
-}
-
-export interface DimensionsEntity {
+export interface Dimensions {
   width: number;
   height: number;
 }
 
-export interface PositionEntity {
+export interface Position {
   x: number;
   y: number;
 }
 
 export interface PingLocationEntity {
   id?: string;
-  position: PositionEntity;
+  position: Position;
   color: string;
-  mapId: string;
-  userId: string;
+  map_id: string;
+  user_id: string;
 }
 
 export interface FileEntity {
@@ -155,16 +31,6 @@ export interface FileEntity {
   height?: number;
 }
 
-export interface MediaEntity {
-  id: string;
-  url: string;
-  width: number | null;
-  height: number | null;
-  size: number | null;
-  created_at: string;
-  user_id: string;
-}
-
 export interface TokenEntity {
   id: string;
   width: number;
@@ -172,38 +38,25 @@ export interface TokenEntity {
   x: number;
   y: number;
   // DateTime
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   // User
-  createdBy: UserEntity;
-  createdById: string;
+  user: User;
+  user_id: string;
   // Map
-  map: MapEntity;
-  mapId: string;
+  map: Map;
+  map_id: string;
   // Character
-  character?: CharacterEntity;
-  characterId?: string;
-}
-
-export enum NotificationTypeEnum {
-  INVITE = 'INVITE',
-}
-
-export interface NotificationEntity {
-  userId: string;
-  type: NotificationTypeEnum;
-  data: { id: string };
+  // character?: CharacterEntity;
+  character_id?: string;
 }
 
 export interface PluginEntity {
   id: string;
-  manifestUrl: string;
-  // DateTime
-  createdAt: string;
-  updatedAt: string;
-  // Campaign
-  campaign: CampaignEntity;
-  campaignId: string;
+  manifest_url: string;
+  created_at: string;
+  campaign?: Campaign;
+  campaign_id: string;
 }
 
 export interface SubmittedPluginEntity {

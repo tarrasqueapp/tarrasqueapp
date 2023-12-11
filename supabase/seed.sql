@@ -153,3 +153,19 @@ VALUES
     (select id from public.campaigns limit 1 offset 1),
     current_timestamp
   );
+
+-- create invite for first campaign
+INSERT INTO
+  public.invites (
+    id,
+    email,
+    campaign_id,
+    created_at
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'richard@tarrasque.app',
+    (select id from public.campaigns limit 1),
+    current_timestamp
+  );

@@ -22,25 +22,23 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
+import { Campaign } from '@/actions/campaigns';
 import { Map } from '@/actions/maps';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
-import { useDuplicateMap } from '@/hooks/data/maps/useDuplicateMap';
 import { AppNavigation } from '@/lib/navigation';
-import { storageImageLoader } from '@/lib/storageImageLoader';
-import { CampaignEntity, Role } from '@/lib/types';
+import { supabaseLoader } from '@/lib/supabaseLoader';
 import { useCampaignStore } from '@/store/campaign';
 import { MapModal, useMapStore } from '@/store/map';
 
 interface MapCardProps {
   map?: Map;
-  campaign?: CampaignEntity;
+  campaign?: Campaign;
 }
 
 export function MapCard({ map, campaign }: MapCardProps) {
   const { data: user } = useGetUser();
   const { data: memberships } = useGetMemberships(campaign?.id || '');
-  const duplicateMap = useDuplicateMap();
 
   const { setSelectedMapId, setModal } = useMapStore();
   const { setSelectedCampaignId } = useCampaignStore();
@@ -55,7 +53,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
   };
 
   const isGameMaster = memberships?.some(
-    (membership) => membership.user_id === user?.id && membership.role === Role.GAME_MASTER,
+    (membership) => membership.user_id === user?.id && membership.role === 'GAME_MASTER',
   );
 
   const width = 250;
@@ -111,11 +109,11 @@ export function MapCard({ map, campaign }: MapCardProps) {
             <CardActionArea sx={{ position: 'static' }}>
               <CardMedia>
                 <Image
-                  loader={storageImageLoader}
+                  loader={supabaseLoader}
                   src={map.media!.url}
                   width={width}
                   height={height}
-                  layout="responsive"
+                  priority
                   alt=""
                   style={{
                     width: '100%',

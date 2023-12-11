@@ -1,7 +1,1 @@
-const base = require('@tronite/prettier-config');
-
-module.exports = {
-  ...base,
-  plugins: [...base.plugins, 'prettier-plugin-packagejson'],
-  importOrder: ['<THIRD_PARTY_MODULES>', '^@/(.*)$', '^[./]'],
-};
+module.exports = require('@tronite/style-guide/prettier');

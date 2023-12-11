@@ -1,6 +1,6 @@
-'use client';
-
 import { Box, Container } from '@mui/material';
+import { getCookie } from 'cookies-next';
+import { cookies } from 'next/headers';
 
 import { CampaignAccordions } from '@/components/dashboard/CampaignAccordions';
 import { DashboardModals } from '@/components/dashboard/DashboardModals';
@@ -8,6 +8,9 @@ import { TopBar } from '@/components/dashboard/TopBar/TopBar';
 import { Gradient } from '@/lib/colors';
 
 export function Dashboard() {
+  const collapsedCampaignsCookie = getCookie('campaigns/collapsed', { cookies }) || '';
+  const collapsedCampaigns = collapsedCampaignsCookie ? collapsedCampaignsCookie.split(',') : [];
+
   return (
     <>
       <Box
@@ -27,7 +30,7 @@ export function Dashboard() {
             p: { xs: 1, sm: 2, md: 3 },
           }}
         >
-          <CampaignAccordions />
+          <CampaignAccordions collapsedCampaigns={collapsedCampaigns} />
         </Container>
       </Box>
 

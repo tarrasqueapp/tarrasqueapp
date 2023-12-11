@@ -1,30 +1,29 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import * as yup from 'yup';
+import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 
 import { forgotPassword } from '@/actions/auth';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function ForgotPassword() {
   const searchParams = useSearchParams();
   const email = searchParams?.get('email') || '';
 
   // Setup form validation schema
-  const schema = yup.object({ email: ValidateUtils.Email }).required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z.object({ email: z.string().email().min(1) });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
     defaultValues: { email },
   });
   const {

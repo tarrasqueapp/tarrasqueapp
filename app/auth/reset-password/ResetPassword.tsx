@@ -1,39 +1,37 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { updateUser } from '@/actions/auth';
 import { ControlledPasswordField } from '@/components/form/ControlledPasswordField';
 import { AppNavigation } from '@/lib/navigation';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function ResetPassword() {
   const router = useRouter();
 
   // Setup form validation schema
-  const schema = yup
-    .object()
-    .shape(
-      {
-        password: ValidateUtils.Password,
-        confirmPassword: ValidateUtils.Password.oneOf([yup.ref('password')], 'Passwords must match'),
-      },
-      [['password', 'password']],
-    )
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z
+    .object({
+      password: z.string().min(8),
+      confirmPassword: z.string().min(8),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: 'Passwords do not match',
+      path: ['confirmPassword'],
+    });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
   const {
     handleSubmit,

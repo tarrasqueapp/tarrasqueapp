@@ -1,7 +1,9 @@
+'use client';
+
 import { Alert } from '@mui/material';
 
+import { deleteMap } from '@/actions/maps';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
-import { useDeleteMap } from '@/hooks/data/maps/useDeleteMap';
 import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
 import { useCampaignStore } from '@/store/campaign';
 import { MapModal, useMapStore } from '@/store/map';
@@ -14,7 +16,6 @@ export function MapModals() {
   const { selectedMapId, setSelectedMapId, modal, setModal } = useMapStore();
   const { data: campaigns } = useGetUserCampaigns();
   const { data: maps } = useGetCampaignMaps(selectedCampaignId!);
-  const deleteMap = useDeleteMap();
 
   const selectedCampaign = campaigns?.find((campaign) => campaign.id === selectedCampaignId);
   const selectedMap = maps?.find((map) => map.id === selectedMapId);
@@ -39,7 +40,7 @@ export function MapModals() {
         open={modal === MapModal.Delete}
         onConfirm={async () => {
           if (!selectedMap) return;
-          deleteMap.mutate(selectedMap);
+          deleteMap(selectedMap.id);
         }}
         onClose={() => {
           setModal(null);

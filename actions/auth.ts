@@ -86,7 +86,7 @@ export async function signUp({ name, email, password }: { name: string; email: s
   }
 
   // Send the welcome email with the verification link
-  const firstName = name.split(' ')[0];
+  const firstName = name.split(' ')[0]!;
   await sendWelcomeEmail({ firstName, to: email, verifyEmailUrl: data.properties.action_link });
 }
 
@@ -171,7 +171,7 @@ export async function updateUser({ email, password }: UserAttributes) {
 
     // Send an email with the verification link
     const profile = await getProfile();
-    const firstName = profile!.name.split(' ')[0];
+    const firstName = profile!.name.split(' ')[0]!;
     await sendEmailVerificationEmail({ firstName, to: email, verifyEmailUrl: data.properties.action_link });
   }
 
@@ -212,6 +212,6 @@ export async function forgotPassword(email: string) {
 
   // Send the password reset email with the verification link
   const profile = await getProfile();
-  const firstName = profile!.name.split(' ')[0];
+  const firstName = profile!.name.split(' ')[0]!;
   await sendPasswordResetEmail({ firstName, to: email, resetPasswordUrl: data.properties.action_link });
 }

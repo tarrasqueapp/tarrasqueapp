@@ -1,18 +1,17 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import * as yup from 'yup';
+import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 
 import { signIn } from '@/actions/auth';
 import { ControlledPasswordField } from '@/components/form/ControlledPasswordField';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
-import { ValidateUtils } from '@/utils/ValidateUtils';
 
 export function SignIn() {
   const searchParams = useSearchParams();
@@ -20,16 +19,14 @@ export function SignIn() {
   const confirmEmail = searchParams?.get('confirm-email');
 
   // Setup form validation schema
-  const schema = yup
-    .object({
-      email: ValidateUtils.Email,
-      password: ValidateUtils.Password,
-    })
-    .required();
-  type Schema = yup.InferType<typeof schema>;
+  const schema = z.object({
+    email: z.string().email().min(1),
+    password: z.string().min(8),
+  });
+  type Schema = z.infer<typeof schema>;
 
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: yupResolver(schema) });
+  const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
   const {
     handleSubmit,
     formState: { isSubmitting },

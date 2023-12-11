@@ -26,7 +26,17 @@ export default async function DashboardPage() {
   }
 
   await ssr.prefetchProfile();
-  await ssr.prefetchUserCampaigns();
+  const campaigns = await ssr.prefetchUserCampaigns();
+
+  await Promise.all(
+    campaigns.map(async (campaign) => {
+      return await Promise.all([
+        ssr.prefetchCampaignMaps(campaign.id),
+        ssr.prefetchCampaignMemberships(campaign.id),
+        ssr.prefetchCampaignInvites(campaign.id),
+      ]);
+    }),
+  );
 
   return (
     <HydrationBoundary state={ssr.dehydrate()}>

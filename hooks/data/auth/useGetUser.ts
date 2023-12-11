@@ -29,6 +29,6 @@ export function useGetUser() {
 
   return useQuery({
     queryKey: ['user'],
-    queryFn: getUser,
+    queryFn: () => getUser(),
   });
 }
