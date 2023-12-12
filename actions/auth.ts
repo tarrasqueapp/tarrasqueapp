@@ -9,7 +9,7 @@ import { config } from '@/lib/config';
 import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
 
-import { sendEmailVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from './email';
+import { sendEmailVerificationEmail, sendMagicLinkEmail, sendWelcomeEmail } from './email';
 import { getProfile } from './profiles';
 
 /**
@@ -57,43 +57,39 @@ export async function getSession() {
 }
 
 /**
- * Sign up the user with an email and password
+ * Sign up the user with an email
  * @param name - The user's name
  * @param email - The user's email
- * @param password - The user's password
  * @param token - The invite token
  */
-export async function signUp({
-  name,
-  email,
-  password,
-  token,
-}: {
-  name: string;
-  email: string;
-  password: string;
-  token?: string;
-}) {
+export async function signUp({ name, email, token }: { name: string; email: string; token?: string }) {
   // Validate the user details
   const schema = z.object({
     name: z.string().min(1),
     email: z.string().email(),
-    password: z.string().min(8),
     token: z.string().uuid().optional(),
   });
-  schema.parse({ name, email, password, token });
+  schema.parse({ name, email, token });
 
   // Connect to Supabase
   const cookieStore = cookies();
-  const supabase = createAdminServerClient(cookieStore);
+  const supabase = createServerClient(cookieStore);
+
+  // Check if the user exists
+  const { data: profile } = await supabase.from('profiles').select('id').eq('email', email).single();
+  if (profile) {
+    throw new Error('User already exists');
+  }
 
   // Sign up the user and generate a verification link
-  const { data, error } = await supabase.auth.admin.generateLink({
-    type: 'signup',
+  const supabaseAdmin = createAdminServerClient();
+  const { data, error } = await supabaseAdmin.auth.admin.generateLink({
+    type: 'magiclink',
     email,
-    password,
     options: {
-      data: { name },
+      data: {
+        name,
+      },
     },
   });
 
@@ -138,26 +134,43 @@ export async function signUp({
 /**
  * Sign in the user
  * @param email - The user's email
- * @param password - The user's password
  * @returns The user details
  */
-export async function signIn({ email, password }: { email: string; password: string }) {
+export async function signIn({ email }: { email: string }) {
   // Validate the user details
-  const schema = z.object({ email: z.string().email(), password: z.string().min(8) });
-  schema.parse({ email, password });
+  const schema = z.object({ email: z.string().email() });
+  schema.parse({ email });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
-  // Sign in the user
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  // Check if the user exists
+  const { data: profile } = await supabase.from('profiles').select('name').eq('email', email).single();
+  if (!profile) {
+    throw new Error('User not found');
+  }
+
+  // Sign up the user and generate a verification link
+  const supabaseAdmin = createAdminServerClient();
+  const { data, error } = await supabaseAdmin.auth.admin.generateLink({
+    type: 'magiclink',
+    email,
+  });
 
   if (error) {
     throw error;
   }
 
-  return data;
+  const searchParams = new URLSearchParams({
+    token_hash: data.properties.hashed_token,
+    next: '/dashboard',
+  });
+  const link = `${config.HOST}/auth/sign-in/callback?${searchParams}`;
+
+  // Send the magic link email
+  const firstName = profile.name.split(' ')[0]!;
+  await sendMagicLinkEmail({ firstName, to: email, magicLinkUrl: link });
 }
 
 /**
@@ -179,16 +192,11 @@ export async function signOut() {
 /**
  * Update a user
  * @param email - The user's email
- * @param password - The user's password
  */
-export async function updateUser({ email, password }: UserAttributes) {
+export async function updateUser({ email }: UserAttributes) {
   // Validate the user details
-  const schema = z.object({ email: z.string().email().optional(), password: z.string().min(8).optional() });
-  schema.parse({ email, password });
-
-  // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const schema = z.object({ email: z.string().email().optional() });
+  schema.parse({ email });
 
   // Get the user
   const user = await getUser();
@@ -198,9 +206,8 @@ export async function updateUser({ email, password }: UserAttributes) {
 
   // Update the user's email if it has been changed
   if (email && user.email && user.email !== email) {
-    const supabaseAdmin = createAdminServerClient(cookieStore);
-
     // Change the user's email address and generate a verification link
+    const supabaseAdmin = createAdminServerClient();
     const { data, error } = await supabaseAdmin.auth.admin.generateLink({
       type: 'email_change_new',
       email: user.email,
@@ -222,44 +229,4 @@ export async function updateUser({ email, password }: UserAttributes) {
     const firstName = profile!.name.split(' ')[0]!;
     await sendEmailVerificationEmail({ firstName, to: email, verifyEmailUrl: link });
   }
-
-  // Update the user's password if it has been changed
-  if (password) {
-    const { error } = await supabase.auth.updateUser({ password });
-
-    if (error) {
-      throw error;
-    }
-  }
-}
-
-/**
- * Send a reset password email to the user
- * @param email - The user's email
- */
-export async function forgotPassword(email: string) {
-  // Validate the user details
-  const schema = z.object({ email: z.string().email() });
-  schema.parse({ email });
-
-  // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createAdminServerClient(cookieStore);
-
-  const { data, error } = await supabase.auth.admin.generateLink({ type: 'recovery', email });
-
-  if (error) {
-    throw error;
-  }
-
-  const searchParams = new URLSearchParams({
-    token_hash: data.properties.hashed_token,
-    next: '/auth/reset-password',
-  });
-  const link = `${config.HOST}/auth/forgot-password/callback?${searchParams}`;
-
-  // Send the password reset email with the verification link
-  const { data: profile } = await supabase.from('profiles').select('name').eq('email', email).single();
-  const firstName = profile!.name.split(' ')[0]!;
-  await sendPasswordResetEmail({ firstName, to: email, resetPasswordUrl: link });
 }

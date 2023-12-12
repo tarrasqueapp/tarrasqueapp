@@ -1,8 +1,6 @@
 import { Graphics } from '@pixi/react';
 import React, { useEffect, useState } from 'react';
 
-import { SocketEvent } from '@/lib/events';
-import { socket } from '@/lib/socket';
 import { PingLocationEntity } from '@/lib/types';
 import { createBrowserClient } from '@/utils/supabase/client';
 
@@ -14,20 +12,20 @@ export function PingLocation() {
 
     supabase.channel('').subscribe((payload) => {});
 
-    socket.on(SocketEvent.PINGED_LOCATION, (ping) => {
-      const pingWithAnimation = {
-        ...ping,
-        frame: 0,
-        size: 0,
-        timestamp: Date.now(),
-      };
-      setPings((currentPings) => [...currentPings, pingWithAnimation]);
+    // socket.on(SocketEvent.PINGED_LOCATION, (ping) => {
+    //   const pingWithAnimation = {
+    //     ...ping,
+    //     frame: 0,
+    //     size: 0,
+    //     timestamp: Date.now(),
+    //   };
+    //   setPings((currentPings) => [...currentPings, pingWithAnimation]);
 
-      // Set timeout to remove the ping after 1.5 seconds
-      setTimeout(() => {
-        setPings((currentPings) => currentPings.filter((p) => p.id !== pingWithAnimation.id));
-      }, 1750);
-    });
+    //   // Set timeout to remove the ping after 1.5 seconds
+    //   setTimeout(() => {
+    //     setPings((currentPings) => currentPings.filter((p) => p.id !== pingWithAnimation.id));
+    //   }, 1750);
+    // });
   }, []);
 
   useEffect(() => {

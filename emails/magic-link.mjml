@@ -1,6 +1,6 @@
 <mjml>
   <mj-head>
-    <mj-title>Reset password</mj-title>
+    <mj-title>Sign in to Tarrasque App</mj-title>
 
     <mj-attributes>
       <mj-all font-family="Raleway, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
@@ -44,20 +44,20 @@
           </mj-text>
 
           <mj-text>
-            You recently requested to reset the password for your Tarrasque App account. Click the button below to reset it. <strong>This link is only valid for the next 24 hours</strong>.
+            You recently requested a magic link to sign in to your Tarrasque App account. Click the button below to sign in.
           </mj-text>
 
           <mj-button
             mj-class="button"
-            href="{{resetPasswordUrl}}"
+            href="{{magicLinkUrl}}"
             width="300px"
           >
-            Reset your password
+            Sign in
           </mj-button>
 
           <mj-text>
-            If you did not request a password reset, please ignore this email or
-            <a href="mailto:support@tarrasque.app" class="link">contact support</a> if you have questions.
+            If you did not request this magic link, please
+            <a href="mailto:support@tarrasque.app" class="link">contact support</a>.
           </mj-text>
 
           <mj-text>

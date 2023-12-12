@@ -3,8 +3,6 @@ import { Chip, Fade, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popp
 
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
-import { SocketEvent } from '@/lib/events';
-import { socket } from '@/lib/socket';
 import { useMapStore } from '@/store/map';
 import { usePixiStore } from '@/store/pixi';
 
@@ -46,12 +44,12 @@ export function MapContextMenu() {
     const position = viewport.toWorld(x, y);
 
     // Emit the ping location event
-    socket.emit(SocketEvent.PING_LOCATION, {
-      position,
-      color: 'red',
-      mapId: map.id,
-      userId: user.id,
-    });
+    // socket.emit(SocketEvent.PING_LOCATION, {
+    //   position,
+    //   color: 'red',
+    //   mapId: map.id,
+    //   userId: user.id,
+    // });
 
     // Hide the context menu
     setContextMenuVisible(false);

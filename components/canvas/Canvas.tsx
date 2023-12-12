@@ -15,7 +15,7 @@ import { Token } from './Token';
 
 export default function Canvas() {
   const { data: map } = useGetCurrentMap();
-  const { data: tokens } = useGetTokens(map?.id);
+  // const { data: tokens } = useGetTokens(map?.id);
   const context = useContext(QueryClientContext);
 
   const windowSize = useWindowSize();
@@ -37,7 +37,7 @@ export default function Canvas() {
       <QueryClientContext.Provider value={context}>
         <Map mapId={map.id} width={map.media.width} height={map.media.height} url={map.media.url}>
           <Grid width={map.media.width} height={map.media.height} size={70} color={Color.BLACK} />
-          {tokens?.map((token) => (
+          {/* {tokens?.map((token) => (
             <Token
               key={token.id}
               url={token.character?.media.thumbnail_url || ''}
@@ -46,7 +46,7 @@ export default function Canvas() {
               width={70}
               height={70}
             />
-          ))}
+          ))} */}
 
           <PingLocation />
         </Map>

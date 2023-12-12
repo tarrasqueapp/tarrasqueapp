@@ -14,7 +14,6 @@ export async function GET(req: Request) {
     const supabase = createServerClient(cookieStore);
 
     const { error } = await supabase.auth.verifyOtp({ type: 'magiclink', token_hash });
-    console.log(error);
     if (!error) {
       return NextResponse.redirect(new URL(`/${next.slice(1)}`, req.url));
     }

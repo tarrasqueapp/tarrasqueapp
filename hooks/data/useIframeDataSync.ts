@@ -3,8 +3,6 @@ import { useParams } from 'next/navigation';
 
 import { Campaign } from '@/actions/campaigns';
 import { Map as MapEntity } from '@/actions/maps';
-import { SocketEvent } from '@/lib/events';
-import { socket } from '@/lib/socket';
 import { Position } from '@/lib/types';
 
 import { useEffectAsync } from '../useEffectAsync';
@@ -77,27 +75,27 @@ export function useIframeDataSync() {
      * Register a listener for messages from child windows to respond to with data
      * @returns A function to unregister the listener
      */
-    const unsubscribeFromWindowMessage = setupMessageHandler((message) => {
-      const eventHandlers: Record<string, (data?: any) => void> = {
-        // Get the current campaign from the cache
-        TARRASQUE_CAMPAIGN: () => {
-          const map = queryClient.getQueryData<MapEntity>(['maps', params?.mapId]);
-          return map?.campaign;
-        },
-        // Get the current map from the cache
-        TARRASQUE_MAP: () => queryClient.getQueryData<Campaign>(['maps', params?.mapId]),
-        TARRASQUE_PING_LOCATION: (position: Position) => {
-          // Emit the ping location event
-          socket.emit(SocketEvent.PING_LOCATION, {
-            position,
-            color: 'red',
-            mapId: params?.mapId as string,
-            userId: '',
-          });
-        },
-      };
-      return eventHandlers[message.event];
-    });
+    // const unsubscribeFromWindowMessage = setupMessageHandler((message) => {
+    //   const eventHandlers: Record<string, (data?: any) => void> = {
+    //     // Get the current campaign from the cache
+    //     TARRASQUE_CAMPAIGN: () => {
+    //       const map = queryClient.getQueryData<MapEntity>(['maps', params?.mapId]);
+    //       return map?.campaign;
+    //     },
+    //     // Get the current map from the cache
+    //     TARRASQUE_MAP: () => queryClient.getQueryData<Campaign>(['maps', params?.mapId]),
+    //     TARRASQUE_PING_LOCATION: (position: Position) => {
+    //       // Emit the ping location event
+    //       socket.emit(SocketEvent.PING_LOCATION, {
+    //         position,
+    //         color: 'red',
+    //         mapId: params?.mapId as string,
+    //         userId: '',
+    //       });
+    //     },
+    //   };
+    //   return eventHandlers[message.event];
+    // });
 
     /**
      * Register a listener for changes to the query cache to broadcast to child windows
@@ -125,7 +123,7 @@ export function useIframeDataSync() {
 
     // Unsubscribe from the listeners when the component unmounts
     return () => {
-      unsubscribeFromWindowMessage();
+      // unsubscribeFromWindowMessage();
       unsubscribeFromQueryCache();
     };
   }, [queryClient]);

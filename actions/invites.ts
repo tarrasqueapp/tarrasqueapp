@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
@@ -63,6 +64,38 @@ export async function getInvite(inviteId: string) {
     )
     .eq('id', inviteId)
     .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/**
+ * Get the current user's invites
+ * @returns The current user's invites
+ */
+export async function getUserInvites() {
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Get the current user's profile
+  const profile = await getProfile();
+
+  // Get the invites
+  const { data, error } = await supabase
+    .from('invites')
+    .select(
+      `
+      *,
+      campaign: campaigns!invites_campaign_id_fkey (
+        name
+      )
+      `,
+    )
+    .or(`user_id.eq.${profile.id},email.eq.${profile.email}`);
 
   if (error) {
     throw error;
@@ -145,9 +178,8 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
   }
 
   if (existingUser) {
-    const supabase = createAdminServerClient(cookieStore);
-
-    const { data: generatedLink, error } = await supabase.auth.admin.generateLink({ type: 'magiclink', email });
+    const supabaseAdmin = createAdminServerClient();
+    const { data: generatedLink, error } = await supabaseAdmin.auth.admin.generateLink({ type: 'magiclink', email });
 
     if (error) {
       throw error;
@@ -197,4 +229,51 @@ export async function deleteInvite(inviteId: string) {
   if (error) {
     throw error;
   }
+}
+
+/**
+ * Accept an invite
+ * @param inviteId - The invite to accept
+ */
+export async function acceptInvite(inviteId: string) {
+  // Validate the invite ID
+  const schema = z.string().uuid();
+  schema.parse(inviteId);
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Get the invite
+  const { data: invite, error: inviteError } = await supabase.from('invites').select().eq('id', inviteId).single();
+
+  if (inviteError) {
+    throw inviteError;
+  }
+
+  if (!invite) {
+    throw new Error('Invite not found');
+  }
+
+  // Get the current user's profile
+  const profile = await getProfile();
+  if (!profile) {
+    throw new Error('User not found');
+  }
+
+  // Create the membership
+  const supabaseAdmin = createAdminServerClient();
+  const { error } = await supabaseAdmin.from('memberships').insert({
+    role: 'PLAYER',
+    color: uniqolor(profile.id).color,
+    campaign_id: invite.campaign_id,
+    user_id: profile.id,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  // Delete the invite
+  await deleteInvite(inviteId);
 }

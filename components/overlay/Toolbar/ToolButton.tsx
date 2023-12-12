@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
 import { Button, ButtonProps } from '@mui/material';
-import { forwardRef } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 
 import { Color } from '@/lib/colors';
 
-interface ToolButtonProps extends ButtonProps<any> {
+export interface ToolButtonProps extends ButtonProps<'button'> {
   selected?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ToolButtonFwd = forwardRef(({ selected, ...props }: ToolButtonProps, ref: any) => (
+const ToolButtonFwd = forwardRef(({ selected, ...props }: ToolButtonProps, ref: ForwardedRef<HTMLButtonElement>) => (
   <Button {...props} ref={ref} />
 ));
 ToolButtonFwd.displayName = 'ToolButtonFwd';

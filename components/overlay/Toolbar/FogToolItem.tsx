@@ -5,13 +5,13 @@ import { useCallback } from 'react';
 
 import { FogTool, Tool, useToolbarStore } from '@/store/toolbar';
 
-import { ToolButton } from './ToolButton';
+import { ToolButton, ToolButtonProps } from './ToolButton';
 
 export function FogToolItem() {
   const { tool, setTool, fogTool, setFogTool } = useToolbarStore();
   const popupState = usePopupState({ variant: 'popper', popupId: 'fogTool' });
 
-  const HideFogTool = (props: any) => {
+  const HideFogTool = (props: ToolButtonProps) => {
     return (
       <Tooltip title="Hide" disableInteractive>
         <ToolButton
@@ -30,7 +30,7 @@ export function FogToolItem() {
     );
   };
 
-  const ShowFogTool = (props: any) => {
+  const ShowFogTool = (props: ToolButtonProps) => {
     return (
       <Tooltip title="Show" disableInteractive>
         <ToolButton
@@ -49,7 +49,7 @@ export function FogToolItem() {
     );
   };
 
-  const ActiveTool = useCallback((props: any) => {
+  const ActiveTool = useCallback((props: ToolButtonProps) => {
     switch (fogTool) {
       case FogTool.Hide:
         return <HideFogTool {...props} />;

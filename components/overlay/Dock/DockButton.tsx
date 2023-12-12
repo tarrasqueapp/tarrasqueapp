@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
 import { Button, ButtonProps } from '@mui/material';
-import { forwardRef } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 
 import { Color } from '@/lib/colors';
 
-interface DockButtonProps extends ButtonProps<any> {
+interface DockButtonProps extends ButtonProps<'button'> {
   active?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const DockButtonFwd = forwardRef(({ active, ...props }: DockButtonProps, ref: any) => (
+const DockButtonFwd = forwardRef(({ active, ...props }: DockButtonProps, ref: ForwardedRef<HTMLButtonElement>) => (
   <Button color="inherit" {...props} ref={ref} />
 ));
 DockButtonFwd.displayName = 'DockButtonFwd';

@@ -1,9 +1,8 @@
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { redirect } from 'next/navigation';
 
 import { Center } from '@/components/common/Center';
 import { Logo } from '@/components/common/Logo';
-import { NextLink } from '@/components/common/NextLink';
 import { AppNavigation } from '@/lib/navigation';
 import { SSRUtils } from '@/utils/SSRUtils';
 
@@ -36,17 +35,7 @@ export default async function SignInPage() {
             Sign in
           </Typography>
 
-          <Paper sx={{ p: 2, width: '100%', background: 'rgba(0, 0, 0, 0.4)' }}>
-            <SignIn />
-          </Paper>
-
-          <Typography variant="body2" align="center" sx={{ mt: 4 }}>
-            <NextLink href={AppNavigation.ForgotPassword}>Forgot your password?</NextLink>
-          </Typography>
-
-          <Typography variant="body2" align="center" sx={{ mt: 1 }}>
-            Don&apos;t have an account? <NextLink href={AppNavigation.SignUp}>Sign up</NextLink>
-          </Typography>
+          <SignIn />
         </Box>
       </Container>
     </Center>

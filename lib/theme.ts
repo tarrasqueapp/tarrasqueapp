@@ -34,7 +34,7 @@ export let theme = createTheme({
     h4: { fontFamily: recursive.style.fontFamily, fontSize: 20, lineHeight: 1.16 },
     h5: { fontFamily: recursive.style.fontFamily, fontSize: 18, lineHeight: 1.28 },
     h6: { fontFamily: recursive.style.fontFamily, fontSize: 16, lineHeight: 1.28 },
-    body1: { lineHeight: 1.5 },
+    body1: { fontSize: 15, lineHeight: 1.6 },
     body2: { fontSize: 15, lineHeight: 1.28 },
     caption: { fontSize: 15, lineHeight: 1.28, color: Color.GREY },
     button: { fontWeight: 500, lineHeight: 1.125 },

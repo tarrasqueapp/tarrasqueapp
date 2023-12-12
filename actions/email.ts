@@ -123,35 +123,6 @@ export async function sendEmailVerificationEmail({
 }
 
 /**
- * Send a password reset email
- * @param firstName - The user's first name
- * @param to - The user's email address
- * @param resetPasswordUrl - The url to reset the user's password
- * @returns The sent email
- */
-export async function sendPasswordResetEmail({
-  firstName,
-  to,
-  resetPasswordUrl,
-}: {
-  firstName: string;
-  to: string;
-  resetPasswordUrl: string;
-}) {
-  // Validate inputs
-  const schema = z.object({ firstName: z.string().min(1), to: z.string().email(), resetPasswordUrl: z.string().url() });
-  schema.parse({ firstName, to, resetPasswordUrl });
-
-  // Get contents of email template and compile variables with handlebars
-  const file = await readFile(join('emails', 'reset-password.html'), 'utf8');
-  const template = compile(file);
-  const html = template({ firstName, resetPasswordUrl });
-
-  // Send email
-  return await sendTransactionalEmail({ to, subject: 'Reset password', html });
-}
-
-/**
  * Send a campaign invite email for a new user
  * @param hostName - The host's name
  * @param campaignName - The campaign's name
@@ -235,4 +206,32 @@ export async function sendCampaignInviteExistingUserEmail({
     subject: `${hostName} invited you to ${campaignName} on Tarrasque App`,
     html,
   });
+}
+
+/**
+ * Send magic link email
+ * @param to - The user's email address
+ * @param magicLinkUrl - The url to sign in
+ * @returns The sent email
+ */
+export async function sendMagicLinkEmail({
+  firstName,
+  to,
+  magicLinkUrl,
+}: {
+  firstName: string;
+  to: string;
+  magicLinkUrl: string;
+}) {
+  // Validate inputs
+  const schema = z.object({ firstName: z.string().min(1), to: z.string().email(), magicLinkUrl: z.string().url() });
+  schema.parse({ firstName, to, magicLinkUrl });
+
+  // Get contents of email template and compile variables with handlebars
+  const file = await readFile(join('emails', 'magic-link.html'), 'utf8');
+  const template = compile(file);
+  const html = template({ firstName, magicLinkUrl });
+
+  // Send email
+  return await sendTransactionalEmail({ to, subject: 'Sign in to Tarrasque App', html });
 }

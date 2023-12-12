@@ -32,7 +32,6 @@ import { validate } from '@/lib/validate';
 import { useDashboardStore } from '@/store/dashboard';
 import { MediaUtils } from '@/utils/MediaUtils';
 
-import { ControlledPasswordField } from '../form/ControlledPasswordField';
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledAvatarUploader } from '../form/Uploader/ControlledAvatarUploader';
 
@@ -50,28 +49,21 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Setup form validation schema
-  const schema = z
-    .object({
-      name: z.string().min(1),
-      display_name: z.string().min(1),
-      email: z.string().email().min(1),
-      avatar: z
-        .union([validate.fields.uppyFile, validate.fields.media])
-        .nullable()
-        .refine(
-          (value) => {
-            if (!value) return true;
-            return MediaUtils.isUploadedFile(value) || MediaUtils.isMedia(value);
-          },
-          { message: 'Invalid avatar' },
-        ),
-      password: z.string().trim().min(8).optional().or(z.literal('')),
-      confirmPassword: z.string().trim().min(8).optional().or(z.literal('')),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: 'Passwords do not match',
-      path: ['confirmPassword'],
-    });
+  const schema = z.object({
+    name: z.string().min(1),
+    display_name: z.string().min(1),
+    email: z.string().email().min(1),
+    avatar: z
+      .union([validate.fields.uppyFile, validate.fields.media])
+      .nullable()
+      .refine(
+        (value) => {
+          if (!value) return true;
+          return MediaUtils.isUploadedFile(value) || MediaUtils.isMedia(value);
+        },
+        { message: 'Invalid avatar' },
+      ),
+  });
   type Schema = z.infer<typeof schema>;
 
   // Setup form
@@ -83,8 +75,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       display_name: profile?.display_name,
       avatar: profile?.avatar,
       email: user?.email,
-      password: '',
-      confirmPassword: '',
     },
   });
   const {
@@ -100,8 +90,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       display_name: profile?.display_name,
       avatar: profile?.avatar,
       email: user?.email,
-      password: '',
-      confirmPassword: '',
     });
   }, [user, profile, reset, settingsModalOpen]);
 
@@ -146,10 +134,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       if (values.email !== user.email) {
         await updateUser({ email: values.email });
         toast.success('Email updated. Please check your inbox for a confirmation email.');
-      }
-
-      if (values.password) {
-        await updateUser({ password: values.password });
       }
 
       await updateProfile({
@@ -241,25 +225,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 confirmation email.
               </Alert>
             )}
-
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Change Password
-            </Typography>
-
-            <Grid container spacing={2} alignItems="flex-start" sx={{ mt: -1 }}>
-              <Grid item xs={12} sm={6}>
-                <ControlledPasswordField name="password" label="New Password" autoComplete="new-password" fullWidth />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <ControlledPasswordField
-                  name="confirmPassword"
-                  label="Confirm New Password"
-                  autoComplete="new-password"
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
           </DialogContent>
 
           <DialogActions>

@@ -4,22 +4,21 @@ import { Notifications as NotificationsIcon } from '@mui/icons-material';
 import { Badge, Box, IconButton, List, Popover, Tooltip, Typography } from '@mui/material';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 
-import { useGetNotifications } from '@/hooks/data/notifications/useGetNotifications';
-import { InviteNotificationEntity, NotificationTypeEnum } from '@/lib/types';
+import { useGetUserInvites } from '@/hooks/data/notifications/useGetUserInvites';
 
 import { CampaignInviteNotification } from './CampaignInviteNotification';
 
 export function Notifications() {
-  const { data: notifications } = useGetNotifications();
+  const { data: invites } = useGetUserInvites();
 
   return (
     <>
-      <PopupState variant="popover" popupId={`notifications`}>
+      <PopupState variant="popover" popupId={`invites`}>
         {(popupState) => (
           <>
             <Tooltip title="Notifications">
               <IconButton {...bindTrigger(popupState)}>
-                <Badge badgeContent={notifications?.length} color="info">
+                <Badge badgeContent={invites?.length} color="info">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -35,16 +34,11 @@ export function Notifications() {
                   Notifications
                 </Typography>
 
-                {notifications && notifications.length > 0 ? (
+                {invites && invites.length > 0 ? (
                   <List disablePadding dense>
-                    {notifications
-                      .filter(
-                        (notification): notification is InviteNotificationEntity =>
-                          notification.type === NotificationTypeEnum.INVITE,
-                      )
-                      .map((notification) => (
-                        <CampaignInviteNotification key={notification.data.id} {...notification.data} />
-                      ))}
+                    {invites.map((invite) => (
+                      <CampaignInviteNotification key={invite.id} invite={invite} />
+                    ))}
                   </List>
                 ) : (
                   <Typography align="center" sx={{ p: 2 }}>

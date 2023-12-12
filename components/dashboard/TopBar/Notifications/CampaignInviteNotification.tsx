@@ -1,25 +1,20 @@
 import { Check, Close } from '@mui/icons-material';
 import { IconButton, ListItem, ListItemText } from '@mui/material';
 
-import { useAcceptInvite } from '@/hooks/data/notifications/useAcceptInvite';
-import { useDeclineInvite } from '@/hooks/data/notifications/useDeclineInvite';
-import { ActionTokenEntity } from '@/lib/types';
+import { Invite, acceptInvite, deleteInvite } from '@/actions/invites';
 
-export function CampaignInviteNotification(invite: ActionTokenEntity) {
-  const acceptCampaignInvite = useAcceptInvite();
-  const declineCampaignInvite = useDeclineInvite();
-
+export function CampaignInviteNotification({ invite }: { invite: Invite }) {
   return (
     <ListItem
       sx={{ pr: 9 }}
       disableGutters
       secondaryAction={
         <>
-          <IconButton size="small" onClick={() => acceptCampaignInvite.mutateAsync(invite)}>
+          <IconButton size="small" onClick={() => acceptInvite(invite.id)}>
             <Check />
           </IconButton>
 
-          <IconButton size="small" onClick={() => declineCampaignInvite.mutateAsync(invite)}>
+          <IconButton size="small" onClick={() => deleteInvite(invite.id)}>
             <Close />
           </IconButton>
         </>

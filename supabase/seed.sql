@@ -32,7 +32,7 @@ VALUES
     'authenticated',
     'authenticated',
     'rsolomou@gmail.com',
-    crypt ('4CQ1FLn&v6bhCSRT', gen_salt ('bf')),
+    crypt ('password', gen_salt ('bf')),
     current_timestamp,
     current_timestamp,
     current_timestamp,

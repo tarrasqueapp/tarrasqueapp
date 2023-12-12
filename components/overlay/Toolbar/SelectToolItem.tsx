@@ -5,13 +5,13 @@ import { useCallback } from 'react';
 
 import { SelectTool, Tool, useToolbarStore } from '@/store/toolbar';
 
-import { ToolButton } from './ToolButton';
+import { ToolButton, ToolButtonProps } from './ToolButton';
 
 export function SelectToolItem() {
   const { tool, setTool, selectTool, setSelectTool } = useToolbarStore();
   const popupState = usePopupState({ variant: 'popper', popupId: 'selectTool' });
 
-  const SingleSelectTool = (props: any) => {
+  const SingleSelectTool = (props: ToolButtonProps) => {
     return (
       <Tooltip title="Single Select" disableInteractive>
         <ToolButton
@@ -30,7 +30,7 @@ export function SelectToolItem() {
     );
   };
 
-  const MultiSelectTool = (props: any) => {
+  const MultiSelectTool = (props: ToolButtonProps) => {
     return (
       <Tooltip title="Multiple Select" disableInteractive>
         <ToolButton
@@ -49,7 +49,7 @@ export function SelectToolItem() {
     );
   };
 
-  const ActiveTool = useCallback((props: any) => {
+  const ActiveTool = useCallback((props: ToolButtonProps) => {
     switch (selectTool) {
       case SelectTool.Single:
         return <SingleSelectTool {...props} />;

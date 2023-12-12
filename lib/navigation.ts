@@ -5,8 +5,6 @@ export enum AppNavigation {
   Setup = '/setup',
   SignIn = '/auth/sign-in',
   SignUp = '/auth/sign-up',
-  ForgotPassword = '/auth/forgot-password',
-  ResetPassword = '/auth/reset-password',
 }
 
 export enum ExternalNavigation {

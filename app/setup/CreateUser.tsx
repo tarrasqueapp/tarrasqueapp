@@ -19,7 +19,6 @@ export function CreateUser({ onSubmit }: CreateUserProps) {
   const schema = z.object({
     name: z.string().min(1),
     email: z.string().email().min(1),
-    password: z.string().min(8),
   });
   type Schema = z.infer<typeof schema>;
 
@@ -53,14 +52,6 @@ export function CreateUser({ onSubmit }: CreateUserProps) {
           <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus autoComplete="name" />
 
           <ControlledTextField name="email" label="Email" sx={{ my: 1 }} autoComplete="email" />
-
-          <ControlledTextField
-            name="password"
-            label="Password"
-            type="password"
-            sx={{ my: 1 }}
-            autoComplete="new-password"
-          />
         </Box>
 
         <LoadingButton

@@ -8,8 +8,6 @@ import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetMap } from '@/hooks/data/maps/useGetMap';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { Color } from '@/lib/colors';
-import { SocketEvent } from '@/lib/events';
-import { socket } from '@/lib/socket';
 import { tarrasque } from '@/lib/tarrasque';
 import { useMapStore } from '@/store/map';
 import { usePixiStore } from '@/store/pixi';
@@ -58,7 +56,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     setMounted(true);
   }, [position]);
 
-  const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaign_id);
+  // const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaign_id);
 
   /**
    * Handle the load event
@@ -96,19 +94,19 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     // Get the position of the double click event relative to the map
     const position = viewport.toWorld(event.global.x, event.global.y);
 
-    socket.emit(SocketEvent.PING_LOCATION, {
-      position,
-      color: membership?.color || Color.BLACK,
-      mapId,
-      userId: user?.id || '',
-    });
+    // socket.emit(SocketEvent.PING_LOCATION, {
+    //   position,
+    //   color: membership?.color || Color.BLACK,
+    //   mapId,
+    //   userId: user?.id || '',
+    // });
 
-    tarrasque.emit(SocketEvent.PING_LOCATION, {
-      position,
-      color: membership?.color || Color.BLACK,
-      mapId,
-      userId: user?.id || '',
-    });
+    // tarrasque.emit(SocketEvent.PING_LOCATION, {
+    //   position,
+    //   color: membership?.color || Color.BLACK,
+    //   mapId,
+    //   userId: user?.id || '',
+    // });
   }
 
   /**

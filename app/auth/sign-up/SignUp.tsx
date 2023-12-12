@@ -11,7 +11,6 @@ import { z } from 'zod';
 
 import { signUp } from '@/actions/auth';
 import { Invite } from '@/actions/invites';
-import { ControlledPasswordField } from '@/components/form/ControlledPasswordField';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { AppNavigation } from '@/lib/navigation';
 
@@ -23,17 +22,10 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
   const token = searchParams.get('token') || '';
 
   // Setup form validation schema
-  const schema = z
-    .object({
-      name: z.string().min(1),
-      email: z.string().email().min(1),
-      password: z.string().min(8),
-      confirmPassword: z.string().min(8),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: 'Passwords do not match',
-      path: ['confirmPassword'],
-    });
+  const schema = z.object({
+    name: z.string().min(1),
+    email: z.string().email().min(1),
+  });
   type Schema = z.infer<typeof schema>;
 
   // Setup form
@@ -53,7 +45,7 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
    */
   async function handleSubmitForm(values: Schema) {
     try {
-      await signUp({ ...values, token });
+      await signUp({ ...values, token: token || undefined });
       router.push(`${AppNavigation.SignIn}/?confirm-email=true`);
     } catch (error) {
       if (error instanceof Error) {
@@ -75,10 +67,6 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
           <ControlledTextField name="name" label="Name" autoFocus autoComplete="name" />
 
           <ControlledTextField name="email" label="Email" disabled={Boolean(invite)} autoComplete="email" />
-
-          <ControlledPasswordField name="password" label="Password" autoComplete="new-password" />
-
-          <ControlledPasswordField name="confirmPassword" label="Confirm Password" autoComplete="new-password" />
         </Box>
 
         <Box sx={{ textAlign: 'center' }}>
