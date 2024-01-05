@@ -86,7 +86,7 @@ Full tech stack [here](/techstack.md)
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [tarrasqueapp/tarrasqueapp](https://github.com/tarrasqueapp/tarrasqueapp)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|70<br/>Tools used|12/27/23 <br/>Report generated|
+|73<br/>Tools used|01/05/24 <br/>Report generated|
 |------|------|
 </div>
 
@@ -429,9 +429,9 @@ Full tech stack [here](/techstack.md)
 </table>
 
 
-## <img src='https://img.stackshare.io/group.svg' /> Open source packages (32)</h2>
+## <img src='https://img.stackshare.io/group.svg' /> Open source packages (35)</h2>
 
-## <img width='24' height='24' src='https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png'/> npm (32)
+## <img width='24' height='24' src='https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png'/> npm (35)
 
 |NAME|VERSION|LAST UPDATED|LAST UPDATED BY|LICENSE|VULNERABILITIES|
 |:------|:------|:------|:------|:------|:------|
@@ -452,6 +452,8 @@ Full tech stack [here](/techstack.md)
 |[cookie-parser](https://www.npmjs.com/cookie-parser)|v1.4.6|11/10/23|Richard Solomou |MIT|N/A|
 |[fs-extra](https://www.npmjs.com/fs-extra)|v11.2.0|12/02/23|Richard Solomou |MIT|N/A|
 |[handlebars](https://www.npmjs.com/handlebars)|v4.7.7|01/10/23|Richard Solomou |MIT|N/A|
+|[husky](https://www.npmjs.com/husky)|v8.0.3|12/02/23|Richard Solomou |MIT|N/A|
+|[lint-staged](https://www.npmjs.com/lint-staged)|v15.1.0|12/02/23|Richard Solomou |MIT|N/A|
 |[nprogress](https://www.npmjs.com/nprogress)|v0.2.0|11/11/23|Richard Solomou |MIT|N/A|
 |[passport-jwt](https://www.npmjs.com/passport-jwt)|v4.0.1|12/02/23|Richard Solomou |MIT|N/A|
 |[passport-local](https://www.npmjs.com/passport-local)|v1.0.0|12/02/23|Richard Solomou |MIT|N/A|
@@ -467,6 +469,7 @@ Full tech stack [here](/techstack.md)
 |[ts-loader](https://www.npmjs.com/ts-loader)|v9.5.1|11/15/23|Richard Solomou |MIT|N/A|
 |[ts-node](https://www.npmjs.com/ts-node)|v10.9.1|12/02/23|Richard Solomou |MIT|N/A|
 |[tsconfig-paths](https://www.npmjs.com/tsconfig-paths)|v4.2.0|04/16/23|Richard Solomou |MIT|N/A|
+|[yup](https://www.npmjs.com/yup)|v1.3.2|03/18/22|Richard Solomou |MIT|N/A|
 
 <br/>
 <div align='center'>
