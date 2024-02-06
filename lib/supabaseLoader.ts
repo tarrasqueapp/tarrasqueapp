@@ -4,7 +4,7 @@ import { config } from './config';
 
 interface Props {
   src: string;
-  width: number;
+  width?: number;
   quality?: number;
 }
 
@@ -16,7 +16,7 @@ interface Props {
  * @returns The transformed image URL
  */
 export function supabaseLoader({ src, width, quality }: Props) {
-  return `${config.SUPABASE_URL}/storage/v1/render/image/public/tarrasqueapp/${src}?width=${width}&quality=${
+  return `${config.SUPABASE_URL}/storage/v1/render/image/public/tarrasqueapp/${src}?width=${width || 0}&quality=${
     quality || 75
   }`;
 }

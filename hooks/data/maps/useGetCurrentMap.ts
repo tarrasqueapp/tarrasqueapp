@@ -9,7 +9,7 @@ import { useGetMap } from './useGetMap';
 export function useGetCurrentMap() {
   const params = useParams();
 
-  const mapId = params.mapId as string;
+  const mapId = params.id as string;
 
   return useGetMap(mapId);
 }

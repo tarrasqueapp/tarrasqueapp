@@ -1,6 +1,6 @@
-import { Dock } from '@mui/icons-material';
 import { Box, Toolbar } from '@mui/material';
 
+import { Dock } from './Dock/Dock';
 import { MapContextMenu } from './MapContextMenu';
 import { ZoomControls } from './ZoomControls';
 

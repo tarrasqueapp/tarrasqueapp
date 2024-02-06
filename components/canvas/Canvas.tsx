@@ -7,6 +7,7 @@ import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { useGetTokens } from '@/hooks/data/tokens/useGetTokens';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { Color } from '@/lib/colors';
+import { supabaseLoader } from '@/lib/supabaseLoader';
 
 import { Grid } from './Grid';
 import { Map } from './Map';
@@ -35,7 +36,12 @@ export default function Canvas() {
       }}
     >
       <QueryClientContext.Provider value={context}>
-        <Map mapId={map.id} width={map.media.width} height={map.media.height} url={map.media.url}>
+        <Map
+          mapId={map.id}
+          width={map.media.width}
+          height={map.media.height}
+          url={supabaseLoader({ src: map.media.url })}
+        >
           <Grid width={map.media.width} height={map.media.height} size={70} color={Color.BLACK} />
           {/* {tokens?.map((token) => (
             <Token
