@@ -117,7 +117,7 @@ export async function signUp({ name, email, token }: { name: string; email: stri
 
       // Create the user's campaign membership
       const uniqueUserColor = uniqolor(data.user.id, { format: 'hex' });
-      supabase.from('campaign_memberships').insert({
+      supabaseAdmin.from('campaign_memberships').insert({
         role: 'PLAYER',
         color: uniqueUserColor.color,
         user_id: data.user.id,

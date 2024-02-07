@@ -31,6 +31,7 @@ export async function getMemberships(campaignId: string) {
       `
       *,
       user: profiles!campaign_memberships_user_id_fkey (
+        id,
         display_name,
         email,
         avatar: media!profiles_avatar_id_fkey (

@@ -42,7 +42,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
 
   // Center the viewport on the map when it is first rendered
   useEffect(() => {
-    if (mounted || !viewport) return;
+    if (mounted || !viewport || viewport.destroyed) return;
 
     viewport.animate({
       position: {
@@ -54,7 +54,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     });
 
     setMounted(true);
-  }, [position]);
+  }, [position, viewport]);
 
   // const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaign_id);
 

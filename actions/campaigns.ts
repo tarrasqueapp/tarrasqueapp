@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { Color } from '@/lib/colors';
 import { validate } from '@/lib/validate';
+import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
@@ -129,7 +130,8 @@ export async function createCampaign({ name }: { name: string }) {
   }
 
   // Add the user as a game master
-  await supabase.from('campaign_memberships').insert({
+  const supabaseAdmin = createAdminServerClient();
+  await supabaseAdmin.from('campaign_memberships').insert({
     role: 'GAME_MASTER',
     color: Color.BLACK,
     campaign_id: data.id,

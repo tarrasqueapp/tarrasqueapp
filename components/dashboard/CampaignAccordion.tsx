@@ -46,7 +46,6 @@ import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
-import { Color } from '@/lib/colors';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 import { MathUtils } from '@/utils/MathUtils';
 
@@ -188,14 +187,9 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                       isGameMaster ? `${membership.user?.display_name} (Game Master)` : membership.user?.display_name
                     }
                   >
-                    <Box
-                      sx={{
-                        border: `2px dashed ${isGameMaster ? Color.ORANGE : 'transparent'}`,
-                        borderRadius: 90,
-                      }}
-                    >
+                    <span>
                       <UserAvatar profile={membership.user!} size="small" />
-                    </Box>
+                    </span>
                   </Tooltip>
                 );
               })}

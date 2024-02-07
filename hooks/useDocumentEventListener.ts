@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
 
+/**
+ * Add a typed event listener to the document and remove it when the component is unmounted
+ * @param eventType - The event type
+ * @param listener - The event listener
+ * @param options - The event listener options
+ */
 export function useDocumentEventListener<K extends keyof DocumentEventMap>(
   eventType: K,
   listener: (this: Document, ev: DocumentEventMap[K]) => unknown,
