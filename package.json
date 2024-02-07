@@ -7,7 +7,7 @@
   "author": "Richard Solomou <richard@tarrasque.app>",
   "scripts": {
     "build": "next build",
-    "dev": "next dev --turbo",
+    "dev": "NODE_OPTIONS=--no-deprecation next dev --turbo",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "tsc --noEmit && next lint",
     "lint-staged": "lint-staged",
@@ -81,7 +81,8 @@
   "packageManager": "pnpm@8.11.0",
   "pnpm": {
     "patchedDependencies": {
-      "pixi-viewport@5.0.2": "patches/pixi-viewport@5.0.2.patch"
+      "pixi-viewport@5.0.2": "patches/pixi-viewport@5.0.2.patch",
+      "next@14.1.0": "patches/next@14.1.0.patch"
     }
   }
 }

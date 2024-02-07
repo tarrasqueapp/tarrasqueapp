@@ -29,6 +29,6 @@ export const config = {
      * - images (public images)
      * - manifest.json (PWA manifest file)
      */
-    '/((?!_next/static|_next/image|favicon.ico|images|manifest.json).*)',
+    '/((?!api|_next/static|_next/image|_next/webpack-hmr|favicon.ico|images|manifest.json).*)',
   ],
 };
