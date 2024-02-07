@@ -19,7 +19,7 @@ export function useGetMemberships(campaignId: string | undefined) {
     const supabase = createBrowserClient();
     const channel = supabase
       .channel(`campaign_${campaignId}_memberships`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'memberships' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_memberships' }, () => {
         queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'memberships'] });
       })
       .subscribe();

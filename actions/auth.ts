@@ -103,21 +103,21 @@ export async function signUp({ name, email, token }: { name: string; email: stri
   });
   const link = `${config.HOST}/auth/sign-up/callback?${searchParams}`;
 
-  // Associate invites for this email address with the new user
-  supabase.from('invites').update({ user_id: data.user.id }).eq('email', email);
+  // Associate campaign invites for this email address with the new user
+  supabase.from('campaign_invites').update({ user_id: data.user.id }).eq('email', email);
 
   // If the user signed up with an invite token, add them to the campaign
   if (token) {
     // Get the invite
-    const { data: invite } = await supabase.from('invites').select().eq('id', token).single();
+    const { data: invite } = await supabase.from('campaign_invites').select().eq('id', token).single();
 
     if (invite) {
       // Delete the invite
-      supabase.from('invites').delete().eq('id', token);
+      supabase.from('campaign_invites').delete().eq('id', token);
 
       // Create the user's campaign membership
       const uniqueUserColor = uniqolor(data.user.id, { format: 'hex' });
-      supabase.from('memberships').insert({
+      supabase.from('campaign_memberships').insert({
         role: 'PLAYER',
         color: uniqueUserColor.color,
         user_id: data.user.id,

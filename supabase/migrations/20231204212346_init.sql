@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS "public"."media" (
 
 ALTER TABLE "public"."media" OWNER TO "postgres";
 
-CREATE TABLE IF NOT EXISTS "public"."memberships" (
+CREATE TABLE IF NOT EXISTS "public"."campaign_memberships" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "role" "public"."campaign_member_role" DEFAULT 'PLAYER'::"public"."campaign_member_role" NOT NULL,
     "color" character varying NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS "public"."memberships" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
-ALTER TABLE "public"."memberships" OWNER TO "postgres";
+ALTER TABLE "public"."campaign_memberships" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."plugins" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
@@ -113,8 +113,8 @@ ALTER TABLE ONLY "public"."maps"
 ALTER TABLE ONLY "public"."media"
     ADD CONSTRAINT "media_pkey" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "public"."memberships"
-    ADD CONSTRAINT "memberships_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."campaign_memberships"
+    ADD CONSTRAINT "campaign_memberships_pkey" PRIMARY KEY ("id");
 
 ALTER TABLE ONLY "public"."plugins"
     ADD CONSTRAINT "plugins_pkey" PRIMARY KEY ("id");
@@ -140,11 +140,11 @@ ALTER TABLE ONLY "public"."maps"
 ALTER TABLE ONLY "public"."media"
     ADD CONSTRAINT "media_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY "public"."memberships"
-    ADD CONSTRAINT "memberships_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."campaign_memberships"
+    ADD CONSTRAINT "campaign_memberships_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY "public"."memberships"
-    ADD CONSTRAINT "memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."campaign_memberships"
+    ADD CONSTRAINT "campaign_memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."plugins"
     ADD CONSTRAINT "plugins_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
@@ -172,9 +172,9 @@ GRANT ALL ON TABLE "public"."media" TO "anon";
 GRANT ALL ON TABLE "public"."media" TO "authenticated";
 GRANT ALL ON TABLE "public"."media" TO "service_role";
 
-GRANT ALL ON TABLE "public"."memberships" TO "anon";
-GRANT ALL ON TABLE "public"."memberships" TO "authenticated";
-GRANT ALL ON TABLE "public"."memberships" TO "service_role";
+GRANT ALL ON TABLE "public"."campaign_memberships" TO "anon";
+GRANT ALL ON TABLE "public"."campaign_memberships" TO "authenticated";
+GRANT ALL ON TABLE "public"."campaign_memberships" TO "service_role";
 
 GRANT ALL ON TABLE "public"."plugins" TO "anon";
 GRANT ALL ON TABLE "public"."plugins" TO "authenticated";

@@ -11,9 +11,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "tsc --noEmit && next lint",
     "lint-staged": "lint-staged",
-    "prepare": "husky install",
-    "start": "next start",
-    "supabase": "supabase"
+    "prepare": "husky",
+    "start": "next start"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -30,9 +29,10 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.4",
-    "@mui/icons-material": "^5.15.7",
+    "@mui/icons-material": "^5.15.8",
     "@mui/lab": "5.0.0-alpha.163",
     "@mui/material": "^5.15.7",
+    "@mui/material-nextjs": "^5.15.7",
     "@pixi/react": "^7.1.1",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.3",

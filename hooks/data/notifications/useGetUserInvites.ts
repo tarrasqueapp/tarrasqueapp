@@ -18,7 +18,7 @@ export function useGetUserInvites() {
     const user = await getUser();
     const channel = supabase
       .channel(`user_${user!.id}_invites`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'invites' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_invites' }, () => {
         queryClient.invalidateQueries({ queryKey: ['invites'] });
         queryClient.invalidateQueries({ queryKey: ['campaigns'] });
       })

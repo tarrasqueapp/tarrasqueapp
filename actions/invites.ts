@@ -28,7 +28,7 @@ export async function getInvites(campaignId: string) {
   const supabase = createServerClient(cookieStore);
 
   // Get the invites
-  const { data, error } = await supabase.from('invites').select('*').eq('campaign_id', campaignId);
+  const { data, error } = await supabase.from('campaign_invites').select('*').eq('campaign_id', campaignId);
 
   if (error) {
     throw error;
@@ -53,11 +53,11 @@ export async function getInvite(inviteId: string) {
 
   // Get the invite
   const { data, error } = await supabase
-    .from('invites')
+    .from('campaign_invites')
     .select(
       `
       *,
-      campaign: campaigns!invites_campaign_id_fkey (
+      campaign: campaigns!campaign_invites_campaign_id_fkey (
         name
       )
       `,
@@ -86,11 +86,11 @@ export async function getUserInvites() {
 
   // Get the invites
   const { data, error } = await supabase
-    .from('invites')
+    .from('campaign_invites')
     .select(
       `
       *,
-      campaign: campaigns!invites_campaign_id_fkey (
+      campaign: campaigns!campaign_invites_campaign_id_fkey (
         name
       )
       `,
@@ -124,7 +124,7 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
 
   // Check if an invite for this email already exists for this campaign
   const { data: existingInvite, error: existingInviteError } = await supabase
-    .from('invites')
+    .from('campaign_invites')
     .select('*')
     .eq('campaign_id', campaign_id)
     .eq('email', email);
@@ -139,11 +139,11 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
 
   // Check if the email is already a member of this campaign
   const { data: existingMembership } = await supabase
-    .from('memberships')
+    .from('campaign_memberships')
     .select(
       `
       *,
-      user: profiles!memberships_user_id_fkey (
+      user: profiles!campaign_memberships_user_id_fkey (
         email
       )
     `,
@@ -161,12 +161,12 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
 
   // Create the invite
   const { data, error } = await supabase
-    .from('invites')
+    .from('campaign_invites')
     .insert({ campaign_id, email, user_id: existingUser?.id })
     .select(
       `
       *,
-      campaign: campaigns!invites_campaign_id_fkey (
+      campaign: campaigns!campaign_invites_campaign_id_fkey (
         name
       )
       `,
@@ -224,7 +224,7 @@ export async function deleteInvite(inviteId: string) {
   const supabase = createServerClient(cookieStore);
 
   // Delete the invite
-  const { error } = await supabase.from('invites').delete().eq('id', inviteId);
+  const { error } = await supabase.from('campaign_invites').delete().eq('id', inviteId);
 
   if (error) {
     throw error;
@@ -245,7 +245,11 @@ export async function acceptInvite(inviteId: string) {
   const supabase = createServerClient(cookieStore);
 
   // Get the invite
-  const { data: invite, error: inviteError } = await supabase.from('invites').select().eq('id', inviteId).single();
+  const { data: invite, error: inviteError } = await supabase
+    .from('campaign_invites')
+    .select()
+    .eq('id', inviteId)
+    .single();
 
   if (inviteError) {
     throw inviteError;
@@ -263,7 +267,7 @@ export async function acceptInvite(inviteId: string) {
 
   // Create the membership
   const supabaseAdmin = createAdminServerClient();
-  const { error } = await supabaseAdmin.from('memberships').insert({
+  const { error } = await supabaseAdmin.from('campaign_memberships').insert({
     role: 'PLAYER',
     color: uniqolor(profile.id).color,
     campaign_id: invite.campaign_id,

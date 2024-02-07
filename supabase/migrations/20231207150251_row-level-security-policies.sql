@@ -1,3 +1,17 @@
+-- Check if the user is a game master in a specific campaign
+CREATE FUNCTION is_game_master_in_campaign(campaign_id uuid) RETURNS boolean AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1
+        FROM campaign_memberships
+        WHERE campaign_memberships.campaign_id = is_game_master_in_campaign.campaign_id
+          AND campaign_memberships.user_id = auth.uid()
+          AND campaign_memberships.role = 'GAME_MASTER'::campaign_member_role
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
 alter table "public"."profiles" enable row level security;
 
 create policy "Profiles can be viewed by anyone"
@@ -93,60 +107,45 @@ on "public"."campaigns"
 as permissive
 for update
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaigns.id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaigns.id));
 
 create policy "Campaigns can be deleted by their game masters"
 on "public"."campaigns"
 as permissive
 for delete
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaigns.id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaigns.id));
 
 
-alter table "public"."memberships" enable row level security;
+alter table "public"."campaign_memberships" enable row level security;
 
-create policy "Memberships can be viewed by anyone"
-on "public"."memberships"
+create policy "Campaign memberships can be viewed by anyone"
+on "public"."campaign_memberships"
 as permissive
 for select
 to public
 using (true);
 
-create policy "Memberships can be created by game masters of the campaign"
-on "public"."memberships"
+create policy "Campaign memberships can be created by game masters of the campaign"
+on "public"."campaign_memberships"
 as permissive
 for insert
 to authenticated
-with check (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+with check (is_game_master_in_campaign(campaign_id));
 
-create policy "Memberships can be updated by game masters of the campaign"
-on "public"."memberships"
+create policy "Campaign memberships can be updated by game masters of the campaign"
+on "public"."campaign_memberships"
 as permissive
 for update
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaign_id));
 
-create policy "Memberships can be deleted by game masters of the campaign"
-on "public"."memberships"
+create policy "Campaign memberships can be deleted by game masters of the campaign"
+on "public"."campaign_memberships"
 as permissive
 for delete
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaign_id));
 
 
 alter table "public"."maps" enable row level security;
@@ -163,30 +162,21 @@ on "public"."maps"
 as permissive
 for insert
 to authenticated
-with check (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+with check (is_game_master_in_campaign(campaign_id));
 
 create policy "Maps can be updated by game masters of the campaign"
 on "public"."maps"
 as permissive
 for update
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaign_id));
 
 create policy "Maps can be deleted by game masters of the campaign"
 on "public"."maps"
 as permissive
 for delete
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaign_id));
 
 
 alter table "public"."plugins" enable row level security;
@@ -203,17 +193,11 @@ on "public"."plugins"
 as permissive
 for insert
 to authenticated
-with check (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+with check (is_game_master_in_campaign(campaign_id));
 
 create policy "Plugins can be deleted by game masters of the campaign"
 on "public"."plugins"
 as permissive
 for delete
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+using (is_game_master_in_campaign(campaign_id));

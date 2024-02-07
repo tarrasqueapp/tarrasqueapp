@@ -19,7 +19,7 @@ export function useGetInvites(campaignId: string | undefined) {
     const supabase = createBrowserClient();
     const channel = supabase
       .channel(`campaign_${campaignId}_invites`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'invites' }, async () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_invites' }, async () => {
         queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'invites'] });
       })
       .subscribe();

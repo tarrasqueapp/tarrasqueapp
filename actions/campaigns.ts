@@ -37,10 +37,10 @@ export async function getUserCampaigns(role?: CampaignMemberRole) {
 
   // Get all memberships for the user and include the campaign data
   const query = supabase
-    .from('memberships')
+    .from('campaign_memberships')
     .select(
       `
-    campaign: campaigns!memberships_campaign_id_fkey (
+    campaign: campaigns!campaign_memberships_campaign_id_fkey (
       *
       )
       `,
@@ -129,7 +129,7 @@ export async function createCampaign({ name }: { name: string }) {
   }
 
   // Add the user as a game master
-  await supabase.from('memberships').insert({
+  await supabase.from('campaign_memberships').insert({
     role: 'GAME_MASTER',
     color: Color.BLACK,
     campaign_id: data.id,

@@ -1,4 +1,4 @@
-create table "public"."invites" (
+create table "public"."campaign_invites" (
     "id" uuid not null default gen_random_uuid(),
     "email" character varying not null,
     "campaign_id" uuid not null,
@@ -7,43 +7,37 @@ create table "public"."invites" (
 );
 
 
-alter table "public"."invites" enable row level security;
+alter table "public"."campaign_invites" enable row level security;
 
-CREATE UNIQUE INDEX invites_pkey ON public.invites USING btree (id);
+CREATE UNIQUE INDEX campaign_invites_pkey ON public.campaign_invites USING btree (id);
 
-alter table "public"."invites" add constraint "invites_pkey" PRIMARY KEY using index "invites_pkey";
+alter table "public"."campaign_invites" add constraint "campaign_invites_pkey" PRIMARY KEY using index "campaign_invites_pkey";
 
-alter table "public"."invites" add constraint "invites_campaign_id_fkey" FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
+alter table "public"."campaign_invites" add constraint "campaign_invites_campaign_id_fkey" FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
 
-alter table "public"."invites" validate constraint "invites_campaign_id_fkey";
+alter table "public"."campaign_invites" validate constraint "campaign_invites_campaign_id_fkey";
 
-alter table "public"."invites" add constraint "invites_user_id_fkey" FOREIGN KEY (user_id) REFERENCES profiles(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
+alter table "public"."campaign_invites" add constraint "campaign_invites_user_id_fkey" FOREIGN KEY (user_id) REFERENCES profiles(id) ON UPDATE CASCADE ON DELETE CASCADE not valid;
 
-alter table "public"."invites" validate constraint "invites_user_id_fkey";
+alter table "public"."campaign_invites" validate constraint "campaign_invites_user_id_fkey";
 
-create policy "Invites can be viewed by anyone"
-on "public"."invites"
+create policy "Campaign invites can be viewed by anyone"
+on "public"."campaign_invites"
 as permissive
 for select
 to public
 using (true);
 
-create policy "Invites can be created by game masters of the campaign"
-on "public"."invites"
+create policy "Campaign invites can be created by game masters of the campaign"
+on "public"."campaign_invites"
 as permissive
 for insert
 to authenticated
-with check (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)));
+with check (is_game_master_in_campaign(campaign_id));
 
-create policy "Invites can be deleted by game masters of the campaign and the invitee"
-on "public"."invites"
+create policy "Campaign invites can be deleted by game masters of the campaign and the invitee"
+on "public"."campaign_invites"
 as permissive
 for delete
 to authenticated
-using (auth.uid() IN (
-    SELECT memberships.user_id
-    FROM memberships
-    WHERE (memberships.campaign_id = campaign_id) AND (memberships.role = 'GAME_MASTER'::campaign_member_role)) OR (auth.jwt() ->> 'email' = email));
+using (is_game_master_in_campaign(campaign_id) OR (auth.jwt() ->> 'email' = email));

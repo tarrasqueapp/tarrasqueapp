@@ -60,7 +60,9 @@ async function sendTransactionalEmail({ to, subject, html }: { to: string; subje
 
   // Log email preview url in development
   if (config.NODE_ENV === 'development') {
+    console.info();
     console.info('📧 Email Preview URL:', nodemailer.getTestMessageUrl(email));
+    console.info();
   }
 }
 

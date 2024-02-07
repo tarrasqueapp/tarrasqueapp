@@ -1,12 +1,14 @@
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 
 import { Color } from '@/lib/colors';
 import { config } from '@/lib/config';
+import { theme } from '@/lib/theme';
 
 import '../styles/globals.css';
 import { ReactQueryProvider } from './ReactQueryProvider';
-import { ThemeRegistry } from './ThemeRegistry';
 
 export const metadata: Metadata = {
   title: 'Tarrasque App',
@@ -215,11 +217,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <ThemeRegistry>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <ReactQueryProvider>{children}</ReactQueryProvider>
 
-          <Toaster />
-        </ThemeRegistry>
+            <Toaster />
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

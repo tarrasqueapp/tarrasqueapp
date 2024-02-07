@@ -1,8 +1,114 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export interface Database {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+          extensions?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
+      campaign_invites: {
+        Row: {
+          campaign_id: string;
+          created_at: string;
+          email: string;
+          id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          campaign_id: string;
+          created_at?: string;
+          email: string;
+          id?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          campaign_id?: string;
+          created_at?: string;
+          email?: string;
+          id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'campaign_invites_campaign_id_fkey';
+            columns: ['campaign_id'];
+            isOneToOne: false;
+            referencedRelation: 'campaigns';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'campaign_invites_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      campaign_memberships: {
+        Row: {
+          campaign_id: string;
+          color: string;
+          created_at: string;
+          id: string;
+          role: Database['public']['Enums']['campaign_member_role'];
+          user_id: string;
+        };
+        Insert: {
+          campaign_id: string;
+          color: string;
+          created_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['campaign_member_role'];
+          user_id: string;
+        };
+        Update: {
+          campaign_id?: string;
+          color?: string;
+          created_at?: string;
+          id?: string;
+          role?: Database['public']['Enums']['campaign_member_role'];
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'campaign_memberships_campaign_id_fkey';
+            columns: ['campaign_id'];
+            isOneToOne: false;
+            referencedRelation: 'campaigns';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'campaign_memberships_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       campaigns: {
         Row: {
           created_at: string;
@@ -32,38 +138,87 @@ export interface Database {
           },
         ];
       };
-      invites: {
+      character_permissions: {
+        Row: {
+          character_id: string;
+          created_at: string;
+          id: string;
+          user_id: string;
+        };
+        Insert: {
+          character_id: string;
+          created_at?: string;
+          id?: string;
+          user_id: string;
+        };
+        Update: {
+          character_id?: string;
+          created_at?: string;
+          id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'character_permissions_character_id_fkey';
+            columns: ['character_id'];
+            isOneToOne: false;
+            referencedRelation: 'characters';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'character_permissions_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      characters: {
         Row: {
           campaign_id: string;
           created_at: string;
-          email: string;
+          data: Json | null;
           id: string;
-          user_id: string | null;
+          media_id: string | null;
+          name: string;
+          user_id: string;
         };
         Insert: {
           campaign_id: string;
           created_at?: string;
-          email: string;
+          data?: Json | null;
           id?: string;
-          user_id?: string | null;
+          media_id?: string | null;
+          name: string;
+          user_id: string;
         };
         Update: {
           campaign_id?: string;
           created_at?: string;
-          email?: string;
+          data?: Json | null;
           id?: string;
-          user_id?: string | null;
+          media_id?: string | null;
+          name?: string;
+          user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'invites_campaign_id_fkey';
+            foreignKeyName: 'characters_campaign_id_fkey';
             columns: ['campaign_id'];
             isOneToOne: false;
             referencedRelation: 'campaigns';
             referencedColumns: ['id'];
           },
           {
-            foreignKeyName: 'invites_user_id_fkey';
+            foreignKeyName: 'characters_media_id_fkey';
+            columns: ['media_id'];
+            isOneToOne: false;
+            referencedRelation: 'media';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'characters_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
@@ -168,48 +323,6 @@ export interface Database {
           },
         ];
       };
-      memberships: {
-        Row: {
-          campaign_id: string;
-          color: string;
-          created_at: string;
-          id: string;
-          role: Database['public']['Enums']['campaign_member_role'];
-          user_id: string;
-        };
-        Insert: {
-          campaign_id: string;
-          color: string;
-          created_at?: string;
-          id?: string;
-          role?: Database['public']['Enums']['campaign_member_role'];
-          user_id: string;
-        };
-        Update: {
-          campaign_id?: string;
-          color?: string;
-          created_at?: string;
-          id?: string;
-          role?: Database['public']['Enums']['campaign_member_role'];
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'memberships_campaign_id_fkey';
-            columns: ['campaign_id'];
-            isOneToOne: false;
-            referencedRelation: 'campaigns';
-            referencedColumns: ['id'];
-          },
-          {
-            foreignKeyName: 'memberships_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       plugins: {
         Row: {
           campaign_id: string;
@@ -299,6 +412,77 @@ export interface Database {
         };
         Relationships: [];
       };
+      tokens: {
+        Row: {
+          campaign_id: string;
+          character_id: string;
+          created_at: string;
+          data: Json | null;
+          height: number;
+          id: string;
+          map_id: string;
+          user_id: string;
+          width: number;
+          x: number;
+          y: number;
+        };
+        Insert: {
+          campaign_id: string;
+          character_id: string;
+          created_at?: string;
+          data?: Json | null;
+          height: number;
+          id?: string;
+          map_id: string;
+          user_id: string;
+          width: number;
+          x: number;
+          y: number;
+        };
+        Update: {
+          campaign_id?: string;
+          character_id?: string;
+          created_at?: string;
+          data?: Json | null;
+          height?: number;
+          id?: string;
+          map_id?: string;
+          user_id?: string;
+          width?: number;
+          x?: number;
+          y?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'tokens_campaign_id_fkey';
+            columns: ['campaign_id'];
+            isOneToOne: false;
+            referencedRelation: 'campaigns';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tokens_character_id_fkey';
+            columns: ['character_id'];
+            isOneToOne: false;
+            referencedRelation: 'characters';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tokens_map_id_fkey';
+            columns: ['map_id'];
+            isOneToOne: false;
+            referencedRelation: 'maps';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'tokens_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -311,10 +495,201 @@ export interface Database {
         };
         Returns: string;
       };
+      has_character_permissions: {
+        Args: {
+          character_id: string;
+        };
+        Returns: boolean;
+      };
+      is_game_master_in_campaign: {
+        Args: {
+          campaign_id: string;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       campaign_member_role: 'GAME_MASTER' | 'PLAYER';
       setup_step: 'CREATED_DATABASE' | 'CREATED_USER' | 'COMPLETED';
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+  storage: {
+    Tables: {
+      buckets: {
+        Row: {
+          allowed_mime_types: string[] | null;
+          avif_autodetection: boolean | null;
+          created_at: string | null;
+          file_size_limit: number | null;
+          id: string;
+          name: string;
+          owner: string | null;
+          owner_id: string | null;
+          public: boolean | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          allowed_mime_types?: string[] | null;
+          avif_autodetection?: boolean | null;
+          created_at?: string | null;
+          file_size_limit?: number | null;
+          id: string;
+          name: string;
+          owner?: string | null;
+          owner_id?: string | null;
+          public?: boolean | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          allowed_mime_types?: string[] | null;
+          avif_autodetection?: boolean | null;
+          created_at?: string | null;
+          file_size_limit?: number | null;
+          id?: string;
+          name?: string;
+          owner?: string | null;
+          owner_id?: string | null;
+          public?: boolean | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+      migrations: {
+        Row: {
+          executed_at: string | null;
+          hash: string;
+          id: number;
+          name: string;
+        };
+        Insert: {
+          executed_at?: string | null;
+          hash: string;
+          id: number;
+          name: string;
+        };
+        Update: {
+          executed_at?: string | null;
+          hash?: string;
+          id?: number;
+          name?: string;
+        };
+        Relationships: [];
+      };
+      objects: {
+        Row: {
+          bucket_id: string | null;
+          created_at: string | null;
+          id: string;
+          last_accessed_at: string | null;
+          metadata: Json | null;
+          name: string | null;
+          owner: string | null;
+          owner_id: string | null;
+          path_tokens: string[] | null;
+          updated_at: string | null;
+          version: string | null;
+        };
+        Insert: {
+          bucket_id?: string | null;
+          created_at?: string | null;
+          id?: string;
+          last_accessed_at?: string | null;
+          metadata?: Json | null;
+          name?: string | null;
+          owner?: string | null;
+          owner_id?: string | null;
+          path_tokens?: string[] | null;
+          updated_at?: string | null;
+          version?: string | null;
+        };
+        Update: {
+          bucket_id?: string | null;
+          created_at?: string | null;
+          id?: string;
+          last_accessed_at?: string | null;
+          metadata?: Json | null;
+          name?: string | null;
+          owner?: string | null;
+          owner_id?: string | null;
+          path_tokens?: string[] | null;
+          updated_at?: string | null;
+          version?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'objects_bucketId_fkey';
+            columns: ['bucket_id'];
+            isOneToOne: false;
+            referencedRelation: 'buckets';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      can_insert_object: {
+        Args: {
+          bucketid: string;
+          name: string;
+          owner: string;
+          metadata: Json;
+        };
+        Returns: undefined;
+      };
+      extension: {
+        Args: {
+          name: string;
+        };
+        Returns: string;
+      };
+      filename: {
+        Args: {
+          name: string;
+        };
+        Returns: string;
+      };
+      foldername: {
+        Args: {
+          name: string;
+        };
+        Returns: unknown;
+      };
+      get_size_by_bucket: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          size: number;
+          bucket_id: string;
+        }[];
+      };
+      search: {
+        Args: {
+          prefix: string;
+          bucketname: string;
+          limits?: number;
+          levels?: number;
+          offsets?: number;
+          search?: string;
+          sortcolumn?: string;
+          sortorder?: string;
+        };
+        Returns: {
+          name: string;
+          id: string;
+          updated_at: string;
+          created_at: string;
+          last_accessed_at: string;
+          metadata: Json;
+        }[];
+      };
+    };
+    Enums: {
+      [_ in never]: never;
     };
     CompositeTypes: {
       [_ in never]: never;

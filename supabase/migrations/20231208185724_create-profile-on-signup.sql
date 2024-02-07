@@ -19,8 +19,8 @@ begin
   insert into public.campaigns (id, name, user_id, created_at)
   values (extensions.uuid_generate_v4 (), display_name || '''s Campaign', new.id, current_timestamp);
 
-  -- Create a membership for the user
-  insert into public.memberships (id, role, color, user_id, campaign_id, created_at)
+  -- Create a campaign membership for the user
+  insert into public.campaign_memberships (id, role, color, user_id, campaign_id, created_at)
   values (extensions.uuid_generate_v4 (), 'GAME_MASTER'::campaign_member_role, '#000000', new.id, (select id from public.campaigns where user_id = new.id limit 1), current_timestamp);
 
   return new;

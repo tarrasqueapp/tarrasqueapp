@@ -26,11 +26,11 @@ export async function getMemberships(campaignId: string) {
 
   // Get the memberships
   const { data, error } = await supabase
-    .from('memberships')
+    .from('campaign_memberships')
     .select(
       `
       *,
-      user: profiles!memberships_user_id_fkey (
+      user: profiles!campaign_memberships_user_id_fkey (
         display_name,
         email,
         avatar: media!profiles_avatar_id_fkey (
@@ -69,7 +69,7 @@ export async function updateMembership({ id, color, role }: { id: string; color?
 
   // Update the membership
   const { error } = await supabase
-    .from('memberships')
+    .from('campaign_memberships')
     .update({
       color,
       role,
@@ -95,7 +95,7 @@ export async function deleteMembership(membershipId: string) {
   const supabase = createServerClient(cookieStore);
 
   // Delete the membership
-  const { error } = await supabase.from('memberships').delete().eq('id', membershipId);
+  const { error } = await supabase.from('campaign_memberships').delete().eq('id', membershipId);
 
   if (error) {
     throw error;

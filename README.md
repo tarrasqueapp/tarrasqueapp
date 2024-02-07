@@ -29,24 +29,63 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 
 ## Installation
 
-To install Tarrasque App, first run the following command to install the [Tarrasque CLI](https://github.com/tarrasqueapp/cli):
+### Install dependencies
 
-    npm install -g @tarrasque/cli
+Tarrasque App uses [pnpm](https://pnpm.io/) as its package manager. To install the dependencies, run:
 
-Then, run the following commands to install the dependencies and set up the environment variables:
+    pnpm install
 
-    ./bin/setup.sh
+### Set up database
+
+Tarrasque App uses [Supabase](https://supabase.com/) as its database. You can either use a free cloud-hosted Supabase project or run a local instance of Supabase using Docker by running:
+
+    supabase start
+
+If you're using a cloud-hosted Supabase project, be aware that you will not be able to use Tarrasque App without an internet connection.
+
+### Set environment variables
+
+Copy the `.env.example` file to `.env` and edit it to set the necessary environment variables as per your Supabase project settings.
+
     cp .env.example .env
 
-Finally, edit the `.env` file to set the necessary environment variables.
+If you're using a cloud-hosted Supabase project, you can find the values for `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` in your Supabase project settings under the "API" tab. For a local Supabase instance, the values will be displayed in the terminal when you run `supabase start`.
 
-## Running the Server
+## Running the Production Server
+
+Similarly, to start the production server, run:
+
+    pnpm build
+    pnpm start
+
+This will start the UI at `http://localhost:3000`.
+
+## Development
+
+### Running the Development Server
 
 To start the development server, run:
 
-    tarrasque app dev
+    pnpm dev
 
-This will start the UI and the local database service at `http://localhost:3000`.
+This will start the UI at `http://localhost:3000`.
+
+### Creating a database migration
+
+You can create a new database migration by running:
+
+    supabase migration new <migration-name>
+
+This will create a new empty migration file in the `migrations` directory. You can then edit this file to add the necessary SQL commands to migrate the database schema. Alternatively, you can make changes to the database schema using the Supabase web interface and then generate the migration file by running:
+
+    supabase db diff --file <migration-name>
+
+### Generating schema types from Supabase
+
+After making changes to the Supabase database schema, you can generate the TypeScript types for the schema by running:
+
+    supabase gen types typescript --local > utils/supabase/types.gen.ts
+    pnpm prettier --write utils/supabase/types.gen.ts
 
 ## Contributing
 
