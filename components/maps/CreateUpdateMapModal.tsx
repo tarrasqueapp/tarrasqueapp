@@ -163,10 +163,10 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
             <ControlledTextField name="name" label="Name" sx={{ my: 1 }} autoFocus fullWidth />
 
             {Boolean(campaigns && map) && (
-              <ControlledTextField name="campaignId" label="Campaign" sx={{ my: 1 }} fullWidth select>
-                {campaigns!.map((campaign) => (
-                  <MenuItem key={campaign.id} value={campaign.id}>
-                    {campaign.name}
+              <ControlledTextField name="campaign_id" label="Campaign" sx={{ my: 1 }} fullWidth select>
+                {campaigns!.map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    {c.name}
                   </MenuItem>
                 ))}
               </ControlledTextField>

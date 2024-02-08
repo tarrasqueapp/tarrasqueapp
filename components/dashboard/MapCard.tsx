@@ -23,7 +23,7 @@ import NextLink from 'next/link';
 import { useState } from 'react';
 
 import { Campaign } from '@/actions/campaigns';
-import { Map } from '@/actions/maps';
+import { Map, duplicateMap } from '@/actions/maps';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { AppNavigation } from '@/lib/navigation';
@@ -180,7 +180,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
                           onClick={async () => {
                             if (!map) return;
                             setDuplicating(true);
-                            // await duplicateMap.mutateAsync(map);
+                            await duplicateMap(map.id);
                             setDuplicating(false);
                             popupState.close();
                           }}

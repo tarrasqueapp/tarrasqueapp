@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
+import { getMapTokens } from './tokens';
 
 export type Map = Awaited<ReturnType<typeof getMaps>>[number];
 
@@ -131,6 +132,59 @@ export async function createMap({
   if (error) {
     throw error;
   }
+
+  return data;
+}
+
+/**
+ * Duplicate a map
+ * @param mapId - The map to duplicate
+ * @returns The duplicated map
+ */
+export async function duplicateMap(mapId: string) {
+  // Validate inputs
+  const schema = z.string().uuid();
+  schema.parse(mapId);
+
+  // Connect to Supabase
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+
+  // Get the original map
+  const map = await getMap(mapId);
+
+  // Get the order of the last map, if one exists
+  const { data: lastMap } = await supabase
+    .from('maps')
+    .select('order')
+    .eq('campaign_id', map.campaign_id)
+    .order('order', { ascending: false })
+    .limit(1);
+
+  const order = lastMap?.[0]?.order || 0;
+
+  // Create the duplicated map with the same name and media, but a new ID and tokens
+  const { data, error } = await supabase
+    .from('maps')
+    .insert({
+      name: `Copy of ${map.name}`,
+      order: order + 1,
+      media_id: map.media_id,
+      campaign_id: map.campaign_id,
+      user_id: map.user_id,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  // Get the original map's tokens
+  const tokens = await getMapTokens(mapId);
+
+  // Duplicate the map's tokens
+  await supabase.from('tokens').insert(tokens.map((token) => ({ ...token, map_id: data.id })));
 
   return data;
 }
