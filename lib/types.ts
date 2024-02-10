@@ -1,7 +1,5 @@
-import { User } from '@supabase/supabase-js';
-
-import { Campaign } from '@/actions/campaigns';
 import { Map } from '@/actions/maps';
+import { Profile } from '@/actions/profiles';
 
 export interface Dimensions {
   width: number;
@@ -41,7 +39,7 @@ export interface TokenEntity {
   created_at: string;
   updated_at: string;
   // User
-  user: User;
+  user: Profile;
   user_id: string;
   // Map
   map: Map;
@@ -55,14 +53,21 @@ export interface PluginEntity {
   id: string;
   manifest_url: string;
   created_at: string;
-  campaign?: Campaign;
-  campaign_id: string;
+  user?: Profile;
+  user_id: string;
 }
 
 export interface SubmittedPluginEntity {
   id: string;
   name: string;
   manifest_url: string;
+}
+
+export interface CampaignPluginEntity {
+  id: string;
+  campaign_id: string;
+  plugin_id: string;
+  plugin: PluginEntity | null;
 }
 
 export interface ManifestEntity {

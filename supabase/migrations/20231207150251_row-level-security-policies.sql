@@ -188,16 +188,16 @@ for select
 to public
 using (true);
 
-create policy "Plugins can be created by game masters of the campaign"
+create policy "Plugins can be installed by authenticated users"
 on "public"."plugins"
 as permissive
 for insert
 to authenticated
-with check (is_game_master_in_campaign(campaign_id));
+with check (true);
 
-create policy "Plugins can be deleted by game masters of the campaign"
+create policy "Plugins can be deleted by the user who installed them"
 on "public"."plugins"
 as permissive
 for delete
 to authenticated
-using (is_game_master_in_campaign(campaign_id));
+using ((auth.uid() = user_id));

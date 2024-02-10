@@ -19,7 +19,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Delete, Edit, ExpandLess, ExpandMore, MoreHoriz, People } from '@mui/icons-material';
+import { Delete, Edit, ExpandLess, ExpandMore, Extension, MoreHoriz, People } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -52,7 +52,6 @@ import { MathUtils } from '@/utils/MathUtils';
 import { UserAvatar } from '../common/UserAvatar';
 import { MapCard } from './MapCard';
 import { NewMap } from './NewMap';
-import { Plugins } from './Plugins/Plugins';
 
 export interface CampaignAccordionProps {
   expanded?: boolean;
@@ -205,7 +204,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }} onClick={(event) => event.stopPropagation()}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }} onClick={(event) => event.stopPropagation()}>
           {isGameMaster && (
             <>
               <Tooltip title="Update">
@@ -236,7 +235,11 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                 </span>
               </Tooltip>
 
-              <Plugins campaign={campaign} />
+              <Tooltip title="Plugins">
+                <IconButton onClick={() => setModal(CampaignModal.Plugins)}>
+                  <Extension />
+                </IconButton>
+              </Tooltip>
 
               <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
                 {(popupState) => (

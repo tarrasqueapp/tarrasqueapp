@@ -1,17 +1,22 @@
 import { create } from 'zustand';
 
-interface DashboardStore {
-  settingsModalOpen: boolean;
-  toggleSettingsModal: (open?: boolean) => void;
+export enum DashboardModal {
+  Plugins = 'plugins',
+  Compendium = 'compendium',
+  Settings = 'settings',
 }
 
-export const useDashboardStore = create<DashboardStore>((set, get) => ({
-  settingsModalOpen: false,
+interface DashboardStore {
+  modal: DashboardModal | null;
+  setModal: (modal: DashboardModal | null) => void;
+}
+
+export const useDashboardStore = create<DashboardStore>((set) => ({
+  modal: null,
 
   /**
-   * Toggle settings modal open state
-   * @param open - The open state
+   * Set the modal to open
+   * @param modal - The modal to open
    */
-  toggleSettingsModal: (open) =>
-    set(() => ({ settingsModalOpen: open !== undefined ? open : !get().settingsModalOpen })),
+  setModal: (modal) => set(() => ({ modal })),
 }));

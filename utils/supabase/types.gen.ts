@@ -1,6 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export interface Database {
+export type Database = {
   graphql_public: {
     Tables: {
       [_ in never]: never;
@@ -105,6 +105,42 @@ export interface Database {
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      campaign_plugins: {
+        Row: {
+          campaign_id: string;
+          created_at: string;
+          id: string;
+          plugin_id: string;
+        };
+        Insert: {
+          campaign_id: string;
+          created_at?: string;
+          id?: string;
+          plugin_id: string;
+        };
+        Update: {
+          campaign_id?: string;
+          created_at?: string;
+          id?: string;
+          plugin_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'campaign_plugins_campaign_id_fkey';
+            columns: ['campaign_id'];
+            isOneToOne: false;
+            referencedRelation: 'campaigns';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'campaign_plugins_plugin_id_fkey';
+            columns: ['plugin_id'];
+            isOneToOne: false;
+            referencedRelation: 'plugins';
             referencedColumns: ['id'];
           },
         ];
@@ -325,29 +361,29 @@ export interface Database {
       };
       plugins: {
         Row: {
-          campaign_id: string;
           created_at: string;
           id: string;
           manifest_url: string;
+          user_id: string;
         };
         Insert: {
-          campaign_id: string;
           created_at?: string;
           id?: string;
           manifest_url: string;
+          user_id: string;
         };
         Update: {
-          campaign_id?: string;
           created_at?: string;
           id?: string;
           manifest_url?: string;
+          user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'plugins_campaign_id_fkey';
-            columns: ['campaign_id'];
+            foreignKeyName: 'plugins_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: 'campaigns';
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
         ];
@@ -695,7 +731,7 @@ export interface Database {
       [_ in never]: never;
     };
   };
-}
+};
 
 export type Tables<
   PublicTableNameOrOptions extends

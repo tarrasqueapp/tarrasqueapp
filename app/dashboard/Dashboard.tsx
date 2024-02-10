@@ -2,9 +2,11 @@ import { Box, Container } from '@mui/material';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
 
+import { CampaignModals } from '@/components/campaigns/CampaignModals';
 import { CampaignAccordions } from '@/components/dashboard/CampaignAccordions';
 import { DashboardModals } from '@/components/dashboard/DashboardModals';
 import { TopBar } from '@/components/dashboard/TopBar/TopBar';
+import { MapModals } from '@/components/maps/MapModals';
 import { Gradient } from '@/lib/colors';
 
 export function Dashboard() {
@@ -35,6 +37,8 @@ export function Dashboard() {
       </Box>
 
       <DashboardModals />
+      <CampaignModals />
+      <MapModals />
     </>
   );
 }

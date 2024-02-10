@@ -29,7 +29,6 @@ import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { validate } from '@/lib/validate';
-import { useDashboardStore } from '@/store/dashboard';
 import { MediaUtils } from '@/utils/MediaUtils';
 
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -43,8 +42,6 @@ interface SettingsModalProps {
 export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const { data: user } = useGetUser();
   const { data: profile } = useGetProfile();
-
-  const { settingsModalOpen } = useDashboardStore();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -91,7 +88,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       avatar: profile?.avatar,
       email: user?.email,
     });
-  }, [user, profile, reset, settingsModalOpen]);
+  }, [user, profile, reset, open]);
 
   /**
    * Handle the form submission

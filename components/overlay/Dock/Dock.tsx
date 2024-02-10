@@ -22,6 +22,7 @@ import {
   MenuItem,
   MenuList,
   Popover,
+  SvgIcon,
   Tooltip,
   alpha,
 } from '@mui/material';
@@ -33,15 +34,16 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { signOut } from '@/actions/auth';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { SettingsModal } from '@/components/dashboard/SettingsModal';
-import { CampaignIcon } from '@/components/icons/CampaignIcon';
-import { DiscordIcon } from '@/components/icons/DiscordIcon';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { Color } from '@/lib/colors';
 import { AppNavigation, ExternalNavigation } from '@/lib/navigation';
-import { useDashboardStore } from '@/store/dashboard';
+import campaignIcon from '@/public/images/app-icons/campaign.svg';
+import discordIcon from '@/public/images/app-icons/discord.svg';
+import { DashboardModal, useDashboardStore } from '@/store/dashboard';
 import { HotkeysUtils } from '@/utils/HotkeyUtils';
 
+import { DiceRoller } from './DiceRoller/DiceRoller';
 import { DockButton } from './DockButton';
 import { Plugins } from './Plugins';
 import { ShortcutsModal } from './ShortcutsModal';
@@ -50,7 +52,7 @@ export function Dock() {
   const { data: user } = useGetUser();
   const { data: profile } = useGetProfile();
 
-  const { settingsModalOpen, toggleSettingsModal } = useDashboardStore();
+  const { modal, setModal } = useDashboardStore();
 
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
@@ -77,13 +79,15 @@ export function Dock() {
     >
       <Plugins />
 
+      <DiceRoller />
+
       <Box sx={{ display: 'flex', flex: '1 0 auto' }} />
 
       {user && (
         <Tooltip title="Dashboard">
           <NextLink href={AppNavigation.Dashboard} passHref>
             <DockButton>
-              <CampaignIcon sx={{ fontSize: '2rem' }} />
+              <SvgIcon component={campaignIcon} sx={{ fontSize: '2rem' }} />
             </DockButton>
           </NextLink>
         </Tooltip>
@@ -166,7 +170,7 @@ export function Dock() {
                   rel="noopener noreferrer"
                 >
                   <ListItemIcon>
-                    <DiscordIcon />
+                    <SvgIcon component={discordIcon} />
                   </ListItemIcon>
                   <ListItemText primary="Discord" secondary="Join our community" />
                 </MenuItem>
@@ -229,7 +233,7 @@ export function Dock() {
                 <MenuList>
                   <MenuItem
                     onClick={() => {
-                      toggleSettingsModal();
+                      setModal(DashboardModal.Settings);
                       popupState.close();
                     }}
                   >
@@ -267,7 +271,7 @@ export function Dock() {
 
       <ShortcutsModal open={shortcutsModalOpen} onClose={() => setShortcutsModalOpen(false)} />
 
-      <SettingsModal open={settingsModalOpen} onClose={() => toggleSettingsModal(false)} />
+      <SettingsModal open={modal === DashboardModal.Settings} onClose={() => setModal(null)} />
     </Box>
   );
 }

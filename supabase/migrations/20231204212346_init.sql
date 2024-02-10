@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS "public"."plugins" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "manifest_url" character varying NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "campaign_id" "uuid" NOT NULL
+    "user_id" "uuid" NOT NULL
 );
 
 ALTER TABLE "public"."plugins" OWNER TO "postgres";
@@ -147,7 +147,7 @@ ALTER TABLE ONLY "public"."campaign_memberships"
     ADD CONSTRAINT "campaign_memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."plugins"
-    ADD CONSTRAINT "plugins_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "plugins_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_avatar_id_fkey" FOREIGN KEY ("avatar_id") REFERENCES "public"."media"("id") ON UPDATE CASCADE ON DELETE CASCADE;

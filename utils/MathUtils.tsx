@@ -18,4 +18,23 @@ export class MathUtils {
   static getPercentage(value: number, total: number) {
     return (value / total) * 100;
   }
+
+  /**
+   * Convert a value to a number
+   * @param value
+   */
+  static toNumber(value?: string | number) {
+    if (!value || Number.isNaN(Number(value))) {
+      return 0;
+    }
+
+    const float = parseFloat(String(value));
+
+    if (float % 1 === 0) {
+      const int = parseInt(String(value), 10);
+      return int;
+    }
+
+    return float;
+  }
 }

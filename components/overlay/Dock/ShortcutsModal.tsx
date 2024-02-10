@@ -43,15 +43,15 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
+  SvgIcon,
   Theme,
   Typography,
   useMediaQuery,
 } from '@mui/material';
 
+import characterIcon from '@/public/images/app-icons/character.svg';
+import mapIcon from '@/public/images/app-icons/map.svg';
 import { HotkeysUtils } from '@/utils/HotkeyUtils';
-
-import { CharacterIcon } from '../../icons/CharacterIcon';
-import { MapIcon } from '../../icons/MapIcon';
 
 interface ShortcutsModalProps {
   open: boolean;
@@ -277,14 +277,14 @@ export function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {
             <List>
               <ListItem>
                 <ListItemIcon style={{ minWidth: 40 }}>
-                  <CharacterIcon />
+                  <SvgIcon component={characterIcon} />
                 </ListItemIcon>
                 <ListItemText primary="Adventurers" />
                 <Chip label={HotkeysUtils.Adventurers} />
               </ListItem>
               <ListItem>
                 <ListItemIcon style={{ minWidth: 40 }}>
-                  <MapIcon />
+                  <SvgIcon component={mapIcon} />
                 </ListItemIcon>
                 <ListItemText primary="Battle Maps" />
                 <Chip label={HotkeysUtils.BattleMaps} />

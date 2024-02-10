@@ -7,14 +7,14 @@ import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { signOut } from '@/actions/auth';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
-import { useDashboardStore } from '@/store/dashboard';
+import { DashboardModal, useDashboardStore } from '@/store/dashboard';
 
 import { SettingsModal } from '../../SettingsModal';
 
 export function Account() {
   const { data: profile } = useGetProfile();
 
-  const { settingsModalOpen, toggleSettingsModal } = useDashboardStore();
+  const { modal, setModal } = useDashboardStore();
 
   return (
     <>
@@ -35,7 +35,7 @@ export function Account() {
               <MenuList>
                 <MenuItem
                   onClick={() => {
-                    toggleSettingsModal();
+                    setModal(DashboardModal.Settings);
                     popupState.close();
                   }}
                 >
@@ -59,7 +59,7 @@ export function Account() {
         )}
       </PopupState>
 
-      <SettingsModal open={settingsModalOpen} onClose={() => toggleSettingsModal(false)} />
+      <SettingsModal open={modal === DashboardModal.Settings} onClose={() => setModal(null)} />
     </>
   );
 }

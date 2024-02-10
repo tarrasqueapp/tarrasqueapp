@@ -1,3 +1,5 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Add, Close } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
@@ -16,11 +18,10 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Campaign } from '@/actions/campaigns';
 import { installPlugin, uninstallPlugin } from '@/actions/plugins';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
-import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetSubmittedPlugins } from '@/hooks/data/plugins/useGetSubmittedPlugins';
+import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
 import { PluginEntity, SubmittedPluginEntity } from '@/lib/types';
 import { validate } from '@/lib/validate';
 
@@ -29,12 +30,11 @@ import { Plugin } from './Plugin';
 interface PluginsModalProps {
   open: boolean;
   onClose: () => void;
-  campaign?: Campaign;
 }
 
-export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
+export function PluginsModal({ open, onClose }: PluginsModalProps) {
   const { data: submittedPlugins } = useGetSubmittedPlugins();
-  const { data: campaignPlugins } = useGetCampaignPlugins(campaign?.id || '');
+  const { data: userPlugins } = useGetUserPlugins();
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -59,22 +59,15 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
   // Reset the form when the map changes
   useEffect(() => {
     reset({ manifest_url: '' });
-  }, [campaign, reset, open]);
+  }, [reset, open]);
 
   /**
    * Handle the form submission
    * @param values - The map values
    */
   async function handleSubmitForm(values: Schema) {
-    if (!campaign) return;
-
-    // Update the plugin
-    const plugin = await installPlugin({
-      campaign_id: campaign.id,
-      manifest_url: values.manifest_url,
-    });
-
-    console.log(plugin);
+    // Install the plugin
+    await installPlugin({ manifest_url: values.manifest_url });
 
     reset({ manifest_url: '' });
   }
@@ -84,12 +77,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
    * @param plugin - The plugin to install
    */
   function handleInstall(plugin: SubmittedPluginEntity) {
-    if (!campaign) return;
-
-    installPlugin({
-      campaign_id: campaign.id,
-      manifest_url: plugin.manifest_url,
-    });
+    installPlugin({ manifest_url: plugin.manifest_url });
   }
 
   /**
@@ -113,8 +101,8 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
       <DialogContent>
         <Box sx={{ my: 1 }}>
           <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
-            {campaignPlugins
-              ? campaignPlugins.map((plugin) => (
+            {userPlugins
+              ? userPlugins.map((plugin) => (
                   <Plugin
                     key={plugin.id}
                     manifestUrl={plugin.manifest_url}
@@ -126,7 +114,7 @@ export function PluginsModal({ open, onClose, campaign }: PluginsModalProps) {
 
             {submittedPlugins
               ? submittedPlugins
-                  .filter((plugin) => !campaignPlugins?.find((p) => p.manifest_url === plugin.manifest_url))
+                  .filter((plugin) => !userPlugins?.find((p) => p.manifest_url === plugin.manifest_url))
                   .map((plugin) => (
                     <Plugin key={plugin.id} manifestUrl={plugin.manifest_url} onInstall={() => handleInstall(plugin)} />
                   ))

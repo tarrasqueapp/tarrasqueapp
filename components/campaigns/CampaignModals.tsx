@@ -8,8 +8,8 @@ import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns'
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
 import { ConfirmModal } from '../common/ConfirmModal';
-import { PluginsModal } from '../dashboard/Plugins/PluginsModal';
 import { CampaignMembersModal } from './CampaignMembersModal';
+import { CampaignPluginsModal } from './CampaignPluginsModal';
 import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';
 
 export function CampaignModals() {
@@ -36,7 +36,11 @@ export function CampaignModals() {
         campaign={selectedCampaign}
       />
 
-      <PluginsModal open={modal === CampaignModal.Plugins} onClose={() => setModal(null)} campaign={selectedCampaign} />
+      <CampaignPluginsModal
+        open={modal === CampaignModal.Plugins}
+        onClose={() => setModal(null)}
+        campaign={selectedCampaign}
+      />
 
       <ConfirmModal
         title="Delete Campaign"

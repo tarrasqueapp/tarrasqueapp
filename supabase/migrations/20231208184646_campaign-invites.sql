@@ -21,12 +21,12 @@ alter table "public"."campaign_invites" add constraint "campaign_invites_user_id
 
 alter table "public"."campaign_invites" validate constraint "campaign_invites_user_id_fkey";
 
-create policy "Campaign invites can be viewed by anyone"
+create policy "Campaign invites can be viewed by game masters of the campaign and the invitee"
 on "public"."campaign_invites"
 as permissive
 for select
-to public
-using (true);
+to authenticated
+using (is_game_master_in_campaign(campaign_id) OR (auth.jwt() ->> 'email' = email));
 
 create policy "Campaign invites can be created by game masters of the campaign"
 on "public"."campaign_invites"

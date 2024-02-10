@@ -84,7 +84,7 @@ This will create a new empty migration file in the `migrations` directory. You c
 
 After making changes to the Supabase database schema, you can generate the TypeScript types for the schema by running:
 
-    supabase gen types typescript --local > utils/supabase/types.gen.ts
+    supabase gen types typescript > utils/supabase/types.gen.ts
 
 ## Contributing
 
