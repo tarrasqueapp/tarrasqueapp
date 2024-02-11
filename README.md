@@ -78,13 +78,13 @@ You can create a new database migration by running:
 
 This will create a new empty migration file in the `migrations` directory. You can then edit this file to add the necessary SQL commands to migrate the database schema. Alternatively, you can make changes to the database schema using the Supabase web interface and then generate the migration file by running:
 
-    supabase db diff --file <migration-name>
+    supabase db diff <--local|--linked> --file <migration-name>
 
 ### Generating schema types from Supabase
 
 After making changes to the Supabase database schema, you can generate the TypeScript types for the schema by running:
 
-    supabase gen types typescript > utils/supabase/types.gen.ts
+    supabase gen types typescript <--local|--linked> > utils/supabase/types.gen.ts
 
 ## Contributing
 
