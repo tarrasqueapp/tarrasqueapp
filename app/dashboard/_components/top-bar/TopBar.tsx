@@ -1,7 +1,7 @@
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 
-import { Account } from '@/components/Account/Account';
 import { Logo } from '@/components/Logo';
+import { Account } from '@/components/account/Account';
 
 import { Version } from './Version';
 import { CompendiumButton } from './compendium/CompendiumButton';
