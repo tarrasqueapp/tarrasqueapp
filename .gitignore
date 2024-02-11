@@ -7,11 +7,9 @@ coverage
 # next.js
 .next/
 out/
-build
 
-# nestjs
-dist
-*.tsbuildinfo
+# production
+build
 
 # misc
 .DS_Store
@@ -21,14 +19,17 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # local env files
 .env
 !.env.example
 
-# turbo
-.turbo
+# vercel
+.vercel
 
-# local
-/data
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# emails
+emails/*.html

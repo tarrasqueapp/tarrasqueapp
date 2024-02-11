@@ -1,0 +1,11 @@
+{
+  "extends": "@tronite/style-guide/typescript/next",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "compilerOptions": {
+    "target": "ES2015",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "exclude": ["node_modules", ".next"]
+}

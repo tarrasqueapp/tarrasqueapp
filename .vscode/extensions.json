@@ -4,8 +4,6 @@
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "mjmlio.vscode-mjml",
-    "prisma.prisma",
-    "redhat.vscode-yaml",
-    "william-voyek.vscode-nginx"
+    "redhat.vscode-yaml"
   ]
 }

@@ -1,59 +1,30 @@
 version: '3.8'
 
 services:
-  turbo:
-    container_name: turbo
+  tarrasqueapp:
+    container_name: tarrasqueapp
     restart: unless-stopped
     build:
       context: .
       dockerfile: ./Dockerfile.dev
       args:
+        # Global
         - HOST=${HOST}
         - NODE_ENV=${NODE_ENV}
+        # Supabase
+        - SUPABASE_URL=${SUPABASE_URL}
+        - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+        - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+        # Email
+        - SMTP_HOST=${SMTP_HOST}
+        - SMTP_PORT=${SMTP_PORT}
+        - SMTP_USERNAME=${SMTP_USERNAME}
+        - SMTP_PASSWORD=${SMTP_PASSWORD}
+        - SMTP_FROM=${SMTP_FROM}
     volumes:
       - ./:/app
       - /app/node_modules
-      - ./data/tmp:/tmp/uploads
-      - ./data/uploads:/uploads
-    env_file:
-      - ./.env
-
-  postgres:
-    container_name: postgres
-    image: postgres:14-alpine
-    restart: unless-stopped
-    volumes:
-      - ./data/postgres:/var/lib/postgresql
     ports:
-      - '5432:5432'
-    env_file:
-      - ./.env
-
-  nginx:
-    container_name: nginx
-    image: nginx:alpine
-    restart: unless-stopped
-    command: nginx -g 'daemon off;'
-    volumes:
-      - ./data/uploads:/uploads
-      - ./nginx:/etc/nginx/templates
-    ports:
-      - '80:80'
-    env_file:
-      - ./.env
-
-  tusd-local:
-    container_name: tusd
-    image: tusproject/tusd
-    restart: unless-stopped
-    command: -behind-proxy -base-path=/tus/files -upload-dir=/tmp/uploads
-    volumes:
-      - ./data/tmp:/tmp/uploads
-
-  tusd-s3:
-    container_name: tusd
-    image: tusproject/tusd
-    restart: unless-stopped
-    command: -behind-proxy -base-path=/tus/files -s3-bucket=${AWS_S3_BUCKET} -s3-endpoint=${AWS_S3_ENDPOINT} -s3-object-prefix=tmp/
+      - '3000:3000'
     env_file:
       - ./.env

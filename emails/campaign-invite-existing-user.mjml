@@ -1,0 +1,73 @@
+<mjml>
+  <mj-head>
+    <mj-title>Campaign invite existing user</mj-title>
+
+    <mj-attributes>
+      <mj-all font-family="Raleway, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
+      <mj-class name="heading" font-family="Recursive, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
+      <mj-class name="button" background-color="#9b7d65" font-size="17px" font-weight="bold" border-radius="90px" />
+      <mj-text font-size="16px" font-weight="400" line-height="24px" font-family="Raleway, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
+    </mj-attributes>
+
+    <mj-style>
+      .link {
+        color: #9b7d65 !important;
+      }
+    </mj-style>
+
+    <mj-font name="Raleway" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500&display=swap" />
+    <mj-font name="Recursive" href="https://fonts.googleapis.com/css2?family=Recursive:wght@400&display=swap" />
+  </mj-head>
+
+  <mj-body width="600px" background-color="#ffffff">
+    <mj-wrapper>
+      <mj-section full-width="full-width" padding-top="0" padding-bottom="0">
+        <mj-column width="100%">
+          <mj-image
+            href="https://tarrasque.app"
+            src="cid:logo"
+            alt="Tarrasque App"
+            align="center"
+            width="100px"
+            padding-top="0"
+            padding-bottom="0"
+          />
+
+          <mj-text mj-class="heading" align="center">Tarrasque App</mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding-top="0" padding-bottom="0">
+        <mj-column width="100%">
+          <mj-text>
+            <h2>Hi {{inviteeName}},</h2>
+          </mj-text>
+
+          <mj-text>
+            {{hostName}} has invited you to use Tarrasque App to play with them on "{{campaignName}}". Use the button
+            below to join the campaign and get started:
+          </mj-text>
+
+          <mj-button
+            mj-class="button"
+            href="{{acceptInviteUrl}}"
+            width="300px"
+          >
+            Join campaign
+          </mj-button>
+
+          <mj-text>
+            Have fun,
+            <br />
+            The Tarrasque App Team
+          </mj-text>
+
+          <mj-text>
+            <strong>P.S.:</strong> Need help getting started? Check out our
+            <a href="https://tarrasque.app/docs" class="link">documentation</a>.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

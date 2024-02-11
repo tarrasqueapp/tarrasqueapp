@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://tarrasque.app">
-    <img src="apps/ui/public/images/logo.svg" width="150" />
+    <img src="public/images/logo.svg" width="150" />
   </a>
 
   <h1 align="center">Tarrasque App</h1>
@@ -23,52 +23,68 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 ## Requirements
 
 - [Node.js](https://nodejs.org/en/) (v18.12.1 or higher)
-- [pnpm](https://pnpm.io/) (v8.8.0 or higher)
-- [Docker](https://docs.docker.com/get-docker/) (v20.10.21 or higher)
-- Supported Platforms: MacOS, Linux, Windows with WSL 2
-
-### WSL Requirements
-
-Install Node and pnpm in your WSL 2 distribution, then install Docker Desktop and enable the [WSL 2 Backend](https://docs.docker.com/desktop/windows/wsl/) for your WSL 2 distribution.
+- [pnpm](https://pnpm.io/) (v8.11.0 or higher)
+- [Docker](https://www.docker.com/) (v24.0.7 or higher)
+- [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started?platform=macos) (v1.123.4 or higher)
 
 ## Installation
 
-To install Tarrasque App, first run the following command to install the [Tarrasque CLI](https://github.com/tarrasqueapp/cli):
+### Install dependencies
 
-    npm install -g @tarrasque/cli
+Tarrasque App uses [pnpm](https://pnpm.io/) as its package manager. To install the dependencies, run:
 
-Then, run the following commands to install the dependencies and set up the environment variables:
+    pnpm install
 
-    ./bin/setup.sh
+### Set up database
+
+Tarrasque App uses [Supabase](https://supabase.com/) as its database. You can either use a free cloud-hosted Supabase project or run a local instance of Supabase using Docker by running:
+
+    supabase start
+
+If you're using a cloud-hosted Supabase project, be aware that you will not be able to use Tarrasque App without an internet connection.
+
+### Set environment variables
+
+Copy the `.env.example` file to `.env` and edit it to set the necessary environment variables as per your Supabase project settings.
+
     cp .env.example .env
 
-Finally, edit the `.env` file to set the necessary environment variables.
+If you're using a cloud-hosted Supabase project, you can find the values for `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` in your Supabase project settings under the "API" tab. For a local Supabase instance, the values will be displayed in the terminal when you run `supabase start`.
 
-## Running the Server
+## Running the Production Server
+
+Similarly, to start the production server, run:
+
+    pnpm build
+    pnpm start
+
+This will start the UI at `http://localhost:3000`.
+
+## Development
+
+### Running the Development Server
 
 To start the development server, run:
 
-    tarrasque app dev
+    pnpm dev
 
-This will start the server and the local database service at `http://localhost`.
+This will start the UI at `http://localhost:3000`.
 
-## Database Management
+### Creating a database migration
 
-To create the database, run:
+You can create a new database migration by running:
 
-    pnpm api prisma db push
+    supabase migration new <migration-name>
 
-To generate the Prisma client types, run:
+This will create a new empty migration file in the `migrations` directory. You can then edit this file to add the necessary SQL commands to migrate the database schema. Alternatively, you can make changes to the database schema using the Supabase web interface and then generate the migration file by running:
 
-    pnpm api prisma generate
+    supabase db diff <--local|--linked> --file <migration-name>
 
-To create a database migration, run:
+### Generating schema types from Supabase
 
-    pnpm api prisma migrate dev --name <migration-name>
+After making changes to the Supabase database schema, you can generate the TypeScript types for the schema by running:
 
-To browse the database using Prisma Studio, run:
-
-    pnpm api prisma studio
+    supabase gen types typescript <--local|--linked> > utils/supabase/types.gen.ts
 
 ## Contributing
 
