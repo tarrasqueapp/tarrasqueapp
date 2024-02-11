@@ -32,8 +32,8 @@ import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { signOut } from '@/actions/auth';
-import { UserAvatar } from '@/components/common/UserAvatar';
-import { SettingsModal } from '@/components/dashboard/SettingsModal';
+import { SettingsModal } from '@/components/Account/SettingsModal';
+import { UserAvatar } from '@/components/UserAvatar';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { Color } from '@/lib/colors';

@@ -1,9 +1,9 @@
 import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 
-import { Center } from '@/components/common/Center';
-import { Logo } from '@/components/common/Logo';
-import { NextButton } from '@/components/common/NextButton';
+import { Center } from '@/components/Center';
+import { Logo } from '@/components/Logo';
+import { NextButton } from '@/components/navigation/NextButton';
 import { AppNavigation } from '@/lib/navigation';
 
 export default function NotFound() {

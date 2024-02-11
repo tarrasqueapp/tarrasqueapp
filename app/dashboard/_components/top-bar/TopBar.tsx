@@ -1,8 +1,8 @@
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 
-import { Logo } from '@/components/common/Logo';
+import { Account } from '@/components/Account/Account';
+import { Logo } from '@/components/Logo';
 
-import { Account } from './Account/Account';
 import { Version } from './Version';
 import { CompendiumButton } from './compendium/CompendiumButton';
 import { NotificationsButton } from './notifications/NotificationsButton';

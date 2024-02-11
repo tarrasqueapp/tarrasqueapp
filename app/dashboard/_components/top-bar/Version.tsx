@@ -2,7 +2,7 @@
 
 import { Badge, Tooltip, Typography, badgeClasses } from '@mui/material';
 
-import { ExternalLink } from '@/components/common/ExternalLink';
+import { ExternalLink } from '@/components/navigation/ExternalLink';
 import { useGetLiveVersion } from '@/hooks/useGetLiveVersion';
 import { config } from '@/lib/config';
 import { ExternalNavigation } from '@/lib/navigation';

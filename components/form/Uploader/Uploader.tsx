@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { getSession } from '@/actions/auth';
 import { Media } from '@/actions/media';
-import { CircularProgressWithLabel } from '@/components/common/CircularProgressWithLabel';
+import { CircularProgressWithLabel } from '@/components/CircularProgressWithLabel';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useEffectAsync } from '@/hooks/useEffectAsync';
 import { Color } from '@/lib/colors';

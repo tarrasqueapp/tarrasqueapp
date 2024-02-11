@@ -3,12 +3,12 @@
 import { Alert } from '@mui/material';
 
 import { deleteMap } from '@/actions/maps';
+import { ConfirmModal } from '@/components/ConfirmModal';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
 import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
 import { useCampaignStore } from '@/store/campaign';
 import { MapModal, useMapStore } from '@/store/map';
 
-import { ConfirmModal } from '../common/ConfirmModal';
 import { CreateUpdateMapModal } from './CreateUpdateMapModal';
 
 export function MapModals() {

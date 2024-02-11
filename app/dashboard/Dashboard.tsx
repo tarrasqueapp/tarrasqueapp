@@ -2,12 +2,13 @@ import { Box, Container } from '@mui/material';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
 
-import { CampaignModals } from '@/components/campaigns/CampaignModals';
-import { CampaignAccordions } from '@/components/dashboard/CampaignAccordions';
-import { DashboardModals } from '@/components/dashboard/DashboardModals';
-import { TopBar } from '@/components/dashboard/TopBar/TopBar';
-import { MapModals } from '@/components/maps/MapModals';
 import { Gradient } from '@/lib/colors';
+
+import { DashboardModals } from './_components/DashboardModals';
+import { CampaignAccordions } from './_components/campaigns/CampaignAccordions';
+import { CampaignModals } from './_components/campaigns/CampaignModals';
+import { MapModals } from './_components/maps/MapModals';
+import { TopBar } from './_components/top-bar/TopBar';
 
 export function Dashboard() {
   const collapsedCampaignsCookie = getCookie('campaigns/collapsed', { cookies }) || '';

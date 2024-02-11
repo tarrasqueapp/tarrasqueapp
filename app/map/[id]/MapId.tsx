@@ -3,13 +3,14 @@
 import { Box } from '@mui/material';
 import dynamic from 'next/dynamic';
 
-import { Overlay } from '@/components/overlay/Overlay';
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { useIframeDataSync } from '@/hooks/data/useIframeDataSync';
 import { useJoinCampaignChannel } from '@/hooks/realtime/useJoinCampaignChannel';
 import { useJoinMapChannel } from '@/hooks/realtime/useJoinMapChannel';
 
-const Canvas = dynamic(() => import('@/components/canvas/Canvas'), { ssr: false });
+import { Overlay } from '../_components/overlay/Overlay';
+
+const Canvas = dynamic(() => import('../_components/canvas/Canvas'), { ssr: false });
 
 export function MapId() {
   const { data: map } = useGetCurrentMap();

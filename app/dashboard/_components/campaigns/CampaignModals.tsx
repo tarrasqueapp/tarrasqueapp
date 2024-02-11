@@ -4,10 +4,10 @@ import { Alert } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
 import { deleteCampaign } from '@/actions/campaigns';
+import { ConfirmModal } from '@/components/ConfirmModal';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
-import { ConfirmModal } from '../common/ConfirmModal';
 import { CampaignMembersModal } from './CampaignMembersModal';
 import { CampaignPluginsModal } from './CampaignPluginsModal';
 import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';

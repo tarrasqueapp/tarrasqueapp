@@ -22,13 +22,12 @@ import { Campaign } from '@/actions/campaigns';
 import { Map, createMap, updateMap } from '@/actions/maps';
 import { Media, createMedia } from '@/actions/media';
 import { deleteStorageObject, getObjectId } from '@/actions/storage';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { ControlledMediaUploader } from '@/components/form/uploader/ControlledMediaUploader';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
 import { validate } from '@/lib/validate';
 import { useMapStore } from '@/store/map';
 import { MediaUtils } from '@/utils/MediaUtils';
-
-import { ControlledTextField } from '../form/ControlledTextField';
-import { ControlledMediaUploader } from '../form/Uploader/ControlledMediaUploader';
 
 interface CreateUpdateMapModalProps {
   open: boolean;

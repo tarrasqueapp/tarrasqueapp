@@ -1,8 +1,8 @@
 import { Box, Container, Typography } from '@mui/material';
 import { redirect } from 'next/navigation';
 
-import { Center } from '@/components/common/Center';
-import { Logo } from '@/components/common/Logo';
+import { Center } from '@/components/Center';
+import { Logo } from '@/components/Logo';
 import { AppNavigation } from '@/lib/navigation';
 import { SSRUtils } from '@/utils/SSRUtils';
 

@@ -28,14 +28,13 @@ import { z } from 'zod';
 import { Campaign } from '@/actions/campaigns';
 import { createInvite, deleteInvite } from '@/actions/invites';
 import { CampaignMemberRole, deleteMembership, updateMembership } from '@/actions/memberships';
+import { UserAvatar } from '@/components/UserAvatar';
+import { ColorPicker } from '@/components/color-picker/ColorPicker';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useCampaignStore } from '@/store/campaign';
-
-import { ColorPicker } from '../ColorPicker/ColorPicker';
-import { UserAvatar } from '../common/UserAvatar';
-import { ControlledTextField } from '../form/ControlledTextField';
 
 interface CampaignMembersModalProps {
   open: boolean;

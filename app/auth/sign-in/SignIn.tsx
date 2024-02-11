@@ -10,8 +10,8 @@ import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { signIn } from '@/actions/auth';
-import { NextLink } from '@/components/common/NextLink';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { NextLink } from '@/components/navigation/NextLink';
 import { AppNavigation } from '@/lib/navigation';
 
 export function SignIn() {

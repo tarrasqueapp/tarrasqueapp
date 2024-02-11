@@ -7,12 +7,12 @@ import { Plugin } from './Plugin';
 
 export function Plugins() {
   const { data: map } = useGetCurrentMap();
-  const { data: plugins } = useGetCampaignPlugins(map?.campaign_id || '');
+  const { data: campaignPlugins } = useGetCampaignPlugins(map?.campaign_id || '');
 
   const [loadedPlugins, setLoadedPlugins] = useState<number>(0);
 
   useEffect(() => {
-    if (plugins?.length !== loadedPlugins) return;
+    if (campaignPlugins?.length !== loadedPlugins) return;
 
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach((iframe) => {
@@ -22,10 +22,10 @@ export function Plugins() {
 
   return (
     <>
-      {plugins?.map((plugin) => (
+      {campaignPlugins?.map((campaignPlugin) => (
         <Plugin
-          key={plugin.manifest_url}
-          manifestUrl={plugin.manifest_url}
+          key={campaignPlugin.plugin!.manifest_url}
+          manifestUrl={campaignPlugin.plugin!.manifest_url}
           onLoad={() => setLoadedPlugins(loadedPlugins + 1)}
         />
       ))}

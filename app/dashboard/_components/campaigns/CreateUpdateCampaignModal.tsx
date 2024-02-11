@@ -17,9 +17,8 @@ import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Campaign, createCampaign, updateCampaign } from '@/actions/campaigns';
+import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useCampaignStore } from '@/store/campaign';
-
-import { ControlledTextField } from '../form/ControlledTextField';
 
 interface CreateUpdateCampaignModalProps {
   open: boolean;

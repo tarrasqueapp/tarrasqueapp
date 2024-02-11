@@ -2,7 +2,7 @@
 
 import { DashboardModal, useDashboardStore } from '@/store/dashboard';
 
-import { PluginsModal } from './TopBar/plugins/PluginsModal';
+import { PluginsModal } from './top-bar/plugins/PluginsModal';
 
 export function DashboardModals() {
   const { modal, setModal } = useDashboardStore();

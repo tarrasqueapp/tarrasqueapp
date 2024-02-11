@@ -17,12 +17,12 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
   if (!plugin) return null;
 
   return (
-    <PopupState variant="popover" popupId={plugin.id}>
+    <PopupState variant="popover" popupId={`plugin_${manifestUrl}`}>
       {(popupState) => (
         <>
           <Tooltip title={plugin.name}>
             <DockButton active={popupState.isOpen} {...bindToggle(popupState)}>
-              <Image src={plugin.icon} alt={plugin.name} width={32} height={32} />
+              <Image src={plugin.icon_url} alt={plugin.name} width={32} height={32} />
             </DockButton>
           </Tooltip>
 
@@ -32,7 +32,6 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
                 <Paper sx={{ mb: '18px', lineHeight: 0, overflow: 'hidden' }}>
                   <Box
                     component="iframe"
-                    key={plugin.id}
                     title={plugin.name}
                     src={plugin.plugin_url}
                     onLoad={onLoad}

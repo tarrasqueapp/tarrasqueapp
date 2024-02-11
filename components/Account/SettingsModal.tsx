@@ -32,7 +32,7 @@ import { validate } from '@/lib/validate';
 import { MediaUtils } from '@/utils/MediaUtils';
 
 import { ControlledTextField } from '../form/ControlledTextField';
-import { ControlledAvatarUploader } from '../form/Uploader/ControlledAvatarUploader';
+import { ControlledAvatarUploader } from '../form/uploader/ControlledAvatarUploader';
 
 interface SettingsModalProps {
   open: boolean;

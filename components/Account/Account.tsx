@@ -5,11 +5,11 @@ import { IconButton, ListItemIcon, ListItemText, MenuItem, MenuList, Popover, To
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 
 import { signOut } from '@/actions/auth';
-import { UserAvatar } from '@/components/common/UserAvatar';
+import { UserAvatar } from '@/components/UserAvatar';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { DashboardModal, useDashboardStore } from '@/store/dashboard';
 
-import { SettingsModal } from '../../SettingsModal';
+import { SettingsModal } from './SettingsModal';
 
 export function Account() {
   const { data: profile } = useGetProfile();

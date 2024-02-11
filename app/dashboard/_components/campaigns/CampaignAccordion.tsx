@@ -42,6 +42,7 @@ import { useEffect, useState } from 'react';
 import { Campaign } from '@/actions/campaigns';
 import { reorderMaps } from '@/actions/maps';
 import { Membership } from '@/actions/memberships';
+import { UserAvatar } from '@/components/UserAvatar';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
@@ -49,9 +50,8 @@ import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 import { MathUtils } from '@/utils/MathUtils';
 
-import { UserAvatar } from '../common/UserAvatar';
-import { MapCard } from './MapCard';
-import { NewMap } from './NewMap';
+import { MapCard } from '../maps/MapCard';
+import { NewMap } from '../maps/NewMap';
 
 export interface CampaignAccordionProps {
   expanded?: boolean;
