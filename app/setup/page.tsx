@@ -8,7 +8,7 @@ import { Logo } from '@/components/Logo';
 import { AppNavigation } from '@/lib/navigation';
 import { SSRUtils } from '@/utils/SSRUtils';
 
-import { Setup } from './Setup';
+import { Setup } from './_components/Setup';
 
 export default async function SetupPage() {
   const ssr = new SSRUtils();

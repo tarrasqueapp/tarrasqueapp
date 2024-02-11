@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { AppNavigation } from '@/lib/navigation';
 import { SSRUtils } from '@/utils/SSRUtils';
 
-import { Dashboard } from './Dashboard';
+import { Dashboard } from './_components/Dashboard';
 
 export const metadata = {
   title: 'Dashboard · Tarrasque App',

@@ -4,11 +4,11 @@ import { cookies } from 'next/headers';
 
 import { Gradient } from '@/lib/colors';
 
-import { DashboardModals } from './_components/DashboardModals';
-import { CampaignAccordions } from './_components/campaigns/CampaignAccordions';
-import { CampaignModals } from './_components/campaigns/CampaignModals';
-import { MapModals } from './_components/maps/MapModals';
-import { TopBar } from './_components/top-bar/TopBar';
+import { DashboardModals } from './DashboardModals';
+import { CampaignAccordions } from './campaigns/CampaignAccordions';
+import { CampaignModals } from './campaigns/CampaignModals';
+import { MapModals } from './maps/MapModals';
+import { TopBar } from './top-bar/TopBar';
 
 export function Dashboard() {
   const collapsedCampaignsCookie = getCookie('campaigns/collapsed', { cookies }) || '';
