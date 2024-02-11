@@ -1,25 +1,27 @@
-import { Add, Info, Remove } from '@mui/icons-material';
-import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
+import { Info } from '@mui/icons-material';
+import { Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Switch, Typography } from '@mui/material';
 import Image from 'next/image';
 
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
 
 interface Props {
   manifestUrl: string;
-  installed?: boolean;
-  onInstall?: () => void;
-  onUninstall?: () => void;
+  enabled?: boolean;
+  onEnable?: () => void;
+  onDisable?: () => void;
 }
 
-export function Plugin({ manifestUrl, installed, onInstall, onUninstall }: Props) {
-  const { data: plugin } = useGetPlugin(manifestUrl);
+export function CampaignPluginCard({ manifestUrl, enabled, onEnable, onDisable }: Props) {
+  const { data: plugin, isError } = useGetPlugin(manifestUrl);
+
+  if (isError) return null;
 
   return (
     <Card variant="outlined">
       <CardHeader
         avatar={
           plugin ? (
-            <Image src={plugin.icon} alt={plugin.name} width={30} height={30} />
+            <Image src={plugin.icon_url} alt={plugin.name} width={30} height={30} />
           ) : (
             <Skeleton width={30} height={30} />
           )
@@ -46,15 +48,17 @@ export function Plugin({ manifestUrl, installed, onInstall, onUninstall }: Props
       </CardContent>
 
       <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
-        {installed ? (
-          <Button variant="outlined" color="error" startIcon={<Remove />} disabled={!plugin} onClick={onUninstall}>
-            Uninstall
-          </Button>
-        ) : (
-          <Button variant="outlined" startIcon={<Add />} disabled={!plugin} onClick={onInstall}>
-            Install
-          </Button>
-        )}
+        <Switch
+          checked={enabled}
+          disabled={!plugin}
+          onChange={(event, checked) => {
+            if (checked) {
+              onEnable?.();
+            } else {
+              onDisable?.();
+            }
+          }}
+        />
       </CardActions>
     </Card>
   );

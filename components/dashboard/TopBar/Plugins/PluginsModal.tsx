@@ -22,10 +22,9 @@ import { installPlugin, uninstallPlugin } from '@/actions/plugins';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetSubmittedPlugins } from '@/hooks/data/plugins/useGetSubmittedPlugins';
 import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
-import { PluginEntity, SubmittedPluginEntity } from '@/lib/types';
 import { validate } from '@/lib/validate';
 
-import { Plugin } from './Plugin';
+import { PluginCard } from './PluginCard';
 
 interface PluginsModalProps {
   open: boolean;
@@ -67,26 +66,28 @@ export function PluginsModal({ open, onClose }: PluginsModalProps) {
    */
   async function handleSubmitForm(values: Schema) {
     // Install the plugin
-    await installPlugin({ manifest_url: values.manifest_url });
+    await handleInstall(values.manifest_url);
 
     reset({ manifest_url: '' });
   }
 
   /**
    * Install a plugin from the submitted plugins
-   * @param plugin - The plugin to install
+   * @param manifestUrl - The manifest URL of the plugin to install
    */
-  function handleInstall(plugin: SubmittedPluginEntity) {
-    installPlugin({ manifest_url: plugin.manifest_url });
+  async function handleInstall(manifestUrl: string) {
+    await installPlugin({ manifest_url: manifestUrl });
   }
 
   /**
    * Uninstall a plugin from the campaign
    * @param plugin - The plugin to uninstall
    */
-  function handleUninstall(plugin: PluginEntity) {
-    uninstallPlugin(plugin.id);
+  async function handleUninstall(pluginId: string) {
+    await uninstallPlugin(pluginId);
   }
+
+  const unlistedInstalledPlugins = userPlugins?.filter((plugin) => !submittedPlugins?.includes(plugin.manifest_url));
 
   return (
     <Dialog fullScreen={fullScreen} fullWidth maxWidth="md" onClose={onClose} open={open}>
@@ -101,24 +102,29 @@ export function PluginsModal({ open, onClose }: PluginsModalProps) {
       <DialogContent>
         <Box sx={{ my: 1 }}>
           <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
-            {userPlugins
-              ? userPlugins.map((plugin) => (
-                  <Plugin
-                    key={plugin.id}
-                    manifestUrl={plugin.manifest_url}
-                    installed
-                    onUninstall={() => handleUninstall(plugin)}
-                  />
-                ))
-              : [...Array(2)].map((_, i) => <Plugin key={i} manifestUrl="" />)}
+            {unlistedInstalledPlugins?.map((plugin) => (
+              <PluginCard
+                key={plugin.id}
+                manifestUrl={plugin.manifest_url}
+                installed
+                onUninstall={() => handleUninstall(plugin.id)}
+              />
+            ))}
 
             {submittedPlugins
-              ? submittedPlugins
-                  .filter((plugin) => !userPlugins?.find((p) => p.manifest_url === plugin.manifest_url))
-                  .map((plugin) => (
-                    <Plugin key={plugin.id} manifestUrl={plugin.manifest_url} onInstall={() => handleInstall(plugin)} />
-                  ))
-              : [...Array(2)].map((_, i) => <Plugin key={i} manifestUrl="" />)}
+              ? submittedPlugins.map((manifestUrl, index) => (
+                  <PluginCard
+                    key={index}
+                    manifestUrl={manifestUrl}
+                    installed={userPlugins?.some((plugin) => plugin.manifest_url === manifestUrl)}
+                    onInstall={() => handleInstall(manifestUrl)}
+                    onUninstall={() => {
+                      const plugin = userPlugins?.find((plugin) => plugin.manifest_url === manifestUrl);
+                      if (plugin) handleUninstall(plugin.id);
+                    }}
+                  />
+                ))
+              : [...Array(2)].map((_, i) => <PluginCard key={i} manifestUrl="" />)}
           </Masonry>
         </Box>
 

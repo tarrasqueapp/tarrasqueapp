@@ -19,26 +19,31 @@ export function CampaignModals() {
 
   const selectedCampaign = campaigns?.find((campaign) => campaign.id === selectedCampaignId);
 
+  /**
+   * Close the modal and reset the selected campaign
+   */
+  function handleCloseModal() {
+    setModal(null);
+    setTimeout(() => setSelectedCampaignId(null), 500);
+  }
+
   return (
     <>
       <CreateUpdateCampaignModal
         open={modal === CampaignModal.CreateUpdate}
-        onClose={() => {
-          setModal(null);
-          setTimeout(() => setSelectedCampaignId(null), 500);
-        }}
+        onClose={handleCloseModal}
         campaign={selectedCampaign}
       />
 
       <CampaignMembersModal
         open={modal === CampaignModal.Members}
-        onClose={() => setModal(null)}
+        onClose={handleCloseModal}
         campaign={selectedCampaign}
       />
 
       <CampaignPluginsModal
         open={modal === CampaignModal.Plugins}
-        onClose={() => setModal(null)}
+        onClose={handleCloseModal}
         campaign={selectedCampaign}
       />
 
@@ -55,10 +60,7 @@ export function CampaignModals() {
             }
           }
         }}
-        onClose={() => {
-          setModal(null);
-          setTimeout(() => setSelectedCampaignId(null), 500);
-        }}
+        onClose={handleCloseModal}
       >
         <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>
           This action cannot be undone.

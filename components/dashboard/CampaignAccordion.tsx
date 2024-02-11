@@ -236,7 +236,13 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
               </Tooltip>
 
               <Tooltip title="Plugins">
-                <IconButton onClick={() => setModal(CampaignModal.Plugins)}>
+                <IconButton
+                  onClick={() => {
+                    if (!campaign) return;
+                    setSelectedCampaignId(campaign.id);
+                    setModal(CampaignModal.Plugins);
+                  }}
+                >
                   <Extension />
                 </IconButton>
               </Tooltip>

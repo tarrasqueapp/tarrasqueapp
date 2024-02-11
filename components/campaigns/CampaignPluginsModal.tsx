@@ -8,7 +8,7 @@ import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCamp
 import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
 import { CampaignPluginEntity, PluginEntity } from '@/lib/types';
 
-import { Plugin } from '../dashboard/TopBar/Plugins/Plugin';
+import { CampaignPluginCard } from './CampaignPluginCard';
 
 interface CampaignPluginsModalProps {
   open: boolean;
@@ -57,14 +57,14 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
           <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
             {userPlugins
               ? userPlugins.map((userPlugin) => (
-                  <Plugin
+                  <CampaignPluginCard
                     key={userPlugin.id}
                     manifestUrl={userPlugin.manifest_url}
-                    installed={Boolean(
+                    enabled={Boolean(
                       campaignPlugins?.find((campaignPlugin) => campaignPlugin.plugin_id === userPlugin.id),
                     )}
-                    onInstall={() => handleEnablePlugin(userPlugin)}
-                    onUninstall={() => {
+                    onEnable={() => handleEnablePlugin(userPlugin)}
+                    onDisable={() => {
                       const campaignPlugin = campaignPlugins?.find(
                         (campaignPlugin) => campaignPlugin.plugin_id === userPlugin.id,
                       );
@@ -72,7 +72,7 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
                     }}
                   />
                 ))
-              : [...Array(2)].map((_, i) => <Plugin key={i} manifestUrl="" />)}
+              : [...Array(2)].map((_, i) => <CampaignPluginCard key={i} manifestUrl="" />)}
           </Masonry>
         </Box>
       </DialogContent>

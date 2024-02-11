@@ -57,12 +57,6 @@ export interface PluginEntity {
   user_id: string;
 }
 
-export interface SubmittedPluginEntity {
-  id: string;
-  name: string;
-  manifest_url: string;
-}
-
 export interface CampaignPluginEntity {
   id: string;
   campaign_id: string;
@@ -71,13 +65,12 @@ export interface CampaignPluginEntity {
 }
 
 export interface ManifestEntity {
-  id: string;
   name: string;
   description: string;
   author: string;
-  homepage_url: string;
+  icon_url: string;
   plugin_url: string;
-  icon: string;
+  homepage_url: string;
   iframe: {
     width: number;
     height: number;

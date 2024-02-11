@@ -5,7 +5,7 @@ import { IconButton, Tooltip } from '@mui/material';
 
 import { DashboardModal, useDashboardStore } from '@/store/dashboard';
 
-export function Compendium() {
+export function CompendiumButton() {
   const { setModal } = useDashboardStore();
 
   return (

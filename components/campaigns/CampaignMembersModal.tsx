@@ -33,7 +33,7 @@ import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useCampaignStore } from '@/store/campaign';
 
-import { ColorPicker } from '../ColorPicker';
+import { ColorPicker } from '../ColorPicker/ColorPicker';
 import { UserAvatar } from '../common/UserAvatar';
 import { ControlledTextField } from '../form/ControlledTextField';
 

@@ -60,6 +60,9 @@ export let theme = createTheme({
           color: Color.BLACK,
           fontWeight: 600,
         },
+        arrow: {
+          color: Color.WHITE,
+        },
       },
     },
     MuiSkeleton: {

@@ -8,7 +8,7 @@ import { useGetUserInvites } from '@/hooks/data/notifications/useGetUserInvites'
 
 import { CampaignInviteNotification } from './CampaignInviteNotification';
 
-export function Notifications() {
+export function NotificationsButton() {
   const { data: invites } = useGetUserInvites();
 
   return (

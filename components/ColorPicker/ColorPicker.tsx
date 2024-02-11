@@ -27,7 +27,7 @@ import { useDebouncyEffect } from 'use-debouncy';
 
 import { Color } from '@/lib/colors';
 
-import { Swatch } from './ColorPicker/Swatch';
+import { Swatch } from './Swatch';
 
 interface Props {
   value: string;

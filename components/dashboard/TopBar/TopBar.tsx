@@ -3,10 +3,10 @@ import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import { Logo } from '@/components/common/Logo';
 
 import { Account } from './Account/Account';
-import { Compendium } from './Compendium/Compendium';
-import { Notifications } from './Notifications/Notifications';
-import { Plugins } from './Plugins/Plugins';
 import { Version } from './Version';
+import { CompendiumButton } from './compendium/CompendiumButton';
+import { NotificationsButton } from './notifications/NotificationsButton';
+import { PluginsButton } from './plugins/PluginsButton';
 
 export function TopBar() {
   return (
@@ -23,11 +23,11 @@ export function TopBar() {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Compendium />
+          <CompendiumButton />
 
-          <Plugins />
+          <PluginsButton />
 
-          <Notifications />
+          <NotificationsButton />
 
           <Account />
         </Box>
