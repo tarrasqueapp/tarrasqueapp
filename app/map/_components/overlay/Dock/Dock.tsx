@@ -226,7 +226,7 @@ export function Dock() {
                 <ListItemAvatar>
                   <UserAvatar profile={profile} />
                 </ListItemAvatar>
-                <ListItemText primary={profile?.display_name || 'Guest'} />
+                <ListItemText primary={profile?.name || 'Guest'} />
               </ListItem>
 
               {user ? (

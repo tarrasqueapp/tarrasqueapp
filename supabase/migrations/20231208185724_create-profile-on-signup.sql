@@ -6,18 +6,14 @@ returns trigger
 language plpgsql
 security definer set search_path = public
 as $function$declare
-  display_name text;
 begin
-  -- Split the name to get the first segment
-  display_name = split_part(NEW.raw_user_meta_data ->> 'name', ' ', 1);
-
   -- Insert the new user's data into the public.profiles table
-  insert into public.profiles (id, name, display_name, email)
-  values (new.id, new.raw_user_meta_data ->> 'name', display_name, new.email);
+  insert into public.profiles (id, name, email)
+  values (new.id, new.raw_user_meta_data ->> 'name', new.email);
 
   -- Create a new campaign for the user
   insert into public.campaigns (id, name, user_id, created_at)
-  values (extensions.uuid_generate_v4 (), display_name || '''s Campaign', new.id, current_timestamp);
+  values (extensions.uuid_generate_v4 (), new.raw_user_meta_data ->> 'name' || '''s Campaign', new.id, current_timestamp);
 
   -- Create a campaign membership for the user
   insert into public.campaign_memberships (id, role, color, user_id, campaign_id, created_at)

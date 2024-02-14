@@ -1,3 +1,19 @@
+-- Delete all users
+DELETE FROM
+  auth.users;
+
+-- Delete all identities
+DELETE FROM
+  auth.identities;
+
+-- Delete all objects
+DELETE FROM
+  storage.objects;
+
+-- Delete all buckets
+DELETE FROM
+  storage.buckets;
+
 -- create setup
 INSERT INTO
   public.setup (id, step)
@@ -37,7 +53,7 @@ VALUES
     current_timestamp,
     current_timestamp,
     '{"provider":"email","providers":["email"]}',
-    '{"name":"Richard Solomou"}',
+    '{"name":"Richard"}',
     current_timestamp,
     current_timestamp,
     '',

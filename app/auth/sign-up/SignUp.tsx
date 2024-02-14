@@ -64,7 +64,7 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
               create your account.
             </Alert>
           )}
-          <ControlledTextField name="name" label="Name" autoFocus autoComplete="name" />
+          <ControlledTextField name="name" label="Name" autoFocus autoComplete="fname" />
 
           <ControlledTextField name="email" label="Email" disabled={Boolean(invite)} autoComplete="email" />
         </Box>

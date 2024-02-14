@@ -155,7 +155,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
                     <ListItemAvatar>
                       <UserAvatar profile={membership.user} />
                     </ListItemAvatar>
-                    <ListItemText primary={membership.user?.display_name} secondary={membership.user?.email} />
+                    <ListItemText primary={membership.user?.name} secondary={membership.user?.email} />
 
                     <Box
                       sx={{

@@ -26,7 +26,7 @@ export const validate = {
       .string()
       .url()
       .min(1)
-      .regex(/^https?:\/\/.+\/manifest\.json$/, 'Must be a manifest.json file'),
+      .regex(/^https?:\/\/.+\/manifest(-.+)?\.json$/, 'Must be a manifest.json file'),
 
     campaignMemberRole: z.enum(['GAME_MASTER', 'PLAYER']),
 

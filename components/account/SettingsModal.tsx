@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Close, Info } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Alert,
@@ -9,11 +9,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   IconButton,
-  InputAdornment,
   Theme,
-  Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -48,7 +45,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   // Setup form validation schema
   const schema = z.object({
     name: z.string().min(1),
-    display_name: z.string().min(1),
     email: z.string().email().min(1),
     avatar: z
       .union([validate.fields.uppyFile, validate.fields.media])
@@ -69,7 +65,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     resolver: zodResolver(schema),
     defaultValues: {
       name: profile?.name,
-      display_name: profile?.display_name,
       avatar: profile?.avatar,
       email: user?.email,
     },
@@ -84,7 +79,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   useEffect(() => {
     reset({
       name: profile?.name,
-      display_name: profile?.display_name,
       avatar: profile?.avatar,
       email: user?.email,
     });
@@ -135,7 +129,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
       await updateProfile({
         name: values.name,
-        display_name: values.display_name,
         avatar_id: (values.avatar as Media)?.id || null,
       });
 
@@ -148,7 +141,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   }
 
   return (
-    <Dialog fullScreen={fullScreen} fullWidth maxWidth="sm" onClose={onClose} open={open}>
+    <Dialog fullScreen={fullScreen} fullWidth maxWidth="xs" onClose={onClose} open={open}>
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(handleSubmitForm)}
@@ -163,7 +156,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           </DialogTitle>
 
           <DialogContent>
-            <Box sx={{ my: 1, mx: 'auto', width: 200 }}>
+            <Box sx={{ mt: 1, mb: 2, mx: 'auto', width: 200 }}>
               <Typography variant="h6" align="center" sx={{ mb: 1 }}>
                 Avatar
               </Typography>
@@ -173,38 +166,15 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
             <Typography variant="h6">Account</Typography>
 
-            <Grid container spacing={2} alignItems="flex-start" sx={{ mt: -2 }}>
-              <Grid item xs={12} sm={6}>
-                <ControlledTextField
-                  name="name"
-                  label="Name"
-                  sx={{ my: 1 }}
-                  autoFocus
-                  fullWidth
-                  required
-                  autoComplete="name"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <ControlledTextField
-                  name="display_name"
-                  label="Display Name"
-                  autoComplete="nickname"
-                  sx={{ my: 1 }}
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Tooltip title="Visible to everyone">
-                          <Info />
-                        </Tooltip>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-            </Grid>
+            <ControlledTextField
+              name="name"
+              label="Name"
+              sx={{ my: 1 }}
+              autoFocus
+              fullWidth
+              required
+              autoComplete="fname"
+            />
 
             <ControlledTextField
               name="email"

@@ -37,7 +37,7 @@ export function UserAvatar({ profile, size = 'medium' }: Props) {
           {profile?.avatar?.url ? (
             <Image loader={supabaseLoader} src={profile.avatar.url} width={24} height={24} alt="" />
           ) : (
-            profile?.display_name?.[0]
+            profile?.name?.[0]
           )}
         </Avatar>
       </Badge>
@@ -55,7 +55,7 @@ export function UserAvatar({ profile, size = 'medium' }: Props) {
         {profile?.avatar?.url ? (
           <Image loader={supabaseLoader} src={profile.avatar.url} width={40} height={40} alt="" />
         ) : (
-          profile?.display_name?.[0]
+          profile?.name?.[0]
         )}
       </Avatar>
     </Badge>

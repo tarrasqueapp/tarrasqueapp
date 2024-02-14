@@ -48,22 +48,13 @@ export async function getProfile() {
  * Update a user profile
  * @param data - The data to update the profile with
  */
-export async function updateProfile({
-  name,
-  display_name,
-  avatar_id,
-}: {
-  name?: string;
-  display_name?: string;
-  avatar_id?: string | null;
-}) {
+export async function updateProfile({ name, avatar_id }: { name?: string; avatar_id?: string | null }) {
   // Validate the data
   const schema = z.object({
     name: z.string().optional(),
-    display_name: z.string().optional(),
     avatar_id: z.string().uuid().nullable().optional(),
   });
-  schema.parse({ name, display_name, avatar_id });
+  schema.parse({ name, avatar_id });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -76,14 +67,7 @@ export async function updateProfile({
   }
 
   // Update the profile
-  const { error } = await supabase
-    .from('profiles')
-    .update({
-      name,
-      display_name,
-      avatar_id,
-    })
-    .eq('id', user.id);
+  const { error } = await supabase.from('profiles').update({ name, avatar_id }).eq('id', user.id);
 
   if (error) {
     throw error;

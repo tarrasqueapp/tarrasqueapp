@@ -192,7 +192,7 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     const link = `${config.HOST}/auth/sign-in/callback?${searchParams}`;
 
     await sendCampaignInviteExistingUserEmail({
-      hostName: profile.display_name,
+      hostName: profile.name,
       inviteeName: existingUser.name.split(' ')[0]!,
       campaignName: data.campaign!.name,
       to: email,
@@ -200,7 +200,7 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     });
   } else {
     await sendCampaignInviteNewUserEmail({
-      hostName: profile.display_name,
+      hostName: profile.name,
       campaignName: data.campaign!.name,
       to: email,
       signUpUrl: `${config.HOST}/auth/sign-up?token=${data.id}`,

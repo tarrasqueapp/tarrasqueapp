@@ -182,9 +182,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                 return (
                   <Tooltip
                     key={membership.user_id}
-                    title={
-                      isGameMaster ? `${membership.user?.display_name} (Game Master)` : membership.user?.display_name
-                    }
+                    title={isGameMaster ? `${membership.user?.name} (Game Master)` : membership.user?.name}
                   >
                     <span>
                       <UserAvatar profile={membership.user!} size="small" />
