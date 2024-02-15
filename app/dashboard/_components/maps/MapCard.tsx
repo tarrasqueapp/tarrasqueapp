@@ -1,12 +1,13 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Delete, Edit, FileCopy, MoreHoriz } from '@mui/icons-material';
+import { Delete, Edit, FileCopy, MoreHoriz, ScreenShare, Share } from '@mui/icons-material';
 import {
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
   CircularProgress,
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -60,37 +61,38 @@ export function MapCard({ map, campaign }: MapCardProps) {
   const height = 200;
 
   if (!isGameMaster) {
+    if (!map) {
+      return (
+        <Card sx={{ position: 'relative', width, height }}>
+          <Skeleton width={width} height={height} />
+        </Card>
+      );
+    }
+
+    if (!map.visible) {
+      return null;
+    }
+
     return (
       <Card sx={{ position: 'relative', width, height }}>
-        {map ? (
-          <>
-            <NextLink
-              href={`${AppNavigation.Map}/[mapId]`}
-              as={`${AppNavigation.Map}/${map.id}`}
-              passHref
-              legacyBehavior
+        <NextLink href={`${AppNavigation.Map}/[mapId]`} as={`${AppNavigation.Map}/${map.id}`} passHref legacyBehavior>
+          <CardActionArea>
+            <CardContent
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width,
+                height,
+                background: 'rgba(255, 255, 255, 0.03)',
+              }}
             >
-              <CardActionArea>
-                <CardContent
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width,
-                    height,
-                    background: 'rgba(255, 255, 255, 0.03)',
-                  }}
-                >
-                  <Typography variant="body2" sx={{ wordBreak: 'break-word', m: 1.5 }}>
-                    {map.name}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </NextLink>
-          </>
-        ) : (
-          <Skeleton width={width} height={height} />
-        )}
+              <Typography variant="body2" sx={{ wordBreak: 'break-word', m: 1.5 }}>
+                {map.name}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </NextLink>
       </Card>
     );
   }
@@ -127,6 +129,30 @@ export function MapCard({ map, campaign }: MapCardProps) {
               </CardMedia>
             </CardActionArea>
           </NextLink>
+
+          <Tooltip title={map.visible ? 'Visible to players' : 'Not visible to players'}>
+            <IconButton
+              size="small"
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                background: 'rgba(0, 0, 0, 0.65) !important',
+                p: 1,
+                borderRadius: '10px 0 0 0',
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (!map || !campaign) return;
+                setSelectedCampaignId(campaign.id);
+                setSelectedMapId(map.id);
+                setModal(MapModal.Share);
+              }}
+            >
+              <Share sx={{ fontSize: '1rem' }} color={map.visible ? 'action' : 'disabled'} />
+            </IconButton>
+          </Tooltip>
 
           <CardContent
             sx={{
@@ -204,6 +230,38 @@ export function MapCard({ map, campaign }: MapCardProps) {
                             <Delete />
                           </ListItemIcon>
                           <ListItemText>Delete</ListItemText>
+                        </MenuItem>
+
+                        <Divider />
+
+                        <MenuItem
+                          onClick={() => {
+                            if (!map || !campaign) return;
+                            setSelectedCampaignId(campaign.id);
+                            setSelectedMapId(map.id);
+                            setModal(MapModal.Share);
+                            popupState.close();
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Share />
+                          </ListItemIcon>
+                          <ListItemText>Share</ListItemText>
+                        </MenuItem>
+
+                        <MenuItem
+                          onClick={() => {
+                            popupState.close();
+                          }}
+                          component="a"
+                          href={`${AppNavigation.Map}/${map.id}?present`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ListItemIcon>
+                            <ScreenShare />
+                          </ListItemIcon>
+                          <ListItemText>Present</ListItemText>
                         </MenuItem>
                       </MenuList>
                     </Popover>

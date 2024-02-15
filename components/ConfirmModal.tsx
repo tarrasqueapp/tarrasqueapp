@@ -54,7 +54,9 @@ export function ConfirmModal({ open, onConfirm, onClose, title, children }: Conf
       <DialogContent>{children || 'This cannot be undone.'}</DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color="secondary" onClick={onClose}>
+          Cancel
+        </Button>
 
         <LoadingButton loading={loading} onClick={handleConfirm} variant="contained">
           Confirm

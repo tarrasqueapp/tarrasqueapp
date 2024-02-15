@@ -14,7 +14,7 @@ export function Center({ children }: CenterProps) {
         justifyContent: 'center',
         alignItems: 'center',
         flex: '1 0 auto',
-        background: Gradient.Linear,
+        background: Gradient.LINEAR,
         py: 1,
       }}
     >

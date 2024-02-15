@@ -171,8 +171,13 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
             <Typography variant="caption">
-              {maps ? maps.length : <Skeleton width={10} sx={{ display: 'inline-block' }} />} map
-              {!maps || maps.length === 1 ? '' : 's'}
+              {maps ? (
+                maps.filter((map) => isGameMaster || map.visible).length
+              ) : (
+                <Skeleton width={10} sx={{ display: 'inline-block' }} />
+              )}{' '}
+              map
+              {!maps || maps.filter((map) => isGameMaster || map.visible).length === 1 ? '' : 's'}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

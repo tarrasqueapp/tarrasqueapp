@@ -59,7 +59,7 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box sx={{ display: 'flex', flexDirection: 'column', m: 1, gap: 2 }}>
           {invite && (
-            <Alert severity="info">
+            <Alert severity="info" variant="outlined">
               You have been invited to join <strong>{invite.campaign!.name}</strong>. Please fill out the form below to
               create your account.
             </Alert>

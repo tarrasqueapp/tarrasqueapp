@@ -59,7 +59,7 @@ export function ColorPicker({ value, onChange }: Props) {
     grey[500],
     blueGrey[500],
     Color.BLACK,
-    Color.WHITE,
+    Color.WHITE_LIGHT,
   ];
 
   return (

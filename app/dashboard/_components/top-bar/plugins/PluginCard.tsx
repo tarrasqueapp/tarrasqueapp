@@ -3,16 +3,22 @@ import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Skeleto
 import Image from 'next/image';
 
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
+import { useOptimistic } from '@/hooks/useOptimistic';
 
 interface Props {
   manifestUrl: string;
   installed?: boolean;
-  onInstall?: () => void;
-  onUninstall?: () => void;
+  onInstall?: () => Promise<void>;
+  onUninstall?: () => Promise<void>;
 }
 
 export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: Props) {
   const { data: plugin, isError } = useGetPlugin(manifestUrl);
+
+  const [optimisticInstalled, setOptimisticInstalled] = useOptimistic(
+    installed,
+    (current, payload: boolean) => payload,
+  );
 
   if (isError) return null;
 
@@ -48,12 +54,29 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
       </CardContent>
 
       <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
-        {installed ? (
-          <Button variant="outlined" color="error" startIcon={<Remove />} onClick={onUninstall}>
+        {optimisticInstalled ? (
+          <Button
+            variant="outlined"
+            disabled={!plugin || installed !== optimisticInstalled}
+            color="error"
+            startIcon={<Remove />}
+            onClick={async () => {
+              setOptimisticInstalled(false);
+              await onUninstall?.();
+            }}
+          >
             Uninstall
           </Button>
         ) : (
-          <Button variant="outlined" startIcon={<Add />} disabled={!plugin} onClick={onInstall}>
+          <Button
+            variant="outlined"
+            startIcon={<Add />}
+            disabled={!plugin || installed !== optimisticInstalled}
+            onClick={async () => {
+              setOptimisticInstalled(true);
+              await onInstall?.();
+            }}
+          >
             Install
           </Button>
         )}

@@ -95,7 +95,7 @@ export function DiceRollerBackdrop() {
       open={backdropVisible}
       sx={{
         background: 'rgba(0, 0, 0, 0.8)',
-        color: Color.WHITE,
+        color: Color.WHITE_LIGHT,
         zIndex: (theme) => theme.zIndex.modal + 1,
         display: 'flex',
         flexDirection: 'column',

@@ -2,17 +2,24 @@ import { Info } from '@mui/icons-material';
 import { Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Switch, Typography } from '@mui/material';
 import Image from 'next/image';
 
+import { Campaign } from '@/actions/campaigns';
+import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
+import { useOptimistic } from '@/hooks/useOptimistic';
 
 interface Props {
   manifestUrl: string;
+  campaign?: Campaign;
   enabled?: boolean;
-  onEnable?: () => void;
-  onDisable?: () => void;
+  onEnable?: () => Promise<void>;
+  onDisable?: () => Promise<void>;
 }
 
-export function CampaignPluginCard({ manifestUrl, enabled, onEnable, onDisable }: Props) {
+export function CampaignPluginCard({ manifestUrl, campaign, enabled, onEnable, onDisable }: Props) {
+  const { data: campaignPlugins } = useGetCampaignPlugins(campaign?.id || '');
   const { data: plugin, isError } = useGetPlugin(manifestUrl);
+
+  const [optimisticEnabled, setOptimisticEnabled] = useOptimistic(enabled, (current, payload: boolean) => payload);
 
   if (isError) return null;
 
@@ -49,13 +56,16 @@ export function CampaignPluginCard({ manifestUrl, enabled, onEnable, onDisable }
 
       <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
         <Switch
-          checked={enabled}
-          disabled={!plugin}
-          onChange={(event, checked) => {
+          color="success"
+          checked={optimisticEnabled}
+          disabled={!plugin || !campaignPlugins || enabled !== optimisticEnabled}
+          onChange={async (event, checked) => {
             if (checked) {
-              onEnable?.();
+              setOptimisticEnabled(true);
+              await onEnable?.();
             } else {
-              onDisable?.();
+              setOptimisticEnabled(false);
+              await onDisable?.();
             }
           }}
         />

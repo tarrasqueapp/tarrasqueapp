@@ -118,9 +118,9 @@ export function PluginsModal({ open, onClose }: PluginsModalProps) {
                     manifestUrl={manifestUrl}
                     installed={userPlugins?.some((plugin) => plugin.manifest_url === manifestUrl)}
                     onInstall={() => handleInstall(manifestUrl)}
-                    onUninstall={() => {
+                    onUninstall={async () => {
                       const plugin = userPlugins?.find((plugin) => plugin.manifest_url === manifestUrl);
-                      if (plugin) handleUninstall(plugin.id);
+                      if (plugin) await handleUninstall(plugin.id);
                     }}
                   />
                 ))

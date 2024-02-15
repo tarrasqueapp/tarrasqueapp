@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  alpha,
-  createTheme,
-  darken,
-  filledInputClasses,
-  formLabelClasses,
-  lighten,
-  responsiveFontSizes,
-} from '@mui/material';
+import { alpha, createTheme, filledInputClasses, formLabelClasses, lighten, responsiveFontSizes } from '@mui/material';
 import { Raleway, Recursive } from 'next/font/google';
 
 import { Color } from './colors';
@@ -19,13 +11,13 @@ const recursive = Recursive({ subsets: ['latin'] });
 export let theme = createTheme({
   palette: {
     mode: 'dark',
-    primary: { main: Color.BROWN_LIGHT },
-    secondary: { main: Color.PURPLE },
-    error: { main: Color.RED },
-    warning: { main: Color.ORANGE },
-    info: { main: Color.BLUE },
-    success: { main: Color.GREEN },
-    background: { default: Color.BLACK_LIGHT, paper: Color.BROWN_VERY_DARK },
+    primary: { light: Color.SAND_LIGHT, main: Color.SAND_MAIN, dark: Color.SAND_DARK },
+    secondary: { light: Color.WHITE_LIGHT, main: Color.WHITE_MAIN, dark: Color.WHITE_DARK },
+    error: { light: Color.RED_LIGHT, main: Color.RED_MAIN, dark: Color.RED_DARK },
+    warning: { light: Color.ORANGE_LIGHT, main: Color.ORANGE_MAIN, dark: Color.ORANGE_DARK },
+    info: { light: Color.BLUE_LIGHT, main: Color.BLUE_MAIN, dark: Color.BLUE_DARK },
+    success: { light: Color.GREEN_LIGHT, main: Color.GREEN_MAIN, dark: Color.GREEN_DARK },
+    background: { default: Color.BLACK_LIGHT, paper: Color.SAND_DARK },
   },
   typography: {
     fontSize: 15,
@@ -39,7 +31,7 @@ export let theme = createTheme({
     body1: { fontSize: 15, lineHeight: 1.6 },
     body2: { fontSize: 15, lineHeight: 1.28 },
     caption: { fontSize: 15, lineHeight: 1.28, color: Color.GREY },
-    button: { fontWeight: 500, lineHeight: 1.125 },
+    button: { fontWeight: 600, lineHeight: 1.125 },
   },
   components: {
     // Global
@@ -56,12 +48,9 @@ export let theme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: Color.WHITE,
+          backgroundColor: Color.WHITE_MAIN,
           color: Color.BLACK,
           fontWeight: 600,
-        },
-        arrow: {
-          color: Color.WHITE,
         },
       },
     },
@@ -76,6 +65,14 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           fontWeight: 500,
+        },
+        filled: {
+          fontWeight: 600,
+        },
+        // Standard
+        outlined: {
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(5px)',
         },
       },
     },
@@ -126,20 +123,8 @@ export let theme = createTheme({
           padding: '18px 40px',
         },
         // Outlined
-        outlinedSecondary: {
-          color: Color.WHITE,
-          borderColor: lighten(Color.PURPLE, 0.2),
-          '&:hover': {
-            borderColor: lighten(Color.PURPLE, 0.4),
-            backgroundColor: alpha(Color.PURPLE, 0.4),
-          },
-        },
-        // Text
-        textSecondary: {
-          color: lighten(Color.PURPLE, 0.8),
-          '&:hover': {
-            backgroundColor: alpha(Color.PURPLE, 0.4),
-          },
+        outlined: {
+          color: Color.WHITE_MAIN,
         },
       },
     },
@@ -151,9 +136,9 @@ export let theme = createTheme({
         groupedVertical: {
           borderColor: 'transparent',
           '&:hover': {
-            borderColor: Color.BROWN_BEIGE,
+            borderColor: Color.SAND_MAIN,
             '+ .MuiButton-root': {
-              borderTopColor: Color.BROWN_BEIGE,
+              borderTopColor: Color.SAND_MAIN,
             },
           },
           '&:first-of-type': {
@@ -166,9 +151,9 @@ export let theme = createTheme({
         groupedHorizontal: {
           borderColor: 'transparent',
           '&:hover': {
-            borderColor: Color.BROWN_BEIGE,
+            borderColor: Color.SAND_MAIN,
             '+ .MuiButton-root': {
-              borderLeftColor: Color.BROWN_BEIGE,
+              borderLeftColor: Color.SAND_MAIN,
             },
           },
           '&:first-of-type': {
@@ -210,7 +195,7 @@ export let theme = createTheme({
           flex: '1 0 auto',
           [`& .${filledInputClasses.focused}`]: {
             [`&.${formLabelClasses.root}`]: {
-              color: Color.BROWN_LIGHT,
+              color: Color.SAND_LIGHT,
             },
           },
         },
@@ -247,7 +232,7 @@ export let theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            backgroundColor: alpha(Color.BROWN_LIGHT, 0.1),
+            backgroundColor: alpha(Color.SAND_LIGHT, 0.1),
           },
         },
       },
@@ -300,32 +285,11 @@ export let theme = createTheme({
           alignItems: 'center',
         },
         // Filled
-        filledError: {
-          backgroundColor: darken(Color.RED, 0.1),
-        },
-        filledWarning: {
-          backgroundColor: darken(Color.ORANGE, 0.1),
-        },
-        filledInfo: {
-          backgroundColor: darken(Color.BLUE, 0.1),
-        },
-        filledSuccess: {
-          backgroundColor: darken(Color.GREEN, 0.1),
+        filled: {
+          fontWeight: 600,
         },
         // Standard
-        standardError: {
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          backdropFilter: 'blur(5px)',
-        },
-        standardWarning: {
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          backdropFilter: 'blur(5px)',
-        },
-        standardInfo: {
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          backdropFilter: 'blur(5px)',
-        },
-        standardSuccess: {
+        standard: {
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
           backdropFilter: 'blur(5px)',
         },

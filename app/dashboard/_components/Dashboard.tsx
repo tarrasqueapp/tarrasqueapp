@@ -18,7 +18,7 @@ export function Dashboard() {
     <>
       <Box
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', background: Gradient.Linear }}
+        sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', background: Gradient.LINEAR }}
       >
         <TopBar />
 

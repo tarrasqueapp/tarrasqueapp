@@ -193,6 +193,7 @@ export async function duplicateMap(mapId: string) {
  * Update a map
  * @param id - The map to update
  * @param name - The map's name
+ * @param visible - The map's visibility to campaign players
  * @param campaign_id - The campaign to update the map for
  * @param media_id - The map's media ID
  * @returns The updated map
@@ -200,29 +201,32 @@ export async function duplicateMap(mapId: string) {
 export async function updateMap({
   id,
   name,
+  visible,
   campaign_id,
   media_id,
 }: {
   id: string;
-  name: string;
-  campaign_id: string;
-  media_id: string;
+  name?: string;
+  visible?: boolean;
+  campaign_id?: string;
+  media_id?: string;
 }) {
   // Validate inputs
   const schema = z.object({
     id: z.string().uuid(),
-    name: z.string().min(1),
-    campaign_id: z.string().uuid(),
-    media_id: z.string().uuid(),
+    name: z.string().min(1).optional(),
+    visible: z.boolean().optional(),
+    campaign_id: z.string().uuid().optional(),
+    media_id: z.string().uuid().optional(),
   });
-  schema.parse({ id, name, campaign_id, media_id });
+  schema.parse({ id, name, visible, campaign_id, media_id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Update the map
-  const { data, error } = await supabase.from('maps').update({ name, campaign_id, media_id }).eq('id', id);
+  const { data, error } = await supabase.from('maps').update({ name, visible, campaign_id, media_id }).eq('id', id);
 
   if (error) {
     throw error;
