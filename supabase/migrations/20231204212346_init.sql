@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS "public"."maps" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" character varying NOT NULL,
     "order" bigint NOT NULL,
+    "visible" boolean NOT NULL DEFAULT false,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "media_id" "uuid" NOT NULL,
     "campaign_id" "uuid" NOT NULL,

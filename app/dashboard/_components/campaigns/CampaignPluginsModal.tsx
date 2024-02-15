@@ -1,6 +1,6 @@
 import { Close } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
-import { Box, Dialog, DialogContent, DialogTitle, IconButton, Theme, useMediaQuery } from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, IconButton, Theme, Typography, useMediaQuery } from '@mui/material';
 
 import { Campaign } from '@/actions/campaigns';
 import { disableCampaignPlugin, enableCampaignPlugin } from '@/actions/plugins';
@@ -55,8 +55,9 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
       <DialogContent>
         <Box sx={{ my: 1 }}>
           <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
-            {userPlugins
-              ? userPlugins.map((userPlugin) => (
+            {userPlugins ? (
+              userPlugins.length ? (
+                userPlugins.map((userPlugin) => (
                   <CampaignPluginCard
                     key={userPlugin.id}
                     manifestUrl={userPlugin.manifest_url}
@@ -72,7 +73,12 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
                     }}
                   />
                 ))
-              : [...Array(2)].map((_, i) => <CampaignPluginCard key={i} manifestUrl="" />)}
+              ) : (
+                <Typography>No plugins installed</Typography>
+              )
+            ) : (
+              [...Array(2)].map((_, i) => <CampaignPluginCard key={i} manifestUrl="" />)
+            )}
           </Masonry>
         </Box>
       </DialogContent>

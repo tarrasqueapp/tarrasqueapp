@@ -10,6 +10,7 @@ import { useCampaignStore } from '@/store/campaign';
 import { MapModal, useMapStore } from '@/store/map';
 
 import { CreateUpdateMapModal } from './CreateUpdateMapModal';
+import { ShareMapModal } from './ShareMapModal';
 
 export function MapModals() {
   const { selectedCampaignId, setSelectedCampaignId } = useCampaignStore();
@@ -39,6 +40,8 @@ export function MapModals() {
         map={selectedMap}
         campaign={selectedCampaign}
       />
+
+      <ShareMapModal open={modal === MapModal.Share} onClose={handleCloseModal} map={selectedMap} />
 
       <ConfirmModal
         title="Delete Map"

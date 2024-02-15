@@ -187,7 +187,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             />
 
             {user?.new_email && (
-              <Alert severity="info">
+              <Alert severity="info" variant="outlined">
                 You&apos;ve requested to change your email address to {user.new_email}. Please check your inbox for a
                 confirmation email.
               </Alert>

@@ -1,18 +1,21 @@
 import { Add, Info, Remove } from '@mui/icons-material';
 import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
 import Image from 'next/image';
+import { useState } from 'react';
 
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
 
 interface Props {
   manifestUrl: string;
   installed?: boolean;
-  onInstall?: () => void;
-  onUninstall?: () => void;
+  onInstall?: () => Promise<void>;
+  onUninstall?: () => Promise<void>;
 }
 
 export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: Props) {
   const { data: plugin, isError } = useGetPlugin(manifestUrl);
+
+  const [pending, setPending] = useState(false);
 
   if (isError) return null;
 
@@ -49,11 +52,30 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
 
       <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
         {installed ? (
-          <Button variant="outlined" color="error" startIcon={<Remove />} onClick={onUninstall}>
+          <Button
+            variant="outlined"
+            color="error"
+            disabled={pending}
+            startIcon={<Remove />}
+            onClick={async () => {
+              setPending(true);
+              await onUninstall?.();
+              setPending(false);
+            }}
+          >
             Uninstall
           </Button>
         ) : (
-          <Button variant="outlined" startIcon={<Add />} disabled={!plugin} onClick={onInstall}>
+          <Button
+            variant="outlined"
+            startIcon={<Add />}
+            disabled={!plugin || pending}
+            onClick={async () => {
+              setPending(true);
+              await onInstall?.();
+              setPending(false);
+            }}
+          >
             Install
           </Button>
         )}

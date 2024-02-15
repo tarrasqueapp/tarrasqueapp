@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export enum MapModal {
   CreateUpdate = 'create-update',
   Delete = 'delete',
+  Share = 'share',
 }
 
 interface MapStore {

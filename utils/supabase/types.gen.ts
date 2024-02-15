@@ -271,6 +271,7 @@ export type Database = {
           name: string;
           order: number;
           user_id: string;
+          visible: boolean;
         };
         Insert: {
           campaign_id: string;
@@ -280,6 +281,7 @@ export type Database = {
           name: string;
           order: number;
           user_id: string;
+          visible?: boolean;
         };
         Update: {
           campaign_id?: string;
@@ -289,6 +291,7 @@ export type Database = {
           name?: string;
           order?: number;
           user_id?: string;
+          visible?: boolean;
         };
         Relationships: [
           {
