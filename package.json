@@ -7,7 +7,7 @@
   "author": "Richard Solomou <richard@tarrasque.app>",
   "scripts": {
     "build": "next build",
-    "dev": "NODE_OPTIONS=--no-deprecation next dev --turbo",
+    "dev": "next dev --turbo",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "tsc --noEmit && next lint",
     "lint-staged": "lint-staged",
@@ -49,6 +49,7 @@
     "nodemailer": "^6.9.9",
     "pixi-viewport": "^5.0.2",
     "pixi.js": "^7.4.0",
+    "punycode": "1.4.1",
     "react": "^18.2.0",
     "react-colorful": "^5.6.1",
     "react-dom": "^18.2.0",
