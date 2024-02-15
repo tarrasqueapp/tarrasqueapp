@@ -79,6 +79,7 @@ export class PlatformUtils {
 
     return (
       'ontouchstart' in window ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ((window as any).DocumentTouch && document instanceof (window as any).DocumentTouch) ||
       navigator.maxTouchPoints > 0
     );

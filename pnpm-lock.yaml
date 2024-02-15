@@ -97,6 +97,9 @@ dependencies:
   pixi.js:
     specifier: ^7.4.0
     version: 7.4.0
+  punycode:
+    specifier: 1.4.1
+    version: 1.4.1
   react:
     specifier: ^18.2.0
     version: 18.2.0
