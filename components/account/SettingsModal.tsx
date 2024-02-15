@@ -195,7 +195,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button color="secondary" onClick={onClose}>
+              Cancel
+            </Button>
 
             <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit">
               Submit

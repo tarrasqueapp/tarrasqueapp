@@ -17,6 +17,7 @@ import { toast } from 'react-hot-toast';
 
 import { Map, updateMap } from '@/actions/maps';
 import { useOptimistic } from '@/hooks/useOptimistic';
+import { config } from '@/lib/config';
 import { AppNavigation } from '@/lib/navigation';
 
 interface ShareMapModalProps {
@@ -26,7 +27,10 @@ interface ShareMapModalProps {
 }
 
 export function ShareMapModal({ open, onClose, map }: ShareMapModalProps) {
-  const [visible, setVisible] = useOptimistic(map?.visible ?? false, (current, payload: boolean) => payload);
+  const [optimisticVisible, setOptimisticVisible] = useOptimistic(
+    map?.visible ?? false,
+    (current, payload: boolean) => payload,
+  );
   const inviteLinkRef = useRef<HTMLInputElement | null>(null);
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -54,7 +58,7 @@ export function ShareMapModal({ open, onClose, map }: ShareMapModalProps) {
   async function handleToggleVisibility() {
     if (!map) return;
     const newValue = !map.visible;
-    setVisible(newValue);
+    setOptimisticVisible(newValue);
     await updateMap({ id: map.id, visible: newValue });
   }
 
@@ -77,7 +81,7 @@ export function ShareMapModal({ open, onClose, map }: ShareMapModalProps) {
               label="Invite Link"
               fullWidth
               autoComplete="off"
-              value={`${AppNavigation.Map}/${map.id}`}
+              value={`${config.HOST}${AppNavigation.Map}/${map.id}`}
               onFocus={handleFocus}
               inputRef={inviteLinkRef}
             />
@@ -89,7 +93,14 @@ export function ShareMapModal({ open, onClose, map }: ShareMapModalProps) {
 
           <FormControlLabel
             label="Visible to campaign players"
-            control={<Checkbox checked={visible} onChange={handleToggleVisibility} sx={{ pl: 0 }} />}
+            control={
+              <Checkbox
+                checked={optimisticVisible}
+                onChange={handleToggleVisibility}
+                sx={{ pl: 0 }}
+                disabled={map.visible !== optimisticVisible}
+              />
+            }
           />
         </Stack>
       </DialogContent>

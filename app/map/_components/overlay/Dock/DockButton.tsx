@@ -17,9 +17,9 @@ DockButtonFwd.displayName = 'DockButtonFwd';
 // Add active prop to DockButton
 export const DockButton = styled(DockButtonFwd)(({ active }: { active?: boolean }) => ({
   background: 'rgba(255, 255, 255, 0.05)',
-  color: Color.WHITE,
+  color: Color.WHITE_LIGHT,
   ...(active && {
-    background: `${Color.BROWN_BEIGE} !important`,
+    background: `${Color.BROWN_MAIN} !important`,
   }),
   borderRadius: '10px',
   padding: '8px !important',

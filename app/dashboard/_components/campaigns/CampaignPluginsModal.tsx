@@ -6,6 +6,7 @@ import { Campaign } from '@/actions/campaigns';
 import { disableCampaignPlugin, enableCampaignPlugin } from '@/actions/plugins';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
+import { Color } from '@/lib/colors';
 import { CampaignPluginEntity, PluginEntity } from '@/lib/types';
 
 import { CampaignPluginCard } from './CampaignPluginCard';
@@ -26,20 +27,20 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
    * Enable a plugin from the installed plugins
    * @param plugin - The plugin to install
    */
-  function handleEnablePlugin(plugin: PluginEntity) {
+  async function handleEnablePlugin(plugin: PluginEntity) {
     if (!campaign || !plugin) return;
 
-    enableCampaignPlugin({ campaign_id: campaign.id, plugin_id: plugin.id });
+    await enableCampaignPlugin({ campaign_id: campaign.id, plugin_id: plugin.id });
   }
 
   /**
    * Disable a plugin from the campaign
    * @param campaignPlugin - The campaign plugin to disable
    */
-  function handleDisablePlugin(campaignPlugin: CampaignPluginEntity) {
+  async function handleDisablePlugin(campaignPlugin: CampaignPluginEntity) {
     if (!campaignPlugin) return;
 
-    disableCampaignPlugin(campaignPlugin.id);
+    await disableCampaignPlugin(campaignPlugin.id);
   }
 
   return (
@@ -55,31 +56,32 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
       <DialogContent>
         <Box sx={{ my: 1 }}>
           <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
-            {userPlugins ? (
-              userPlugins.length ? (
-                userPlugins.map((userPlugin) => (
+            {userPlugins
+              ? userPlugins.map((userPlugin) => (
                   <CampaignPluginCard
                     key={userPlugin.id}
                     manifestUrl={userPlugin.manifest_url}
+                    campaign={campaign}
                     enabled={Boolean(
                       campaignPlugins?.find((campaignPlugin) => campaignPlugin.plugin_id === userPlugin.id),
                     )}
                     onEnable={() => handleEnablePlugin(userPlugin)}
-                    onDisable={() => {
+                    onDisable={async () => {
                       const campaignPlugin = campaignPlugins?.find(
                         (campaignPlugin) => campaignPlugin.plugin_id === userPlugin.id,
                       );
-                      if (campaignPlugin) handleDisablePlugin(campaignPlugin);
+                      if (campaignPlugin) await handleDisablePlugin(campaignPlugin);
                     }}
                   />
                 ))
-              ) : (
-                <Typography>No plugins installed</Typography>
-              )
-            ) : (
-              [...Array(2)].map((_, i) => <CampaignPluginCard key={i} manifestUrl="" />)
-            )}
+              : [...Array(2)].map((_, i) => <CampaignPluginCard key={i} manifestUrl="" />)}
           </Masonry>
+
+          {userPlugins?.length === 0 && (
+            <Typography align="center" sx={{ my: 8 }} color={Color.GREY}>
+              No plugins installed
+            </Typography>
+          )}
         </Box>
       </DialogContent>
     </Dialog>

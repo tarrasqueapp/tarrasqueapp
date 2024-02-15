@@ -93,7 +93,9 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button color="secondary" onClick={onClose}>
+              Cancel
+            </Button>
 
             <LoadingButton loading={isSubmitting} disabled={!isValid} variant="contained" type="submit">
               Submit

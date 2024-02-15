@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="robots" content="noindex,nofollow" />
 
         {/* Android */}
-        <meta name="theme-color" content={Color.BROWN_BEIGE} />
+        <meta name="theme-color" content={Color.SAND_LIGHT} />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* iOS */}

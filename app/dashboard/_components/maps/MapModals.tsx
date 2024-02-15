@@ -29,7 +29,7 @@ export function MapModals() {
     setTimeout(() => {
       setSelectedMapId(null);
       setSelectedCampaignId(null);
-    }, 500);
+    }, 100);
   }
 
   return (

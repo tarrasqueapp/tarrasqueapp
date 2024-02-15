@@ -1,9 +1,9 @@
 import { Add, Info, Remove } from '@mui/icons-material';
 import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
 import Image from 'next/image';
-import { useState } from 'react';
 
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
+import { useOptimistic } from '@/hooks/useOptimistic';
 
 interface Props {
   manifestUrl: string;
@@ -15,7 +15,10 @@ interface Props {
 export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: Props) {
   const { data: plugin, isError } = useGetPlugin(manifestUrl);
 
-  const [pending, setPending] = useState(false);
+  const [optimisticInstalled, setOptimisticInstalled] = useOptimistic(
+    installed,
+    (current, payload: boolean) => payload,
+  );
 
   if (isError) return null;
 
@@ -51,16 +54,15 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
       </CardContent>
 
       <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
-        {installed ? (
+        {optimisticInstalled ? (
           <Button
             variant="outlined"
+            disabled={!plugin || installed !== optimisticInstalled}
             color="error"
-            disabled={pending}
             startIcon={<Remove />}
             onClick={async () => {
-              setPending(true);
+              setOptimisticInstalled(false);
               await onUninstall?.();
-              setPending(false);
             }}
           >
             Uninstall
@@ -69,11 +71,10 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
           <Button
             variant="outlined"
             startIcon={<Add />}
-            disabled={!plugin || pending}
+            disabled={!plugin || installed !== optimisticInstalled}
             onClick={async () => {
-              setPending(true);
+              setOptimisticInstalled(true);
               await onInstall?.();
-              setPending(false);
             }}
           >
             Install

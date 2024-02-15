@@ -150,7 +150,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
                 setModal(MapModal.Share);
               }}
             >
-              <Share sx={{ fontSize: '1rem', transition: 'color 1s' }} color={map.visible ? 'action' : 'disabled'} />
+              <Share sx={{ fontSize: '1rem' }} color={map.visible ? 'action' : 'disabled'} />
             </IconButton>
           </Tooltip>
 

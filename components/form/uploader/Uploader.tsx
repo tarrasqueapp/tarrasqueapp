@@ -231,7 +231,7 @@ export function Uploader({
     onChange?.(null);
   }
 
-  const borderColor = isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.6) : 'rgba(0, 0, 0, 0.19)';
+  const borderColor = isDragActive && !isDragReject ? alpha(Color.BROWN_MAIN, 0.6) : 'rgba(0, 0, 0, 0.19)';
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -242,7 +242,7 @@ export function Uploader({
           p: 0.5,
           overflow: 'hidden',
           textTransform: 'none',
-          color: Color.WHITE,
+          color: Color.WHITE_LIGHT,
           borderRadius: '10px',
 
           background: 'rgba(255, 255, 255, 0.09)',
@@ -262,7 +262,7 @@ export function Uploader({
             flex: '1 0 auto',
             alignItems: 'center',
             justifyContent: 'center',
-            background: isDragActive && !isDragReject ? alpha(Color.BROWN_BEIGE, 0.05) : undefined,
+            background: isDragActive && !isDragReject ? alpha(Color.BROWN_MAIN, 0.05) : undefined,
             overflow: 'hidden',
             flexWrap: 'wrap',
             height: 200,
@@ -296,7 +296,7 @@ export function Uploader({
 
           {!file && (
             <Box sx={{ p: 4 }}>
-              <CloudUpload fontSize="large" htmlColor={Color.BROWN_LIGHT} sx={{ mt: -2 }} />
+              <CloudUpload fontSize="large" htmlColor={Color.SAND_LIGHT} sx={{ mt: -2 }} />
 
               <Typography variant="h5" sx={{ mt: 2 }}>
                 {isDragActive && !isDragReject && 'Drop the file here'}

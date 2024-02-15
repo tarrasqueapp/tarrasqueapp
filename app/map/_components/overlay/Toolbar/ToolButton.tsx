@@ -17,9 +17,9 @@ ToolButtonFwd.displayName = 'ToolButtonFwd';
 // Add selected prop to ToolButton
 export const ToolButton = styled(ToolButtonFwd)(({ selected }: { selected?: boolean }) => ({
   background: 'rgba(255, 255, 255, 0.05)',
-  color: Color.WHITE,
+  color: Color.WHITE_LIGHT,
   ...(selected && {
-    background: `${Color.BROWN_BEIGE} !important`,
+    background: `${Color.BROWN_MAIN} !important`,
   }),
   padding: '8px !important',
   minWidth: '0 !important',

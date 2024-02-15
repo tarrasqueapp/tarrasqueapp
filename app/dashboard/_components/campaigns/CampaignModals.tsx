@@ -24,7 +24,7 @@ export function CampaignModals() {
    */
   function handleCloseModal() {
     setModal(null);
-    setTimeout(() => setSelectedCampaignId(null), 500);
+    setTimeout(() => setSelectedCampaignId(null), 100);
   }
 
   return (
