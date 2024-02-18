@@ -1,9 +1,10 @@
 import { Brush, Category, PushPin, SquareFoot } from '@mui/icons-material';
-import { Box, ButtonGroup, Paper, Tooltip, alpha } from '@mui/material';
+import { Box, Paper, Tooltip, alpha } from '@mui/material';
 
 import { Color } from '@/lib/colors';
 import { Tool, useToolbarStore } from '@/store/toolbar';
 
+import { OverlayButtonGroup } from '../OverlayButtonGroup';
 import { FogToolItem } from './FogToolItem';
 import { SelectToolItem } from './SelectToolItem';
 import { ToolButton } from './ToolButton';
@@ -14,7 +15,7 @@ export function Toolbar() {
   return (
     <Box sx={{ position: 'fixed', top: 8, left: 8, display: 'flex', flexDirection: 'column' }}>
       <Paper sx={{ background: alpha(Color.BLACK_LIGHT, 0.85) }}>
-        <ButtonGroup size="small" orientation="vertical">
+        <OverlayButtonGroup size="small" orientation="vertical">
           <SelectToolItem />
 
           <FogToolItem />
@@ -42,7 +43,7 @@ export function Toolbar() {
               <PushPin />
             </ToolButton>
           </Tooltip>
-        </ButtonGroup>
+        </OverlayButtonGroup>
       </Paper>
     </Box>
   );

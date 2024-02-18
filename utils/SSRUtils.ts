@@ -4,7 +4,7 @@ import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adap
 import { cookies } from 'next/headers';
 
 import { getUser } from '@/actions/auth';
-import { getUserCampaigns } from '@/actions/campaigns';
+import { getCampaign, getUserCampaigns } from '@/actions/campaigns';
 import { getInvite, getInvites } from '@/actions/invites';
 import { getMap, getMaps } from '@/actions/maps';
 import { getMemberships } from '@/actions/memberships';
@@ -151,5 +151,18 @@ export class SSRUtils {
     });
     type Data = Awaited<ReturnType<typeof getMap>>;
     return this.queryClient.getQueryData<Data>(['maps', id]) || null;
+  }
+
+  /**
+   * Prefetch a campaign's data
+   * @returns The campaign
+   */
+  async prefetchCampaign(id: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['campaigns', id],
+      queryFn: () => getCampaign(id),
+    });
+    type Data = Awaited<ReturnType<typeof getCampaign>>;
+    return this.queryClient.getQueryData<Data>(['campaigns', id]) || null;
   }
 }

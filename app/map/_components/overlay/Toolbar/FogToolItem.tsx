@@ -1,10 +1,11 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { ButtonGroup, Fade, Paper, Popper, Tooltip } from '@mui/material';
+import { Fade, Paper, Popper, Tooltip } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { useCallback } from 'react';
 
 import { FogTool, Tool, useToolbarStore } from '@/store/toolbar';
 
+import { OverlayButtonGroup } from '../OverlayButtonGroup';
 import { ToolButton, ToolButtonProps } from './ToolButton';
 
 export function FogToolItem() {
@@ -67,10 +68,10 @@ export function FogToolItem() {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <Paper sx={{ ml: 0.5 }}>
-                <ButtonGroup size="small">
+                <OverlayButtonGroup size="small">
                   <HideFogTool selected={tool === Tool.Fog && fogTool === FogTool.Hide} />
                   <ShowFogTool selected={tool === Tool.Fog && fogTool === FogTool.Show} />
-                </ButtonGroup>
+                </OverlayButtonGroup>
               </Paper>
             </Fade>
           )}

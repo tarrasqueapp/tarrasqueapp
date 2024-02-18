@@ -21,7 +21,9 @@ export default async function MapPage({ params }: { params: { id: string } }) {
   }
 
   await ssr.prefetchUser();
-  await ssr.prefetchMap(params.id);
+  const map = await ssr.prefetchMap(params.id);
+  await ssr.prefetchCampaign(map?.campaign_id || '');
+  await ssr.prefetchCampaignMemberships(map?.campaign_id || '');
 
   return (
     <HydrationBoundary state={ssr.dehydrate()}>

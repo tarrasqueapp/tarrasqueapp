@@ -1,5 +1,5 @@
 import { Add, FitScreen, Fullscreen, FullscreenExit, Remove } from '@mui/icons-material';
-import { Box, ButtonGroup, Paper, Tooltip, alpha } from '@mui/material';
+import { Box, Paper, Tooltip, alpha } from '@mui/material';
 import { useState } from 'react';
 
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
@@ -7,6 +7,7 @@ import { useDocumentEventListener } from '@/hooks/useDocumentEventListener';
 import { Color } from '@/lib/colors';
 import { usePixiStore } from '@/store/pixi';
 
+import { OverlayButtonGroup } from './OverlayButtonGroup';
 import { ToolButton } from './Toolbar/ToolButton';
 
 export function ZoomControls() {
@@ -104,9 +105,9 @@ export function ZoomControls() {
   });
 
   return (
-    <Box sx={{ position: 'fixed', top: 8, right: 8, display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Paper sx={{ background: alpha(Color.BLACK_LIGHT, 0.85) }}>
-        <ButtonGroup orientation="vertical" size="small">
+        <OverlayButtonGroup orientation="vertical" size="small">
           <Tooltip title="Zoom In" placement="left">
             <ToolButton onClick={handleZoomIn}>
               <Add />
@@ -130,7 +131,7 @@ export function ZoomControls() {
               {isFullScreen ? <FullscreenExit /> : <Fullscreen />}
             </ToolButton>
           </Tooltip>
-        </ButtonGroup>
+        </OverlayButtonGroup>
       </Paper>
     </Box>
   );

@@ -134,7 +134,6 @@ export let theme = createTheme({
           borderRadius: '10px',
         },
         groupedVertical: {
-          borderColor: 'transparent',
           '&:hover': {
             borderColor: Color.SAND_MAIN,
             '+ .MuiButton-root': {
@@ -147,9 +146,11 @@ export let theme = createTheme({
           '&:last-of-type': {
             borderRadius: '0 0 10px 10px',
           },
+          '&:first-of-type:last-of-type': {
+            borderRadius: '10px',
+          },
         },
         groupedHorizontal: {
-          borderColor: 'transparent',
           '&:hover': {
             borderColor: Color.SAND_MAIN,
             '+ .MuiButton-root': {
@@ -161,6 +162,53 @@ export let theme = createTheme({
           },
           '&:last-of-type': {
             borderRadius: '0 10px 10px 0',
+          },
+          '&:first-of-type:last-of-type': {
+            borderRadius: '10px',
+          },
+        },
+      },
+    },
+    MuiToggleButtonGroup: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px',
+          '.Mui-selected': {
+            background: `${Color.BROWN_MAIN} !important`,
+          },
+        },
+        groupedVertical: {
+          '&:hover': {
+            borderColor: Color.SAND_MAIN,
+            '+ .MuiButton-root': {
+              borderTopColor: Color.SAND_MAIN,
+            },
+          },
+          '&:first-of-type': {
+            borderRadius: '10px 10px 0 0',
+          },
+          '&:last-of-type': {
+            borderRadius: '0 0 10px 10px',
+          },
+          '&:first-of-type:last-of-type': {
+            borderRadius: '10px',
+          },
+        },
+        groupedHorizontal: {
+          '&:hover': {
+            borderColor: Color.SAND_MAIN,
+            '+ .MuiButton-root': {
+              borderLeftColor: Color.SAND_MAIN,
+            },
+          },
+          '&:first-of-type': {
+            borderRadius: '10px 0 0 10px',
+          },
+          '&:last-of-type': {
+            borderRadius: '0 10px 10px 0',
+          },
+          '&:first-of-type:last-of-type': {
+            borderRadius: '10px',
           },
         },
       },

@@ -1,10 +1,11 @@
 import { SelectAll, TouchApp } from '@mui/icons-material';
-import { ButtonGroup, Fade, Paper, Popper, Tooltip } from '@mui/material';
+import { Fade, Paper, Popper, Tooltip } from '@mui/material';
 import { bindHover, bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { useCallback } from 'react';
 
 import { SelectTool, Tool, useToolbarStore } from '@/store/toolbar';
 
+import { OverlayButtonGroup } from '../OverlayButtonGroup';
 import { ToolButton, ToolButtonProps } from './ToolButton';
 
 export function SelectToolItem() {
@@ -67,10 +68,10 @@ export function SelectToolItem() {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <Paper sx={{ ml: 0.5 }}>
-                <ButtonGroup size="small">
+                <OverlayButtonGroup size="small">
                   <SingleSelectTool selected={tool === Tool.Select && selectTool === SelectTool.Single} />
                   <MultiSelectTool selected={tool === Tool.Select && selectTool === SelectTool.Multi} />
-                </ButtonGroup>
+                </OverlayButtonGroup>
               </Paper>
             </Fade>
           )}
