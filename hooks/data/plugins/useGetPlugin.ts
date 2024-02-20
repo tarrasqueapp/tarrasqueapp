@@ -1,6 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { ManifestEntity } from '@/lib/types';
+interface Manifest {
+  name: string;
+  description: string;
+  author: string;
+  icon_url: string;
+  plugin_url: string;
+  homepage_url: string;
+  iframe: {
+    width: number;
+    height: number;
+  };
+}
 
 /**
  * Send a request to get all available plugins
@@ -8,7 +19,7 @@ import { ManifestEntity } from '@/lib/types';
  */
 export async function getPlugin(manifestUrl: string) {
   const response = await fetch(manifestUrl);
-  const data = (await response.json()) as ManifestEntity;
+  const data = (await response.json()) as Manifest;
   return data;
 }
 

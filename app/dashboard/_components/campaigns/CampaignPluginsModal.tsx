@@ -3,11 +3,10 @@ import { Masonry } from '@mui/lab';
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Theme, Typography, useMediaQuery } from '@mui/material';
 
 import { Campaign } from '@/actions/campaigns';
-import { disableCampaignPlugin, enableCampaignPlugin } from '@/actions/plugins';
+import { CampaignPlugin, Plugin, disableCampaignPlugin, enableCampaignPlugin } from '@/actions/plugins';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
 import { Color } from '@/lib/colors';
-import { CampaignPluginEntity, PluginEntity } from '@/lib/types';
 
 import { CampaignPluginCard } from './CampaignPluginCard';
 
@@ -27,7 +26,7 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
    * Enable a plugin from the installed plugins
    * @param plugin - The plugin to install
    */
-  async function handleEnablePlugin(plugin: PluginEntity) {
+  async function handleEnablePlugin(plugin: Plugin) {
     if (!campaign || !plugin) return;
 
     await enableCampaignPlugin({ campaign_id: campaign.id, plugin_id: plugin.id });
@@ -37,7 +36,7 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
    * Disable a plugin from the campaign
    * @param campaignPlugin - The campaign plugin to disable
    */
-  async function handleDisablePlugin(campaignPlugin: CampaignPluginEntity) {
+  async function handleDisablePlugin(campaignPlugin: CampaignPlugin) {
     if (!campaignPlugin) return;
 
     await disableCampaignPlugin(campaignPlugin.id);

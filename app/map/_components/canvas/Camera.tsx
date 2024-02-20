@@ -2,13 +2,8 @@ import { useApp } from '@pixi/react';
 import { Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
-import useLocalStorage from 'use-local-storage';
 
-import { useGetUser } from '@/hooks/data/auth/useGetUser';
-import { useGetMap } from '@/hooks/data/maps/useGetMap';
 import { useWindowSize } from '@/hooks/useWindowSize';
-import { Color } from '@/lib/colors';
-import { tarrasque } from '@/lib/tarrasque';
 import { useMapStore } from '@/store/map';
 import { usePixiStore } from '@/store/pixi';
 
@@ -22,27 +17,26 @@ interface CameraProps {
 }
 
 export function Camera({ mapId, width, height, children }: CameraProps) {
-  const { data: map } = useGetMap(mapId);
-  const { data: user } = useGetUser();
-
-  const { viewport, setViewport } = usePixiStore();
+  const { viewport, setViewport, getPosition, setPosition } = usePixiStore();
   const { setContextMenuVisible, setContextMenuAnchorPoint } = useMapStore();
 
   const app = useApp();
   const windowSize = useWindowSize();
-
-  // Get the camera position from local storage
-  const [position, setPosition] = useLocalStorage(`map-position/${mapId}`, {
-    x: width / 2,
-    y: height / 2,
-    scale: Math.min(windowSize.width / width, windowSize.height / height),
-  });
 
   const [mounted, setMounted] = useState(false);
 
   // Center the viewport on the map when it is first rendered
   useEffect(() => {
     if (mounted || !viewport || viewport.destroyed) return;
+
+    let position = getPosition(mapId);
+    if (!position) {
+      position = {
+        x: width / 2,
+        y: height / 2,
+        scale: Math.min(windowSize.width / width, windowSize.height / height),
+      };
+    }
 
     viewport.animate({
       position: {
@@ -54,7 +48,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     });
 
     setMounted(true);
-  }, [position, viewport]);
+  }, [viewport]);
 
   // const membership = user?.memberships.find((membership) => membership.campaignId === map?.campaign_id);
 
@@ -90,23 +84,6 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
     if (!viewport) return;
 
     console.debug('Double Click.', event.global);
-
-    // Get the position of the double click event relative to the map
-    const position = viewport.toWorld(event.global.x, event.global.y);
-
-    // socket.emit(SocketEvent.PING_LOCATION, {
-    //   position,
-    //   color: membership?.color || Color.BLACK,
-    //   mapId,
-    //   userId: user?.id || '',
-    // });
-
-    // tarrasque.emit(SocketEvent.PING_LOCATION, {
-    //   position,
-    //   color: membership?.color || Color.BLACK,
-    //   mapId,
-    //   userId: user?.id || '',
-    // });
   }
 
   /**
@@ -132,7 +109,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
       y: viewport.center.y,
       scale: (viewport.scale.x + viewport.scale.y) / 2,
     };
-    setPosition(newPosition);
+    setPosition(mapId, newPosition);
   }
 
   return (

@@ -5,6 +5,8 @@ import { z } from 'zod';
 
 import { createServerClient } from '@/utils/supabase/server';
 
+export type Token = Awaited<ReturnType<typeof getMapTokens>>[number];
+
 /**
  * Get a map's tokens
  * @param mapId - The map to get tokens for

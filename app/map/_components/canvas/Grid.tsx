@@ -1,46 +1,57 @@
-import { Graphics } from '@pixi/react';
+import { Container } from '@pixi/react';
 import * as PIXI from 'pixi.js';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
+import { usePixiStore } from '@/store/pixi';
 import { HotkeysUtils } from '@/utils/HotkeyUtils';
 
 interface GridProps {
-  width: number;
-  height: number;
   size: number;
   color: string;
 }
 
-export function Grid({ width, height, size, color }: GridProps) {
+export function Grid({ size, color }: GridProps) {
   const [visible, setVisible] = useState(true);
+  const { map } = usePixiStore();
+
+  // Container for batch drawing
+  const containerRef = useRef(new PIXI.Container());
+  const graphicsRef = useRef(new PIXI.Graphics());
 
   // Register hotkey
   useHotkeys(HotkeysUtils.Grid, () => setVisible((visible) => !visible), [visible]);
 
-  /**
-   * Draw the grid on the canvas using PIXI.Graphics
-   * @param graphics - The PIXI.Graphics object
-   */
-  function drawGrid(graphics: PIXI.Graphics) {
-    if (!visible) return;
+  useEffect(() => {
+    if (!visible || !map?.media?.width || !map?.media?.height) return;
 
+    const graphics = graphicsRef.current;
     graphics.clear();
 
-    // Calculate the number of rows and columns
-    const rows = Math.ceil(width / size);
-    const columns = Math.ceil(height / size);
-
-    const convertedColor = new PIXI.Color(color).toNumber();
+    const convertedColor = new PIXI.Color(color);
     graphics.lineStyle(1, convertedColor);
-    for (let row = 0; row < rows; row++) {
-      for (let column = 0; column < columns; column++) {
+
+    const rows = map.media.width / size;
+    const columns = map.media.height / size;
+
+    // Add extra rows and columns to cover the entire map
+    const extraRowsColumns = 50;
+
+    // Draw the grid
+    for (let row = -extraRowsColumns; row < rows + extraRowsColumns; row++) {
+      for (let column = -extraRowsColumns; column < columns + extraRowsColumns; column++) {
         graphics.drawRect(row * size, column * size, size, size);
       }
     }
-  }
+
+    // Add the graphics to the container for batch drawing
+    const container = containerRef.current;
+    if (!container.children.includes(graphics)) {
+      container.addChild(graphics);
+    }
+  }, [visible, size, color, map]);
 
   if (!visible) return null;
 
-  return <Graphics draw={drawGrid} />;
+  return <Container ref={containerRef} />;
 }

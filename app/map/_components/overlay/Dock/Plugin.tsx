@@ -17,7 +17,7 @@ export function Plugin({ manifestUrl, onLoad }: Props) {
   if (!plugin) return null;
 
   return (
-    <PopupState variant="popover" popupId={`plugin_${manifestUrl}`}>
+    <PopupState variant="popper" popupId={`plugin_${manifestUrl}`}>
       {(popupState) => (
         <>
           <Tooltip title={plugin.name}>

@@ -8,6 +8,9 @@ import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
 
+export type Plugin = Awaited<ReturnType<typeof getUserPlugins>>[number];
+export type CampaignPlugin = Awaited<ReturnType<typeof getCampaignPlugins>>[number];
+
 /**
  * Get a user's installed plugins
  * @returns The user's installed plugins

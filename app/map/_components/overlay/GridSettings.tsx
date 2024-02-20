@@ -1,4 +1,4 @@
-import { Grid4x4, HexagonOutlined } from '@mui/icons-material';
+import { Grid4x4, HexagonOutlined, SquareOutlined } from '@mui/icons-material';
 import { Box, Fade, Paper, Popper, ToggleButton, ToggleButtonGroup, Tooltip, alpha } from '@mui/material';
 import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 
@@ -30,36 +30,32 @@ export function GridSettings() {
           {(popupState) => (
             <>
               <OverlayButtonGroup orientation="vertical" size="small">
-                <Tooltip title="Grid" placement="left">
+                <Tooltip title="Grid" placement={popupState.isOpen ? 'bottom' : 'left'}>
                   <ToolButton selected={popupState.isOpen} {...bindToggle(popupState)}>
                     <Grid4x4 />
                   </ToolButton>
                 </Tooltip>
               </OverlayButtonGroup>
 
-              <Popper {...bindPopper(popupState)} keepMounted transition placement="left-end">
+              <Popper {...bindPopper(popupState)} keepMounted transition placement="left-start">
                 {({ TransitionProps }) => (
                   <Fade {...TransitionProps} timeout={350}>
-                    <Paper sx={{ p: 1 }}>
+                    <Paper sx={{ p: 1, mr: 0.5 }}>
                       <Box sx={{ border: 'none', width: 300, height: 300 }}>
                         <ToggleButtonGroup size="small" value="square">
                           <Tooltip title="Square">
                             <ToggleButton value="square">
-                              <Grid4x4 />
+                              <SquareOutlined />
                             </ToggleButton>
                           </Tooltip>
 
-                          <Tooltip title="Hex (Horizontal)">
-                            <ToggleButton value="hex-horizontal">
-                              <HexagonOutlined />
-                            </ToggleButton>
-                          </Tooltip>
+                          <ToggleButton value="hex-horizontal" disabled>
+                            <HexagonOutlined />
+                          </ToggleButton>
 
-                          <Tooltip title="Hex (Vertical)">
-                            <ToggleButton value="hex-vertical">
-                              <HexagonOutlined sx={{ transform: 'rotate(90deg)' }} />
-                            </ToggleButton>
-                          </Tooltip>
+                          <ToggleButton value="hex-vertical" disabled>
+                            <HexagonOutlined sx={{ transform: 'rotate(90deg)' }} />
+                          </ToggleButton>
                         </ToggleButtonGroup>
                       </Box>
                     </Paper>
