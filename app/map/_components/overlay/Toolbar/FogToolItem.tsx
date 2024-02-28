@@ -9,7 +9,11 @@ import { OverlayButtonGroup } from '../OverlayButtonGroup';
 import { ToolButton, ToolButtonProps } from './ToolButton';
 
 export function FogToolItem() {
-  const { tool, setTool, fogTool, setFogTool } = useToolbarStore();
+  const tool = useToolbarStore((state) => state.tool);
+  const setTool = useToolbarStore((state) => state.setTool);
+  const fogTool = useToolbarStore((state) => state.fogTool);
+  const setFogTool = useToolbarStore((state) => state.setFogTool);
+
   const popupState = usePopupState({ variant: 'popper', popupId: 'fogTool' });
 
   const HideFogTool = (props: ToolButtonProps) => {
@@ -50,14 +54,17 @@ export function FogToolItem() {
     );
   };
 
-  const ActiveTool = useCallback((props: ToolButtonProps) => {
-    switch (fogTool) {
-      case FogTool.Hide:
-        return <HideFogTool {...props} />;
-      case FogTool.Show:
-        return <ShowFogTool {...props} />;
-    }
-  }, []);
+  const ActiveTool = useCallback(
+    (props: ToolButtonProps) => {
+      switch (fogTool) {
+        case FogTool.Hide:
+          return <HideFogTool {...props} />;
+        case FogTool.Show:
+          return <ShowFogTool {...props} />;
+      }
+    },
+    [fogTool],
+  );
 
   return (
     <>

@@ -18,8 +18,9 @@ DockButtonFwd.displayName = 'DockButtonFwd';
 export const DockButton = styled(DockButtonFwd)(({ active }: { active?: boolean }) => ({
   background: 'rgba(255, 255, 255, 0.05)',
   color: Color.WHITE_LIGHT,
+  border: '1px solid transparent',
   ...(active && {
-    background: `${Color.BROWN_MAIN} !important`,
+    border: `1px solid ${Color.BROWN_MAIN} !important`,
   }),
   borderRadius: '10px',
   padding: '8px !important',

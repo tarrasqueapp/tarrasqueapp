@@ -18,8 +18,9 @@ ToolButtonFwd.displayName = 'ToolButtonFwd';
 export const ToolButton = styled(ToolButtonFwd)(({ selected }: { selected?: boolean }) => ({
   background: 'rgba(255, 255, 255, 0.05)',
   color: Color.WHITE_LIGHT,
+  border: '1px solid transparent',
   ...(selected && {
-    background: `${Color.BROWN_MAIN} !important`,
+    border: `1px solid ${Color.BROWN_MAIN} !important`,
   }),
   padding: '8px !important',
   minWidth: '0 !important',

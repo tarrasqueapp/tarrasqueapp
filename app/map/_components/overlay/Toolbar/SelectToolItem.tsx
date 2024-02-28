@@ -9,7 +9,11 @@ import { OverlayButtonGroup } from '../OverlayButtonGroup';
 import { ToolButton, ToolButtonProps } from './ToolButton';
 
 export function SelectToolItem() {
-  const { tool, setTool, selectTool, setSelectTool } = useToolbarStore();
+  const tool = useToolbarStore((state) => state.tool);
+  const setTool = useToolbarStore((state) => state.setTool);
+  const selectTool = useToolbarStore((state) => state.selectTool);
+  const setSelectTool = useToolbarStore((state) => state.setSelectTool);
+
   const popupState = usePopupState({ variant: 'popper', popupId: 'selectTool' });
 
   const SingleSelectTool = (props: ToolButtonProps) => {
@@ -50,14 +54,17 @@ export function SelectToolItem() {
     );
   };
 
-  const ActiveTool = useCallback((props: ToolButtonProps) => {
-    switch (selectTool) {
-      case SelectTool.Single:
-        return <SingleSelectTool {...props} />;
-      case SelectTool.Multi:
-        return <MultiSelectTool {...props} />;
-    }
-  }, []);
+  const ActiveTool = useCallback(
+    (props: ToolButtonProps) => {
+      switch (selectTool) {
+        case SelectTool.Single:
+          return <SingleSelectTool {...props} />;
+        case SelectTool.Multi:
+          return <MultiSelectTool {...props} />;
+      }
+    },
+    [selectTool],
+  );
 
   return (
     <>
