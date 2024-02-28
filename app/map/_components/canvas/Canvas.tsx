@@ -17,7 +17,7 @@ export default function Canvas() {
   const { data: map } = useGetCurrentMap();
   const context = useContext(QueryClientContext);
 
-  const { setMap } = usePixiStore();
+  const setMap = usePixiStore((state) => state.setMap);
   const windowSize = useWindowSize();
 
   useEffect(() => {

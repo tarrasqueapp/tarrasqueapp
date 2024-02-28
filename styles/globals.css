@@ -53,17 +53,6 @@ html {
   min-width: var(--scrollbar-minlength);
 }
 
-/* NProgress */
-#nprogress .bar {
-  background: #e3b38b;
-}
-
-#nprogress .peg {
-  box-shadow:
-    0 0 10px #e3b38b,
-    0 0 5px #e3b38b;
-}
-
 /* Uppy */
 .uppy-Dashboard-inner {
   border: none;

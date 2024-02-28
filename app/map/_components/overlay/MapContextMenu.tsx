@@ -10,8 +10,10 @@ export function MapContextMenu() {
   const { data: map } = useGetCurrentMap();
   const { data: user } = useGetUser();
 
-  const { contextMenuVisible, setContextMenuVisible, contextMenuAnchorPoint } = useMapStore();
-  const { viewport } = usePixiStore();
+  const contextMenuVisible = useMapStore((state) => state.contextMenuVisible);
+  const setContextMenuVisible = useMapStore((state) => state.setContextMenuVisible);
+  const contextMenuAnchorPoint = useMapStore((state) => state.contextMenuAnchorPoint);
+  const viewport = usePixiStore((state) => state.viewport);
 
   const width = 230;
 

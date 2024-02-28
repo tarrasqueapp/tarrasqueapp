@@ -47,7 +47,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
   const { data: invites } = useGetInvites(campaign?.id || '');
   const { data: user } = useGetUser();
 
-  const { modal } = useCampaignStore();
+  const modal = useCampaignStore((state) => state.modal);
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 

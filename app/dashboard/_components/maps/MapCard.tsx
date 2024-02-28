@@ -41,8 +41,9 @@ export function MapCard({ map, campaign }: MapCardProps) {
   const { data: user } = useGetUser();
   const { data: memberships } = useGetMemberships(campaign?.id || '');
 
-  const { setSelectedMapId, setModal } = useMapStore();
-  const { setSelectedCampaignId } = useCampaignStore();
+  const setModal = useMapStore((state) => state.setModal);
+  const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
+  const setSelectedMapId = useMapStore((state) => state.setSelectedMapId);
 
   const [duplicating, setDuplicating] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: map?.id || '' });

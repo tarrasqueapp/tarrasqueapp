@@ -13,10 +13,15 @@ import { CreateUpdateMapModal } from './CreateUpdateMapModal';
 import { ShareMapModal } from './ShareMapModal';
 
 export function MapModals() {
-  const { selectedCampaignId, setSelectedCampaignId } = useCampaignStore();
-  const { selectedMapId, setSelectedMapId, modal, setModal } = useMapStore();
+  const selectedCampaignId = useCampaignStore((state) => state.selectedCampaignId);
   const { data: campaigns } = useGetUserCampaigns();
   const { data: maps } = useGetCampaignMaps(selectedCampaignId!);
+
+  const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
+  const selectedMapId = useMapStore((state) => state.selectedMapId);
+  const setSelectedMapId = useMapStore((state) => state.setSelectedMapId);
+  const modal = useMapStore((state) => state.modal);
+  const setModal = useMapStore((state) => state.setModal);
 
   const selectedCampaign = campaigns?.find((campaign) => campaign.id === selectedCampaignId);
   const selectedMap = maps?.find((map) => map.id === selectedMapId);

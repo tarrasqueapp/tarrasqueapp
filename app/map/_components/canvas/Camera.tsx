@@ -17,8 +17,12 @@ interface CameraProps {
 }
 
 export function Camera({ mapId, width, height, children }: CameraProps) {
-  const { viewport, setViewport, getPosition, setPosition } = usePixiStore();
-  const { setContextMenuVisible, setContextMenuAnchorPoint } = useMapStore();
+  const viewport = usePixiStore((state) => state.viewport);
+  const setViewport = usePixiStore((state) => state.setViewport);
+  const getPosition = usePixiStore((state) => state.getPosition);
+  const setPosition = usePixiStore((state) => state.setPosition);
+  const setContextMenuVisible = useMapStore((state) => state.setContextMenuVisible);
+  const setContextMenuAnchorPoint = useMapStore((state) => state.setContextMenuAnchorPoint);
 
   const app = useApp();
   const windowSize = useWindowSize();

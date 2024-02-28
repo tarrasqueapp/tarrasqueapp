@@ -10,7 +10,8 @@ import { SelectToolItem } from './SelectToolItem';
 import { ToolButton } from './ToolButton';
 
 export function Toolbar() {
-  const { tool, setTool } = useToolbarStore();
+  const tool = useToolbarStore((state) => state.tool);
+  const setTool = useToolbarStore((state) => state.setTool);
 
   return (
     <Box sx={{ position: 'fixed', top: 8, left: 8, display: 'flex', flexDirection: 'column' }}>

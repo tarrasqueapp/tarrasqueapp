@@ -65,7 +65,8 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
   const { data: memberships } = useGetMemberships(campaign?.id || '');
   const { data: user } = useGetUser();
 
-  const { setSelectedCampaignId, setModal } = useCampaignStore();
+  const setModal = useCampaignStore((state) => state.setModal);
+  const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
 
   // Drag and drop
   const [activeId, setActiveId] = useState<string | null>(null);

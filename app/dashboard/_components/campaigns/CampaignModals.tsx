@@ -15,7 +15,10 @@ import { CreateUpdateCampaignModal } from './CreateUpdateCampaignModal';
 export function CampaignModals() {
   const { data: campaigns } = useGetUserCampaigns();
 
-  const { selectedCampaignId, setSelectedCampaignId, modal, setModal } = useCampaignStore();
+  const modal = useCampaignStore((state) => state.modal);
+  const selectedCampaignId = useCampaignStore((state) => state.selectedCampaignId);
+  const setModal = useCampaignStore((state) => state.setModal);
+  const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
 
   const selectedCampaign = campaigns?.find((campaign) => campaign.id === selectedCampaignId);
 

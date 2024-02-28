@@ -4,7 +4,8 @@ import { Button } from '@mui/material';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 
 export function NewCampaign() {
-  const { setSelectedCampaignId, setModal } = useCampaignStore();
+  const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
+  const setModal = useCampaignStore((state) => state.setModal);
 
   return (
     <Button

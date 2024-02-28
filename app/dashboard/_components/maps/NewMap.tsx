@@ -11,8 +11,8 @@ interface NewMapProps {
 }
 
 export function NewMap({ campaign }: NewMapProps) {
-  const { setSelectedCampaignId } = useCampaignStore();
-  const { setModal } = useMapStore();
+  const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
+  const setModal = useMapStore((state) => state.setModal);
 
   return (
     <Button

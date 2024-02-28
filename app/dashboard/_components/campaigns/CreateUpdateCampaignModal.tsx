@@ -27,7 +27,7 @@ interface CreateUpdateCampaignModalProps {
 }
 
 export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpdateCampaignModalProps) {
-  const { modal } = useCampaignStore();
+  const modal = useCampaignStore((state) => state.modal);
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 

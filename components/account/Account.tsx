@@ -14,7 +14,8 @@ import { SettingsModal } from './SettingsModal';
 export function Account() {
   const { data: profile } = useGetProfile();
 
-  const { modal, setModal } = useDashboardStore();
+  const modal = useDashboardStore((state) => state.modal);
+  const setModal = useDashboardStore((state) => state.setModal);
 
   return (
     <>

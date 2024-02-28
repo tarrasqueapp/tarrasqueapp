@@ -13,7 +13,7 @@ import { ToolButton } from './Toolbar/ToolButton';
 export function ZoomControls() {
   const { data: map } = useGetCurrentMap();
 
-  const { viewport } = usePixiStore();
+  const viewport = usePixiStore((state) => state.viewport);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
 

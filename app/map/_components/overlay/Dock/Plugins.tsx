@@ -13,10 +13,10 @@ export function Plugins() {
 
   useEffect(() => {
     if (campaignPlugins?.length !== loadedPlugins) return;
-
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach((iframe) => {
-      iframe.contentWindow?.postMessage({ event: 'TARRASQUE_READY' }, '*');
+      if (!iframe.contentWindow) return;
+      iframe.contentWindow.postMessage({ event: 'TARRASQUE_READY' }, '*');
     });
   }, [loadedPlugins]);
 

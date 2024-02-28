@@ -27,7 +27,8 @@ export function DockAccount() {
   const { data: user } = useGetUser();
   const { data: profile } = useGetProfile();
 
-  const { modal, setModal } = useDashboardStore();
+  const modal = useDashboardStore((state) => state.modal);
+  const setModal = useDashboardStore((state) => state.setModal);
 
   return (
     <PopupState variant="popper" popupId="account">

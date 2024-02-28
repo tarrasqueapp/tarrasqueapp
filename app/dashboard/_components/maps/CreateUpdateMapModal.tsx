@@ -39,7 +39,7 @@ interface CreateUpdateMapModalProps {
 export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpdateMapModalProps) {
   const { data: campaigns } = useGetUserCampaigns('GAME_MASTER');
 
-  const { modal } = useMapStore();
+  const modal = useMapStore((state) => state.modal);
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 

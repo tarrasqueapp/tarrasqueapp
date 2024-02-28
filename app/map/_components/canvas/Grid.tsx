@@ -13,7 +13,7 @@ interface GridProps {
 
 export function Grid({ size, color }: GridProps) {
   const [visible, setVisible] = useState(true);
-  const { map } = usePixiStore();
+  const map = usePixiStore((state) => state.map);
 
   // Container for batch drawing
   const containerRef = useRef(new PIXI.Container());

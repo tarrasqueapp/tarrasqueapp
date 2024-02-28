@@ -60,7 +60,12 @@ const bounceInBottom = keyframes`
 export function DiceRollerBackdrop() {
   const [roll, setRoll] = useState<DiceRoll | null>(null);
 
-  const { rolling, setRolling, notation, backdropVisible, setBackdropVisible, getNumberOfFaces } = useDiceStore();
+  const rolling = useDiceStore((state) => state.rolling);
+  const setRolling = useDiceStore((state) => state.setRolling);
+  const notation = useDiceStore((state) => state.notation);
+  const getNumberOfFaces = useDiceStore((state) => state.getNumberOfFaces);
+  const backdropVisible = useDiceStore((state) => state.backdropVisible);
+  const setBackdropVisible = useDiceStore((state) => state.setBackdropVisible);
 
   // Listen to dice roll changes and roll the dice
   useEffect(() => {

@@ -22,11 +22,13 @@ export const useDiceStore = create<DiceStore>((set, get) => ({
    * @param rolling - Whether the user is rolling a dice
    */
   setRolling: (rolling: boolean) => set(() => ({ rolling })),
+
   /**
    * Set the dice notation to be used
    * @param notation - The dice notation
    */
   setNotation: (notation: string) => set(() => ({ notation })),
+
   /**
    * Set backdrop visibility
    * @param visible - Whether the backdrop is visible

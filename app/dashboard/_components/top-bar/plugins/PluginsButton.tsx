@@ -6,7 +6,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import { DashboardModal, useDashboardStore } from '@/store/dashboard';
 
 export function PluginsButton() {
-  const { setModal } = useDashboardStore();
+  const setModal = useDashboardStore((state) => state.setModal);
 
   return (
     <Tooltip title="Plugins">
