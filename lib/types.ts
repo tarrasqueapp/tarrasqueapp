@@ -3,14 +3,14 @@ export interface Dimensions {
   height: number;
 }
 
-export interface Position {
+export interface Coordinates {
   x: number;
   y: number;
 }
 
 export interface PingLocationEntity {
   id?: string;
-  position: Position;
+  coordinates: Coordinates;
   color: string;
   map_id: string;
   user_id: string;

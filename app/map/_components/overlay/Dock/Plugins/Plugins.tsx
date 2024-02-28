@@ -11,6 +11,7 @@ export function Plugins() {
 
   const [loadedPlugins, setLoadedPlugins] = useState<number>(0);
 
+  // Send the TARRASQUE_READY event to all iframes once all plugins are loaded
   useEffect(() => {
     if (campaignPlugins?.length !== loadedPlugins) return;
     const iframes = document.querySelectorAll('iframe');

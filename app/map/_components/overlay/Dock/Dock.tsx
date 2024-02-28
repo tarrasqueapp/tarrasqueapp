@@ -13,7 +13,7 @@ import { DiceRoller } from './DiceRoller/DiceRoller';
 import { DockAccount } from './DockAccount';
 import { DockButton } from './DockButton';
 import { More } from './More';
-import { Plugins } from './Plugins';
+import { Plugins } from './Plugins/Plugins';
 
 export function Dock() {
   const { data: user } = useGetUser();
