@@ -15,7 +15,7 @@ interface PixiStore {
   viewport: Viewport | null;
   setViewport: (viewport: Viewport) => void;
   positions: Record<string, PositionEntity>;
-  getPosition: (mapId: string) => PositionEntity;
+  getPosition: (mapId: string) => PositionEntity | null;
   setPosition: (mapId: string, position: PositionEntity) => void;
 }
 
@@ -48,13 +48,13 @@ export const usePixiStore = create<PixiStore>((set, get) => ({
     }
 
     const positionFromLocalStorage = localStorage.getItem(`map-position/${mapId}`);
-    if (positionFromLocalStorage) {
-      const position = JSON.parse(positionFromLocalStorage);
-      set((state) => ({ positions: { ...state.positions, [mapId]: position } }));
-      return position;
+    if (!positionFromLocalStorage) {
+      return null;
     }
 
-    return { x: 0, y: 0, scale: 1 };
+    const position = JSON.parse(positionFromLocalStorage);
+    set((state) => ({ positions: { ...state.positions, [mapId]: position } }));
+    return position;
   },
 
   /**
