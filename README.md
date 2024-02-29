@@ -86,6 +86,14 @@ After making changes to the Supabase database schema, you can generate the TypeS
 
     supabase gen types typescript <--local|--linked> > utils/supabase/types.gen.ts
 
+### Resetting the database
+
+You can reset the database to its initial state by running:
+
+    supabase db reset
+
+This will delete all data in the database and run all the migrations from the beginning.
+
 ## Contributing
 
 Contributions are welcome! Please see the [CONTRIBUTING](CONTRIBUTING.md) file for more information. If you have any questions, feel free to reach out to us on [Discord](https://tarrasque.app/discord). We'd love to hear from you! 😊
