@@ -1,8 +1,9 @@
 import { Info } from '@mui/icons-material';
-import { Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Switch, Typography } from '@mui/material';
+import { Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
 import Image from 'next/image';
 
 import { Campaign } from '@/actions/campaigns';
+import { IOSSwitch } from '@/components/IOSSwitch';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
 import { useOptimistic } from '@/hooks/useOptimistic';
@@ -55,8 +56,7 @@ export function CampaignPluginCard({ manifestUrl, campaign, enabled, onEnable, o
       </CardContent>
 
       <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
-        <Switch
-          color="success"
+        <IOSSwitch
           checked={optimisticEnabled}
           disabled={!plugin || !campaignPlugins || enabled !== optimisticEnabled}
           onChange={async (event, checked) => {

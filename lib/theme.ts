@@ -20,7 +20,6 @@ export let theme = createTheme({
     background: { default: Color.BLACK_LIGHT, paper: Color.SAND_DARK },
   },
   typography: {
-    fontSize: 15,
     fontFamily: raleway.style.fontFamily,
     h1: { fontFamily: recursive.style.fontFamily, fontSize: 44, lineHeight: 1, fontWeight: 600 },
     h2: { fontFamily: recursive.style.fontFamily, fontSize: 34, lineHeight: 0.94, fontWeight: 400 },
@@ -28,9 +27,10 @@ export let theme = createTheme({
     h4: { fontFamily: recursive.style.fontFamily, fontSize: 20, lineHeight: 1.16 },
     h5: { fontFamily: recursive.style.fontFamily, fontSize: 18, lineHeight: 1.28 },
     h6: { fontFamily: recursive.style.fontFamily, fontSize: 16, lineHeight: 1.28 },
-    body1: { fontSize: 15, lineHeight: 1.6 },
-    body2: { fontSize: 15, lineHeight: 1.28 },
-    caption: { fontSize: 15, lineHeight: 1.28, color: Color.GREY },
+    body1: { lineHeight: 1.6 },
+    body2: { lineHeight: 1.28 },
+    caption: { lineHeight: 1.28, color: Color.GREY },
+    overline: { fontSize: 13, lineHeight: 1.28, fontWeight: 600 },
     button: { fontWeight: 600, lineHeight: 1.125 },
   },
   components: {
