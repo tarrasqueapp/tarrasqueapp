@@ -1,3 +1,4 @@
+import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -16,13 +17,18 @@ export function useGetMemberships(campaignId: string | undefined) {
   useEffect(() => {
     if (!campaignId) return;
 
-    const supabase = createBrowserClient();
-    const channel = supabase
-      .channel(`campaign_${campaignId}_memberships`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_memberships' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'memberships'] });
-      })
-      .subscribe();
+    let supabase: SupabaseClient;
+    let channel: RealtimeChannel;
+
+    requestAnimationFrame(() => {
+      supabase = createBrowserClient();
+      channel = supabase
+        .channel(`campaign_${campaignId}_memberships`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_memberships' }, () => {
+          queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'memberships'] });
+        })
+        .subscribe();
+    });
 
     return () => {
       supabase.removeChannel(channel);

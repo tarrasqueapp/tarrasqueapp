@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -12,18 +13,22 @@ export function useGetUser() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const supabase = createBrowserClient();
-    supabase.auth.onAuthStateChange((event, session) => {
-      // Update the user when their details change
-      if (session && event === 'USER_UPDATED') {
-        queryClient.setQueryData(['user'], session.user);
-      }
+    let supabase: SupabaseClient;
 
-      // Remove all cached queries when the user signs out
-      if (event === 'SIGNED_OUT') {
-        queryClient.cancelQueries();
-        setTimeout(() => queryClient.clear(), 100);
-      }
+    requestAnimationFrame(() => {
+      supabase = createBrowserClient();
+      supabase.auth.onAuthStateChange((event, session) => {
+        // Update the user when their details change
+        if (session && event === 'USER_UPDATED') {
+          queryClient.setQueryData(['user'], session.user);
+        }
+
+        // Remove all cached queries when the user signs out
+        if (event === 'SIGNED_OUT') {
+          queryClient.cancelQueries();
+          setTimeout(() => queryClient.clear(), 100);
+        }
+      });
     });
   }, []);
 

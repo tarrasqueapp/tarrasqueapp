@@ -1,3 +1,4 @@
+import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -13,24 +14,29 @@ export function useGetProfile() {
 
   // Listen for changes to the user profile and update the cache
   useEffect(() => {
-    const supabase = createBrowserClient();
-    const channel = supabase
-      .channel('profile')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, async () => {
-        const previousProfile = queryClient.getQueryData<Profile>(['profile']);
+    let supabase: SupabaseClient;
+    let channel: RealtimeChannel;
 
-        // Refetch the profile to get the joined data
-        const profile = await getProfile();
+    requestAnimationFrame(() => {
+      supabase = createBrowserClient();
+      channel = supabase
+        .channel('profile')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, async () => {
+          const previousProfile = queryClient.getQueryData<Profile>(['profile']);
 
-        // Update the cache
-        queryClient.setQueryData(['profile'], profile);
+          // Refetch the profile to get the joined data
+          const profile = await getProfile();
 
-        // If the campaign order changed, refetch the campaigns
-        if (previousProfile?.campaign_order !== profile.campaign_order) {
-          queryClient.invalidateQueries({ queryKey: ['campaigns'] });
-        }
-      })
-      .subscribe();
+          // Update the cache
+          queryClient.setQueryData(['profile'], profile);
+
+          // If the campaign order changed, refetch the campaigns
+          if (previousProfile?.campaign_order !== profile.campaign_order) {
+            queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+          }
+        })
+        .subscribe();
+    });
 
     return () => {
       supabase.removeChannel(channel);

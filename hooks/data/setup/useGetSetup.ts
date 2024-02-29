@@ -1,3 +1,4 @@
+import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -13,13 +14,18 @@ export function useGetSetup() {
 
   // Listen for changes to the setup and update the cache
   useEffect(() => {
-    const supabase = createBrowserClient();
-    const channel = supabase
-      .channel('setup')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'setup' }, (payload) => {
-        queryClient.setQueryData(['setup'], payload.new);
-      })
-      .subscribe();
+    let supabase: SupabaseClient;
+    let channel: RealtimeChannel;
+
+    requestAnimationFrame(() => {
+      supabase = createBrowserClient();
+      channel = supabase
+        .channel('setup')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'setup' }, (payload) => {
+          queryClient.setQueryData(['setup'], payload.new);
+        })
+        .subscribe();
+    });
 
     return () => {
       supabase.removeChannel(channel);
