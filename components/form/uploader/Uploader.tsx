@@ -1,5 +1,5 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
-import { Box, BoxProps, Button, ButtonProps, IconButton, Typography, alpha } from '@mui/material';
+import { Box, BoxProps, Button, ButtonProps, CircularProgress, IconButton, Typography, alpha } from '@mui/material';
 import { FileProgress, SuccessResponse, UploadResult, Uppy } from '@uppy/core';
 import Tus from '@uppy/tus';
 import NextImage from 'next/image';
@@ -14,6 +14,7 @@ import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useEffectAsync } from '@/hooks/useEffectAsync';
 import { Color } from '@/lib/colors';
 import { config } from '@/lib/config';
+import { logger } from '@/lib/logger';
 import { supabaseLoader } from '@/lib/supabaseLoader';
 import { MathUtils } from '@/utils/MathUtils';
 import { MediaUtils, UploadingFile } from '@/utils/MediaUtils';
@@ -215,7 +216,7 @@ export function Uploader({
       uppy.addFile(files[0]!);
     } catch (error) {
       if (error instanceof Error) {
-        console.error(error);
+        logger.error(error);
       }
     }
   }
@@ -244,7 +245,6 @@ export function Uploader({
           textTransform: 'none',
           color: Color.WHITE_LIGHT,
           borderRadius: '10px',
-
           background: 'rgba(255, 255, 255, 0.09)',
           '&:hover': {
             background: 'rgba(255, 255, 255, 0.13)',
@@ -309,6 +309,22 @@ export function Uploader({
                   {allowedFileTypes && `Only ${generateFileTypesString(allowedFileTypes)} files are allowed`}
                 </Typography>
               )}
+            </Box>
+          )}
+
+          {/* Show a loading spinner if the access token is not available yet to avoid the user attempting to upload a file without the access to do so */}
+          {!accessToken && (
+            <Box
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: alpha(Color.BLACK_LIGHT, 0.9),
+              }}
+            >
+              <CircularProgress disableShrink />
             </Box>
           )}
         </Box>
