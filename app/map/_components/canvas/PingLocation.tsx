@@ -56,8 +56,8 @@ export function PingLocation() {
             g.drawCircle(0, 0, ping.size); // Draw the circle
             g.endFill(); // Complete the fill process
           }}
-          x={ping.position.x}
-          y={ping.position.y}
+          x={ping.coordinates.x}
+          y={ping.coordinates.y}
         />
       ))}
     </>

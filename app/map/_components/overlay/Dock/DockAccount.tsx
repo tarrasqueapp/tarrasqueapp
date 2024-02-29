@@ -66,7 +66,12 @@ export function DockAccount() {
                       </MenuItem>
 
                       <form action={signOut}>
-                        <MenuItem component="button" type="submit" onClick={() => popupState.close()}>
+                        <MenuItem
+                          component="button"
+                          type="submit"
+                          onClick={() => popupState.close()}
+                          sx={{ width: '100%', textAlign: 'left' }}
+                        >
                           <ListItemIcon>
                             <Logout />
                           </ListItemIcon>

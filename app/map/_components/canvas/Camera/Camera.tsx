@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js';
 import React, { useEffect, useState } from 'react';
 
 import { useWindowSize } from '@/hooks/useWindowSize';
+import { logger } from '@/lib/logger';
 import { useMapStore } from '@/store/map';
 import { usePixiStore } from '@/store/pixi';
 
@@ -61,7 +62,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * @param viewport - The viewport instance
    */
   function handleLoad(viewport: Viewport) {
-    console.debug('Map loaded.');
+    logger.debug('Map loaded.');
     setViewport(viewport);
   }
 
@@ -69,7 +70,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * Hide the context menu before a single click event
    */
   function handleBeforeSingleClick() {
-    console.debug('Before Single Click.');
+    logger.debug('Before Single Click.');
     setContextMenuVisible(false);
   }
 
@@ -77,7 +78,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * Handle the click event
    */
   function handleSingleClick() {
-    console.debug('Single Click.');
+    logger.debug('Single Click.');
   }
 
   /**
@@ -87,7 +88,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
   function handleDoubleClick(event: PIXI.FederatedPointerEvent) {
     if (!viewport) return;
 
-    console.debug('Double Click.', event.global);
+    logger.debug('Double Click.', event.global);
   }
 
   /**
@@ -95,7 +96,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * @param event - The interaction event
    */
   function handleRightClick(event: PIXI.FederatedPointerEvent) {
-    console.debug('Right Click.', event.global);
+    logger.debug('Right Click.', event.global);
     setContextMenuVisible(false);
     // Update the app state with the global coordinates of the right click event
     setContextMenuAnchorPoint(event.global.x, event.global.y);
@@ -107,7 +108,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * @param viewport - The viewport instance
    */
   function handleMove(viewport: Viewport) {
-    console.debug('Move.');
+    logger.debug('Move.');
     const newPosition = {
       x: viewport.center.x,
       y: viewport.center.y,

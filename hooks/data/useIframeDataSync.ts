@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 
 import { Campaign } from '@/actions/campaigns';
 import { Map as MapEntity } from '@/actions/maps';
-import { Position } from '@/lib/types';
+import { Coordinates } from '@/lib/types';
 
 import { useEffectAsync } from '../useEffectAsync';
 

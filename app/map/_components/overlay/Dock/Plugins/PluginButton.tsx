@@ -2,7 +2,7 @@ import { Tooltip } from '@mui/material';
 import Image from 'next/image';
 
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
-import { NativeDraggable, useDraggableStore } from '@/store/draggable';
+import { useDraggableStore } from '@/store/draggable';
 
 import { DockButton } from '../DockButton';
 
@@ -21,7 +21,7 @@ export function PluginButton({ manifestUrl }: Props) {
    * Toggle the plugin window visibility
    */
   function handleToggle() {
-    toggleVisibility(NativeDraggable.DICE_ROLLER);
+    toggleVisibility(id);
   }
 
   if (!plugin) return null;

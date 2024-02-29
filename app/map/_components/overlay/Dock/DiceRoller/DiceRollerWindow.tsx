@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { Draggable } from '@/components/draggable/Draggable';
 import { DraggableHandle } from '@/components/draggable/DraggableHandle';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { logger } from '@/lib/logger';
 import d4Icon from '@/public/images/app-icons/d4.svg';
 import d6Icon from '@/public/images/app-icons/d6.svg';
 import d8Icon from '@/public/images/app-icons/d8.svg';
@@ -74,7 +75,7 @@ export function DiceRollerWindow() {
       methods.setValue('notation', '');
       notationRef.current?.blur();
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       methods.setError('notation', {
         type: 'manual',
         message: 'Invalid dice notation',

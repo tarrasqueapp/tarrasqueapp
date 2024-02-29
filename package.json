@@ -41,6 +41,7 @@
     "@tanstack/react-query-devtools": "^5.24.1",
     "@uppy/core": "^3.9.2",
     "@uppy/tus": "^3.5.3",
+    "consola": "^3.2.3",
     "cookies-next": "^4.1.1",
     "handlebars": "^4.7.8",
     "material-ui-popup-state": "^5.0.10",

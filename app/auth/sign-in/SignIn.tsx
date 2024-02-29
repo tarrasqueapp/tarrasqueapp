@@ -1,8 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Code } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Paper, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Paper, Typography } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -12,6 +13,7 @@ import { z } from 'zod';
 import { signIn } from '@/actions/auth';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { NextLink } from '@/components/navigation/NextLink';
+import { config } from '@/lib/config';
 import { AppNavigation } from '@/lib/navigation';
 
 export function SignIn() {
@@ -60,6 +62,14 @@ export function SignIn() {
             Great! We&apos;ve just sent you an email with a link to confirm your email address. Please click the link in
             the email to continue.
           </Typography>
+
+          {config.NODE_ENV === 'development' && (
+            <Alert icon={<Code />} severity="warning" sx={{ mt: 3, alignItems: 'flex-start' }}>
+              <AlertTitle>Developer Mode</AlertTitle>
+              Emails are not sent in development mode. Check the server-side console for an email preview URL to confirm
+              your email address.
+            </Alert>
+          )}
         </Paper>
       )}
 
@@ -73,6 +83,14 @@ export function SignIn() {
             We&apos;ve just sent you an email with a magic link to sign in. Please click the link in the email to
             continue.
           </Typography>
+
+          {config.NODE_ENV === 'development' && (
+            <Alert icon={<Code />} severity="warning" sx={{ mt: 3, alignItems: 'flex-start' }}>
+              <AlertTitle>Developer Mode</AlertTitle>
+              Emails are not sent in development mode. Check the server-side console for an email preview URL to sign
+              in.
+            </Alert>
+          )}
         </Paper>
       )}
 

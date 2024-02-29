@@ -7,6 +7,7 @@ import { join } from 'path';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
+import { logger } from '@/lib/logger';
 
 let transporter: nodemailer.Transporter;
 
@@ -60,9 +61,7 @@ async function sendTransactionalEmail({ to, subject, html }: { to: string; subje
 
   // Log email preview url in development
   if (config.NODE_ENV === 'development') {
-    console.info();
-    console.info('📧 Email Preview URL:', nodemailer.getTestMessageUrl(email));
-    console.info();
+    logger.box('Email Preview URL:', nodemailer.getTestMessageUrl(email));
   }
 }
 
