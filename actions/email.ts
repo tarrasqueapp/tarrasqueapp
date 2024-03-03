@@ -1,6 +1,7 @@
 'use server';
 
 import { compile } from 'handlebars';
+import mjml2html from 'mjml';
 import { readFile } from 'node:fs/promises';
 import * as nodemailer from 'nodemailer';
 import { join } from 'path';
@@ -86,8 +87,9 @@ export async function sendWelcomeEmail({
   schema.parse({ firstName, to, verifyEmailUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const file = await readFile(join('emails', 'welcome.html'), 'utf8');
-  const template = compile(file);
+  const mjml = await readFile(join('emails', 'welcome.mjml'), 'utf8');
+  const { html: htmlFile } = mjml2html(mjml);
+  const template = compile(htmlFile);
   const html = template({ firstName, verifyEmailUrl });
 
   // Send email
@@ -115,8 +117,9 @@ export async function sendEmailVerificationEmail({
   schema.parse({ firstName, to, verifyEmailUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const file = await readFile(join('emails', 'verify-email.html'), 'utf8');
-  const template = compile(file);
+  const mjml = await readFile(join('emails', 'verify-email.mjml'), 'utf8');
+  const { html: htmlFile } = mjml2html(mjml);
+  const template = compile(htmlFile);
   const html = template({ firstName, verifyEmailUrl });
 
   // Send email
@@ -152,8 +155,9 @@ export async function sendCampaignInviteNewUserEmail({
   schema.parse({ hostName, campaignName, to, signUpUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const file = await readFile(join('emails', 'campaign-invite-new-user.html'), 'utf8');
-  const template = compile(file);
+  const mjml = await readFile(join('emails', 'campaign-invite-new-user.mjml'), 'utf8');
+  const { html: htmlFile } = mjml2html(mjml);
+  const template = compile(htmlFile);
   const html = template({ hostName, campaignName, signUpUrl });
 
   // Send email
@@ -197,8 +201,9 @@ export async function sendCampaignInviteExistingUserEmail({
   schema.parse({ hostName, inviteeName, campaignName, to, acceptInviteUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const file = await readFile(join('emails', 'campaign-invite-existing-user.html'), 'utf8');
-  const template = compile(file);
+  const mjml = await readFile(join('emails', 'campaign-invite-existing-user.mjml'), 'utf8');
+  const { html: htmlFile } = mjml2html(mjml);
+  const template = compile(htmlFile);
   const html = template({ hostName, inviteeName, campaignName, acceptInviteUrl });
 
   // Send email
@@ -229,8 +234,9 @@ export async function sendMagicLinkEmail({
   schema.parse({ firstName, to, magicLinkUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const file = await readFile(join('emails', 'magic-link.html'), 'utf8');
-  const template = compile(file);
+  const mjml = await readFile(join('emails', 'magic-link.mjml'), 'utf8');
+  const { html: htmlFile } = mjml2html(mjml);
+  const template = compile(htmlFile);
   const html = template({ firstName, magicLinkUrl });
 
   // Send email
