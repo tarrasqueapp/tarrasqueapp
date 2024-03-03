@@ -5,13 +5,13 @@
     <mj-attributes>
       <mj-all font-family="Raleway, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
       <mj-class name="heading" font-family="Recursive, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
-      <mj-class name="button" background-color="#9b7d65" font-size="17px" font-weight="bold" border-radius="90px" />
+      <mj-class name="button" background-color="#a08368" font-size="17px" font-weight="bold" border-radius="90px" />
       <mj-text font-size="16px" font-weight="400" line-height="24px" font-family="Raleway, 'Helvetica Neue', Helvetica, Arial, sans-serif" />
     </mj-attributes>
 
     <mj-style>
       .link {
-        color: #9b7d65 !important;
+        color: #a08368 !important;
       }
     </mj-style>
 
@@ -26,14 +26,11 @@
           <mj-image
             href="https://tarrasque.app"
             src="cid:logo"
-            alt="Tarrasque App"
             align="center"
             width="100px"
             padding-top="0"
             padding-bottom="0"
           />
-
-          <mj-text mj-class="heading" align="center">Tarrasque App</mj-text>
         </mj-column>
       </mj-section>
 
@@ -44,7 +41,7 @@
           </mj-text>
 
           <mj-text>
-            {{hostName}} has invited you to use Tarrasque App to play with them on "{{campaignName}}". Use the button
+            <strong>{{hostName}}</strong> has invited you to use Tarrasque App to play with them on "<strong>{{campaignName}}</strong>". Use the button
             below to join the campaign and get started:
           </mj-text>
 
@@ -57,14 +54,9 @@
           </mj-button>
 
           <mj-text>
-            Have fun,
+            Enjoy!
             <br />
             The Tarrasque App Team
-          </mj-text>
-
-          <mj-text>
-            <strong>P.S.:</strong> Need help getting started? Check out our
-            <a href="https://tarrasque.app/docs" class="link">documentation</a>.
           </mj-text>
         </mj-column>
       </mj-section>
