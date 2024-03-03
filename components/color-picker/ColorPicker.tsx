@@ -20,14 +20,18 @@ import {
   teal,
   yellow,
 } from '@mui/material/colors';
+import { colord, extend } from 'colord';
+import namesPlugin from 'colord/plugins/names';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
-import { useState } from 'react';
-import { HexColorPicker } from 'react-colorful';
+import { useMemo, useState } from 'react';
+import { RgbaStringColorPicker } from 'react-colorful';
 import { useDebouncyEffect } from 'use-debouncy';
 
 import { Color } from '@/lib/colors';
 
 import { Swatch } from './Swatch';
+
+extend([namesPlugin]);
 
 interface Props {
   value: string;
@@ -36,6 +40,7 @@ interface Props {
 
 export function ColorPicker({ value, onChange }: Props) {
   const [color, setValue] = useState(value);
+  const rgbaString = useMemo(() => (color.startsWith('rgba') ? color : colord(color).toRgbString()), [color]);
   useDebouncyEffect(() => onChange(color), 200, [color]);
 
   const presetColors = [
@@ -78,9 +83,9 @@ export function ColorPicker({ value, onChange }: Props) {
               },
             }}
           >
-            <HexColorPicker
+            <RgbaStringColorPicker
               style={{ width: '100%' }}
-              color={color}
+              color={rgbaString}
               onChange={(color) => {
                 setValue(color);
               }}

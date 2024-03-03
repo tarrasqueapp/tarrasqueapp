@@ -37,17 +37,18 @@
     "@pixi/react": "^7.1.1",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.7",
-    "@tanstack/react-query": "^5.24.1",
-    "@tanstack/react-query-devtools": "^5.24.1",
-    "@uppy/core": "^3.9.2",
+    "@tanstack/react-query": "^5.24.6",
+    "@tanstack/react-query-devtools": "^5.24.6",
+    "@uppy/core": "^3.9.3",
     "@uppy/tus": "^3.5.3",
+    "colord": "^2.9.3",
     "consola": "^3.2.3",
     "cookies-next": "^4.1.1",
     "handlebars": "^4.7.8",
     "material-ui-popup-state": "^5.0.10",
     "mjml": "^4.15.3",
-    "next": "^14.1.0",
-    "nodemailer": "^6.9.10",
+    "next": "^14.1.1",
+    "nodemailer": "^6.9.11",
     "pixi-viewport": "^5.0.2",
     "pixi.js": "^7.4.0",
     "punycode": "1.4.1",
@@ -55,7 +56,7 @@
     "react-colorful": "^5.6.1",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
-    "react-hook-form": "^7.50.1",
+    "react-hook-form": "^7.51.0",
     "react-hot-toast": "^2.4.1",
     "react-hotkeys-hook": "^4.5.0",
     "uniqolor": "^1.1.1",
@@ -63,16 +64,16 @@
     "use-local-storage": "^3.0.0",
     "uuid": "^9.0.1",
     "zod": "^3.22.4",
-    "zustand": "^4.5.1"
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^14.1.0",
+    "@next/eslint-plugin-next": "^14.1.1",
     "@svgr/webpack": "^8.1.0",
     "@tronite/style-guide": "^0.0.9",
     "@types/mjml": "^4.7.4",
-    "@types/node": "^20.11.21",
+    "@types/node": "^20.11.24",
     "@types/nodemailer": "^6.4.14",
-    "@types/react": "^18.2.60",
+    "@types/react": "^18.2.61",
     "@types/uuid": "^9.0.8",
     "eslint": "^8.57.0",
     "husky": "^9.0.11",
@@ -84,7 +85,7 @@
   "pnpm": {
     "patchedDependencies": {
       "pixi-viewport@5.0.2": "patches/pixi-viewport@5.0.2.patch",
-      "next@14.1.0": "patches/next@14.1.0.patch"
+      "next@14.1.1": "patches/next@14.1.1.patch"
     }
   }
 }
