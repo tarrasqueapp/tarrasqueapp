@@ -3,6 +3,8 @@ import { IViewportOptions, Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 import React from 'react';
 
+import { Coordinates } from '@/lib/types';
+
 import { CustomDragPlugin } from './CustomDragPlugin';
 
 interface CameraBaseProps extends IViewportOptions {
@@ -34,6 +36,7 @@ export const CameraBase = PixiComponent('Camera', {
     let pressed = false;
     let isDragging = false;
     let clickTimer: number | undefined;
+    let pointerLocation: Coordinates;
     let longPressTimer: number | undefined;
     let lastClickTime = 0;
     const doubleClickTimespan = 500;
@@ -50,6 +53,7 @@ export const CameraBase = PixiComponent('Camera', {
       pressed = true;
       const timeSinceLastClick = event.timeStamp - lastClickTime;
       lastClickTime = event.timeStamp;
+      const clickLocation = { x: event.global.x, y: event.global.y };
       clicks++;
 
       if (clicks === 1) {
@@ -63,7 +67,12 @@ export const CameraBase = PixiComponent('Camera', {
         }, doubleClickTimespan);
 
         longPressTimer = window.setTimeout(() => {
-          if (pressed && !isDragging) {
+          if (
+            pressed &&
+            !isDragging &&
+            pointerLocation.x === clickLocation.x &&
+            pointerLocation.y === clickLocation.y
+          ) {
             props.onRightClick?.(event); // Trigger onRightClick on long press
           }
         }, longPressTimespan);
@@ -86,6 +95,10 @@ export const CameraBase = PixiComponent('Camera', {
       if (longPressTimer !== undefined) {
         window.clearTimeout(longPressTimer);
       }
+    });
+
+    viewport.on('pointermove', (event) => {
+      pointerLocation = { x: event.global.x, y: event.global.y };
     });
 
     viewport.on('drag-start', () => {
