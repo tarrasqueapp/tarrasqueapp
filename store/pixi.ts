@@ -1,8 +1,6 @@
 import { Viewport } from 'pixi-viewport';
 import { create } from 'zustand';
 
-import { Map } from '@/actions/maps';
-
 export interface PositionEntity {
   x: number;
   y: number;
@@ -10,8 +8,8 @@ export interface PositionEntity {
 }
 
 interface PixiStore {
-  map: Map | null;
-  setMap: (map: Map) => void;
+  mapId: string | null;
+  setMapId: (mapId: string) => void;
   viewport: Viewport | null;
   setViewport: (viewport: Viewport) => void;
   positions: Record<string, PositionEntity>;
@@ -20,15 +18,15 @@ interface PixiStore {
 }
 
 export const usePixiStore = create<PixiStore>((set, get) => ({
-  map: null,
+  mapId: null,
   viewport: null,
   positions: {},
 
   /**
-   * Set the map
-   * @param map - The map
+   * Set the map ID
+   * @param mapId - The map ID
    */
-  setMap: (map) => set(() => ({ map })),
+  setMapId: (mapId) => set(() => ({ mapId })),
 
   /**
    * Set pixi-viewport instance.
