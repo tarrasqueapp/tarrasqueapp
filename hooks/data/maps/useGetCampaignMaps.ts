@@ -23,7 +23,7 @@ export function useGetCampaignMaps(campaignId?: string) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`campaign_${campaignId}_maps`)
+        .channel(`campaigns_${campaignId}_maps`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'maps' }, () => {
           queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'maps'] });
         })
@@ -31,7 +31,7 @@ export function useGetCampaignMaps(campaignId?: string) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [campaignId]);
 

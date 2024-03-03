@@ -13,7 +13,7 @@ import { createBrowserClient } from '@/utils/supabase/client';
 export function useGetCampaign(campaignId: string) {
   const queryClient = useQueryClient();
 
-  // Listen for changes to the invites and update the cache
+  // Listen for changes to the campaign and update the cache
   useEffect(() => {
     if (!campaignId) return;
 
@@ -23,7 +23,7 @@ export function useGetCampaign(campaignId: string) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`campaign_${campaignId}`)
+        .channel(`campaigns_${campaignId}`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'campaigns' }, async (payload) => {
           queryClient.setQueryData(['campaigns', campaignId], payload.new);
         })
@@ -31,7 +31,7 @@ export function useGetCampaign(campaignId: string) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [campaignId]);
 

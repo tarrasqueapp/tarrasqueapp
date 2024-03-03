@@ -28,7 +28,7 @@ export function useGetSetup() {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, []);
 

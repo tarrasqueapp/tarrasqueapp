@@ -23,7 +23,7 @@ export function useGetMemberships(campaignId: string | undefined) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`campaign_${campaignId}_memberships`)
+        .channel(`campaigns_${campaignId}_memberships`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_memberships' }, () => {
           queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'memberships'] });
         })
@@ -31,7 +31,7 @@ export function useGetMemberships(campaignId: string | undefined) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [campaignId]);
 

@@ -39,7 +39,7 @@ export function useGetProfile() {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, []);
 

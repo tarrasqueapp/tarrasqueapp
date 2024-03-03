@@ -21,7 +21,7 @@ export function useGetCampaignPlugins(campaignId: string | undefined) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`campaign_${campaignId}_plugins`)
+        .channel(`campaigns_${campaignId}_plugins`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_plugins' }, () => {
           queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'plugins'] });
         })
@@ -29,7 +29,7 @@ export function useGetCampaignPlugins(campaignId: string | undefined) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [campaignId]);
 

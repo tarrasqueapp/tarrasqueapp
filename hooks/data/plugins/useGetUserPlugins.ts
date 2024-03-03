@@ -31,7 +31,7 @@ export function useGetUserPlugins(role?: CampaignMemberRole) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [role]);
 

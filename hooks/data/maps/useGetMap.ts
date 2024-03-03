@@ -23,7 +23,7 @@ export function useGetMap(mapId: string) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`map_${mapId}`)
+        .channel(`maps_${mapId}`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'maps' }, async () => {
           queryClient.invalidateQueries({ queryKey: ['maps', mapId] });
         })
@@ -31,7 +31,7 @@ export function useGetMap(mapId: string) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [mapId]);
 

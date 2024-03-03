@@ -22,7 +22,7 @@ export function useGetTokens(mapId: string | undefined) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`map_${mapId}_tokens`)
+        .channel(`maps_${mapId}_tokens`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'tokens' }, async () => {
           queryClient.invalidateQueries({ queryKey: ['maps', mapId, 'tokens'] });
         })
@@ -30,7 +30,7 @@ export function useGetTokens(mapId: string | undefined) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase?.removeChannel(channel);
     };
   }, [mapId]);
 

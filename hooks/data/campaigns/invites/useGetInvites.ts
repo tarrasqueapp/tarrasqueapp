@@ -23,7 +23,7 @@ export function useGetInvites(campaignId: string | undefined) {
     requestAnimationFrame(() => {
       supabase = createBrowserClient();
       channel = supabase
-        .channel(`campaign_${campaignId}_invites`)
+        .channel(`campaigns_${campaignId}_invites`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_invites' }, async () => {
           queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'invites'] });
         })
