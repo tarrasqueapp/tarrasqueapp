@@ -17,7 +17,13 @@ export function ControlledMediaUploader({ name, ...props }: ControlledMediaUploa
         name={name}
         defaultValue={null}
         render={({ field: { value, onChange } }) => (
-          <Uploader {...props} file={value} onChange={onChange} allowedFileTypes={['image/*', 'video/*']} />
+          <Uploader
+            {...props}
+            file={value}
+            onChange={onChange}
+            allowedFileTypes={['image/*', 'video/*']}
+            showAllowedFileTypes
+          />
         )}
       />
     </FormControl>
