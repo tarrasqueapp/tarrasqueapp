@@ -1,4 +1,4 @@
-import { useParams } from 'next/navigation';
+import { usePixiStore } from '@/store/pixi';
 
 import { useGetMap } from './useGetMap';
 
@@ -7,9 +7,7 @@ import { useGetMap } from './useGetMap';
  * @returns Current map query
  */
 export function useGetCurrentMap() {
-  const params = useParams();
-
-  const mapId = params.id as string;
+  const mapId = usePixiStore((state) => state.mapId) as string;
 
   return useGetMap(mapId);
 }
