@@ -6,7 +6,7 @@ export function CircularProgressWithLabel(props: CircularProgressProps & { value
       <CircularProgress variant="determinate" size={60} {...props} />
 
       <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography variant="caption" color="text.secondary">{`${Math.round(props.value)}%`}</Typography>
+        <Typography variant="subtitle2" color="text.secondary">{`${Math.round(props.value)}%`}</Typography>
       </Box>
     </Box>
   );

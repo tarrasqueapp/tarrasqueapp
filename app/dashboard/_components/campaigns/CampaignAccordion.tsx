@@ -171,7 +171,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-            <Typography variant="caption">
+            <Typography variant="subtitle2" color="text.secondary">
               {maps ? (
                 maps.filter((map) => isGameMaster || map.visible).length
               ) : (

@@ -170,7 +170,8 @@ export function Uploader({
   /**
    * Clear the files when an error occurs
    */
-  function handleError() {
+  function handleError(error: Error) {
+    logger.error(error);
     onChange?.(null);
   }
 
@@ -305,7 +306,7 @@ export function Uploader({
               </Typography>
 
               {showAllowedFileTypes && (
-                <Typography variant="caption">
+                <Typography variant="subtitle2" color="text.secondary">
                   {allowedFileTypes && `Only ${generateFileTypesString(allowedFileTypes)} files are allowed`}
                 </Typography>
               )}

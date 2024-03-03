@@ -62,7 +62,7 @@ export function Camera({ mapId, width, height, children }: CameraProps) {
    * @param viewport - The viewport instance
    */
   function handleLoad(viewport: Viewport) {
-    logger.debug('Map loaded.');
+    logger.debug('Viewport loaded.');
     setViewport(viewport);
   }
 
