@@ -25,6 +25,10 @@ export default async function MapPage({ params }: { params: { id: string } }) {
   await ssr.prefetchCampaign(map?.campaign_id || '');
   await ssr.prefetchCampaignMemberships(map?.campaign_id || '');
 
+  if (!map) {
+    redirect(AppNavigation.Dashboard);
+  }
+
   return (
     <HydrationBoundary state={ssr.dehydrate()}>
       <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
