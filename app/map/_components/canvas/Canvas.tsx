@@ -4,15 +4,18 @@ import * as PIXI from 'pixi.js';
 import React, { useContext } from 'react';
 
 import Loading from '@/app/loading';
+import { useGetGrid } from '@/hooks/data/grids/useGetGrid';
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { Color } from '@/lib/colors';
 
 import { Camera } from './Camera/Camera';
+import { Grid } from './Grid';
 import { MapMedia } from './MapMedia';
 
 export default function Canvas() {
   const { data: map } = useGetCurrentMap();
+  const { data: grid } = useGetGrid(map?.id);
   const context = useContext(QueryClientContext);
 
   const windowSize = useWindowSize();
@@ -32,6 +35,8 @@ export default function Canvas() {
       <QueryClientContext.Provider value={context}>
         <Camera mapId={map.id} width={map.media.width} height={map.media.height}>
           <MapMedia />
+
+          {grid && <Grid />}
         </Camera>
       </QueryClientContext.Provider>
     </Stage>

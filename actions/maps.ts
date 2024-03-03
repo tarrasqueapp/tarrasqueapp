@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
+import { createGrid } from './grids';
 import { getMapTokens } from './tokens';
 
 export type Map = Awaited<ReturnType<typeof getMaps>>[number];
@@ -121,17 +122,35 @@ export async function createMap({
   const order = lastMap?.[0]?.order || 0;
 
   // Create the map
-  const { data, error } = await supabase.from('maps').insert({
-    name,
-    campaign_id,
-    media_id: media_id,
-    user_id: user.id,
-    order: order + 1,
-  });
+  const { data, error } = await supabase
+    .from('maps')
+    .insert({
+      name,
+      campaign_id,
+      media_id: media_id,
+      user_id: user.id,
+      order: order + 1,
+    })
+    .select()
+    .single();
 
   if (error) {
     throw error;
   }
+
+  // Create the map's grid
+  await createGrid({
+    type: 'SQUARE',
+    width: 70,
+    height: 70,
+    offset_x: 0,
+    offset_y: 0,
+    color: '#000000',
+    snap: true,
+    visible: true,
+    map_id: data.id,
+    campaign_id,
+  });
 
   return data;
 }

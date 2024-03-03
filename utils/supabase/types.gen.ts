@@ -262,6 +262,76 @@ export type Database = {
           },
         ];
       };
+      grids: {
+        Row: {
+          campaign_id: string;
+          color: string;
+          created_at: string;
+          height: number;
+          id: string;
+          map_id: string;
+          offset_x: number;
+          offset_y: number;
+          snap: boolean;
+          type: Database['public']['Enums']['grid_type'];
+          user_id: string;
+          visible: boolean;
+          width: number;
+        };
+        Insert: {
+          campaign_id: string;
+          color?: string;
+          created_at?: string;
+          height: number;
+          id?: string;
+          map_id: string;
+          offset_x: number;
+          offset_y: number;
+          snap?: boolean;
+          type?: Database['public']['Enums']['grid_type'];
+          user_id: string;
+          visible?: boolean;
+          width: number;
+        };
+        Update: {
+          campaign_id?: string;
+          color?: string;
+          created_at?: string;
+          height?: number;
+          id?: string;
+          map_id?: string;
+          offset_x?: number;
+          offset_y?: number;
+          snap?: boolean;
+          type?: Database['public']['Enums']['grid_type'];
+          user_id?: string;
+          visible?: boolean;
+          width?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'public_grid_campaign_id_fkey';
+            columns: ['campaign_id'];
+            isOneToOne: false;
+            referencedRelation: 'campaigns';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'public_grid_map_id_fkey';
+            columns: ['map_id'];
+            isOneToOne: true;
+            referencedRelation: 'maps';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'public_grid_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       maps: {
         Row: {
           campaign_id: string;
@@ -546,6 +616,7 @@ export type Database = {
     };
     Enums: {
       campaign_member_role: 'GAME_MASTER' | 'PLAYER';
+      grid_type: 'SQUARE' | 'HEX_HORIZONTAL' | 'HEX_VERTICAL';
       setup_step: 'CREATED_DATABASE' | 'CREATED_USER' | 'COMPLETED';
     };
     CompositeTypes: {

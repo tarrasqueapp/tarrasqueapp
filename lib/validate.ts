@@ -31,5 +31,7 @@ export const validate = {
     campaignMemberRole: z.enum(['GAME_MASTER', 'PLAYER']),
 
     setupStep: z.enum(['CREATED_DATABASE', 'CREATED_USER', 'COMPLETED']),
+
+    gridType: z.enum(['SQUARE', 'HEX_HORIZONTAL', 'HEX_VERTICAL']),
   },
 };
