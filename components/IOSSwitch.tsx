@@ -1,8 +1,12 @@
 import { Switch, SwitchProps, styled } from '@mui/material';
+import { ForwardedRef, forwardRef } from 'react';
 
-export const IOSSwitch = styled((props: SwitchProps) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
+const IOSSwitchFwd = forwardRef((props: SwitchProps, ref: ForwardedRef<HTMLButtonElement>) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} ref={ref} />
+));
+IOSSwitchFwd.displayName = 'IOSSwitchFwd';
+
+export const IOSSwitch = styled(IOSSwitchFwd)(({ theme }) => ({
   width: 42,
   height: 26,
   padding: 0,
