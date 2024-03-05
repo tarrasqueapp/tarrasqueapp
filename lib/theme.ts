@@ -51,6 +51,7 @@ export let theme = createTheme({
           backgroundColor: Color.WHITE_MAIN,
           color: Color.BLACK,
           fontWeight: 600,
+          fontSize: 13,
         },
       },
     },
