@@ -3,8 +3,8 @@ import * as PIXI from 'pixi.js';
 import React, { useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { updateGrid } from '@/actions/grids';
 import { useGetGrid } from '@/hooks/data/grids/useGetGrid';
+import { useUpdateGrid } from '@/hooks/data/grids/useUpdateGrid';
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { logger } from '@/lib/logger';
 import { HotkeysUtils } from '@/utils/HotkeyUtils';
@@ -12,6 +12,7 @@ import { HotkeysUtils } from '@/utils/HotkeyUtils';
 export function Grid() {
   const { data: map } = useGetCurrentMap();
   const { data: grid } = useGetGrid(map?.id);
+  const updateGrid = useUpdateGrid();
 
   // Container for batch drawing
   const containerRef = useRef(new PIXI.Container());
@@ -22,7 +23,7 @@ export function Grid() {
     HotkeysUtils.Grid,
     () => {
       if (!grid) return;
-      updateGrid({ id: grid.id, visible: !grid.visible });
+      updateGrid.mutate({ id: grid.id, visible: !grid.visible });
     },
     [grid],
   );

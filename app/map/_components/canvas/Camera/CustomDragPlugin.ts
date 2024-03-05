@@ -1,6 +1,7 @@
 import { Drag, Viewport } from 'pixi-viewport';
 import * as PIXI from 'pixi.js';
 
+import { usePixiStore } from '@/store/pixi';
 import { SelectTool, Tool, useToolbarStore } from '@/store/toolbar';
 
 /**
@@ -33,13 +34,14 @@ export class CustomDragPlugin extends Drag {
    */
   public override down(event: PIXI.FederatedPointerEvent): boolean {
     const { tool, selectTool } = useToolbarStore.getState();
+    const { aligningGrid } = usePixiStore.getState();
 
     // Check for specific tool selection or mouse button conditions
     const isSingleSelectTool = tool === Tool.Select && selectTool === SelectTool.Single;
     const isMiddleMouseButton = event.nativeEvent.button === 1;
 
     // Initiate drag for the applicable conditions
-    if (isSingleSelectTool || isMiddleMouseButton || this.spacebarPressed) {
+    if ((isSingleSelectTool && !aligningGrid) || isMiddleMouseButton || this.spacebarPressed) {
       return this.originalDown(event);
     }
 

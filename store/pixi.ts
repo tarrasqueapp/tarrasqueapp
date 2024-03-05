@@ -15,12 +15,15 @@ interface PixiStore {
   positions: Record<string, PositionEntity>;
   getPosition: (mapId: string) => PositionEntity | null;
   setPosition: (mapId: string, position: PositionEntity) => void;
+  aligningGrid: boolean;
+  setAligningGrid: (aligningGrid: boolean) => void;
 }
 
 export const usePixiStore = create<PixiStore>((set, get) => ({
   mapId: null,
   viewport: null,
   positions: {},
+  aligningGrid: false,
 
   /**
    * Set the map ID
@@ -64,4 +67,10 @@ export const usePixiStore = create<PixiStore>((set, get) => ({
     localStorage.setItem(`map-position/${mapId}`, JSON.stringify(position));
     set((state) => ({ positions: { ...state.positions, [mapId]: position } }));
   },
+
+  /**
+   * Set the aligningGrid state
+   * @param aligningGrid - The aligningGrid state
+   */
+  setAligningGrid: (aligningGrid) => set(() => ({ aligningGrid })),
 }));

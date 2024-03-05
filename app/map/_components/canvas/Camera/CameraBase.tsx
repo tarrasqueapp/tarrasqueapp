@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js';
 import React from 'react';
 
 import { Coordinates } from '@/lib/types';
+import { usePixiStore } from '@/store/pixi';
 
 import { CustomDragPlugin } from './CustomDragPlugin';
 
@@ -43,6 +44,10 @@ export const CameraBase = PixiComponent('Camera', {
     const longPressTimespan = 500;
 
     viewport.on('pointerdown', (event) => {
+      // Prevent click events when aligning grid
+      const { aligningGrid } = usePixiStore.getState();
+      if (aligningGrid) return;
+
       // Trigger onRightClick for right mouse button click
       if (event.nativeEvent.button === 2) {
         props.onRightClick?.(event);

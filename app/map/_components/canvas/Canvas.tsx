@@ -11,6 +11,7 @@ import { Color } from '@/lib/colors';
 
 import { Camera } from './Camera/Camera';
 import { Grid } from './Grid';
+import { GridAlignment } from './GridAlignment';
 import { MapMedia } from './MapMedia';
 
 export default function Canvas() {
@@ -36,7 +37,12 @@ export default function Canvas() {
         <Camera mapId={map.id} width={map.media.width} height={map.media.height}>
           <MapMedia />
 
-          {grid && <Grid />}
+          {grid && (
+            <>
+              <Grid />
+              <GridAlignment />
+            </>
+          )}
         </Camera>
       </QueryClientContext.Provider>
     </Stage>

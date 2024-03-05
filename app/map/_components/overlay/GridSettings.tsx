@@ -1,5 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Close, Grid4x4, HexagonOutlined, HighlightAlt, Link, LinkOff, SquareOutlined } from '@mui/icons-material';
+import {
+  Close,
+  Grid4x4,
+  HexagonOutlined,
+  HighlightAlt,
+  InfoOutlined,
+  Link,
+  LinkOff,
+  SquareOutlined,
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -35,6 +44,7 @@ import { useUpdateGrid } from '@/hooks/data/grids/useUpdateGrid';
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { Color } from '@/lib/colors';
 import { validate } from '@/lib/validate';
+import { usePixiStore } from '@/store/pixi';
 
 import { OverlayButtonGroup } from './OverlayButtonGroup';
 import { ToolButton } from './Toolbar/ToolButton';
@@ -49,6 +59,8 @@ export function GridSettings() {
 
   const [constrainProportions, setConstrainProportions] = useState(true);
   const popupState = usePopupState({ variant: 'popper', popupId: 'grid' });
+  const setAligningGrid = usePixiStore((state) => state.setAligningGrid);
+  const viewport = usePixiStore((state) => state.viewport);
 
   // Setup form validation schema
   const schema = z.object({
@@ -74,6 +86,7 @@ export function GridSettings() {
     reset(grid);
   }, [grid, reset]);
 
+  // Debounce the grid update function
   const debouncedUpdate = useCallback(
     debounce((data: Schema) => {
       try {
@@ -89,6 +102,7 @@ export function GridSettings() {
     [],
   );
 
+  // Watch for changes to the form and update the grid
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name) {
@@ -101,6 +115,26 @@ export function GridSettings() {
   const isGameMaster = memberships?.some(
     (membership) => membership.user_id === user?.id && membership.role === 'GAME_MASTER',
   );
+
+  /**
+   * Zoom in to the top left corner of the map and enable grid alignment mode
+   */
+  function handleClickAlign() {
+    if (!viewport || !map?.media?.width || !map?.media?.height) return;
+
+    // Calculate the scale to zoom to
+    const scale = Math.min(map.media.width / viewport.worldWidth, map.media.height / viewport.worldHeight) * 4;
+
+    // Zoom to the top left corner of the map
+    viewport.animate({
+      position: { x: 100, y: 100 },
+      scale,
+      time: 100,
+    });
+
+    // Enable grid alignment mode
+    setAligningGrid(true);
+  }
 
   if (!isGameMaster) return null;
 
@@ -170,14 +204,34 @@ export function GridSettings() {
                       </Stack>
 
                       {/* Align Grid */}
-                      <Stack gap={1.3} alignItems="center">
-                        <Typography variant="body2" color="text.secondary">
-                          Align Grid
+                      <Stack gap={1} alignItems="center">
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                        >
+                          <span>Align Grid</span>
+
+                          <Tooltip
+                            title="Zoom in and draw over a single grid cell to estimate the dimensions and position of your map's grid"
+                            placement="top"
+                          >
+                            <InfoOutlined fontSize="small" />
+                          </Tooltip>
                         </Typography>
 
-                        <Button variant="contained" size="small">
-                          <HighlightAlt />
-                        </Button>
+                        <Tooltip title={watch().type !== 'SQUARE' ? 'Currently only available for square grids' : ''}>
+                          <span>
+                            <Button
+                              variant="contained"
+                              size="small"
+                              onClick={handleClickAlign}
+                              disabled={watch().type !== 'SQUARE'}
+                            >
+                              <HighlightAlt />
+                            </Button>
+                          </span>
+                        </Tooltip>
                       </Stack>
                     </Stack>
 
@@ -202,7 +256,13 @@ export function GridSettings() {
                       <Tooltip title="Constrain Proportions">
                         <IconButton
                           size="small"
-                          onClick={() => setConstrainProportions(!constrainProportions)}
+                          onClick={() => {
+                            const newValue = !constrainProportions;
+                            setConstrainProportions(newValue);
+                            if (newValue) {
+                              setValue('height', watch().width, { shouldValidate: true });
+                            }
+                          }}
                           color={constrainProportions ? 'primary' : 'default'}
                         >
                           {constrainProportions ? <Link /> : <LinkOff />}

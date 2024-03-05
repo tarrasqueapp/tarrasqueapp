@@ -57,7 +57,7 @@ export async function createGrid(grid: Omit<Grid, 'id' | 'created_at' | 'user_id
       campaign_id: z.string().uuid(),
     })
     .strict();
-  schema.parse(grid);
+  grid = schema.parse(grid);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -89,21 +89,19 @@ export async function createGrid(grid: Omit<Grid, 'id' | 'created_at' | 'user_id
  */
 export async function updateGrid(grid: Partial<Grid> & { id: string }) {
   // Validate inputs
-  const schema = z
-    .object({
-      id: z.string().uuid(),
-      type: validate.fields.gridType.optional(),
-      width: z.number().optional(),
-      height: z.number().optional(),
-      offset_x: z.number().optional(),
-      offset_y: z.number().optional(),
-      color: z.string().optional(),
-      snap: z.boolean().optional(),
-      visible: z.boolean().optional(),
-      map_id: z.string().uuid().optional(),
-    })
-    .strict();
-  schema.parse(grid);
+  const schema = z.object({
+    id: z.string().uuid(),
+    type: validate.fields.gridType.optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    offset_x: z.number().optional(),
+    offset_y: z.number().optional(),
+    color: z.string().optional(),
+    snap: z.boolean().optional(),
+    visible: z.boolean().optional(),
+    map_id: z.string().uuid().optional(),
+  });
+  grid = schema.parse(grid);
 
   // Connect to Supabase
   const cookieStore = cookies();
