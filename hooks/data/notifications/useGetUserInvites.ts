@@ -34,7 +34,8 @@ export function useGetUserInvites() {
     });
 
     return () => {
-      supabase?.removeChannel(channel);
+      if (!supabase || !channel) return;
+      supabase.removeChannel(channel);
     };
   }, [user]);
 

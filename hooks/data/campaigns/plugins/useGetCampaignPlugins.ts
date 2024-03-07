@@ -29,7 +29,8 @@ export function useGetCampaignPlugins(campaignId: string | undefined) {
     });
 
     return () => {
-      supabase?.removeChannel(channel);
+      if (!supabase || !channel) return;
+      supabase.removeChannel(channel);
     };
   }, [campaignId]);
 

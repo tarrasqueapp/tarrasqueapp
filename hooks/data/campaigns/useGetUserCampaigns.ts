@@ -34,7 +34,8 @@ export function useGetUserCampaigns(role?: CampaignMemberRole) {
     });
 
     return () => {
-      supabase?.removeChannel(channel);
+      if (!supabase || !channel) return;
+      supabase.removeChannel(channel);
     };
   }, [role, user]);
 

@@ -31,7 +31,8 @@ export function useGetGrid(mapId: string | undefined) {
     });
 
     return () => {
-      supabase?.removeChannel(channel);
+      if (!supabase || !channel) return;
+      supabase.removeChannel(channel);
     };
   }, [mapId]);
 
