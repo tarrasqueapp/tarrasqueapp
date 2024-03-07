@@ -227,14 +227,16 @@ export function GridAlignment() {
   );
 
   useEffect(() => {
-    if (!map?.media?.width || !map?.media?.height || !graphicsRef.current || !aligningGrid) return;
+    if (!map?.media?.width || !map?.media?.height || !graphicsRef.current) return;
 
     const graphics = graphicsRef.current;
-    graphics.hitArea = new PIXI.Rectangle(0, 0, map.media.width, map.media.height);
-    graphics.interactive = true;
-    graphics.eventMode = 'dynamic';
     graphics.width = map.media.width;
     graphics.height = map.media.height;
+    graphics.hitArea = new PIXI.Rectangle(0, 0, map.media.width, map.media.height);
+    graphics.eventMode = aligningGrid ? 'dynamic' : 'none';
+    graphics.cursor = aligningGrid ? 'crosshair' : 'auto';
+
+    if (!aligningGrid) return;
 
     graphics.on('pointerdown', startDrawing);
     graphics.on('pointermove', handlePointerMove);
@@ -242,6 +244,7 @@ export function GridAlignment() {
     graphics.on('pointerupoutside', stopDrawing);
 
     return () => {
+      if (!graphics) return;
       graphics.off('pointerdown', startDrawing);
       graphics.off('pointermove', handlePointerMove);
       graphics.off('pointerup', stopDrawing);
