@@ -52,6 +52,7 @@ import { MathUtils } from '@/utils/MathUtils';
 
 import { MapCard } from '../maps/MapCard';
 import { NewMap } from '../maps/NewMap';
+import { CompendiumButton } from '../top-bar/compendium/CompendiumButton';
 
 export interface CampaignAccordionProps {
   expanded?: boolean;
@@ -238,6 +239,8 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                   </IconButton>
                 </span>
               </Tooltip>
+
+              <CompendiumButton />
 
               <Tooltip title="Plugins">
                 <IconButton

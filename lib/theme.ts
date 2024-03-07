@@ -29,7 +29,7 @@ export let theme = createTheme({
     h6: { fontFamily: recursive.style.fontFamily, fontSize: 16, lineHeight: 1.28 },
     body1: { lineHeight: 1.6 },
     body2: { lineHeight: 1.28 },
-    caption: { lineHeight: 1.28, color: Color.GREY },
+    caption: { lineHeight: 1.28, color: Color.GREY, display: 'block' },
     overline: { fontSize: 13, lineHeight: 1.28, fontWeight: 600 },
     button: { fontWeight: 600, lineHeight: 1.125 },
   },

@@ -1,4 +1,5 @@
-import { Box, SvgIcon, Tooltip, alpha } from '@mui/material';
+import { TableRows } from '@mui/icons-material';
+import { Box, Tooltip, alpha } from '@mui/material';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -6,7 +7,6 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { Color } from '@/lib/colors';
 import { AppNavigation } from '@/lib/navigation';
-import campaignIcon from '@/public/images/app-icons/campaign.svg';
 import { HotkeysUtils } from '@/utils/HotkeyUtils';
 
 import { DiceRoller } from './DiceRoller/DiceRoller';
@@ -51,7 +51,7 @@ export function Dock() {
         <Tooltip title="Dashboard">
           <NextLink href={AppNavigation.Dashboard} passHref>
             <DockButton>
-              <SvgIcon component={campaignIcon} sx={{ fontSize: '2rem' }} />
+              <TableRows sx={{ fontSize: '2rem' }} />
             </DockButton>
           </NextLink>
         </Tooltip>
