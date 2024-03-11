@@ -10,7 +10,7 @@ import { ExternalNavigation } from '@/lib/navigation';
 export function Version() {
   const { data: liveVersion } = useGetLiveVersion();
 
-  const isLatest = liveVersion ? liveVersion.version === `v${config.VERSION}` : true;
+  const isLatest = liveVersion ? liveVersion.version === config.VERSION : true;
 
   return (
     <Tooltip title={isLatest ? undefined : 'New version available'}>
