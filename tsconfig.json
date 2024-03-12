@@ -3,6 +3,7 @@
   "include": ["next-env.d.ts", "custom.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "compilerOptions": {
     "target": "ES2015",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     }
