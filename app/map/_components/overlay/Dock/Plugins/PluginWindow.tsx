@@ -25,6 +25,11 @@ export function PluginWindow({ manifestUrl, onLoad }: Props) {
     toggleVisibility(id);
   }
 
+  const iconUrl = plugin?.urls.find((url) => url.name === 'icon')?.url || '';
+  const mapIframeUrl = plugin?.urls.find((url) => url.name === 'map_iframe')?.url || '';
+  const mapIframeWidth = plugin?.urls.find((url) => url.name === 'map_iframe')?.width;
+  const mapIframeHeight = plugin?.urls.find((url) => url.name === 'map_iframe')?.height;
+
   if (!plugin) return null;
 
   return (
@@ -40,7 +45,7 @@ export function PluginWindow({ manifestUrl, onLoad }: Props) {
             }}
           >
             <Stack direction="row" alignItems="center" sx={{ flexGrow: 1, pl: 1, gap: 1 }}>
-              <Image src={plugin.icon_url} alt={plugin.name} width={16} height={16} />
+              <Image src={iconUrl} alt={plugin.name} width={16} height={16} />
               <Typography variant="overline">{plugin.name}</Typography>
             </Stack>
 
@@ -57,9 +62,9 @@ export function PluginWindow({ manifestUrl, onLoad }: Props) {
         <Box
           component="iframe"
           title={plugin.name}
-          src={plugin.plugin_url}
+          src={mapIframeUrl}
           onLoad={onLoad}
-          sx={{ border: 'none', width: plugin.iframe?.width, height: plugin.iframe?.height }}
+          sx={{ border: 'none', width: mapIframeWidth, height: mapIframeHeight }}
         />
       </Paper>
     </Draggable>

@@ -24,12 +24,14 @@ export function PluginButton({ manifestUrl }: Props) {
     toggleVisibility(id);
   }
 
+  const iconUrl = plugin?.urls.find((url) => url.name === 'icon')?.url || '';
+
   if (!plugin) return null;
 
   return (
     <Tooltip title={plugin.name}>
       <DockButton active={draggable?.visible} onClick={handleToggle}>
-        <Image src={plugin.icon_url} alt={plugin.name} width={32} height={32} />
+        <Image src={iconUrl} alt={plugin.name} width={32} height={32} />
       </DockButton>
     </Tooltip>
   );
