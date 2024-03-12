@@ -1,16 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 
+export interface ManifestUrl {
+  name: 'icon' | 'map_iframe' | 'compendium_iframe' | 'homepage';
+  url: string;
+  width?: number;
+  height?: number;
+}
+
 interface Manifest {
+  id: string;
   name: string;
   description: string;
   author: string;
-  icon_url: string;
-  plugin_url: string;
-  homepage_url: string;
-  iframe: {
-    width: number;
-    height: number;
-  };
+  urls: ManifestUrl[];
 }
 
 /**

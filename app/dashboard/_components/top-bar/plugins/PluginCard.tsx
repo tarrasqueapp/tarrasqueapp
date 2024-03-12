@@ -20,6 +20,9 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
     (current, payload: boolean) => payload,
   );
 
+  const iconUrl = plugin?.urls.find((url) => url.name === 'icon')?.url || '';
+  const homepageUrl = plugin?.urls.find((url) => url.name === 'homepage')?.url || '';
+
   if (isError) return null;
 
   return (
@@ -27,7 +30,7 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
       <CardHeader
         avatar={
           plugin ? (
-            <Image src={plugin.icon_url} alt={plugin.name} width={30} height={30} />
+            <Image src={iconUrl} alt={plugin.name} width={30} height={30} />
           ) : (
             <Skeleton width={30} height={30} />
           )
@@ -35,13 +38,7 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
         title={plugin?.name || <Skeleton width={150} height={15} />}
         subheader={plugin?.author || <Skeleton width={100} height={15} sx={{ mt: 0.5 }} />}
         action={
-          <IconButton
-            disabled={!plugin}
-            component="a"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={plugin?.homepage_url}
-          >
+          <IconButton disabled={!plugin} component="a" target="_blank" rel="noopener noreferrer" href={homepageUrl}>
             <Info />
           </IconButton>
         }
