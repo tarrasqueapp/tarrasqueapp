@@ -34,6 +34,12 @@ export function useGetUser() {
 
   return useQuery({
     queryKey: ['user'],
-    queryFn: () => getUser(),
+    queryFn: async () => {
+      const response = await getUser();
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
   });
 }

@@ -38,7 +38,13 @@ export function useGetMap(mapId: string) {
 
   return useQuery({
     queryKey: ['maps', mapId],
-    queryFn: () => getMap(mapId),
+    queryFn: async () => {
+      const response = await getMap(mapId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(mapId),
   });
 }

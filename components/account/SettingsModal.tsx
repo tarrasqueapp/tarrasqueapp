@@ -25,7 +25,7 @@ import { updateProfile } from '@/actions/profiles';
 import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { MediaUtils } from '@/utils/MediaUtils';
 
 import { ControlledTextField } from '../form/ControlledTextField';
@@ -47,7 +47,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     name: z.string().min(1),
     email: z.string().email().min(1),
     avatar: z
-      .union([validate.fields.uppyFile, validate.fields.media])
+      .union([validation.fields.uppyFile, validation.fields.media])
       .nullable()
       .refine(
         (value) => {
@@ -91,53 +91,63 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   async function handleSubmitForm(values: Schema) {
     if (!user || !profile) return;
 
-    try {
-      // Create the avatar
-      if (values.avatar && MediaUtils.isUploadedFile(values.avatar)) {
-        // Get the normalized file from Uppy
-        const file = await MediaUtils.convertUppyToFile(values.avatar);
+    // Create the avatar
+    if (values.avatar && MediaUtils.isUploadedFile(values.avatar)) {
+      // Get the normalized file from Uppy
+      const file = await MediaUtils.convertUppyToFile(values.avatar);
 
-        // Get the uploaded storage object's ID to use as the media ID foreign key
-        const objectId = await getObjectId(file.url);
-        if (!objectId) {
-          toast.error('Failed to upload avatar');
-          return;
-        }
-
-        // Create the media entity
-        const media = await createMedia({
-          id: objectId,
-          url: file.url,
-          width: file.width,
-          height: file.height,
-          size: file.size,
-        });
-
-        // Update the avatar with the final media entity
-        values.avatar = media;
-
-        // Delete the previous avatar if it exists
-        if (profile.avatar) {
-          deleteStorageObject(profile.avatar.url);
-        }
+      // Get the uploaded storage object's ID to use as the media ID foreign key
+      const { data: objectId } = await getObjectId(file.url);
+      if (!objectId) {
+        toast.error('Failed to upload avatar');
+        return;
       }
 
-      if (values.email !== user.email) {
-        await updateUser({ email: values.email });
-        toast.success('Email updated. Please check your inbox for a confirmation email.');
-      }
-
-      await updateProfile({
-        name: values.name,
-        avatar_id: (values.avatar as Media)?.id || null,
+      // Create the media entity
+      const mediaResponse = await createMedia({
+        id: objectId,
+        url: file.url,
+        width: file.width,
+        height: file.height,
+        size: file.size,
       });
 
-      onClose();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
+      if (mediaResponse.error) {
+        toast.error(mediaResponse.error);
+        return;
+      }
+
+      // Update the avatar with the final media entity
+      values.avatar = mediaResponse.data!;
+
+      // Delete the previous avatar if it exists
+      if (profile.avatar) {
+        deleteStorageObject({ url: profile.avatar.url });
       }
     }
+
+    if (values.email !== user.email) {
+      const response = await updateUser({ email: values.email });
+
+      if (response?.error) {
+        toast.error(response.error);
+        return;
+      }
+
+      toast.success('Email updated. Please check your inbox for a confirmation email.');
+    }
+
+    const response = await updateProfile({
+      name: values.name,
+      avatar_id: (values.avatar as Media)?.id || null,
+    });
+
+    if (response?.error) {
+      toast.error(response.error);
+      return;
+    }
+
+    onClose();
   }
 
   return (

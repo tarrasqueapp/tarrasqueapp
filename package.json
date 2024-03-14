@@ -29,7 +29,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "tsc --noEmit && next lint",
     "lint-staged": "lint-staged",
-    "prepare": "npx husky",
+    "prepare": "husky",
     "start": "next start"
   },
   "lint-staged": {

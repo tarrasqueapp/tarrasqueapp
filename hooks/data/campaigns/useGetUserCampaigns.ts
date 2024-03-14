@@ -41,6 +41,12 @@ export function useGetUserCampaigns(role?: CampaignMemberRole) {
 
   return useQuery({
     queryKey: ['campaigns', { role }],
-    queryFn: () => getUserCampaigns(role),
+    queryFn: async () => {
+      const response = await getUserCampaigns(role);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
   });
 }

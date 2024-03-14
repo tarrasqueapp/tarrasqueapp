@@ -16,10 +16,7 @@ interface CreateUserProps {
 
 export function CreateUser({ onSubmit }: CreateUserProps) {
   // Setup form validation schema
-  const schema = z.object({
-    name: z.string().min(1),
-    email: z.string().email().min(1),
-  });
+  const schema = z.object({ name: z.string().min(1), email: z.string().email().min(1) });
   type Schema = z.infer<typeof schema>;
 
   // Setup form
@@ -34,15 +31,21 @@ export function CreateUser({ onSubmit }: CreateUserProps) {
    * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
-    try {
-      await signUp(values);
-      await updateSetup('COMPLETED');
-      onSubmit();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+    const signUpResponse = await signUp(values);
+
+    if (signUpResponse?.error) {
+      toast.error(signUpResponse.error);
+      return;
     }
+
+    const updateSetupResponse = await updateSetup({ step: 'COMPLETED' });
+
+    if (updateSetupResponse?.error) {
+      toast.error(updateSetupResponse.error);
+      return;
+    }
+
+    onSubmit();
   }
 
   return (

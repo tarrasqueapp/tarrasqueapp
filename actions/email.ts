@@ -1,21 +1,23 @@
-'use server';
-
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 import { readFile } from 'node:fs/promises';
 import * as nodemailer from 'nodemailer';
-import { join } from 'path';
+import { resolve } from 'path';
+import { cache } from 'react';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
 import { logger } from '@/lib/logger';
+import { validation } from '@/lib/validation';
 
-let transporter: nodemailer.Transporter;
+const getTransporter = cache(async () => {
+  // Use ethereal.email for development environment to avoid sending real emails
+  if (config.NODE_ENV === 'development') {
+    // Generate a test account using ethereal.email
+    const account = await nodemailer.createTestAccount();
 
-// Create transporter based on environment
-if (config.NODE_ENV === 'development') {
-  nodemailer.createTestAccount((err, account) => {
-    transporter = nodemailer.createTransport({
+    // Use the test account to create a transporter
+    return nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
@@ -24,9 +26,10 @@ if (config.NODE_ENV === 'development') {
         pass: account.pass,
       },
     });
-  });
-} else {
-  transporter = nodemailer.createTransport({
+  }
+
+  // Use the configured SMTP settings for production environment to send emails
+  return nodemailer.createTransport({
     host: config.SMTP_HOST,
     port: config.SMTP_PORT,
     secure: false,
@@ -35,14 +38,23 @@ if (config.NODE_ENV === 'development') {
       pass: config.SMTP_PASSWORD,
     },
   });
-}
+});
 
 /**
  * Send an email
- * @param dto - email data
+ * @param to - The recipient's email address
+ * @param subject - The email's subject
+ * @param html - The email's HTML content
  * @returns The sent email
  */
-async function sendTransactionalEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+async function sendTransactionalEmail({
+  to,
+  subject,
+  html,
+}: z.infer<typeof validation.schemas.email.sendTransactionalEmail>) {
+  // Validate inputs
+  validation.schemas.email.sendTransactionalEmail.parse({ to, subject, html });
+
   const options = {
     from: `Tarrasque App <${config.SMTP_FROM}>`,
     to,
@@ -52,12 +64,13 @@ async function sendTransactionalEmail({ to, subject, html }: { to: string; subje
     attachments: [
       {
         filename: 'logo.png',
-        path: join('emails', 'logo.png'),
+        path: resolve('emails', 'logo.png'),
         cid: 'logo',
       },
     ],
   };
 
+  const transporter = await getTransporter();
   const email = await transporter.sendMail(options);
 
   // Log email preview url in development
@@ -71,29 +84,23 @@ async function sendTransactionalEmail({ to, subject, html }: { to: string; subje
  * @param firstName - The user's first name
  * @param to - The user's email address
  * @param verifyEmailUrl - The url to verify the user's email address
- * @returns The sent email
  */
 export async function sendWelcomeEmail({
   firstName,
   to,
   verifyEmailUrl,
-}: {
-  firstName: string;
-  to: string;
-  verifyEmailUrl: string;
-}) {
+}: z.infer<typeof validation.schemas.email.sendWelcomeEmail>) {
   // Validate inputs
-  const schema = z.object({ firstName: z.string().min(1), to: z.string().email(), verifyEmailUrl: z.string().url() });
-  schema.parse({ firstName, to, verifyEmailUrl });
+  validation.schemas.email.sendWelcomeEmail.parse({ firstName, to, verifyEmailUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const mjml = await readFile(join('emails', 'welcome.mjml'), 'utf8');
+  const mjml = await readFile(resolve('emails', 'welcome.mjml'), 'utf8');
   const { html: htmlFile } = mjml2html(mjml);
   const template = compile(htmlFile);
   const html = template({ firstName, verifyEmailUrl });
 
   // Send email
-  return await sendTransactionalEmail({ to, subject: 'Welcome to Tarrasque App', html });
+  await sendTransactionalEmail({ to, subject: 'Welcome to Tarrasque App', html });
 }
 
 /**
@@ -101,29 +108,23 @@ export async function sendWelcomeEmail({
  * @param firstName - The user's first name
  * @param to - The user's email address
  * @param verifyEmailUrl - The url to verify the user's email address
- * @returns The sent email
  */
 export async function sendEmailVerificationEmail({
   firstName,
   to,
   verifyEmailUrl,
-}: {
-  firstName: string;
-  to: string;
-  verifyEmailUrl: string;
-}) {
+}: z.infer<typeof validation.schemas.email.sendEmailVerificationEmail>) {
   // Validate inputs
-  const schema = z.object({ firstName: z.string().min(1), to: z.string().email(), verifyEmailUrl: z.string().url() });
-  schema.parse({ firstName, to, verifyEmailUrl });
+  validation.schemas.email.sendEmailVerificationEmail.parse({ firstName, to, verifyEmailUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const mjml = await readFile(join('emails', 'verify-email.mjml'), 'utf8');
+  const mjml = await readFile(resolve('emails', 'verify-email.mjml'), 'utf8');
   const { html: htmlFile } = mjml2html(mjml);
   const template = compile(htmlFile);
   const html = template({ firstName, verifyEmailUrl });
 
   // Send email
-  return await sendTransactionalEmail({ to, subject: 'Verify new email address', html });
+  await sendTransactionalEmail({ to, subject: 'Verify new email address', html });
 }
 
 /**
@@ -132,36 +133,24 @@ export async function sendEmailVerificationEmail({
  * @param campaignName - The campaign's name
  * @param to - The invitee's email address
  * @param signUpUrl - The url to sign up
- * @returns The sent email
  */
 export async function sendCampaignInviteNewUserEmail({
   hostName,
   campaignName,
   to,
   signUpUrl,
-}: {
-  hostName: string;
-  campaignName: string;
-  to: string;
-  signUpUrl: string;
-}) {
+}: z.infer<typeof validation.schemas.email.sendCampaignInviteNewUserEmail>) {
   // Validate inputs
-  const schema = z.object({
-    hostName: z.string().min(1),
-    campaignName: z.string().min(1),
-    to: z.string().email(),
-    signUpUrl: z.string().url(),
-  });
-  schema.parse({ hostName, campaignName, to, signUpUrl });
+  validation.schemas.email.sendCampaignInviteNewUserEmail.parse({ hostName, campaignName, to, signUpUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const mjml = await readFile(join('emails', 'campaign-invite-new-user.mjml'), 'utf8');
+  const mjml = await readFile(resolve('emails', 'campaign-invite-new-user.mjml'), 'utf8');
   const { html: htmlFile } = mjml2html(mjml);
   const template = compile(htmlFile);
   const html = template({ hostName, campaignName, signUpUrl });
 
   // Send email
-  return await sendTransactionalEmail({
+  await sendTransactionalEmail({
     to,
     subject: `${hostName} invited you to ${campaignName} on Tarrasque App`,
     html,
@@ -175,7 +164,6 @@ export async function sendCampaignInviteNewUserEmail({
  * @param campaignName - The campaign's name
  * @param to - The invitee's email address
  * @param acceptInviteUrl - The url to accept the invite
- * @returns The sent email
  */
 export async function sendCampaignInviteExistingUserEmail({
   hostName,
@@ -183,31 +171,24 @@ export async function sendCampaignInviteExistingUserEmail({
   campaignName,
   to,
   acceptInviteUrl,
-}: {
-  hostName: string;
-  inviteeName: string;
-  campaignName: string;
-  to: string;
-  acceptInviteUrl: string;
-}) {
+}: z.infer<typeof validation.schemas.email.sendCampaignInviteExistingUserEmail>) {
   // Validate inputs
-  const schema = z.object({
-    hostName: z.string().min(1),
-    inviteeName: z.string().min(1),
-    campaignName: z.string().min(1),
-    to: z.string().email(),
-    acceptInviteUrl: z.string().url(),
+  validation.schemas.email.sendCampaignInviteExistingUserEmail.parse({
+    hostName,
+    inviteeName,
+    campaignName,
+    to,
+    acceptInviteUrl,
   });
-  schema.parse({ hostName, inviteeName, campaignName, to, acceptInviteUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const mjml = await readFile(join('emails', 'campaign-invite-existing-user.mjml'), 'utf8');
+  const mjml = await readFile(resolve('emails', 'campaign-invite-existing-user.mjml'), 'utf8');
   const { html: htmlFile } = mjml2html(mjml);
   const template = compile(htmlFile);
   const html = template({ hostName, inviteeName, campaignName, acceptInviteUrl });
 
   // Send email
-  return await sendTransactionalEmail({
+  await sendTransactionalEmail({
     to,
     subject: `${hostName} invited you to ${campaignName} on Tarrasque App`,
     html,
@@ -218,27 +199,21 @@ export async function sendCampaignInviteExistingUserEmail({
  * Send magic link email
  * @param to - The user's email address
  * @param magicLinkUrl - The url to sign in
- * @returns The sent email
  */
 export async function sendMagicLinkEmail({
   firstName,
   to,
   magicLinkUrl,
-}: {
-  firstName: string;
-  to: string;
-  magicLinkUrl: string;
-}) {
+}: z.infer<typeof validation.schemas.email.sendMagicLinkEmail>) {
   // Validate inputs
-  const schema = z.object({ firstName: z.string().min(1), to: z.string().email(), magicLinkUrl: z.string().url() });
-  schema.parse({ firstName, to, magicLinkUrl });
+  validation.schemas.email.sendMagicLinkEmail.parse({ firstName, to, magicLinkUrl });
 
   // Get contents of email template and compile variables with handlebars
-  const mjml = await readFile(join('emails', 'magic-link.mjml'), 'utf8');
+  const mjml = await readFile(resolve('emails', 'magic-link.mjml'), 'utf8');
   const { html: htmlFile } = mjml2html(mjml);
   const template = compile(htmlFile);
   const html = template({ firstName, magicLinkUrl });
 
   // Send email
-  return await sendTransactionalEmail({ to, subject: 'Sign in to Tarrasque App', html });
+  await sendTransactionalEmail({ to, subject: 'Sign in to Tarrasque App', html });
 }

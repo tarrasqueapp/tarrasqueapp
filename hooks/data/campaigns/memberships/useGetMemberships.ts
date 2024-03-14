@@ -38,7 +38,13 @@ export function useGetMemberships(campaignId: string | undefined) {
 
   return useQuery({
     queryKey: ['campaigns', campaignId, 'memberships'],
-    queryFn: () => getMemberships(campaignId!),
+    queryFn: async () => {
+      const response = await getMemberships(campaignId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(campaignId),
   });
 }

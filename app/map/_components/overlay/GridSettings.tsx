@@ -43,7 +43,7 @@ import { useGetGrid } from '@/hooks/data/grids/useGetGrid';
 import { useUpdateGrid } from '@/hooks/data/grids/useUpdateGrid';
 import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { Color } from '@/lib/colors';
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { usePixiStore } from '@/store/pixi';
 
 import { OverlayButtonGroup } from './OverlayButtonGroup';
@@ -63,23 +63,13 @@ export function GridSettings() {
   const setAligningGrid = usePixiStore((state) => state.setAligningGrid);
   const viewport = usePixiStore((state) => state.viewport);
 
-  // Setup form validation schema
-  const schema = z.object({
-    id: z.string().uuid(),
-    type: validate.fields.gridType,
-    width: z.number().min(5),
-    height: z.number().min(5),
-    offset_x: z.number(),
-    offset_y: z.number(),
-    color: z.string(),
-    snap: z.boolean(),
-    visible: z.boolean(),
-    map_id: z.string().uuid(),
-  });
-  type Schema = z.infer<typeof schema>;
-
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema), defaultValues: grid });
+  type Schema = z.infer<typeof validation.schemas.grids.updateGrid>;
+  const methods = useForm<Schema>({
+    mode: 'onChange',
+    resolver: zodResolver(validation.schemas.grids.updateGrid),
+    defaultValues: grid,
+  });
   const { reset, setValue, watch } = methods;
 
   // Reset the form when the campaign changes
@@ -91,7 +81,8 @@ export function GridSettings() {
   const debouncedUpdate = useCallback(
     debounce((data: Schema) => {
       try {
-        const isValid = schema.safeParse(data).success;
+        const isValid = validation.schemas.grids.updateGrid.safeParse(data).success;
+        console.log(data);
         if (!isValid) return;
         updateGrid.mutate(data);
       } catch (error) {
@@ -362,7 +353,7 @@ export function GridSettings() {
                               Color
                             </Typography>
 
-                            <ColorPicker value={watch().color} onChange={(color) => setValue('color', color)} />
+                            <ColorPicker value={watch().color!} onChange={(color) => setValue('color', color)} />
                           </Stack>
                         </Stack>
 

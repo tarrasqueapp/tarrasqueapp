@@ -16,7 +16,7 @@ export default async function SetupPage() {
   const setup = await ssr.prefetchSetup();
 
   if (setup?.step === 'COMPLETED') {
-    redirect(AppNavigation.Home);
+    redirect(AppNavigation.SignIn);
   }
 
   return (

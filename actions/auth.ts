@@ -1,11 +1,11 @@
 'use server';
 
-import { UserAttributes } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
+import { validation } from '@/lib/validation';
 import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
 
@@ -24,9 +24,14 @@ export async function getUser() {
   // Get user
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
 
-  return user;
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { data: user };
 }
 
 /**
@@ -45,10 +50,10 @@ export async function getSession() {
   } = await supabase.auth.getSession();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return session;
+  return { data: session };
 }
 
 /**
@@ -57,14 +62,9 @@ export async function getSession() {
  * @param email - The user's email
  * @param token - The invite token
  */
-export async function signUp({ name, email, token }: { name: string; email: string; token?: string }) {
-  // Validate the user details
-  const schema = z.object({
-    name: z.string().min(1),
-    email: z.string().email(),
-    token: z.string().uuid().optional(),
-  });
-  schema.parse({ name, email, token });
+export async function signUp({ name, email, token }: z.infer<typeof validation.schemas.auth.signUp>) {
+  // Validate inputs
+  validation.schemas.auth.signUp.parse({ name, email, token });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -73,7 +73,7 @@ export async function signUp({ name, email, token }: { name: string; email: stri
   // Check if the user exists
   const { data: profile } = await supabase.from('profiles').select('id').eq('email', email).single();
   if (profile) {
-    throw new Error('User already exists');
+    return { error: 'User already exists' };
   }
 
   // Sign up the user and generate a verification link
@@ -89,7 +89,7 @@ export async function signUp({ name, email, token }: { name: string; email: stri
   });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   const searchParams = new URLSearchParams({
@@ -129,12 +129,10 @@ export async function signUp({ name, email, token }: { name: string; email: stri
 /**
  * Sign in the user
  * @param email - The user's email
- * @returns The user details
  */
-export async function signIn({ email }: { email: string }) {
-  // Validate the user details
-  const schema = z.object({ email: z.string().email() });
-  schema.parse({ email });
+export async function signIn({ email }: z.infer<typeof validation.schemas.auth.signIn>) {
+  // Validate inputs
+  validation.schemas.auth.signIn.parse({ email });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -143,7 +141,7 @@ export async function signIn({ email }: { email: string }) {
   // Check if the user exists
   const { data: profile } = await supabase.from('profiles').select('name').eq('email', email).single();
   if (!profile) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Sign up the user and generate a verification link
@@ -154,7 +152,7 @@ export async function signIn({ email }: { email: string }) {
   });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   const searchParams = new URLSearchParams({
@@ -180,7 +178,7 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
@@ -188,15 +186,14 @@ export async function signOut() {
  * Update a user
  * @param email - The user's email
  */
-export async function updateUser({ email }: UserAttributes) {
-  // Validate the user details
-  const schema = z.object({ email: z.string().email().optional() });
-  schema.parse({ email });
+export async function updateUser({ email }: z.infer<typeof validation.schemas.auth.updateUser>) {
+  // Validate inputs
+  validation.schemas.auth.updateUser.parse({ email });
 
   // Get the user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Update the user's email if it has been changed
@@ -210,7 +207,7 @@ export async function updateUser({ email }: UserAttributes) {
     });
 
     if (error) {
-      throw error;
+      return { error: error.message };
     }
 
     const searchParams = new URLSearchParams({
@@ -220,7 +217,11 @@ export async function updateUser({ email }: UserAttributes) {
     const link = `${config.HOST}/auth/change-email/callback?${searchParams}`;
 
     // Send an email with the verification link
-    const profile = await getProfile();
+    const { data: profile } = await getProfile();
+    if (!profile) {
+      return { error: 'Profile not found' };
+    }
+
     const firstName = profile!.name.split(' ')[0]!;
     await sendEmailVerificationEmail({ firstName, to: email, verifyEmailUrl: link });
   }

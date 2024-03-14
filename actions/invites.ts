@@ -5,13 +5,14 @@ import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
+import { validation } from '@/lib/validation';
 import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { sendCampaignInviteExistingUserEmail, sendCampaignInviteNewUserEmail } from './email';
 import { getProfile } from './profiles';
 
-export type Invite = Awaited<ReturnType<typeof getInvite>>;
+export type Invite = NonNullable<Awaited<ReturnType<typeof getInvite>>['data']>;
 
 /**
  * Get campaign's invites
@@ -19,9 +20,8 @@ export type Invite = Awaited<ReturnType<typeof getInvite>>;
  * @returns The campaign's invites
  */
 export async function getInvites(campaignId: string) {
-  // Validate the campaign ID
-  const schema = z.string().uuid();
-  schema.parse(campaignId);
+  // Validate inputs
+  z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -31,10 +31,10 @@ export async function getInvites(campaignId: string) {
   const { data, error } = await supabase.from('campaign_invites').select('*').eq('campaign_id', campaignId);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -43,9 +43,8 @@ export async function getInvites(campaignId: string) {
  * @returns The invite
  */
 export async function getInvite(inviteId: string) {
-  // Validate the invite ID
-  const schema = z.string().uuid();
-  schema.parse(inviteId);
+  // Validate inputs
+  z.string().uuid().parse(inviteId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -66,10 +65,10 @@ export async function getInvite(inviteId: string) {
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -82,7 +81,10 @@ export async function getUserInvites() {
   const supabase = createServerClient(cookieStore);
 
   // Get the current user's profile
-  const profile = await getProfile();
+  const { data: profile } = await getProfile();
+  if (!profile) {
+    return { error: 'User not found' };
+  }
 
   // Get the invites
   const { data, error } = await supabase
@@ -98,10 +100,10 @@ export async function getUserInvites() {
     .or(`user_id.eq.${profile.id},email.eq.${profile.email}`);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -110,17 +112,19 @@ export async function getUserInvites() {
  * @param email - The email to invite
  * @returns The created invite
  */
-export async function createInvite({ campaign_id, email }: { campaign_id: string; email: string }) {
-  // Validate the campaign ID
-  const schema = z.object({ campaign_id: z.string().uuid(), email: z.string().email().min(1) });
-  schema.parse({ campaign_id, email });
+export async function createInvite({ campaign_id, email }: z.infer<typeof validation.schemas.invites.createInvite>) {
+  // Validate inputs
+  validation.schemas.invites.createInvite.parse({ campaign_id, email });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get the current user's profile
-  const profile = await getProfile();
+  const { data: profile } = await getProfile();
+  if (!profile) {
+    return { error: 'User not found' };
+  }
 
   // Check if an invite for this email already exists for this campaign
   const { data: existingInvite, error: existingInviteError } = await supabase
@@ -130,11 +134,11 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     .eq('email', email);
 
   if (existingInviteError) {
-    throw existingInviteError;
+    return { error: existingInviteError.message };
   }
 
   if (existingInvite?.length) {
-    throw new Error('An invite for this email already exists for this campaign');
+    return { error: 'An invite for this email already exists for this campaign' };
   }
 
   // Check if the email is already a member of this campaign
@@ -153,7 +157,7 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     .not('user', 'is', 'NULL');
 
   if (existingMembership?.length) {
-    throw new Error('This email is already a member of this campaign');
+    return { error: 'This email is already a member of this campaign' };
   }
 
   // Check if the email is already a user
@@ -174,7 +178,7 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   if (existingUser) {
@@ -182,7 +186,7 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     const { data: generatedLink, error } = await supabaseAdmin.auth.admin.generateLink({ type: 'magiclink', email });
 
     if (error) {
-      throw error;
+      return { error: error.message };
     }
 
     const searchParams = new URLSearchParams({
@@ -207,27 +211,26 @@ export async function createInvite({ campaign_id, email }: { campaign_id: string
     });
   }
 
-  return data;
+  return { data };
 }
 
 /**
  * Delete an invite
- * @param inviteId - The invite to delete
+ * @param id - The invite to delete
  */
-export async function deleteInvite(inviteId: string) {
-  // Validate the invite ID
-  const schema = z.string().uuid();
-  schema.parse(inviteId);
+export async function deleteInvite({ id }: z.infer<typeof validation.schemas.invites.deleteInvite>) {
+  // Validate inputs
+  validation.schemas.invites.deleteInvite.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Delete the invite
-  const { error } = await supabase.from('campaign_invites').delete().eq('id', inviteId);
+  const { error } = await supabase.from('campaign_invites').delete().eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
@@ -235,34 +238,28 @@ export async function deleteInvite(inviteId: string) {
  * Accept an invite
  * @param inviteId - The invite to accept
  */
-export async function acceptInvite(inviteId: string) {
-  // Validate the invite ID
-  const schema = z.string().uuid();
-  schema.parse(inviteId);
+export async function acceptInvite({ id }: z.infer<typeof validation.schemas.invites.acceptInvite>) {
+  // Validate inputs
+  validation.schemas.invites.acceptInvite.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get the invite
-  const { data: invite, error: inviteError } = await supabase
-    .from('campaign_invites')
-    .select()
-    .eq('id', inviteId)
-    .single();
-
+  const { data: invite, error: inviteError } = await supabase.from('campaign_invites').select().eq('id', id).single();
   if (inviteError) {
-    throw inviteError;
+    return { error: inviteError.message };
   }
 
   if (!invite) {
-    throw new Error('Invite not found');
+    return { error: 'Invite not found' };
   }
 
   // Get the current user's profile
-  const profile = await getProfile();
+  const { data: profile } = await getProfile();
   if (!profile) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Create the membership
@@ -275,9 +272,9 @@ export async function acceptInvite(inviteId: string) {
   });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   // Delete the invite
-  await deleteInvite(inviteId);
+  await deleteInvite({ id });
 }

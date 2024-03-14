@@ -21,7 +21,8 @@ export function useGetUserPlugins(role?: CampaignMemberRole) {
 
     requestAnimationFrame(async () => {
       supabase = createBrowserClient();
-      const user = await getUser();
+      const { data: user } = await getUser();
+      if (!user) return;
       channel = supabase
         .channel(`user_${user!.id}_plugins`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'plugins' }, () => {
@@ -38,6 +39,12 @@ export function useGetUserPlugins(role?: CampaignMemberRole) {
 
   return useQuery({
     queryKey: ['user', 'plugins'],
-    queryFn: () => getUserPlugins(),
+    queryFn: async () => {
+      const response = await getUserPlugins();
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
   });
 }

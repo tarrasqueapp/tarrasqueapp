@@ -12,5 +12,11 @@ export default async function IndexPage() {
     redirect(AppNavigation.Setup);
   }
 
-  redirect(AppNavigation.Dashboard);
+  const user = await ssr.prefetchUser();
+
+  if (user) {
+    redirect(AppNavigation.Dashboard);
+  }
+
+  redirect(AppNavigation.SignIn);
 }

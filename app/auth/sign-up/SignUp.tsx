@@ -13,6 +13,7 @@ import { signUp } from '@/actions/auth';
 import { Invite } from '@/actions/invites';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { AppNavigation } from '@/lib/navigation';
+import { validation } from '@/lib/validation';
 
 export function SignUp({ invite }: { invite?: Invite | null }) {
   const router = useRouter();
@@ -21,17 +22,11 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
   const email = searchParams.get('email') || invite?.email || '';
   const token = searchParams.get('token') || '';
 
-  // Setup form validation schema
-  const schema = z.object({
-    name: z.string().min(1),
-    email: z.string().email().min(1),
-  });
-  type Schema = z.infer<typeof schema>;
-
   // Setup form
+  type Schema = z.infer<typeof validation.schemas.auth.signUp>;
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: zodResolver(schema),
+    resolver: zodResolver(validation.schemas.auth.signUp),
     defaultValues: { email },
   });
   const {
@@ -44,14 +39,14 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
    * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
-    try {
-      await signUp({ ...values, token: token || undefined });
-      router.push(`${AppNavigation.SignIn}/?confirm-email=true`);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+    const response = await signUp({ ...values, token: token || undefined });
+
+    if (response?.error) {
+      toast.error(response.error);
+      return;
     }
+
+    router.push(`${AppNavigation.SignIn}/?confirm-email=true`);
   }
 
   return (

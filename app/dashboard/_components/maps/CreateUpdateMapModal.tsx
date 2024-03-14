@@ -25,7 +25,7 @@ import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { ControlledMediaUploader } from '@/components/form/uploader/ControlledMediaUploader';
 import { useGetUserCampaigns } from '@/hooks/data/campaigns/useGetUserCampaigns';
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { useMapStore } from '@/store/map';
 import { MediaUtils } from '@/utils/MediaUtils';
 
@@ -48,7 +48,7 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
     name: z.string().min(1),
     campaign_id: z.string().min(1),
     media: z
-      .union([validate.fields.uppyFile, validate.fields.media])
+      .union([validation.fields.uppyFile, validation.fields.media])
       .nullable()
       .refine(
         (value) => {
@@ -86,61 +86,60 @@ export function CreateUpdateMapModal({ open, onClose, map, campaign }: CreateUpd
   async function handleSubmitForm(values: Schema) {
     if (!campaign) return;
 
-    try {
-      // Create the media
-      if (values.media && MediaUtils.isUploadedFile(values.media)) {
-        // Get the normalized file from Uppy
-        const file = await MediaUtils.convertUppyToFile(values.media);
+    // Create the media
+    if (values.media && MediaUtils.isUploadedFile(values.media)) {
+      // Get the normalized file from Uppy
+      const file = await MediaUtils.convertUppyToFile(values.media);
 
-        // Get the uploaded storage object's ID to use as the media ID foreign key
-        const objectId = await getObjectId(file.url);
-        if (!objectId) {
-          toast.error('Failed to upload media');
-          return;
-        }
-
-        // Create the media entity
-        const media = await createMedia({
-          id: objectId,
-          url: file.url,
-          width: file.width,
-          height: file.height,
-          size: file.size,
-        });
-
-        // Update the media with the final media entity
-        values.media = media;
-
-        // Delete the previous media if it exists
-        if (map?.media) {
-          deleteStorageObject(map.media.url);
-        }
+      // Get the uploaded storage object's ID to use as the media ID foreign key
+      const { data: objectId } = await getObjectId(file.url);
+      if (!objectId) {
+        toast.error('Failed to upload media');
+        return;
       }
 
-      // Update map
-      if (map) {
-        await updateMap({
+      // Create the media entity
+      const mediaResponse = await createMedia({
+        id: objectId,
+        url: file.url,
+        width: file.width,
+        height: file.height,
+        size: file.size,
+      });
+
+      if (mediaResponse.error) {
+        toast.error(mediaResponse.error);
+        return;
+      }
+
+      // Update the media with the final media entity
+      values.media = mediaResponse.data!;
+
+      // Delete the previous media if it exists
+      if (map?.media) {
+        deleteStorageObject({ url: map.media.url });
+      }
+    }
+
+    const response = map
+      ? await updateMap({
           id: map.id,
           name: values.name,
           campaign_id: values.campaign_id,
           media_id: (values.media as Media)?.id,
+        })
+      : await createMap({
+          name: values.name,
+          campaign_id: campaign.id,
+          media_id: (values.media as Media)?.id,
         });
-        onClose();
-        return;
-      }
 
-      // Create map
-      await createMap({
-        name: values.name,
-        campaign_id: campaign.id,
-        media_id: (values.media as Media)?.id,
-      });
-      onClose();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+    if (response.error) {
+      toast.error(response.error);
+      return;
     }
+
+    onClose();
   }
 
   return (

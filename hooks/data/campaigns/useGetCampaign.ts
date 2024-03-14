@@ -38,7 +38,13 @@ export function useGetCampaign(campaignId: string) {
 
   return useQuery({
     queryKey: ['campaigns', campaignId],
-    queryFn: () => getCampaign(campaignId),
+    queryFn: async () => {
+      const response = await getCampaign(campaignId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(campaignId),
   });
 }

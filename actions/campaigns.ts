@@ -4,32 +4,31 @@ import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { Color } from '@/lib/colors';
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
 import { CampaignMemberRole } from './memberships';
 
-export type Campaign = Awaited<ReturnType<typeof getCampaign>>;
+export type Campaign = NonNullable<Awaited<ReturnType<typeof getCampaign>>['data']>;
 
 /**
  * Get a user's campaigns
  * @returns The user's campaigns
  */
 export async function getUserCampaigns(role?: CampaignMemberRole) {
-  // Validate the role
-  const schema = validate.fields.campaignMemberRole.optional();
-  schema.parse(role);
+  // Validate inputs
+  validation.fields.campaignMemberRole.optional().parse(role);
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Get the user's campaign order
@@ -72,10 +71,10 @@ export async function getUserCampaigns(role?: CampaignMemberRole) {
   });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return campaigns;
+  return { data: campaigns };
 }
 
 /**
@@ -84,9 +83,8 @@ export async function getUserCampaigns(role?: CampaignMemberRole) {
  * @returns The campaign
  */
 export async function getCampaign(campaignId: string) {
-  // Validate the campaign ID
-  const schema = z.string().uuid();
-  schema.parse(campaignId);
+  // Validate inputs
+  z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -96,10 +94,10 @@ export async function getCampaign(campaignId: string) {
   const { data, error } = await supabase.from('campaigns').select(`*`).eq('id', campaignId).single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -107,26 +105,25 @@ export async function getCampaign(campaignId: string) {
  * @param name - The campaign's name
  * @returns The created campaign
  */
-export async function createCampaign({ name }: { name: string }) {
-  // Validate the data
-  const schema = z.object({ name: z.string().min(1) });
-  schema.parse({ name });
+export async function createCampaign({ name }: z.infer<typeof validation.schemas.campaigns.createCampaign>) {
+  // Validate inputs
+  validation.schemas.campaigns.createCampaign.parse({ name });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Create the campaign
   const { data, error } = await supabase.from('campaigns').insert({ name, user_id: user.id }).select().single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   // Add the user as a game master
@@ -138,7 +135,7 @@ export async function createCampaign({ name }: { name: string }) {
     user_id: user.id,
   });
 
-  return data;
+  return { data };
 }
 
 /**
@@ -146,10 +143,9 @@ export async function createCampaign({ name }: { name: string }) {
  * @param id - The campaign to update
  * @param name - The campaign's name
  */
-export async function updateCampaign({ id, name }: { id: string; name: string }) {
-  // Validate the data
-  const schema = z.object({ id: z.string().uuid(), name: z.string().min(1) });
-  schema.parse({ id, name });
+export async function updateCampaign({ id, name }: z.infer<typeof validation.schemas.campaigns.updateCampaign>) {
+  // Validate inputs
+  validation.schemas.campaigns.updateCampaign.parse({ id, name });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -159,28 +155,27 @@ export async function updateCampaign({ id, name }: { id: string; name: string })
   const { error } = await supabase.from('campaigns').update({ name }).eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
 /**
  * Delete a campaign
- * @param campaignId - The campaign to delete
+ * @param id - The campaign to delete
  */
-export async function deleteCampaign(campaignId: string) {
-  // Validate the campaign ID
-  const schema = z.string().uuid();
-  schema.parse(campaignId);
+export async function deleteCampaign({ id }: z.infer<typeof validation.schemas.campaigns.deleteCampaign>) {
+  // Validate inputs
+  validation.schemas.campaigns.deleteCampaign.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Delete the campaign
-  const { error } = await supabase.from('campaigns').delete().eq('id', campaignId);
+  const { error } = await supabase.from('campaigns').delete().eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
@@ -189,27 +184,26 @@ export async function deleteCampaign(campaignId: string) {
  * @param campaignIds - The new order of campaign ids
  * @returns The reordered campaigns
  */
-export async function reorderCampaigns(campaignIds: string[]) {
-  // Validate the campaign IDs
-  const schema = z.array(z.string().uuid());
-  schema.parse(campaignIds);
+export async function reorderCampaigns({ campaignIds }: z.infer<typeof validation.schemas.campaigns.reorderCampaigns>) {
+  // Validate inputs
+  validation.schemas.campaigns.reorderCampaigns.parse({ campaignIds });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Update the user's campaign order
   const { error } = await supabase.from('profiles').update({ campaign_order: campaignIds }).eq('id', user.id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return campaignIds;
+  return { data: campaignIds };
 }

@@ -3,13 +3,12 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
-import { TablesInsert } from '@/utils/supabase/types.gen';
 
 import { getUser } from './auth';
 
-export type Media = Awaited<ReturnType<typeof createMedia>>;
-type CreateMediaDto = Omit<TablesInsert<'media'>, 'user_id'>;
+export type Media = NonNullable<Awaited<ReturnType<typeof createMedia>>['data']>;
 
 /**
  * Create a media item
@@ -20,25 +19,24 @@ type CreateMediaDto = Omit<TablesInsert<'media'>, 'user_id'>;
  * @param size - The media item's size
  * @returns The created media item
  */
-export async function createMedia({ id, url, width, height, size }: CreateMediaDto) {
-  // Validate the media item
-  const schema = z.object({
-    id: z.string().uuid(),
-    url: z.string(),
-    width: z.number(),
-    height: z.number(),
-    size: z.number(),
-  });
-  schema.parse({ id, url, width, height, size });
+export async function createMedia({
+  id,
+  url,
+  width,
+  height,
+  size,
+}: z.infer<typeof validation.schemas.media.createMedia>) {
+  // Validate inputs
+  validation.schemas.media.createMedia.parse({ id, url, width, height, size });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Create the media item
@@ -49,8 +47,8 @@ export async function createMedia({ id, url, width, height, size }: CreateMediaD
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }

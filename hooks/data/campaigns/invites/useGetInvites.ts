@@ -31,13 +31,20 @@ export function useGetInvites(campaignId: string | undefined) {
     });
 
     return () => {
+      if (!supabase || !channel) return;
       supabase.removeChannel(channel);
     };
   }, [campaignId]);
 
   return useQuery({
     queryKey: ['campaigns', campaignId, 'invites'],
-    queryFn: () => getInvites(campaignId!),
+    queryFn: async () => {
+      const response = await getInvites(campaignId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(campaignId),
   });
 }

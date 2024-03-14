@@ -40,7 +40,13 @@ export class SSRUtils {
   async prefetchUser() {
     await this.queryClient.prefetchQuery({
       queryKey: ['user'],
-      queryFn: () => getUser(),
+      queryFn: async () => {
+        const response = await getUser();
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
     return this.queryClient.getQueryData<User>(['user']) || null;
   }
@@ -52,9 +58,15 @@ export class SSRUtils {
   async prefetchProfile() {
     await this.queryClient.prefetchQuery({
       queryKey: ['profile'],
-      queryFn: () => getProfile(),
+      queryFn: async () => {
+        const response = await getProfile();
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getProfile>>;
+    type Data = Awaited<ReturnType<typeof getProfile>>['data'];
     return this.queryClient.getQueryData<Data>(['profile']) || null;
   }
 
@@ -65,9 +77,15 @@ export class SSRUtils {
   async prefetchSetup() {
     await this.queryClient.prefetchQuery({
       queryKey: ['setup'],
-      queryFn: () => getSetup(),
+      queryFn: async () => {
+        const response = await getSetup();
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getSetup>>;
+    type Data = Awaited<ReturnType<typeof getSetup>>['data'];
     return this.queryClient.getQueryData<Data>(['setup']) || null;
   }
 
@@ -78,9 +96,15 @@ export class SSRUtils {
   async prefetchUserCampaigns() {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns', {}],
-      queryFn: () => getUserCampaigns(),
+      queryFn: async () => {
+        const response = await getUserCampaigns();
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getUserCampaigns>>;
+    type Data = Awaited<ReturnType<typeof getUserCampaigns>>['data'];
     return this.queryClient.getQueryData<Data>(['campaigns', {}]) || [];
   }
 
@@ -92,9 +116,15 @@ export class SSRUtils {
   async prefetchCampaignMaps(campaignId: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns', campaignId, 'maps'],
-      queryFn: () => getMaps(campaignId),
+      queryFn: async () => {
+        const response = await getMaps(campaignId);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getMaps>>;
+    type Data = Awaited<ReturnType<typeof getMaps>>['data'];
     return this.queryClient.getQueryData<Data>(['campaigns', campaignId, 'maps']) || [];
   }
 
@@ -106,9 +136,15 @@ export class SSRUtils {
   async prefetchCampaignMemberships(campaignId: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns', campaignId, 'memberships'],
-      queryFn: () => getMemberships(campaignId),
+      queryFn: async () => {
+        const response = await getMemberships(campaignId);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getMemberships>>;
+    type Data = Awaited<ReturnType<typeof getMemberships>>['data'];
     return this.queryClient.getQueryData<Data>(['campaigns', campaignId, 'memberships']) || [];
   }
 
@@ -120,9 +156,15 @@ export class SSRUtils {
   async prefetchCampaignInvites(campaignId: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns', campaignId, 'invites'],
-      queryFn: () => getInvites(campaignId),
+      queryFn: async () => {
+        const response = await getInvites(campaignId);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getInvites>>;
+    type Data = Awaited<ReturnType<typeof getInvites>>['data'];
     return this.queryClient.getQueryData<Data>(['campaigns', campaignId, 'invites']) || [];
   }
 
@@ -134,9 +176,15 @@ export class SSRUtils {
   async prefetchInvite(inviteId: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['invites', inviteId],
-      queryFn: () => getInvite(inviteId),
+      queryFn: async () => {
+        const response = await getInvite(inviteId);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getInvite>>;
+    type Data = Awaited<ReturnType<typeof getInvite>>['data'];
     return this.queryClient.getQueryData<Data>(['invites', inviteId]) || null;
   }
 
@@ -147,9 +195,15 @@ export class SSRUtils {
   async prefetchMap(id: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['maps', id],
-      queryFn: () => getMap(id),
+      queryFn: async () => {
+        const response = await getMap(id);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getMap>>;
+    type Data = Awaited<ReturnType<typeof getMap>>['data'];
     return this.queryClient.getQueryData<Data>(['maps', id]) || null;
   }
 
@@ -160,9 +214,15 @@ export class SSRUtils {
   async prefetchCampaign(id: string) {
     await this.queryClient.prefetchQuery({
       queryKey: ['campaigns', id],
-      queryFn: () => getCampaign(id),
+      queryFn: async () => {
+        const response = await getCampaign(id);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
     });
-    type Data = Awaited<ReturnType<typeof getCampaign>>;
+    type Data = Awaited<ReturnType<typeof getCampaign>>['data'];
     return this.queryClient.getQueryData<Data>(['campaigns', id]) || null;
   }
 }

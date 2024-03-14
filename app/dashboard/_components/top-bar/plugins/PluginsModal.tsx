@@ -22,7 +22,7 @@ import { installPlugin, uninstallPlugin } from '@/actions/plugins';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetSubmittedPlugins } from '@/hooks/data/plugins/useGetSubmittedPlugins';
 import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 
 import { PluginCard } from './PluginCard';
 
@@ -37,16 +37,11 @@ export function PluginsModal({ open, onClose }: PluginsModalProps) {
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-  // Setup form validation schema
-  const schema = z.object({
-    manifest_url: validate.fields.manifestUrl,
-  });
-  type Schema = z.infer<typeof schema>;
-
   // Setup form
+  type Schema = z.infer<typeof validation.schemas.plugins.installPlugin>;
   const methods = useForm<Schema>({
     mode: 'onChange',
-    resolver: zodResolver(schema),
+    resolver: zodResolver(validation.schemas.plugins.installPlugin),
     defaultValues: { manifest_url: '' },
   });
   const {
@@ -84,7 +79,7 @@ export function PluginsModal({ open, onClose }: PluginsModalProps) {
    * @param plugin - The plugin to uninstall
    */
   async function handleUninstall(pluginId: string) {
-    await uninstallPlugin(pluginId);
+    await uninstallPlugin({ id: pluginId });
   }
 
   const unlistedInstalledPlugins = userPlugins?.filter((plugin) => !submittedPlugins?.includes(plugin.manifest_url));

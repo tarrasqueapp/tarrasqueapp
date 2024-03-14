@@ -10,11 +10,11 @@ export function CampaignInviteNotification({ invite }: { invite: Invite }) {
       disableGutters
       secondaryAction={
         <>
-          <IconButton size="small" onClick={() => acceptInvite(invite.id)}>
+          <IconButton size="small" onClick={() => acceptInvite({ id: invite.id })}>
             <Check />
           </IconButton>
 
-          <IconButton size="small" onClick={() => deleteInvite(invite.id)}>
+          <IconButton size="small" onClick={() => deleteInvite({ id: invite.id })}>
             <Close />
           </IconButton>
         </>

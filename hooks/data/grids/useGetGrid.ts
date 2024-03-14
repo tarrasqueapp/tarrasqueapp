@@ -38,7 +38,13 @@ export function useGetGrid(mapId: string | undefined) {
 
   return useQuery({
     queryKey: ['maps', mapId, 'grid'],
-    queryFn: () => getMapGrid(mapId!),
+    queryFn: async () => {
+      const response = await getMapGrid(mapId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(mapId),
   });
 }

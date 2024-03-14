@@ -57,20 +57,16 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
    * @param values - The campaign values
    */
   async function handleSubmitForm(values: Schema) {
-    try {
-      if (campaign) {
-        await updateCampaign({ id: campaign.id, name: values.name });
-        onClose();
-        return;
-      }
+    const response = campaign
+      ? await updateCampaign({ id: campaign.id, name: values.name })
+      : await createCampaign(values);
 
-      await createCampaign(values);
-      onClose();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+    if (response?.error) {
+      toast.error(response.error);
+      return;
     }
+
+    onClose();
   }
 
   return (

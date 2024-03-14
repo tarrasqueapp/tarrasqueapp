@@ -207,7 +207,7 @@ export function MapCard({ map, campaign }: MapCardProps) {
                           onClick={async () => {
                             if (!map) return;
                             setDuplicating(true);
-                            await duplicateMap(map.id);
+                            await duplicateMap({ id: map.id });
                             setDuplicating(false);
                             popupState.close();
                           }}

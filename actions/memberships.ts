@@ -3,11 +3,11 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 import { Enums } from '@/utils/supabase/types.gen';
 
-export type Membership = Awaited<ReturnType<typeof getMemberships>>[number];
+export type Membership = NonNullable<Awaited<ReturnType<typeof getMemberships>>['data']>[number];
 export type CampaignMemberRole = Enums<'campaign_member_role'>;
 
 /**
@@ -16,9 +16,8 @@ export type CampaignMemberRole = Enums<'campaign_member_role'>;
  * @returns The campaign's memberships
  */
 export async function getMemberships(campaignId: string) {
-  // Validate the campaign ID
-  const schema = z.string().uuid();
-  schema.parse(campaignId);
+  // Validate inputs
+  z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -43,10 +42,10 @@ export async function getMemberships(campaignId: string) {
     .eq('campaign_id', campaignId);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -55,14 +54,13 @@ export async function getMemberships(campaignId: string) {
  * @param color - The membership's color
  * @param role - The membership's role
  */
-export async function updateMembership({ id, color, role }: { id: string; color?: string; role?: CampaignMemberRole }) {
-  // Validate the data
-  const schema = z.object({
-    id: z.string().uuid(),
-    color: z.string().optional(),
-    role: validate.fields.campaignMemberRole.optional(),
-  });
-  schema.parse({ id, color, role });
+export async function updateMembership({
+  id,
+  color,
+  role,
+}: z.infer<typeof validation.schemas.memberships.updateMembership>) {
+  // Validate inputs
+  validation.schemas.memberships.updateMembership.parse({ id, color, role });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -78,27 +76,26 @@ export async function updateMembership({ id, color, role }: { id: string; color?
     .eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
 /**
  * Delete a membership
- * @param membershipId - The membership to delete
+ * @param id - The membership to delete
  */
-export async function deleteMembership(membershipId: string) {
-  // Validate the membership ID
-  const schema = z.string().uuid();
-  schema.parse(membershipId);
+export async function deleteMembership({ id }: z.infer<typeof validation.schemas.memberships.deleteMembership>) {
+  // Validate inputs
+  validation.schemas.memberships.deleteMembership.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Delete the membership
-  const { error } = await supabase.from('campaign_memberships').delete().eq('id', membershipId);
+  const { error } = await supabase.from('campaign_memberships').delete().eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }

@@ -3,11 +3,12 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
 
-export type Profile = Awaited<ReturnType<typeof getProfile>>;
+export type Profile = NonNullable<Awaited<ReturnType<typeof getProfile>>['data']>;
 
 /**
  * Get the user profile
@@ -18,9 +19,9 @@ export async function getProfile() {
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Get the user
@@ -38,38 +39,34 @@ export async function getProfile() {
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
  * Update a user profile
  * @param data - The data to update the profile with
  */
-export async function updateProfile({ name, avatar_id }: { name?: string; avatar_id?: string | null }) {
-  // Validate the data
-  const schema = z.object({
-    name: z.string().optional(),
-    avatar_id: z.string().uuid().nullable().optional(),
-  });
-  schema.parse({ name, avatar_id });
+export async function updateProfile({ name, avatar_id }: z.infer<typeof validation.schemas.profiles.updateProfile>) {
+  // Validate inputs
+  validation.schemas.profiles.updateProfile.parse({ name, avatar_id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get the user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Update the profile
   const { error } = await supabase.from('profiles').update({ name, avatar_id }).eq('id', user.id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }

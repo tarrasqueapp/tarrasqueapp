@@ -15,6 +15,7 @@ import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { NextLink } from '@/components/navigation/NextLink';
 import { config } from '@/lib/config';
 import { AppNavigation } from '@/lib/navigation';
+import { validation } from '@/lib/validation';
 
 export function SignIn() {
   const [magicLinkSent, setMagicLinkSent] = useState(false);
@@ -22,14 +23,9 @@ export function SignIn() {
 
   const confirmEmail = searchParams.get('confirm-email');
 
-  // Setup form validation schema
-  const schema = z.object({
-    email: z.string().email().min(1),
-  });
-  type Schema = z.infer<typeof schema>;
-
   // Setup form
-  const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(schema) });
+  type Schema = z.infer<typeof validation.schemas.auth.signIn>;
+  const methods = useForm<Schema>({ mode: 'onChange', resolver: zodResolver(validation.schemas.auth.signIn) });
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -40,14 +36,14 @@ export function SignIn() {
    * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
-    try {
-      await signIn(values);
-      setMagicLinkSent(true);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+    const response = await signIn(values);
+
+    if (response?.error) {
+      toast.error(response.error);
+      return;
     }
+
+    setMagicLinkSent(true);
   }
 
   return (

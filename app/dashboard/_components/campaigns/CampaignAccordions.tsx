@@ -119,7 +119,8 @@ export function CampaignAccordions({ collapsedCampaigns: initialCollapsedCampaig
 
     // Check if order has changed
     if (orderedCampaigns.some((campaign, index) => campaign.id !== campaigns[index]!.id)) {
-      reorderCampaigns(orderedCampaigns.map((campaign) => campaign.id));
+      const campaignIds = orderedCampaigns.map((campaign) => campaign.id);
+      reorderCampaigns({ campaignIds });
     }
   }
 

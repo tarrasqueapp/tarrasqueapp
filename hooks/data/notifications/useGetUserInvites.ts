@@ -41,6 +41,12 @@ export function useGetUserInvites() {
 
   return useQuery({
     queryKey: ['invites'],
-    queryFn: () => getUserInvites(),
+    queryFn: async () => {
+      const response = await getUserInvites();
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
   });
 }

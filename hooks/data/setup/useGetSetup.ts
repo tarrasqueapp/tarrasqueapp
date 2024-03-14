@@ -35,6 +35,12 @@ export function useGetSetup() {
 
   return useQuery({
     queryKey: ['setup'],
-    queryFn: () => getSetup(),
+    queryFn: async () => {
+      const response = await getSetup();
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
   });
 }

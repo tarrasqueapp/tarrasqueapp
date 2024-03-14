@@ -25,7 +25,8 @@ export function useGetProfile() {
           const previousProfile = queryClient.getQueryData<Profile>(['profile']);
 
           // Refetch the profile to get the joined data
-          const profile = await getProfile();
+          const { data: profile } = await getProfile();
+          if (!profile) return;
 
           // Update the cache
           queryClient.setQueryData(['profile'], profile);
@@ -46,6 +47,12 @@ export function useGetProfile() {
 
   return useQuery({
     queryKey: ['profile'],
-    queryFn: () => getProfile(),
+    queryFn: async () => {
+      const response = await getProfile();
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
   });
 }

@@ -38,7 +38,13 @@ export function useGetCampaignMaps(campaignId?: string) {
 
   return useQuery({
     queryKey: ['campaigns', campaignId, 'maps'],
-    queryFn: () => getMaps(campaignId!),
+    queryFn: async () => {
+      const response = await getMaps(campaignId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(campaignId),
   });
 }

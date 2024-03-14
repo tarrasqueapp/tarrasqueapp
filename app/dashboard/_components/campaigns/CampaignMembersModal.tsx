@@ -26,12 +26,13 @@ import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { Campaign } from '@/actions/campaigns';
-import { createInvite, deleteInvite } from '@/actions/invites';
 import { CampaignMemberRole, deleteMembership, updateMembership } from '@/actions/memberships';
 import { UserAvatar } from '@/components/UserAvatar';
 import { ColorPicker } from '@/components/color-picker/ColorPicker';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
+import { useCreateInvite } from '@/hooks/data/campaigns/invites/useCreateInvite';
+import { useDeleteInvite } from '@/hooks/data/campaigns/invites/useDeleteInvite';
 import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useCampaignStore } from '@/store/campaign';
@@ -46,6 +47,8 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
   const { data: memberships } = useGetMemberships(campaign?.id || '');
   const { data: invites } = useGetInvites(campaign?.id || '');
   const { data: user } = useGetUser();
+  const createInvite = useCreateInvite();
+  const deleteInvite = useDeleteInvite();
 
   const modal = useCampaignStore((state) => state.modal);
 
@@ -80,14 +83,15 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
    */
   async function handleSubmitForm(values: Schema) {
     if (!campaign) return;
+
     try {
-      await createInvite({ campaign_id: campaign.id, email: values.email });
+      await createInvite.mutateAsync({ campaign_id: campaign.id, email: values.email });
+      reset({ email: '' });
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       }
     }
-    reset({ email: '' });
   }
 
   return (
@@ -146,7 +150,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
                     secondaryAction={
                       <IconButton
                         disabled={membership.user_id === user?.id}
-                        onClick={() => deleteMembership(membership.id)}
+                        onClick={() => deleteMembership({ id: membership.id })}
                       >
                         <Delete />
                       </IconButton>
@@ -184,9 +188,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
 
                       <ColorPicker
                         value={membership.color}
-                        onChange={(color) => {
-                          updateMembership({ id: membership.id, color });
-                        }}
+                        onChange={(color) => updateMembership({ id: membership.id, color })}
                       />
                     </Box>
                   </ListItem>
@@ -212,7 +214,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
                 <ListItem
                   key={invite.id}
                   secondaryAction={
-                    <IconButton onClick={() => deleteInvite(invite.id)}>
+                    <IconButton onClick={() => deleteInvite.mutate({ id: invite.id, campaign_id: campaign?.id })}>
                       <Delete />
                     </IconButton>
                   }

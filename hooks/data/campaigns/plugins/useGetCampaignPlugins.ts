@@ -36,7 +36,13 @@ export function useGetCampaignPlugins(campaignId: string | undefined) {
 
   return useQuery({
     queryKey: ['campaigns', campaignId, 'plugins'],
-    queryFn: () => getCampaignPlugins(campaignId!),
+    queryFn: async () => {
+      const response = await getCampaignPlugins(campaignId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(campaignId),
   });
 }

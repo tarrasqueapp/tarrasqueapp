@@ -27,9 +27,7 @@ export function DiceRollerWindow() {
   const toggleVisibility = useDraggableStore((state) => state.toggleVisibility);
 
   // Setup form validation schema
-  const schema = z.object({
-    notation: z.string(),
-  });
+  const schema = z.object({ notation: z.string() });
   type Schema = z.infer<typeof schema>;
 
   // Setup form

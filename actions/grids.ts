@@ -3,13 +3,13 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 import { Enums } from '@/utils/supabase/types.gen';
 
 import { getUser } from './auth';
 
-export type Grid = Awaited<ReturnType<typeof getMapGrid>>;
+export type Grid = NonNullable<Awaited<ReturnType<typeof getMapGrid>>['data']>;
 export type GridType = Enums<'grid_type'>;
 
 /**
@@ -18,9 +18,8 @@ export type GridType = Enums<'grid_type'>;
  * @returns The map's grid
  */
 export async function getMapGrid(mapId: string) {
-  // Validate the map ID
-  const schema = z.string().uuid();
-  schema.parse(mapId);
+  // Validate inputs
+  z.string().uuid().parse(mapId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -30,10 +29,10 @@ export async function getMapGrid(mapId: string) {
   const { data, error } = await supabase.from('grids').select('*').eq('map_id', mapId).single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -41,76 +40,97 @@ export async function getMapGrid(mapId: string) {
  * @param grid - The grid to create
  * @returns The created grid
  */
-export async function createGrid(grid: Omit<Grid, 'id' | 'created_at' | 'user_id'>) {
+export async function createGrid({
+  type,
+  width,
+  height,
+  offset_x,
+  offset_y,
+  color,
+  snap,
+  visible,
+  map_id,
+  campaign_id,
+}: z.infer<typeof validation.schemas.grids.createGrid>) {
   // Validate inputs
-  const schema = z
-    .object({
-      type: validate.fields.gridType,
-      width: z.number(),
-      height: z.number(),
-      offset_x: z.number(),
-      offset_y: z.number(),
-      color: z.string(),
-      snap: z.boolean(),
-      visible: z.boolean(),
-      map_id: z.string().uuid(),
-      campaign_id: z.string().uuid(),
-    })
-    .strict();
-  grid = schema.parse(grid);
+  validation.schemas.grids.createGrid.parse({
+    type,
+    width,
+    height,
+    offset_x,
+    offset_y,
+    color,
+    snap,
+    visible,
+    map_id,
+    campaign_id,
+  });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Create the grid
   const { data, error } = await supabase
     .from('grids')
-    .insert({ ...grid, user_id: user.id })
+    .insert({ type, width, height, offset_x, offset_y, color, snap, visible, map_id, campaign_id, user_id: user.id })
     .select()
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
  * Update a map's grid
  * @param grid - The grid to update
  */
-export async function updateGrid(grid: Partial<Grid> & { id: string }) {
+export async function updateGrid({
+  id,
+  type,
+  width,
+  height,
+  offset_x,
+  offset_y,
+  color,
+  snap,
+  visible,
+  map_id,
+}: z.infer<typeof validation.schemas.grids.updateGrid>) {
   // Validate inputs
-  const schema = z.object({
-    id: z.string().uuid(),
-    type: validate.fields.gridType.optional(),
-    width: z.number().optional(),
-    height: z.number().optional(),
-    offset_x: z.number().optional(),
-    offset_y: z.number().optional(),
-    color: z.string().optional(),
-    snap: z.boolean().optional(),
-    visible: z.boolean().optional(),
-    map_id: z.string().uuid().optional(),
+  validation.schemas.grids.updateGrid.parse({
+    id,
+    type,
+    width,
+    height,
+    offset_x,
+    offset_y,
+    color,
+    snap,
+    visible,
+    map_id,
   });
-  grid = schema.parse(grid);
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Update the grid
-  const { error } = await supabase.from('grids').update(grid).eq('id', grid.id);
+  const { error } = await supabase
+    .from('grids')
+    .update({ id, type, width, height, offset_x, offset_y, color, snap, visible, map_id })
+    .eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }

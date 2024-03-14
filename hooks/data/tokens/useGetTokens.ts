@@ -2,6 +2,7 @@ import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
+import { getMapTokens } from '@/actions/tokens';
 import { createBrowserClient } from '@/utils/supabase/client';
 
 /**
@@ -37,7 +38,13 @@ export function useGetTokens(mapId: string | undefined) {
 
   return useQuery({
     queryKey: ['maps', mapId, 'tokens'],
-    queryFn: () => [],
+    queryFn: async () => {
+      const response = await getMapTokens(mapId!);
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
+    },
     enabled: Boolean(mapId),
   });
 }

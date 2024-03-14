@@ -30,6 +30,20 @@ export function CampaignModals() {
     setTimeout(() => setSelectedCampaignId(null), 100);
   }
 
+  /**
+   * Handle deleting a campaign
+   */
+  async function handleDeleteSelectedCampaign() {
+    if (!selectedCampaign) return;
+
+    const response = await deleteCampaign({ id: selectedCampaign.id });
+
+    if (response?.error) {
+      toast.error(response.error);
+      return;
+    }
+  }
+
   return (
     <>
       <CreateUpdateCampaignModal
@@ -53,16 +67,7 @@ export function CampaignModals() {
       <ConfirmModal
         title="Delete Campaign"
         open={modal === CampaignModal.Delete}
-        onConfirm={async () => {
-          if (!selectedCampaign) return;
-          try {
-            await deleteCampaign(selectedCampaign.id);
-          } catch (error) {
-            if (error instanceof Error) {
-              toast.error(error.message);
-            }
-          }
-        }}
+        onConfirm={handleDeleteSelectedCampaign}
         onClose={handleCloseModal}
       >
         <Alert severity="warning" variant="outlined" sx={{ mb: 2 }}>

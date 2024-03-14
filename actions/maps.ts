@@ -3,13 +3,14 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
 import { createGrid } from './grids';
 import { getMapTokens } from './tokens';
 
-export type Map = Awaited<ReturnType<typeof getMaps>>[number];
+export type Map = NonNullable<Awaited<ReturnType<typeof getMap>>['data']>;
 
 /**
  * Get a campaign's maps
@@ -17,9 +18,8 @@ export type Map = Awaited<ReturnType<typeof getMaps>>[number];
  * @returns The campaign's maps
  */
 export async function getMaps(campaignId: string) {
-  // Validate the campaign ID
-  const schema = z.string().uuid();
-  schema.parse(campaignId);
+  // Validate inputs
+  z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -40,10 +40,10 @@ export async function getMaps(campaignId: string) {
     .eq('campaign_id', campaignId);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -52,9 +52,8 @@ export async function getMaps(campaignId: string) {
  * @returns The map
  */
 export async function getMap(mapId: string) {
-  // Validate the map ID
-  const schema = z.string().uuid();
-  schema.parse(mapId);
+  // Validate inputs
+  z.string().uuid().parse(mapId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -75,10 +74,10 @@ export async function getMap(mapId: string) {
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -88,27 +87,18 @@ export async function getMap(mapId: string) {
  * @param media_id - The map's media ID
  * @returns The created map
  */
-export async function createMap({
-  name,
-  campaign_id,
-  media_id,
-}: {
-  name: string;
-  campaign_id: string;
-  media_id: string;
-}) {
+export async function createMap({ name, campaign_id, media_id }: z.infer<typeof validation.schemas.maps.createMap>) {
   // Validate inputs
-  const schema = z.object({ name: z.string().min(1), campaign_id: z.string().uuid(), media_id: z.string().uuid() });
-  schema.parse({ name, campaign_id, media_id });
+  validation.schemas.maps.createMap.parse({ name, campaign_id, media_id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Get the order of the last map, if one exists
@@ -135,11 +125,11 @@ export async function createMap({
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   // Create the map's grid
-  await createGrid({
+  const { error: gridError } = await createGrid({
     type: 'SQUARE',
     width: 70,
     height: 70,
@@ -151,26 +141,31 @@ export async function createMap({
     map_id: data.id,
     campaign_id,
   });
+  if (gridError) {
+    return { error: gridError };
+  }
 
-  return data;
+  return { data };
 }
 
 /**
  * Duplicate a map
- * @param mapId - The map to duplicate
+ * @param id - The map to duplicate
  * @returns The duplicated map
  */
-export async function duplicateMap(mapId: string) {
+export async function duplicateMap({ id }: z.infer<typeof validation.schemas.maps.duplicateMap>) {
   // Validate inputs
-  const schema = z.string().uuid();
-  schema.parse(mapId);
+  validation.schemas.maps.duplicateMap.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get the original map
-  const map = await getMap(mapId);
+  const { data: map } = await getMap(id);
+  if (!map) {
+    return { error: 'Map not found' };
+  }
 
   // Get the order of the last map, if one exists
   const { data: lastMap } = await supabase
@@ -196,16 +191,19 @@ export async function duplicateMap(mapId: string) {
     .single();
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
   // Get the original map's tokens
-  const tokens = await getMapTokens(mapId);
+  const { data: tokens, error: tokensError } = await getMapTokens(id);
+  if (!tokens) {
+    return { error: tokensError };
+  }
 
   // Duplicate the map's tokens
   await supabase.from('tokens').insert(tokens.map((token) => ({ ...token, map_id: data.id })));
 
-  return data;
+  return { data };
 }
 
 /**
@@ -223,22 +221,9 @@ export async function updateMap({
   visible,
   campaign_id,
   media_id,
-}: {
-  id: string;
-  name?: string;
-  visible?: boolean;
-  campaign_id?: string;
-  media_id?: string;
-}) {
+}: z.infer<typeof validation.schemas.maps.updateMap>) {
   // Validate inputs
-  const schema = z.object({
-    id: z.string().uuid(),
-    name: z.string().min(1).optional(),
-    visible: z.boolean().optional(),
-    campaign_id: z.string().uuid().optional(),
-    media_id: z.string().uuid().optional(),
-  });
-  schema.parse({ id, name, visible, campaign_id, media_id });
+  validation.schemas.maps.updateMap.parse({ id, name, visible, campaign_id, media_id });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -248,41 +233,40 @@ export async function updateMap({
   const { data, error } = await supabase.from('maps').update({ name, visible, campaign_id, media_id }).eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
  * Delete a map
- * @param mapId - The map to delete
+ * @param id - The map to delete
  */
-export async function deleteMap(mapId: string) {
+export async function deleteMap({ id }: z.infer<typeof validation.schemas.maps.deleteMap>) {
   // Validate inputs
-  const schema = z.string().uuid();
-  schema.parse(mapId);
+  validation.schemas.maps.deleteMap.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Delete the map
-  const { error } = await supabase.from('maps').delete().eq('id', mapId);
+  const { error } = await supabase.from('maps').delete().eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
 /**
  * Reorder maps
+ * @param campaignId - The campaign to reorder maps for
  * @param mapIds - The new order of map ids
  */
-export async function reorderMaps({ campaignId, mapIds }: { campaignId: string; mapIds: string[] }) {
+export async function reorderMaps({ campaignId, mapIds }: z.infer<typeof validation.schemas.maps.reorderMaps>) {
   // Validate inputs
-  const schema = z.object({ campaignId: z.string().uuid(), mapIds: z.array(z.string().uuid()) });
-  schema.parse({ campaignId, mapIds });
+  validation.schemas.maps.reorderMaps.parse({ campaignId, mapIds });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -299,6 +283,8 @@ export async function reorderMaps({ campaignId, mapIds }: { campaignId: string; 
       .eq('id', mapId)
       .eq('campaign_id', campaignId);
 
-    if (error) throw error;
+    if (error) {
+      return { error: error.message };
+    }
   }
 }

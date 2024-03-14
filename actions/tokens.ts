@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { createServerClient } from '@/utils/supabase/server';
 
-export type Token = Awaited<ReturnType<typeof getMapTokens>>[number];
+export type Token = NonNullable<Awaited<ReturnType<typeof getMapTokens>>['data']>[number];
 
 /**
  * Get a map's tokens
@@ -13,9 +13,8 @@ export type Token = Awaited<ReturnType<typeof getMapTokens>>[number];
  * @returns The map's tokens
  */
 export async function getMapTokens(mapId: string) {
-  // Validate the map ID
-  const schema = z.string().uuid();
-  schema.parse(mapId);
+  // Validate inputs
+  z.string().uuid().parse(mapId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -25,8 +24,8 @@ export async function getMapTokens(mapId: string) {
   const { data, error } = await supabase.from('tokens').select('*').eq('map_id', mapId);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }

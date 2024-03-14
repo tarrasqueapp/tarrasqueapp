@@ -53,7 +53,7 @@ export function MapModals() {
         open={modal === MapModal.Delete}
         onConfirm={async () => {
           if (!selectedMap) return;
-          deleteMap(selectedMap.id);
+          deleteMap({ id: selectedMap.id });
         }}
         onClose={handleCloseModal}
       >

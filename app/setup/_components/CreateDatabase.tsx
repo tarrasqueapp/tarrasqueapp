@@ -22,14 +22,14 @@ export function CreateDatabase({ onSubmit }: CreateDatabaseProps) {
    * Handle the form submission
    */
   async function handleSubmitForm() {
-    try {
-      await createDatabase();
-      onSubmit();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+    const response = await createDatabase();
+
+    if (response?.error) {
+      toast.error(response.error);
+      return;
     }
+
+    onSubmit();
   }
 
   return (

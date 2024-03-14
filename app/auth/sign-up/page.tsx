@@ -2,6 +2,7 @@ import { Box, Container, Paper, Typography } from '@mui/material';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
+import { getInvite } from '@/actions/invites';
 import { Center } from '@/components/Center';
 import { Logo } from '@/components/Logo';
 import { NextLink } from '@/components/navigation/NextLink';
@@ -31,7 +32,7 @@ export default async function SignUpPage({
 
   // Get the invite token if it exists
   const inviteToken = typeof searchParams.token === 'string' ? searchParams.token : undefined;
-  const invite = inviteToken ? await ssr.prefetchInvite(inviteToken) : undefined;
+  const { data: invite } = inviteToken ? await getInvite(inviteToken) : { data: undefined };
 
   return (
     <Center>

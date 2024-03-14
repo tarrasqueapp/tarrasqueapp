@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { z } from 'zod';
 
 import { Grid, updateGrid } from '@/actions/grids';
+import { validation } from '@/lib/validation';
 
 /**
  * Update a map's grid
@@ -10,7 +12,12 @@ export function useUpdateGrid() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateGrid,
+    mutationFn: async (grid: z.infer<typeof validation.schemas.grids.updateGrid>) => {
+      const response = await updateGrid(grid);
+      if (response?.error) {
+        throw new Error(response.error);
+      }
+    },
     onMutate: async (newGrid) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: ['maps', newGrid.map_id, 'grid'] });

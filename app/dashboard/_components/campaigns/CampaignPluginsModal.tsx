@@ -39,7 +39,7 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
   async function handleDisablePlugin(campaignPlugin: CampaignPlugin) {
     if (!campaignPlugin) return;
 
-    await disableCampaignPlugin(campaignPlugin.id);
+    await disableCampaignPlugin({ id: campaignPlugin.id });
   }
 
   return (

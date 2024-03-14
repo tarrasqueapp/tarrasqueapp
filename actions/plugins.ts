@@ -3,13 +3,13 @@
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
 
-export type Plugin = Awaited<ReturnType<typeof getUserPlugins>>[number];
-export type CampaignPlugin = Awaited<ReturnType<typeof getCampaignPlugins>>[number];
+export type Plugin = NonNullable<Awaited<ReturnType<typeof getUserPlugins>>['data']>[number];
+export type CampaignPlugin = NonNullable<Awaited<ReturnType<typeof getCampaignPlugins>>['data']>[number];
 
 /**
  * Get a user's installed plugins
@@ -21,68 +21,64 @@ export async function getUserPlugins() {
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Get the plugins
   const { data, error } = await supabase.from('plugins').select('*').eq('user_id', user.id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
  * Install a plugin
  * @param manifest_url - The plugin's manifest URL
  */
-export async function installPlugin({ manifest_url }: { manifest_url: string }) {
+export async function installPlugin({ manifest_url }: z.infer<typeof validation.schemas.plugins.installPlugin>) {
   // Validate inputs
-  const schema = z.object({
-    manifest_url: validate.fields.manifestUrl,
-  });
-  schema.parse({ manifest_url });
+  validation.schemas.plugins.installPlugin.parse({ manifest_url });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Get user
-  const user = await getUser();
+  const { data: user } = await getUser();
   if (!user) {
-    throw new Error('User not found');
+    return { error: 'User not found' };
   }
 
   // Create the plugin
   const { error } = await supabase.from('plugins').insert({ user_id: user.id, manifest_url });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
 /**
  * Uninstall a plugin
- * @param pluginId - The plugin to uninstall
+ * @param id - The plugin to uninstall
  */
-export async function uninstallPlugin(pluginId: string) {
+export async function uninstallPlugin({ id }: z.infer<typeof validation.schemas.plugins.uninstallPlugin>) {
   // Validate inputs
-  const schema = z.string().uuid();
-  schema.parse(pluginId);
+  validation.schemas.plugins.uninstallPlugin.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Delete the plugin
-  const { error } = await supabase.from('plugins').delete().eq('id', pluginId);
+  const { error } = await supabase.from('plugins').delete().eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
@@ -92,9 +88,8 @@ export async function uninstallPlugin(pluginId: string) {
  * @returns The campaign's plugins
  */
 export async function getCampaignPlugins(campaignId: string) {
-  // Validate the campaign ID
-  const schema = z.string().uuid();
-  schema.parse(campaignId);
+  // Validate inputs
+  z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -114,10 +109,10 @@ export async function getCampaignPlugins(campaignId: string) {
     .eq('campaign_id', campaignId);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 
-  return data;
+  return { data };
 }
 
 /**
@@ -125,13 +120,12 @@ export async function getCampaignPlugins(campaignId: string) {
  * @param campaign_id - The campaign to enable the plugin for
  * @param plugin_id - The plugin to enable
  */
-export async function enableCampaignPlugin({ campaign_id, plugin_id }: { campaign_id: string; plugin_id: string }) {
+export async function enableCampaignPlugin({
+  campaign_id,
+  plugin_id,
+}: z.infer<typeof validation.schemas.plugins.enableCampaignPlugin>) {
   // Validate inputs
-  const schema = z.object({
-    campaign_id: z.string().uuid(),
-    plugin_id: z.string().uuid(),
-  });
-  schema.parse({ campaign_id, plugin_id });
+  validation.schemas.plugins.enableCampaignPlugin.parse({ campaign_id, plugin_id });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -141,27 +135,26 @@ export async function enableCampaignPlugin({ campaign_id, plugin_id }: { campaig
   const { error } = await supabase.from('campaign_plugins').insert({ campaign_id, plugin_id });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
 /**
  * Disable a plugin for a campaign
- * @param campaignPluginId - The campaign plugin to disable
+ * @param id - The campaign plugin to disable
  */
-export async function disableCampaignPlugin(campaignPluginId: string) {
+export async function disableCampaignPlugin({ id }: z.infer<typeof validation.schemas.plugins.disableCampaignPlugin>) {
   // Validate inputs
-  const schema = z.string().uuid();
-  schema.parse(campaignPluginId);
+  validation.schemas.plugins.disableCampaignPlugin.parse({ id });
 
   // Connect to Supabase
   const cookieStore = cookies();
   const supabase = createServerClient(cookieStore);
 
   // Disable the plugin
-  const { error } = await supabase.from('campaign_plugins').delete().eq('id', campaignPluginId);
+  const { error } = await supabase.from('campaign_plugins').delete().eq('id', id);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }

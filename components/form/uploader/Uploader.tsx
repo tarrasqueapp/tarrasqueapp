@@ -68,7 +68,7 @@ export function Uploader({
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffectAsync(async () => {
-    const session = await getSession();
+    const { data: session } = await getSession();
     const accessToken = session?.access_token || null;
     setAccessToken(accessToken);
   }, []);

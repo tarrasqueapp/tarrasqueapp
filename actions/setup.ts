@@ -1,8 +1,9 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { z } from 'zod';
 
-import { validate } from '@/lib/validate';
+import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 import { Enums } from '@/utils/supabase/types.gen';
 
@@ -18,9 +19,13 @@ export async function getSetup() {
   const supabase = createServerClient(cookieStore);
 
   // Get the setup progress
-  const { data } = await supabase.from('setup').select('step').single();
+  const { data, error } = await supabase.from('setup').select('step').single();
 
-  return data;
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { data };
 }
 
 /**
@@ -35,18 +40,17 @@ export async function createDatabase() {
   const { error } = await supabase.from('setup').insert({ id: 1, step: 'CREATED_DATABASE' });
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }
 
 /**
  * Update the setup progress
- * @param setup - The setup to update with
+ * @param step - The step to set the setup progress to
  */
-export async function updateSetup(step: SetupStep) {
-  // Validate the data
-  const schema = validate.fields.setupStep;
-  schema.parse(step);
+export async function updateSetup({ step }: z.infer<typeof validation.schemas.setup.updateSetup>) {
+  // Validate inputs
+  validation.schemas.setup.updateSetup.parse({ step });
 
   // Connect to Supabase
   const cookieStore = cookies();
@@ -56,6 +60,6 @@ export async function updateSetup(step: SetupStep) {
   const { error } = await supabase.from('setup').update({ step }).eq('id', 1);
 
   if (error) {
-    throw error;
+    return { error: error.message };
   }
 }

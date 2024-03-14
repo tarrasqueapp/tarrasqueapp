@@ -37,7 +37,7 @@ export const useChannelStore = create<ChannelStore>((set, get) => ({
       let user_id = '';
 
       // Get the user ID
-      const user = await getUser();
+      const { data: user } = await getUser();
       if (user) {
         user_id = user.id;
       } else {
