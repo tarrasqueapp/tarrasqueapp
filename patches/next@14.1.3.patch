@@ -1,8 +1,8 @@
 diff --git a/dist/esm/server/base-server.js b/dist/esm/server/base-server.js
-index 28153e0cb76362d01c13636b42d9523268305d66..33e90682704d85bec6d875e55a2c67c7772739bc 100644
+index bc965a1e5b0a043e89c7ee36bf8f1f13d67c652d..d975e31a0c31a2530779deb74e4697b1198f1dc5 100644
 --- a/dist/esm/server/base-server.js
 +++ b/dist/esm/server/base-server.js
-@@ -391,7 +391,7 @@ export default class Server {
+@@ -390,7 +390,7 @@ export default class Server {
              // ensure cookies set in middleware are merged and
              // not overridden by API routes/getServerSideProps
              const _res = res.originalResponse || res;
@@ -12,10 +12,10 @@ index 28153e0cb76362d01c13636b42d9523268305d66..33e90682704d85bec6d875e55a2c67c7
                  // When renders /_error after page is failed,
                  // it could attempt to set headers after headers
 diff --git a/dist/server/base-server.js b/dist/server/base-server.js
-index 0c5dfa5ebf74076472f2e32d9b2043407c5a32a1..2a154b888bafe3deb306b7b3b05d2d52fee194a1 100644
+index 9c4a2d1a8ca22a4827bc2a987931acafae0ab256..2950815edcffe402a6e95a3327ab8e99fc1df363 100644
 --- a/dist/server/base-server.js
 +++ b/dist/server/base-server.js
-@@ -458,7 +458,7 @@ class Server {
+@@ -457,7 +457,7 @@ class Server {
              // ensure cookies set in middleware are merged and
              // not overridden by API routes/getServerSideProps
              const _res = res.originalResponse || res;
