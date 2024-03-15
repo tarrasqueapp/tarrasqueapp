@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -22,8 +21,7 @@ export async function getMapGrid(mapId: string) {
   z.string().uuid().parse(mapId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the grid
   const { data, error } = await supabase.from('grids').select('*').eq('map_id', mapId).single();
@@ -67,8 +65,7 @@ export async function createGrid({
   });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();
@@ -121,8 +118,7 @@ export async function updateGrid({
   });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Update the grid
   const { error } = await supabase

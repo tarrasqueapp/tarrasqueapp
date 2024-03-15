@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -30,8 +29,7 @@ export async function createMedia({
   validation.schemas.media.createMedia.parse({ id, url, width, height, size });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();

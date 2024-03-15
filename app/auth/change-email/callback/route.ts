@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { createServerClient } from '@/utils/supabase/server';
@@ -10,8 +9,7 @@ export async function GET(req: Request) {
   const next = searchParams.get('next') ?? '/';
 
   if (token_hash) {
-    const cookieStore = cookies();
-    const supabase = createServerClient(cookieStore);
+    const supabase = createServerClient();
 
     const { error } = await supabase.auth.verifyOtp({ type: 'email_change', token_hash });
     if (!error) {

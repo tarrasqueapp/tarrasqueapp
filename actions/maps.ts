@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -22,8 +21,7 @@ export async function getMaps(campaignId: string) {
   z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the maps
   const { data, error } = await supabase
@@ -56,8 +54,7 @@ export async function getMap(mapId: string) {
   z.string().uuid().parse(mapId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the map
   const { data, error } = await supabase
@@ -92,8 +89,7 @@ export async function createMap({ name, campaign_id, media_id }: z.infer<typeof 
   validation.schemas.maps.createMap.parse({ name, campaign_id, media_id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();
@@ -158,8 +154,7 @@ export async function duplicateMap({ id }: z.infer<typeof validation.schemas.map
   validation.schemas.maps.duplicateMap.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the original map
   const { data: map } = await getMap(id);
@@ -226,8 +221,7 @@ export async function updateMap({
   validation.schemas.maps.updateMap.parse({ id, name, visible, campaign_id, media_id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Update the map
   const { data, error } = await supabase.from('maps').update({ name, visible, campaign_id, media_id }).eq('id', id);
@@ -248,8 +242,7 @@ export async function deleteMap({ id }: z.infer<typeof validation.schemas.maps.d
   validation.schemas.maps.deleteMap.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Delete the map
   const { error } = await supabase.from('maps').delete().eq('id', id);
@@ -269,8 +262,7 @@ export async function reorderMaps({ campaignId, mapIds }: z.infer<typeof validat
   validation.schemas.maps.reorderMaps.parse({ campaignId, mapIds });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   for (let i = 0; i < mapIds.length; i++) {
     const mapId = mapIds[i]!;

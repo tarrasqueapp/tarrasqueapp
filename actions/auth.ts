@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
@@ -18,8 +17,7 @@ import { getProfile } from './profiles';
  */
 export async function getUser() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const {
@@ -40,8 +38,7 @@ export async function getUser() {
  */
 export async function getSession() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the session
   const {
@@ -67,8 +64,7 @@ export async function signUp({ name, email, token }: z.infer<typeof validation.s
   validation.schemas.auth.signUp.parse({ name, email, token });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Check if the user exists
   const { data: profile } = await supabase.from('profiles').select('id').eq('email', email).single();
@@ -135,8 +131,7 @@ export async function signIn({ email }: z.infer<typeof validation.schemas.auth.s
   validation.schemas.auth.signIn.parse({ email });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Check if the user exists
   const { data: profile } = await supabase.from('profiles').select('name').eq('email', email).single();
@@ -171,8 +166,7 @@ export async function signIn({ email }: z.infer<typeof validation.schemas.auth.s
  */
 export async function signOut() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Sign out the user
   const { error } = await supabase.auth.signOut();

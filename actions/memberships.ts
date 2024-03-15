@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -20,8 +19,7 @@ export async function getMemberships(campaignId: string) {
   z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the memberships
   const { data, error } = await supabase
@@ -63,8 +61,7 @@ export async function updateMembership({
   validation.schemas.memberships.updateMembership.parse({ id, color, role });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Update the membership
   const { error } = await supabase
@@ -89,8 +86,7 @@ export async function deleteMembership({ id }: z.infer<typeof validation.schemas
   validation.schemas.memberships.deleteMembership.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Delete the membership
   const { error } = await supabase.from('campaign_memberships').delete().eq('id', id);

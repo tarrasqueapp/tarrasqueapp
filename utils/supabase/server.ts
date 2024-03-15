@@ -5,7 +5,9 @@ import { config } from '@/lib/config';
 
 import { Database } from './types.gen';
 
-export function createServerClient(cookieStore: ReturnType<typeof cookies>) {
+export function createServerClient() {
+  const cookieStore = cookies();
+
   return supabaseCreateServerClient<Database>(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
     cookies: {
       get(name: string) {

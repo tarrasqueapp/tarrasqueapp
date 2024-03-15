@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -16,8 +15,7 @@ export async function getObjectId(url: string) {
   z.string().min(1).parse(url);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the objects in the folder
   const folder = url.split('/')[0];
@@ -43,8 +41,7 @@ export async function deleteStorageObject({ url }: z.infer<typeof validation.sch
   validation.schemas.storage.deleteStorageObject.parse({ url });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Delete the object
   const { error } = await supabase.storage.from('tarrasqueapp').remove([url]);

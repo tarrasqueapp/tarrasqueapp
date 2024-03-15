@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { createServerClient } from '@/utils/supabase/server';
@@ -17,8 +16,7 @@ export async function getMapTokens(mapId: string) {
   z.string().uuid().parse(mapId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the tokens
   const { data, error } = await supabase.from('tokens').select('*').eq('map_id', mapId);

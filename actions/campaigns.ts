@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { Color } from '@/lib/colors';
@@ -22,8 +21,7 @@ export async function getUserCampaigns(role?: CampaignMemberRole) {
   validation.fields.campaignMemberRole.optional().parse(role);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();
@@ -87,8 +85,7 @@ export async function getCampaign(campaignId: string) {
   z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the campaign
   const { data, error } = await supabase.from('campaigns').select(`*`).eq('id', campaignId).single();
@@ -110,8 +107,7 @@ export async function createCampaign({ name }: z.infer<typeof validation.schemas
   validation.schemas.campaigns.createCampaign.parse({ name });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();
@@ -148,8 +144,7 @@ export async function updateCampaign({ id, name }: z.infer<typeof validation.sch
   validation.schemas.campaigns.updateCampaign.parse({ id, name });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Update the campaign
   const { error } = await supabase.from('campaigns').update({ name }).eq('id', id);
@@ -168,8 +163,7 @@ export async function deleteCampaign({ id }: z.infer<typeof validation.schemas.c
   validation.schemas.campaigns.deleteCampaign.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Delete the campaign
   const { error } = await supabase.from('campaigns').delete().eq('id', id);
@@ -189,8 +183,7 @@ export async function reorderCampaigns({ campaignIds }: z.infer<typeof validatio
   validation.schemas.campaigns.reorderCampaigns.parse({ campaignIds });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();

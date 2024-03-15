@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -16,8 +15,7 @@ export type Profile = NonNullable<Awaited<ReturnType<typeof getProfile>>['data']
  */
 export async function getProfile() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   const { data: user } = await getUser();
   if (!user) {
@@ -54,8 +52,7 @@ export async function updateProfile({ name, avatar_id }: z.infer<typeof validati
   validation.schemas.profiles.updateProfile.parse({ name, avatar_id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the user
   const { data: user } = await getUser();

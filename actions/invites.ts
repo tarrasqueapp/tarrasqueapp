@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
@@ -24,8 +23,7 @@ export async function getInvites(campaignId: string) {
   z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the invites
   const { data, error } = await supabase.from('campaign_invites').select('*').eq('campaign_id', campaignId);
@@ -47,8 +45,7 @@ export async function getInvite(inviteId: string) {
   z.string().uuid().parse(inviteId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the invite
   const { data, error } = await supabase
@@ -77,8 +74,7 @@ export async function getInvite(inviteId: string) {
  */
 export async function getUserInvites() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the current user's profile
   const { data: profile } = await getProfile();
@@ -117,8 +113,7 @@ export async function createInvite({ campaign_id, email }: z.infer<typeof valida
   validation.schemas.invites.createInvite.parse({ campaign_id, email });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the current user's profile
   const { data: profile } = await getProfile();
@@ -223,8 +218,7 @@ export async function deleteInvite({ id }: z.infer<typeof validation.schemas.inv
   validation.schemas.invites.deleteInvite.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Delete the invite
   const { error } = await supabase.from('campaign_invites').delete().eq('id', id);
@@ -243,8 +237,7 @@ export async function acceptInvite({ id }: z.infer<typeof validation.schemas.inv
   validation.schemas.invites.acceptInvite.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the invite
   const { data: invite, error: inviteError } = await supabase.from('campaign_invites').select().eq('id', id).single();

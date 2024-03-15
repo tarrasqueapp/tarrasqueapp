@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -17,8 +16,7 @@ export type CampaignPlugin = NonNullable<Awaited<ReturnType<typeof getCampaignPl
  */
 export async function getUserPlugins() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();
@@ -45,8 +43,7 @@ export async function installPlugin({ manifest_url }: z.infer<typeof validation.
   validation.schemas.plugins.installPlugin.parse({ manifest_url });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get user
   const { data: user } = await getUser();
@@ -71,8 +68,7 @@ export async function uninstallPlugin({ id }: z.infer<typeof validation.schemas.
   validation.schemas.plugins.uninstallPlugin.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Delete the plugin
   const { error } = await supabase.from('plugins').delete().eq('id', id);
@@ -92,8 +88,7 @@ export async function getCampaignPlugins(campaignId: string) {
   z.string().uuid().parse(campaignId);
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the plugins
   const { data, error } = await supabase
@@ -128,8 +123,7 @@ export async function enableCampaignPlugin({
   validation.schemas.plugins.enableCampaignPlugin.parse({ campaign_id, plugin_id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Enable the plugin
   const { error } = await supabase.from('campaign_plugins').insert({ campaign_id, plugin_id });
@@ -148,8 +142,7 @@ export async function disableCampaignPlugin({ id }: z.infer<typeof validation.sc
   validation.schemas.plugins.disableCampaignPlugin.parse({ id });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Disable the plugin
   const { error } = await supabase.from('campaign_plugins').delete().eq('id', id);

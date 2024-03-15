@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { validation } from '@/lib/validation';
@@ -15,8 +14,7 @@ export type SetupStep = Enums<'setup_step'>;
  */
 export async function getSetup() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Get the setup progress
   const { data, error } = await supabase.from('setup').select('step').single();
@@ -33,8 +31,7 @@ export async function getSetup() {
  */
 export async function createDatabase() {
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Create the database
   const { error } = await supabase.from('setup').insert({ id: 1, step: 'CREATED_DATABASE' });
@@ -53,8 +50,7 @@ export async function updateSetup({ step }: z.infer<typeof validation.schemas.se
   validation.schemas.setup.updateSetup.parse({ step });
 
   // Connect to Supabase
-  const cookieStore = cookies();
-  const supabase = createServerClient(cookieStore);
+  const supabase = createServerClient();
 
   // Update the setup progress
   const { error } = await supabase.from('setup').update({ step }).eq('id', 1);

@@ -1,7 +1,5 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
-import { cookies } from 'next/headers';
 
 import { getUser } from '@/actions/auth';
 import { getCampaign, getUserCampaigns } from '@/actions/campaigns';
@@ -16,13 +14,11 @@ import { Database } from './supabase/types.gen';
 
 export class SSRUtils {
   queryClient: QueryClient;
-  cookieStore: ReadonlyRequestCookies;
   supabase: SupabaseClient<Database>;
 
   constructor() {
     this.queryClient = new QueryClient();
-    this.cookieStore = cookies();
-    this.supabase = createServerClient(this.cookieStore);
+    this.supabase = createServerClient();
   }
 
   /**
