@@ -81,7 +81,7 @@ export function ShareMapModal({ open, onClose, map }: ShareMapModalProps) {
               label="Invite Link"
               fullWidth
               autoComplete="off"
-              value={`${config.HOST}${AppNavigation.Map}/${map.id}`}
+              value={`${config.SITE_URL}${AppNavigation.Map}/${map.id}`}
               onFocus={handleFocus}
               inputRef={inviteLinkRef}
             />

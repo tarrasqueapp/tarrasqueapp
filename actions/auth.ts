@@ -92,7 +92,7 @@ export async function signUp({ name, email, token }: z.infer<typeof validation.s
     token_hash: data.properties.hashed_token,
     next: '/dashboard',
   });
-  const link = `${config.HOST}/auth/sign-up/callback?${searchParams}`;
+  const link = `${config.SITE_URL}/auth/sign-up/callback?${searchParams}`;
 
   // Associate campaign invites for this email address with the new user
   supabase.from('campaign_invites').update({ user_id: data.user.id }).eq('email', email);
@@ -154,7 +154,7 @@ export async function signIn({ email }: z.infer<typeof validation.schemas.auth.s
     token_hash: data.properties.hashed_token,
     next: '/dashboard',
   });
-  const link = `${config.HOST}/auth/sign-in/callback?${searchParams}`;
+  const link = `${config.SITE_URL}/auth/sign-in/callback?${searchParams}`;
 
   // Send the magic link email
   const firstName = profile.name.split(' ')[0]!;
@@ -208,7 +208,7 @@ export async function updateUser({ email }: z.infer<typeof validation.schemas.au
       token_hash: data.properties.hashed_token,
       next: '/dashboard',
     });
-    const link = `${config.HOST}/auth/change-email/callback?${searchParams}`;
+    const link = `${config.SITE_URL}/auth/change-email/callback?${searchParams}`;
 
     // Send an email with the verification link
     const { data: profile } = await getProfile();

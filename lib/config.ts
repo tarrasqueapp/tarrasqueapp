@@ -3,11 +3,11 @@ import packageJson from '../package.json';
 export const config = {
   // Global
   VERSION: packageJson.version,
-  HOST: process.env.HOST || 'http://localhost:3000',
+  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   NODE_ENV: process.env.NODE_ENV || 'development',
   // Supabase
-  SUPABASE_URL: process.env.SUPABASE_URL || '',
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
+  SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   // Email
   SMTP_HOST: process.env.SMTP_HOST || '',

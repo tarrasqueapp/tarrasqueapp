@@ -48,17 +48,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={config.HOST} />
+        <meta property="og:url" content={config.SITE_URL} />
         <meta property="og:title" content="Tarrasque App" />
         <meta property="og:description" content="Tarrasque App" />
-        <meta property="og:image" content={`${config.HOST}/images/icons/apple-splash-1334-750.jpg`} />
+        <meta property="og:image" content={`${config.SITE_URL}/images/icons/apple-splash-1334-750.jpg`} />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={config.HOST} />
+        <meta property="twitter:url" content={config.SITE_URL} />
         <meta property="twitter:title" content="Tarrasque App" />
         <meta property="twitter:description" content="Tarrasque App" />
-        <meta property="twitter:image" content={`${config.HOST}/images/icons/apple-splash-1334-750.jpg`} />
+        <meta property="twitter:image" content={`${config.SITE_URL}/images/icons/apple-splash-1334-750.jpg`} />
 
         {/* Favicon */}
         <link rel="icon" type="image/png" sizes="196x196" href="/images/icons/favicon-196.png" />

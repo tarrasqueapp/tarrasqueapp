@@ -188,7 +188,7 @@ export async function createInvite({ campaign_id, email }: z.infer<typeof valida
       token_hash: generatedLink.properties.hashed_token,
       next: '/dashboard',
     });
-    const link = `${config.HOST}/auth/sign-in/callback?${searchParams}`;
+    const link = `${config.SITE_URL}/auth/sign-in/callback?${searchParams}`;
 
     await sendCampaignInviteExistingUserEmail({
       hostName: profile.name,
@@ -202,7 +202,7 @@ export async function createInvite({ campaign_id, email }: z.infer<typeof valida
       hostName: profile.name,
       campaignName: data.campaign!.name,
       to: email,
-      signUpUrl: `${config.HOST}/auth/sign-up?token=${data.id}`,
+      signUpUrl: `${config.SITE_URL}/auth/sign-up?token=${data.id}`,
     });
   }
 

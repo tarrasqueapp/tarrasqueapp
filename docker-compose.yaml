@@ -9,12 +9,12 @@ services:
       dockerfile: ./Dockerfile.dev
       args:
         # Global
-        - HOST=${HOST}
+        - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
         - NODE_ENV=${NODE_ENV}
         # Supabase
-        - SUPABASE_URL=${SUPABASE_URL}
-        - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
         - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+        - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
         # Email
         - SMTP_HOST=${SMTP_HOST}
         - SMTP_PORT=${SMTP_PORT}
