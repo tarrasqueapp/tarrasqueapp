@@ -55,8 +55,8 @@
     "@pixi/react": "^7.1.1",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.8",
-    "@tanstack/react-query": "^5.28.2",
-    "@tanstack/react-query-devtools": "^5.28.2",
+    "@tanstack/react-query": "^5.28.4",
+    "@tanstack/react-query-devtools": "^5.28.4",
     "@uppy/core": "^3.9.3",
     "@uppy/tus": "^3.5.3",
     "colord": "^2.9.3",
@@ -69,7 +69,6 @@
     "nodemailer": "^6.9.12",
     "pixi-viewport": "^5.0.2",
     "pixi.js": "^7.4.0",
-    "punycode": "1.4.1",
     "react": "^18.2.0",
     "react-colorful": "^5.6.1",
     "react-dom": "^18.2.0",
@@ -89,7 +88,7 @@
     "@svgr/webpack": "^8.1.0",
     "@tronite/style-guide": "^0.0.11",
     "@types/mjml": "^4.7.4",
-    "@types/node": "^20.11.27",
+    "@types/node": "^20.11.28",
     "@types/nodemailer": "^6.4.14",
     "@types/react": "^18.2.66",
     "@types/uuid": "^9.0.8",
@@ -99,7 +98,7 @@
     "prettier": "^3.2.5",
     "typescript": "^5.4.2"
   },
-  "packageManager": "pnpm@8.11.0",
+  "packageManager": "pnpm@8.15.4+sha256.cea6d0bdf2de3a0549582da3983c70c92ffc577ff4410cbf190817ddc35137c2",
   "pnpm": {
     "patchedDependencies": {
       "pixi-viewport@5.0.2": "patches/pixi-viewport@5.0.2.patch",

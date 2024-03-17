@@ -22,7 +22,7 @@ Tarrasque App is a free and open-source virtual tabletop software for playing Du
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/en/) (v20.11.1 or higher)
+- [Node.js](https://nodejs.org/en/) (v20.11.1)
 - [pnpm](https://pnpm.io/) (v8.11.0 or higher)
 - [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started?platform=macos) (v1.123.4 or higher)
 
