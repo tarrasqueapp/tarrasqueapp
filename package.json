@@ -56,7 +56,6 @@
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.8",
     "@tanstack/react-query": "^5.28.4",
-    "@tanstack/react-query-devtools": "^5.28.4",
     "@tarrasque/sdk": "^0.0.8",
     "@uppy/core": "^3.9.3",
     "@uppy/tus": "^3.5.3",
@@ -87,6 +86,7 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.1.3",
     "@svgr/webpack": "^8.1.0",
+    "@tanstack/react-query-devtools": "^5.28.4",
     "@tronite/style-guide": "^0.0.11",
     "@types/mjml": "^4.7.4",
     "@types/node": "^20.11.28",

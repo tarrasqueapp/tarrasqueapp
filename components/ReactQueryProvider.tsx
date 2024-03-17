@@ -1,7 +1,12 @@
 'use client';
 
+import { Box } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { usePathname } from 'next/navigation';
 import { Suspense, lazy, useEffect, useState } from 'react';
+
+import { AppNavigation } from '@/utils/navigation';
 
 declare global {
   interface Window {
@@ -29,6 +34,7 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
         },
       }),
   );
+  const pathname = usePathname();
 
   // Add a global function to toggle the devtools
   useEffect(() => {
@@ -39,11 +45,15 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
     <QueryClientProvider client={queryClient}>
       {children}
 
-      {showDevtools && (
-        <Suspense fallback={null}>
-          <ReactQueryDevtoolsProduction />
-        </Suspense>
-      )}
+      <Box sx={{ position: 'fixed', bottom: pathname.startsWith(AppNavigation.Map) ? 78 : 10, right: 10 }}>
+        <ReactQueryDevtools initialIsOpen={false} position="right" buttonPosition="relative" />
+
+        {showDevtools && (
+          <Suspense fallback={null}>
+            <ReactQueryDevtoolsProduction position="right" buttonPosition="relative" />
+          </Suspense>
+        )}
+      </Box>
     </QueryClientProvider>
   );
 }

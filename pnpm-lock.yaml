@@ -64,9 +64,6 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.28.4
     version: 5.28.4(react@18.2.0)
-  '@tanstack/react-query-devtools':
-    specifier: ^5.28.4
-    version: 5.28.4(@tanstack/react-query@5.28.4)(react@18.2.0)
   '@tarrasque/sdk':
     specifier: ^0.0.8
     version: 0.0.8
@@ -153,6 +150,9 @@ devDependencies:
   '@svgr/webpack':
     specifier: ^8.1.0
     version: 8.1.0(typescript@5.4.2)
+  '@tanstack/react-query-devtools':
+    specifier: ^5.28.4
+    version: 5.28.4(@tanstack/react-query@5.28.4)(react@18.2.0)
   '@tronite/style-guide':
     specifier: ^0.0.11
     version: 0.0.11(@next/eslint-plugin-next@14.1.3)(eslint@8.57.0)(prettier@3.2.5)(typescript@5.4.2)
@@ -2857,11 +2857,10 @@ packages:
 
   /@tanstack/query-core@5.28.4:
     resolution: {integrity: sha512-uQZqOFqLWUvXNIQZ63XdKzg22NtHzgCBUfDmjDHi3BoF+nUYeBNvMi/xFPtFrMhqRzG2Ir4mYaGsWZzmiEjXpA==}
-    dev: false
 
   /@tanstack/query-devtools@5.28.3:
     resolution: {integrity: sha512-Kxch05PVnxLUAyRiz2gXYQhXATHfXbQQwvz858YPjYYQyi7yk8SyS9Z5hyw90bRb0pd3rjelXyGFCsNMWvEghw==}
-    dev: false
+    dev: true
 
   /@tanstack/react-query-devtools@5.28.4(@tanstack/react-query@5.28.4)(react@18.2.0):
     resolution: {integrity: sha512-oS+3INjCIX4Nkh0IAV6LH2mgLqJjkcd/DDxp8dwdWCGloLrz6IBj+bOuuI2wD0zb8r7l45wIAYIhl4Z6XyTupQ==}
@@ -2872,7 +2871,7 @@ packages:
       '@tanstack/query-devtools': 5.28.3
       '@tanstack/react-query': 5.28.4(react@18.2.0)
       react: 18.2.0
-    dev: false
+    dev: true
 
   /@tanstack/react-query@5.28.4(react@18.2.0):
     resolution: {integrity: sha512-BErcoB/QQG6YwLSUKnaGxF+lSc270RH2w3kMBpG0i4YzDCsFs2pdxPX1WVknQvFk9bNgukMb158hc2Zb4SdwSA==}
@@ -2881,7 +2880,6 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.28.4
       react: 18.2.0
-    dev: false
 
   /@tarrasque/sdk@0.0.8:
     resolution: {integrity: sha512-vbrlHOnrIS3/M1ExZJrTDHPSg9PKizFiADtnYxenI0hf3Q6pW6FUg3/D9V1ypfLd43LPbLOoAxom7kAovBVM5A==}
@@ -6681,7 +6679,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
