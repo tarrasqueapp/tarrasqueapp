@@ -8,9 +8,5 @@ export function DashboardModals() {
   const modal = useDashboardStore((state) => state.modal);
   const setModal = useDashboardStore((state) => state.setModal);
 
-  return (
-    <>
-      <PluginsModal open={modal === DashboardModal.Plugins} onClose={() => setModal(null)} />
-    </>
-  );
+  return <>{modal === DashboardModal.Plugins && <PluginsModal open onClose={() => setModal(null)} />}</>;
 }

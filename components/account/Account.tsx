@@ -60,7 +60,7 @@ export function Account() {
         )}
       </PopupState>
 
-      <SettingsModal open={modal === DashboardModal.Settings} onClose={() => setModal(null)} />
+      {modal === DashboardModal.Settings && <SettingsModal open onClose={() => setModal(null)} />}
     </>
   );
 }

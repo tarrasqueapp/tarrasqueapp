@@ -29,21 +29,12 @@ export function MapModals() {
   return (
     <>
       {modal === MapModal.CreateUpdate && (
-        <CreateUpdateMapModal
-          open={modal === MapModal.CreateUpdate}
-          onClose={handleCloseModal}
-          mapId={selectedMapId!}
-          campaignId={selectedCampaignId!}
-        />
+        <CreateUpdateMapModal open onClose={handleCloseModal} mapId={selectedMapId!} campaignId={selectedCampaignId!} />
       )}
 
-      {modal === MapModal.Share && (
-        <ShareMapModal open={modal === MapModal.Share} onClose={handleCloseModal} mapId={selectedMapId!} />
-      )}
+      {modal === MapModal.Share && <ShareMapModal open onClose={handleCloseModal} mapId={selectedMapId!} />}
 
-      {modal === MapModal.Delete && (
-        <DeleteMapModal open={modal === MapModal.Delete} onClose={handleCloseModal} mapId={selectedMapId!} />
-      )}
+      {modal === MapModal.Delete && <DeleteMapModal open onClose={handleCloseModal} mapId={selectedMapId!} />}
     </>
   );
 }

@@ -24,35 +24,19 @@ export function CampaignModals() {
   return (
     <>
       {modal === CampaignModal.CreateUpdate && (
-        <CreateUpdateCampaignModal
-          open={modal === CampaignModal.CreateUpdate}
-          onClose={handleCloseModal}
-          campaignId={selectedCampaignId!}
-        />
+        <CreateUpdateCampaignModal open onClose={handleCloseModal} campaignId={selectedCampaignId!} />
       )}
 
       {modal === CampaignModal.Members && (
-        <CampaignMembersModal
-          open={modal === CampaignModal.Members}
-          onClose={handleCloseModal}
-          campaignId={selectedCampaignId!}
-        />
+        <CampaignMembersModal open onClose={handleCloseModal} campaignId={selectedCampaignId!} />
       )}
 
       {modal === CampaignModal.Plugins && (
-        <CampaignPluginsModal
-          open={modal === CampaignModal.Plugins}
-          onClose={handleCloseModal}
-          campaignId={selectedCampaignId!}
-        />
+        <CampaignPluginsModal open onClose={handleCloseModal} campaignId={selectedCampaignId!} />
       )}
 
       {modal === CampaignModal.Delete && (
-        <DeleteCampaignModal
-          open={modal === CampaignModal.Delete}
-          onClose={handleCloseModal}
-          campaignId={selectedCampaignId!}
-        />
+        <DeleteCampaignModal open onClose={handleCloseModal} campaignId={selectedCampaignId!} />
       )}
     </>
   );

@@ -154,7 +154,7 @@ export function More() {
             )}
           </Popper>
 
-          <ShortcutsModal open={shortcutsModalOpen} onClose={() => setShortcutsModalOpen(false)} />
+          {shortcutsModalOpen && <ShortcutsModal open onClose={() => setShortcutsModalOpen(false)} />}
         </>
       )}
     </PopupState>
