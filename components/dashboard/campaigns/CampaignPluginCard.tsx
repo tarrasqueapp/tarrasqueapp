@@ -1,4 +1,4 @@
-import { Info } from '@mui/icons-material';
+import { Feedback, Info } from '@mui/icons-material';
 import { Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
 import Image from 'next/image';
 
@@ -24,7 +24,17 @@ export function CampaignPluginCard({ manifestUrl, campaignId, enabled, onEnable,
   const iconUrl = plugin?.urls.find((url) => url.name === 'icon')?.url || '';
   const homepageUrl = plugin?.urls.find((url) => url.name === 'homepage')?.url || '';
 
-  if (isError) return null;
+  if (isError) {
+    return (
+      <Card variant="outlined">
+        <CardHeader avatar={<Feedback color="error" />} title="Failed to load plugin" subheader={manifestUrl} />
+
+        <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
+          <IOSSwitch checked={optimisticEnabled} disabled />
+        </CardActions>
+      </Card>
+    );
+  }
 
   return (
     <Card variant="outlined">

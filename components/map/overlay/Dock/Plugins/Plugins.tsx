@@ -7,7 +7,7 @@ import { Plugin } from './Plugin';
 
 export function Plugins() {
   const { data: map } = useGetCurrentMap();
-  const { data: campaignPlugins } = useGetCampaignPlugins(map?.campaign_id || '');
+  const { data: campaignPlugins } = useGetCampaignPlugins(map?.campaign_id);
 
   const [loadedPlugins, setLoadedPlugins] = useState<number>(0);
 

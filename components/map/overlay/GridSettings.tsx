@@ -52,9 +52,9 @@ import { ToolButton } from './Toolbar/ToolButton';
 export function GridSettings() {
   const { data: user } = useGetUser();
   const { data: map } = useGetCurrentMap();
-  const { data: campaign } = useGetCampaign(map?.campaign_id || '');
-  const { data: memberships } = useGetMemberships(campaign?.id || '');
-  const { data: grid } = useGetGrid(map?.id || '');
+  const { data: campaign } = useGetCampaign(map?.campaign_id);
+  const { data: memberships } = useGetMemberships(campaign?.id);
+  const { data: grid } = useGetGrid(map?.id);
   const updateGrid = useUpdateGrid();
 
   const [constrainProportions, setConstrainProportions] = useState(true);

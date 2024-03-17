@@ -13,7 +13,7 @@ import { Coordinates } from '@/utils/types';
 
 export function GridAlignment() {
   const { data: map } = useGetCurrentMap();
-  const { data: grid } = useGetGrid(map?.id || '');
+  const { data: grid } = useGetGrid(map?.id);
   const updateGrid = useUpdateGrid();
 
   const aligningGrid = usePixiStore((state) => state.aligningGrid);

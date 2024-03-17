@@ -1,4 +1,4 @@
-import { Add, Info, Remove } from '@mui/icons-material';
+import { Add, Feedback, Info, Remove } from '@mui/icons-material';
 import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
 import Image from 'next/image';
 
@@ -23,7 +23,28 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
   const iconUrl = plugin?.urls.find((url) => url.name === 'icon')?.url || '';
   const homepageUrl = plugin?.urls.find((url) => url.name === 'homepage')?.url || '';
 
-  if (isError) return null;
+  if (isError) {
+    return (
+      <Card variant="outlined">
+        <CardHeader avatar={<Feedback color="error" />} title="Failed to load plugin" subheader={manifestUrl} />
+
+        <CardActions sx={{ justifyContent: 'flex-end', m: 0.5 }}>
+          <Button
+            variant="outlined"
+            disabled={(!plugin && !isError) || installed !== optimisticInstalled}
+            color="error"
+            startIcon={<Remove />}
+            onClick={async () => {
+              setOptimisticInstalled(false);
+              await onUninstall?.();
+            }}
+          >
+            Uninstall
+          </Button>
+        </CardActions>
+      </Card>
+    );
+  }
 
   return (
     <Card variant="outlined">
@@ -54,7 +75,7 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
         {optimisticInstalled ? (
           <Button
             variant="outlined"
-            disabled={!plugin || installed !== optimisticInstalled}
+            disabled={(!plugin && !isError) || installed !== optimisticInstalled}
             color="error"
             startIcon={<Remove />}
             onClick={async () => {
@@ -68,7 +89,7 @@ export function PluginCard({ manifestUrl, installed, onInstall, onUninstall }: P
           <Button
             variant="outlined"
             startIcon={<Add />}
-            disabled={!plugin || installed !== optimisticInstalled}
+            disabled={(!plugin && !isError) || installed !== optimisticInstalled}
             onClick={async () => {
               setOptimisticInstalled(true);
               await onInstall?.();
