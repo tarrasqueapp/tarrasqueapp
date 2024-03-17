@@ -95,7 +95,7 @@ This will delete all data in the database and run all the migrations from the be
 
 ## Contributing
 
-Contributions are welcome! Please see the [CONTRIBUTING](CONTRIBUTING.md) file for more information. If you have any questions, feel free to reach out to us on [Discord](https://tarrasque.app/discord). We'd love to hear from you! 😊
+Contributions are welcome! Please see the [CONTRIBUTING](https://github.com/tarrasqueapp/.github/blob/main/CONTRIBUTING.md) file for more information. If you have any questions, feel free to reach out to us on [Discord](https://tarrasque.app/discord). We'd love to hear from you! 😊
 
 ## License
 
