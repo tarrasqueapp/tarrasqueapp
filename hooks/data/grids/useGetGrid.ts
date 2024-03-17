@@ -1,9 +1,8 @@
-import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 import { getMapGrid } from '@/actions/grids';
-import { createBrowserClient } from '@/utils/supabase/client';
+
+import { useSupabaseSubscription } from '../useSupabaseSubscription';
 
 /**
  * Get a map's grid by the map ID
@@ -13,31 +12,19 @@ import { createBrowserClient } from '@/utils/supabase/client';
 export function useGetGrid(mapId: string | undefined) {
   const queryClient = useQueryClient();
 
-  // Listen for changes to the map grid and update the cache
-  useEffect(() => {
-    if (!mapId) return;
+  const queryKey = ['maps', mapId, 'grid'];
 
-    let supabase: SupabaseClient;
-    let channel: RealtimeChannel;
-
-    requestAnimationFrame(() => {
-      supabase = createBrowserClient();
-      channel = supabase
-        .channel(`maps_${mapId}_grid`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'grids' }, async () => {
-          queryClient.invalidateQueries({ queryKey: ['maps', mapId, 'grid'] });
-        })
-        .subscribe();
-    });
-
-    return () => {
-      if (!supabase || !channel) return;
-      supabase.removeChannel(channel);
-    };
-  }, [mapId]);
+  useSupabaseSubscription({
+    channelName: `maps_${mapId}_grid`,
+    table: 'grids',
+    filter: `map_id=eq.${mapId}`,
+    onChange: (payload) => {
+      queryClient.setQueryData(queryKey, payload.new);
+    },
+  });
 
   return useQuery({
-    queryKey: ['maps', mapId, 'grid'],
+    queryKey,
     queryFn: async () => {
       const response = await getMapGrid(mapId!);
       if (response.error) {

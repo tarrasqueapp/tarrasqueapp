@@ -8,72 +8,8 @@ import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
 
 import { getUser } from './auth';
-import { CampaignMemberRole } from './memberships';
 
 export type Campaign = NonNullable<Awaited<ReturnType<typeof getCampaign>>['data']>;
-
-/**
- * Get a user's campaigns
- * @returns The user's campaigns
- */
-export async function getUserCampaigns(role?: CampaignMemberRole) {
-  // Validate inputs
-  validation.fields.campaignMemberRole.optional().parse(role);
-
-  // Connect to Supabase
-  const supabase = createServerClient();
-
-  // Get user
-  const { data: user } = await getUser();
-  if (!user) {
-    return { error: 'User not found' };
-  }
-
-  // Get the user's campaign order
-  const { data: profile } = await supabase.from('profiles').select('campaign_order').eq('id', user.id).single();
-  const campaignOrder = (profile?.campaign_order as string[]) || [];
-
-  // Get all memberships for the user and include the campaign data
-  const query = supabase
-    .from('campaign_memberships')
-    .select(
-      `
-    campaign: campaigns!campaign_memberships_campaign_id_fkey (
-      *
-      )
-      `,
-    )
-    .eq('user_id', user.id);
-
-  // Filter by role if specified
-  if (role) {
-    query.eq('role', role);
-  }
-
-  const { data, error } = await query;
-
-  const campaigns = data?.map((membership) => membership.campaign!) || [];
-
-  // Sort the campaigns by the user's campaign order
-  campaigns.sort((a, b) => {
-    const aOrder = campaignOrder.findIndex((campaignId) => campaignId === a.id);
-    const bOrder = campaignOrder.findIndex((campaignId) => campaignId === b.id);
-
-    // If the user has no campaign order or the campaign is not in the order, sort by creation date
-    if (aOrder === -1 || bOrder === -1) {
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-    }
-
-    // Sort by the user's campaign order
-    return aOrder - bOrder;
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  return { data: campaigns };
-}
 
 /**
  * Get a campaign

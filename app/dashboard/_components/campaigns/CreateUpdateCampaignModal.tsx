@@ -16,17 +16,19 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
-import { Campaign, createCampaign, updateCampaign } from '@/actions/campaigns';
+import { createCampaign, updateCampaign } from '@/actions/campaigns';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
+import { useGetCampaign } from '@/hooks/data/campaigns/useGetCampaign';
 import { useCampaignStore } from '@/store/campaign';
 
 interface CreateUpdateCampaignModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: Campaign | undefined;
+  campaignId?: string;
 }
 
-export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpdateCampaignModalProps) {
+export function CreateUpdateCampaignModal({ open, onClose, campaignId }: CreateUpdateCampaignModalProps) {
+  const { data: campaign } = useGetCampaign(campaignId);
   const modal = useCampaignStore((state) => state.modal);
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
@@ -57,8 +59,10 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
    * @param values - The campaign values
    */
   async function handleSubmitForm(values: Schema) {
+    if (!campaignId) return;
+
     const response = campaign
-      ? await updateCampaign({ id: campaign.id, name: values.name })
+      ? await updateCampaign({ id: campaignId, name: values.name })
       : await createCampaign(values);
 
     if (response?.error) {
@@ -77,7 +81,7 @@ export function CreateUpdateCampaignModal({ open, onClose, campaign }: CreateUpd
           style={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}
         >
           <DialogTitle>
-            <span>{campaign ? 'Update Campaign' : 'Create Campaign'}</span>
+            <span>{campaignId ? 'Update Campaign' : 'Create Campaign'}</span>
 
             <IconButton onClick={onClose}>
               <Close />

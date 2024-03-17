@@ -2,7 +2,6 @@ import { Close } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Theme, Typography, useMediaQuery } from '@mui/material';
 
-import { Campaign } from '@/actions/campaigns';
 import { CampaignPlugin, Plugin, disableCampaignPlugin, enableCampaignPlugin } from '@/actions/plugins';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetUserPlugins } from '@/hooks/data/plugins/useGetUserPlugins';
@@ -13,12 +12,12 @@ import { CampaignPluginCard } from './CampaignPluginCard';
 interface CampaignPluginsModalProps {
   open: boolean;
   onClose: () => void;
-  campaign?: Campaign;
+  campaignId?: string;
 }
 
-export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPluginsModalProps) {
+export function CampaignPluginsModal({ open, onClose, campaignId }: CampaignPluginsModalProps) {
   const { data: userPlugins } = useGetUserPlugins();
-  const { data: campaignPlugins } = useGetCampaignPlugins(campaign?.id || '');
+  const { data: campaignPlugins } = useGetCampaignPlugins(campaignId);
 
   const fullScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
@@ -27,9 +26,9 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
    * @param plugin - The plugin to install
    */
   async function handleEnablePlugin(plugin: Plugin) {
-    if (!campaign || !plugin) return;
+    if (!campaignId || !plugin) return;
 
-    await enableCampaignPlugin({ campaign_id: campaign.id, plugin_id: plugin.id });
+    await enableCampaignPlugin({ campaign_id: campaignId, plugin_id: plugin.id });
   }
 
   /**
@@ -60,7 +59,7 @@ export function CampaignPluginsModal({ open, onClose, campaign }: CampaignPlugin
                   <CampaignPluginCard
                     key={userPlugin.id}
                     manifestUrl={userPlugin.manifest_url}
-                    campaign={campaign}
+                    campaignId={campaignId}
                     enabled={Boolean(
                       campaignPlugins?.find((campaignPlugin) => campaignPlugin.plugin_id === userPlugin.id),
                     )}

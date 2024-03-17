@@ -2,10 +2,12 @@ import { SupabaseClient, User } from '@supabase/supabase-js';
 import { DehydratedState, QueryClient, dehydrate } from '@tanstack/react-query';
 
 import { getUser } from '@/actions/auth';
-import { getCampaign, getUserCampaigns } from '@/actions/campaigns';
+import { getCampaign } from '@/actions/campaigns';
+import { getMapGrid } from '@/actions/grids';
 import { getInvite, getInvites } from '@/actions/invites';
 import { getMap, getMaps } from '@/actions/maps';
-import { getMemberships } from '@/actions/memberships';
+import { getMemberships, getUserCampaignMemberships } from '@/actions/memberships';
+import { getCampaignPlugins } from '@/actions/plugins';
 import { getProfile } from '@/actions/profiles';
 import { getSetup } from '@/actions/setup';
 
@@ -86,22 +88,22 @@ export class SSRUtils {
   }
 
   /**
-   * Prefetch the user's campaigns
-   * @returns The user's campaigns
+   * Prefetch the user's campaign memberships
+   * @returns The user's campaign memberships
    */
-  async prefetchUserCampaigns() {
+  async prefetchUserCampaignMemberships() {
     await this.queryClient.prefetchQuery({
-      queryKey: ['campaigns', {}],
+      queryKey: ['user', 'campaign_memberships', {}],
       queryFn: async () => {
-        const response = await getUserCampaigns();
+        const response = await getUserCampaignMemberships({});
         if (response.error) {
           throw new Error(response.error);
         }
         return response.data;
       },
     });
-    type Data = Awaited<ReturnType<typeof getUserCampaigns>>['data'];
-    return this.queryClient.getQueryData<Data>(['campaigns', {}]) || [];
+    type Data = Awaited<ReturnType<typeof getUserCampaignMemberships>>['data'];
+    return this.queryClient.getQueryData<Data>(['user', 'campaign_memberships', {}]) || [];
   }
 
   /**
@@ -165,6 +167,26 @@ export class SSRUtils {
   }
 
   /**
+   * Prefetch a campaign's plugins
+   * @param campaignId - The ID of the campaign to prefetch plugins for
+   * @returns The plugins
+   */
+  async prefetchCampaignPlugins(campaignId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['campaigns', campaignId, 'plugins'],
+      queryFn: async () => {
+        const response = await getCampaignPlugins(campaignId);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
+    });
+    type Data = Awaited<ReturnType<typeof getCampaignPlugins>>['data'];
+    return this.queryClient.getQueryData<Data>(['campaigns', campaignId, 'plugins']) || [];
+  }
+
+  /**
    * Prefetch an invite
    * @param inviteId - The ID of the invite to prefetch
    * @returns The invite
@@ -201,6 +223,25 @@ export class SSRUtils {
     });
     type Data = Awaited<ReturnType<typeof getMap>>['data'];
     return this.queryClient.getQueryData<Data>(['maps', id]) || null;
+  }
+
+  /**
+   * Prefetch a map's grid
+   * @returns The map's grid
+   */
+  async prefetchMapGrid(mapId: string) {
+    await this.queryClient.prefetchQuery({
+      queryKey: ['maps', mapId, 'grid'],
+      queryFn: async () => {
+        const response = await getMapGrid(mapId);
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response.data;
+      },
+    });
+    type Data = Awaited<ReturnType<typeof getMapGrid>>['data'];
+    return this.queryClient.getQueryData<Data>(['maps', mapId, 'grid']) || null;
   }
 
   /**

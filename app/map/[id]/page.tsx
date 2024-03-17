@@ -22,17 +22,22 @@ export default async function MapPage({ params }: { params: { id: string } }) {
 
   await ssr.prefetchUser();
   const map = await ssr.prefetchMap(params.id);
-  await ssr.prefetchCampaign(map?.campaign_id || '');
-  await ssr.prefetchCampaignMemberships(map?.campaign_id || '');
 
   if (!map) {
     redirect(AppNavigation.Dashboard);
   }
 
+  await Promise.all([
+    ssr.prefetchMapGrid(map.id),
+    ssr.prefetchCampaign(map.campaign_id),
+    ssr.prefetchCampaignMemberships(map.campaign_id),
+    ssr.prefetchCampaignPlugins(map.campaign_id),
+  ]);
+
   return (
     <HydrationBoundary state={ssr.dehydrate()}>
       <Box sx={{ position: 'fixed', top: 0, left: 0 }}>
-        <MapId />
+        <MapId mapId={map.id} campaignId={map.campaign_id} />
       </Box>
     </HydrationBoundary>
   );

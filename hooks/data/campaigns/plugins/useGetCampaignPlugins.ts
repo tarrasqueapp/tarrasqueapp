@@ -1,9 +1,8 @@
-import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 import { getCampaignPlugins } from '@/actions/plugins';
-import { createBrowserClient } from '@/utils/supabase/client';
+
+import { useSupabaseSubscription } from '../../useSupabaseSubscription';
 
 /**
  * Get the campaign's plugins
@@ -13,29 +12,19 @@ import { createBrowserClient } from '@/utils/supabase/client';
 export function useGetCampaignPlugins(campaignId: string | undefined) {
   const queryClient = useQueryClient();
 
-  // Listen for changes to the plugins and update the cache
-  useEffect(() => {
-    let supabase: SupabaseClient;
-    let channel: RealtimeChannel;
+  const queryKey = ['campaigns', campaignId, 'plugins'];
 
-    requestAnimationFrame(() => {
-      supabase = createBrowserClient();
-      channel = supabase
-        .channel(`campaigns_${campaignId}_plugins`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_plugins' }, () => {
-          queryClient.invalidateQueries({ queryKey: ['campaigns', campaignId, 'plugins'] });
-        })
-        .subscribe();
-    });
-
-    return () => {
-      if (!supabase || !channel) return;
-      supabase.removeChannel(channel);
-    };
-  }, [campaignId]);
+  useSupabaseSubscription({
+    channelName: `campaigns_${campaignId}_plugins`,
+    table: 'campaign_plugins',
+    filter: `campaign_id=eq.${campaignId}`,
+    onChange: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
 
   return useQuery({
-    queryKey: ['campaigns', campaignId, 'plugins'],
+    queryKey,
     queryFn: async () => {
       const response = await getCampaignPlugins(campaignId!);
       if (response.error) {

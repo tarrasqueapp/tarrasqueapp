@@ -2,10 +2,8 @@
 
 import { Box } from '@mui/material';
 import dynamic from 'next/dynamic';
-import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 
-import { useGetCurrentMap } from '@/hooks/data/maps/useGetCurrentMap';
 import { useIframeDataSync } from '@/hooks/data/useIframeDataSync';
 import { useJoinCampaignChannel } from '@/hooks/realtime/useJoinCampaignChannel';
 import { useJoinMapChannel } from '@/hooks/realtime/useJoinMapChannel';
@@ -15,20 +13,25 @@ import { Overlay } from '../_components/overlay/Overlay';
 
 const Canvas = dynamic(() => import('../_components/canvas/Canvas'), { ssr: false });
 
-export function MapId() {
-  const { data: map } = useGetCurrentMap();
-  useJoinMapChannel(map?.id);
-  useJoinCampaignChannel(map?.campaign_id);
+interface Props {
+  mapId: string;
+  campaignId: string;
+}
+
+export function MapId({ mapId, campaignId }: Props) {
+  useJoinMapChannel(mapId);
+  useJoinCampaignChannel(campaignId);
   useIframeDataSync();
 
   const setMapId = usePixiStore((state) => state.setMapId);
-  const params = useParams();
-  const mapId = params.id as string;
+  const pixiMapId = usePixiStore((state) => state.mapId);
 
   useEffect(() => {
     if (!mapId) return;
     setMapId(mapId);
   }, [mapId]);
+
+  if (!pixiMapId) return null;
 
   return (
     <>

@@ -1,25 +1,24 @@
 import { Add } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
-import { Campaign } from '@/actions/campaigns';
 import { Color } from '@/lib/colors';
 import { useCampaignStore } from '@/store/campaign';
 import { MapModal, useMapStore } from '@/store/map';
 
 interface NewMapProps {
-  campaign: Campaign | null;
+  campaignId?: string;
 }
 
-export function NewMap({ campaign }: NewMapProps) {
+export function NewMap({ campaignId }: NewMapProps) {
   const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
   const setModal = useMapStore((state) => state.setModal);
 
   return (
     <Button
-      disabled={!campaign}
+      disabled={!campaignId}
       onClick={() => {
-        if (!campaign) return;
-        setSelectedCampaignId(campaign.id);
+        if (!campaignId) return;
+        setSelectedCampaignId(campaignId);
         setModal(MapModal.CreateUpdate);
       }}
       sx={{

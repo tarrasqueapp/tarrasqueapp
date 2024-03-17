@@ -2,7 +2,6 @@ import { Info } from '@mui/icons-material';
 import { Card, CardActions, CardContent, CardHeader, IconButton, Skeleton, Typography } from '@mui/material';
 import Image from 'next/image';
 
-import { Campaign } from '@/actions/campaigns';
 import { IOSSwitch } from '@/components/IOSSwitch';
 import { useGetCampaignPlugins } from '@/hooks/data/campaigns/plugins/useGetCampaignPlugins';
 import { useGetPlugin } from '@/hooks/data/plugins/useGetPlugin';
@@ -10,14 +9,14 @@ import { useOptimistic } from '@/hooks/useOptimistic';
 
 interface Props {
   manifestUrl: string;
-  campaign?: Campaign;
+  campaignId?: string;
   enabled?: boolean;
   onEnable?: () => Promise<void>;
   onDisable?: () => Promise<void>;
 }
 
-export function CampaignPluginCard({ manifestUrl, campaign, enabled, onEnable, onDisable }: Props) {
-  const { data: campaignPlugins } = useGetCampaignPlugins(campaign?.id || '');
+export function CampaignPluginCard({ manifestUrl, campaignId, enabled, onEnable, onDisable }: Props) {
+  const { data: campaignPlugins } = useGetCampaignPlugins(campaignId);
   const { data: plugin, isError } = useGetPlugin(manifestUrl);
 
   const [optimisticEnabled, setOptimisticEnabled] = useOptimistic(enabled, (current, payload: boolean) => payload);

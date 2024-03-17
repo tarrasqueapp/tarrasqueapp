@@ -1,6 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getUser } from '@/actions/auth';
 import { createBrowserClient } from '@/utils/supabase/client';
@@ -10,30 +9,28 @@ import { createBrowserClient } from '@/utils/supabase/client';
  * @returns User query
  */
 export function useGetUser() {
+  const [supabase] = useState(createBrowserClient());
   const queryClient = useQueryClient();
 
+  const queryKey = ['user'];
+
   useEffect(() => {
-    let supabase: SupabaseClient;
+    supabase.auth.onAuthStateChange((event, session) => {
+      // Update the user when their details change
+      if (session && event === 'USER_UPDATED') {
+        queryClient.setQueryData(queryKey, session.user);
+      }
 
-    requestAnimationFrame(() => {
-      supabase = createBrowserClient();
-      supabase.auth.onAuthStateChange((event, session) => {
-        // Update the user when their details change
-        if (session && event === 'USER_UPDATED') {
-          queryClient.setQueryData(['user'], session.user);
-        }
-
-        // Remove all cached queries when the user signs out
-        if (event === 'SIGNED_OUT') {
-          queryClient.cancelQueries();
-          setTimeout(() => queryClient.clear(), 100);
-        }
-      });
+      // Remove all cached queries when the user signs out
+      if (event === 'SIGNED_OUT') {
+        queryClient.cancelQueries();
+        setTimeout(() => queryClient.clear(), 100);
+      }
     });
   }, []);
 
   return useQuery({
-    queryKey: ['user'],
+    queryKey,
     queryFn: async () => {
       const response = await getUser();
       if (response.error) {

@@ -26,14 +26,16 @@ export default async function DashboardPage() {
   }
 
   await ssr.prefetchProfile();
-  const campaigns = await ssr.prefetchUserCampaigns();
+  const campaignMemberships = await ssr.prefetchUserCampaignMemberships();
 
   await Promise.all(
-    campaigns.map(async (campaign) => {
+    campaignMemberships.map(async (membership) => {
       return await Promise.all([
-        ssr.prefetchCampaignMaps(campaign.id),
-        ssr.prefetchCampaignMemberships(campaign.id),
-        ssr.prefetchCampaignInvites(campaign.id),
+        ssr.prefetchCampaign(membership.campaign_id),
+        ssr.prefetchCampaignMaps(membership.campaign_id),
+        ssr.prefetchCampaignMemberships(membership.campaign_id),
+        ssr.prefetchCampaignInvites(membership.campaign_id),
+        ssr.prefetchCampaignPlugins(membership.campaign_id),
       ]);
     }),
   );

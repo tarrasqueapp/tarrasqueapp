@@ -39,13 +39,13 @@ import {
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { useEffect, useState } from 'react';
 
-import { Campaign } from '@/actions/campaigns';
 import { reorderMaps } from '@/actions/maps';
 import { Membership } from '@/actions/memberships';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
+import { useGetCampaign } from '@/hooks/data/campaigns/useGetCampaign';
 import { useGetCampaignMaps } from '@/hooks/data/maps/useGetCampaignMaps';
 import { CampaignModal, useCampaignStore } from '@/store/campaign';
 import { MathUtils } from '@/utils/MathUtils';
@@ -55,15 +55,16 @@ import { NewMap } from '../maps/NewMap';
 import { CompendiumButton } from '../top-bar/compendium/CompendiumButton';
 
 export interface CampaignAccordionProps {
+  campaignId: string;
   expanded?: boolean;
   onToggle?: (expanded: boolean) => void;
-  campaign?: Campaign;
 }
 
-export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAccordionProps) {
-  const { data: invites } = useGetInvites(campaign?.id || '');
-  const { data: maps } = useGetCampaignMaps(campaign?.id || '');
-  const { data: memberships } = useGetMemberships(campaign?.id || '');
+export function CampaignAccordion({ campaignId, expanded, onToggle }: CampaignAccordionProps) {
+  const { data: campaign } = useGetCampaign(campaignId);
+  const { data: invites } = useGetInvites(campaignId);
+  const { data: maps } = useGetCampaignMaps(campaignId);
+  const { data: memberships } = useGetMemberships(campaignId);
   const { data: user } = useGetUser();
 
   const setModal = useCampaignStore((state) => state.setModal);
@@ -72,9 +73,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
   // Drag and drop
   const [activeId, setActiveId] = useState<string | null>(null);
   const [orderedMaps, setOrderedMaps] = useState<typeof maps>(maps || []);
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: campaign?.id || '',
-  });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: campaignId });
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { delay: 500, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
@@ -148,7 +147,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
 
     // Check if order has changed
     if (orderedMaps.some((map, index) => map.id !== maps[index]!.id)) {
-      reorderMaps({ campaignId: campaign.id, mapIds: orderedMaps.map((map) => map.id) });
+      reorderMaps({ campaignId, mapIds: orderedMaps.map((map) => map.id) });
     }
   }
 
@@ -217,7 +216,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                   <IconButton
                     onClick={() => {
                       if (!campaign) return;
-                      setSelectedCampaignId(campaign.id);
+                      setSelectedCampaignId(campaignId);
                       setModal(CampaignModal.CreateUpdate);
                     }}
                   >
@@ -231,7 +230,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                   <IconButton
                     onClick={() => {
                       if (!campaign) return;
-                      setSelectedCampaignId(campaign.id);
+                      setSelectedCampaignId(campaignId);
                       setModal(CampaignModal.Members);
                     }}
                   >
@@ -246,7 +245,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                 <IconButton
                   onClick={() => {
                     if (!campaign) return;
-                    setSelectedCampaignId(campaign.id);
+                    setSelectedCampaignId(campaignId);
                     setModal(CampaignModal.Plugins);
                   }}
                 >
@@ -254,7 +253,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                 </IconButton>
               </Tooltip>
 
-              <PopupState variant="popover" popupId={`campaign-accordion-${campaign?.id}`}>
+              <PopupState variant="popover" popupId={`campaign-accordion-${campaignId}`}>
                 {(popupState) => (
                   <>
                     <Tooltip title="More">
@@ -274,7 +273,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
                         <MenuItem
                           onClick={() => {
                             if (!campaign) return;
-                            setSelectedCampaignId(campaign.id);
+                            setSelectedCampaignId(campaignId);
                             setModal(CampaignModal.Delete);
                             popupState.close();
                           }}
@@ -310,7 +309,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
           }}
         >
           <DndContext
-            id={`campaign-${campaign?.id}-maps`}
+            id={`campaign-${campaignId}-maps`}
             sensors={sensors}
             modifiers={[restrictToParentElement]}
             collisionDetection={closestCenter}
@@ -322,7 +321,7 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
               {orderedMaps ? (
                 <>
                   {orderedMaps?.map((map) => (
-                    <MapCard key={map.id} map={orderedMaps!.find((m) => m.id === map.id)} campaign={campaign} />
+                    <MapCard key={map.id} map={orderedMaps!.find((m) => m.id === map.id)} campaignId={campaignId} />
                   ))}
                 </>
               ) : (
@@ -337,13 +336,17 @@ export function CampaignAccordion({ expanded, onToggle, campaign }: CampaignAcco
             <Portal>
               <DragOverlay modifiers={[restrictToParentElement]}>
                 {activeId ? (
-                  <MapCard key={activeId} map={orderedMaps?.find((map) => map.id === activeId)} campaign={campaign} />
+                  <MapCard
+                    key={activeId}
+                    map={orderedMaps?.find((map) => map.id === activeId)}
+                    campaignId={campaignId}
+                  />
                 ) : null}
               </DragOverlay>
             </Portal>
           </DndContext>
 
-          {isGameMaster && <NewMap campaign={campaign || null} />}
+          {isGameMaster && <NewMap campaignId={campaignId} />}
         </Box>
       </Collapse>
     </Paper>

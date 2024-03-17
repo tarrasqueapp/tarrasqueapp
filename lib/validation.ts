@@ -111,7 +111,7 @@ export const validation = {
     },
     invites: {
       createInvite: z.object({ campaign_id: z.string().uuid(), email: z.string().email() }),
-      deleteInvite: z.object({ id: z.string().uuid(), campaign_id: z.string().uuid().optional() }),
+      deleteInvite: z.object({ id: z.string().uuid() }),
       acceptInvite: z.object({ id: z.string().uuid() }),
     },
     maps: {
@@ -137,6 +137,7 @@ export const validation = {
       }),
     },
     memberships: {
+      getUserCampaignMemberships: z.object({ role: campaignMemberRole.optional() }),
       updateMembership: z.object({
         id: z.string().uuid(),
         color: z.string().optional(),

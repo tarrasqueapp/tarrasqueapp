@@ -1,24 +1,29 @@
 import { REALTIME_POSTGRES_CHANGES_LISTEN_EVENT } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { z } from 'zod';
 
-import { getInvites } from '@/actions/invites';
+import { getUserCampaignMemberships } from '@/actions/memberships';
+import { validation } from '@/lib/validation';
 
+import { useGetUser } from '../../auth/useGetUser';
 import { useSupabaseSubscription } from '../../useSupabaseSubscription';
 
 /**
- * Get the campaign's invites
- * @param campaignId - The campaign to get invites for
- * @returns Invites query
+ * Get the user's campaign memberships
+ * @returns Campaign memberships query
  */
-export function useGetInvites(campaignId: string | undefined) {
+export function useGetUserCampaignMemberships({
+  role,
+}: z.infer<typeof validation.schemas.memberships.getUserCampaignMemberships>) {
+  const { data: user } = useGetUser();
   const queryClient = useQueryClient();
 
-  const queryKey = ['campaigns', campaignId, 'invites'];
+  const queryKey = ['user', 'campaign_memberships', { role }];
 
   useSupabaseSubscription({
-    channelName: `campaigns_${campaignId}_invites`,
-    table: 'campaign_invites',
-    filter: `campaign_id=eq.${campaignId}`,
+    channelName: `user_campaign_memberships_${role}`,
+    table: 'campaign_memberships',
+    filter: `user_id.eq.${user?.id}`,
     onChange: (payload) => {
       // If the event is an insert, add the new item to the cache
       if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT) {
@@ -49,12 +54,11 @@ export function useGetInvites(campaignId: string | undefined) {
   return useQuery({
     queryKey,
     queryFn: async () => {
-      const response = await getInvites(campaignId!);
+      const response = await getUserCampaignMemberships({ role });
       if (response.error) {
         throw new Error(response.error);
       }
       return response.data;
     },
-    enabled: Boolean(campaignId),
   });
 }

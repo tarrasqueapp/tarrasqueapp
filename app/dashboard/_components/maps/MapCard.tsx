@@ -23,7 +23,6 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
-import { Campaign } from '@/actions/campaigns';
 import { Map, duplicateMap } from '@/actions/maps';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
@@ -34,12 +33,12 @@ import { MapModal, useMapStore } from '@/store/map';
 
 interface MapCardProps {
   map?: Map;
-  campaign?: Campaign;
+  campaignId?: string;
 }
 
-export function MapCard({ map, campaign }: MapCardProps) {
+export function MapCard({ map, campaignId }: MapCardProps) {
   const { data: user } = useGetUser();
-  const { data: memberships } = useGetMemberships(campaign?.id || '');
+  const { data: memberships } = useGetMemberships(campaignId);
 
   const setModal = useMapStore((state) => state.setModal);
   const setSelectedCampaignId = useCampaignStore((state) => state.setSelectedCampaignId);
@@ -145,8 +144,8 @@ export function MapCard({ map, campaign }: MapCardProps) {
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                if (!map || !campaign) return;
-                setSelectedCampaignId(campaign.id);
+                if (!map || !campaignId) return;
+                setSelectedCampaignId(campaignId);
                 setSelectedMapId(map.id);
                 setModal(MapModal.Share);
               }}
@@ -189,8 +188,8 @@ export function MapCard({ map, campaign }: MapCardProps) {
                       <MenuList>
                         <MenuItem
                           onClick={() => {
-                            if (!map || !campaign) return;
-                            setSelectedCampaignId(campaign.id);
+                            if (!map || !campaignId) return;
+                            setSelectedCampaignId(campaignId);
                             setSelectedMapId(map.id);
                             setModal(MapModal.CreateUpdate);
                             popupState.close();
@@ -220,8 +219,8 @@ export function MapCard({ map, campaign }: MapCardProps) {
 
                         <MenuItem
                           onClick={() => {
-                            if (!map || !campaign) return;
-                            setSelectedCampaignId(campaign.id);
+                            if (!map || !campaignId) return;
+                            setSelectedCampaignId(campaignId);
                             setSelectedMapId(map.id);
                             setModal(MapModal.Delete);
                             popupState.close();
@@ -237,8 +236,8 @@ export function MapCard({ map, campaign }: MapCardProps) {
 
                         <MenuItem
                           onClick={() => {
-                            if (!map || !campaign) return;
-                            setSelectedCampaignId(campaign.id);
+                            if (!map || !campaignId) return;
+                            setSelectedCampaignId(campaignId);
                             setSelectedMapId(map.id);
                             setModal(MapModal.Share);
                             popupState.close();

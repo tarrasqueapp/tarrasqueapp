@@ -1,9 +1,8 @@
-import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 import { getSetup } from '@/actions/setup';
-import { createBrowserClient } from '@/utils/supabase/client';
+
+import { useSupabaseSubscription } from '../useSupabaseSubscription';
 
 /**
  * Get the setup
@@ -12,29 +11,18 @@ import { createBrowserClient } from '@/utils/supabase/client';
 export function useGetSetup() {
   const queryClient = useQueryClient();
 
-  // Listen for changes to the setup and update the cache
-  useEffect(() => {
-    let supabase: SupabaseClient;
-    let channel: RealtimeChannel;
+  const queryKey = ['setup'];
 
-    requestAnimationFrame(() => {
-      supabase = createBrowserClient();
-      channel = supabase
-        .channel('setup')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'setup' }, (payload) => {
-          queryClient.setQueryData(['setup'], payload.new);
-        })
-        .subscribe();
-    });
-
-    return () => {
-      if (!supabase || !channel) return;
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  useSupabaseSubscription({
+    channelName: 'setup',
+    table: 'setup',
+    onChange: (payload) => {
+      queryClient.setQueryData(queryKey, payload.new);
+    },
+  });
 
   return useQuery({
-    queryKey: ['setup'],
+    queryKey,
     queryFn: async () => {
       const response = await getSetup();
       if (response.error) {

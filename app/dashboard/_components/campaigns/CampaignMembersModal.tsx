@@ -22,17 +22,14 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
-import { Campaign } from '@/actions/campaigns';
+import { createInvite, deleteInvite } from '@/actions/invites';
 import { CampaignMemberRole, deleteMembership, updateMembership } from '@/actions/memberships';
 import { UserAvatar } from '@/components/UserAvatar';
 import { ColorPicker } from '@/components/color-picker/ColorPicker';
 import { ControlledTextField } from '@/components/form/ControlledTextField';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
-import { useCreateInvite } from '@/hooks/data/campaigns/invites/useCreateInvite';
-import { useDeleteInvite } from '@/hooks/data/campaigns/invites/useDeleteInvite';
 import { useGetInvites } from '@/hooks/data/campaigns/invites/useGetInvites';
 import { useGetMemberships } from '@/hooks/data/campaigns/memberships/useGetMemberships';
 import { useCampaignStore } from '@/store/campaign';
@@ -40,15 +37,13 @@ import { useCampaignStore } from '@/store/campaign';
 interface CampaignMembersModalProps {
   open: boolean;
   onClose: () => void;
-  campaign: Campaign | undefined;
+  campaignId?: string;
 }
 
-export function CampaignMembersModal({ open, onClose, campaign }: CampaignMembersModalProps) {
-  const { data: memberships } = useGetMemberships(campaign?.id || '');
-  const { data: invites } = useGetInvites(campaign?.id || '');
+export function CampaignMembersModal({ open, onClose, campaignId }: CampaignMembersModalProps) {
+  const { data: memberships } = useGetMemberships(campaignId);
+  const { data: invites } = useGetInvites(campaignId);
   const { data: user } = useGetUser();
-  const createInvite = useCreateInvite();
-  const deleteInvite = useDeleteInvite();
 
   const modal = useCampaignStore((state) => state.modal);
 
@@ -75,23 +70,16 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
   // Reset the form when the campaign changes
   useEffect(() => {
     reset({ email: '' });
-  }, [campaign, reset, modal]);
+  }, [campaignId, reset, modal]);
 
   /**
    * Handle the form submission
    * @param values - The campaign values
    */
   async function handleSubmitForm(values: Schema) {
-    if (!campaign) return;
-
-    try {
-      await createInvite.mutateAsync({ campaign_id: campaign.id, email: values.email });
-      reset({ email: '' });
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    }
+    if (!campaignId) return;
+    createInvite({ campaign_id: campaignId, email: values.email });
+    reset({ email: '' });
   }
 
   return (
@@ -214,7 +202,7 @@ export function CampaignMembersModal({ open, onClose, campaign }: CampaignMember
                 <ListItem
                   key={invite.id}
                   secondaryAction={
-                    <IconButton onClick={() => deleteInvite.mutate({ id: invite.id, campaign_id: campaign?.id })}>
+                    <IconButton onClick={() => deleteInvite({ id: invite.id })}>
                       <Delete />
                     </IconButton>
                   }

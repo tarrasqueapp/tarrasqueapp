@@ -6,8 +6,66 @@ import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 import { Enums } from '@/utils/supabase/types.gen';
 
+import { getProfile } from './profiles';
+
+export type UserMembership = NonNullable<Awaited<ReturnType<typeof getUserCampaignMemberships>>['data']>[number];
 export type Membership = NonNullable<Awaited<ReturnType<typeof getMemberships>>['data']>[number];
 export type CampaignMemberRole = Enums<'campaign_member_role'>;
+
+/**
+ * Get a user's campaign memberships
+ * @param role - The role to filter by
+ * @returns The user's campaign memberships
+ */
+export async function getUserCampaignMemberships({
+  role,
+}: z.infer<typeof validation.schemas.memberships.getUserCampaignMemberships>) {
+  // Validate inputs
+  validation.schemas.memberships.getUserCampaignMemberships.parse({ role });
+
+  // Connect to Supabase
+  const supabase = createServerClient();
+
+  // Get user
+  const { data: profile } = await getProfile();
+  if (!profile) {
+    return { error: 'User not found' };
+  }
+
+  // Get the user's campaign memberships
+  const query = supabase
+    .from('campaign_memberships')
+    .select(
+      `
+      *,
+      campaign: campaigns!campaign_memberships_campaign_id_fkey (
+        name
+      )
+      `,
+    )
+    .eq('user_id', profile.id);
+
+  // Filter by role if specified
+  if (role) {
+    query.eq('role', role);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  // Reorder the memberships by the user's campaign order
+  const campaignOrder = (profile.campaign_order as string[]) || [];
+  data?.sort((a, b) => {
+    const aOrder = campaignOrder.findIndex((campaignId) => campaignId === a.campaign_id);
+    const bOrder = campaignOrder.findIndex((campaignId) => campaignId === b.campaign_id);
+    return aOrder - bOrder;
+  });
+
+  return { data };
+}
 
 /**
  * Get campaign's memberships

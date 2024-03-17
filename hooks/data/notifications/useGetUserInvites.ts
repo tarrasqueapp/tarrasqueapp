@@ -1,11 +1,10 @@
-import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
+import { REALTIME_POSTGRES_CHANGES_LISTEN_EVENT } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 import { getUserInvites } from '@/actions/invites';
-import { createBrowserClient } from '@/utils/supabase/client';
 
 import { useGetUser } from '../auth/useGetUser';
+import { useSupabaseSubscription } from '../useSupabaseSubscription';
 
 /**
  * Get the user's campaign invites
@@ -15,32 +14,36 @@ export function useGetUserInvites() {
   const { data: user } = useGetUser();
   const queryClient = useQueryClient();
 
-  // Listen for changes to the user and update the cache
-  useEffect(() => {
-    if (!user) return;
+  const queryKey = ['user', 'invites'];
 
-    let supabase: SupabaseClient;
-    let channel: RealtimeChannel;
+  useSupabaseSubscription({
+    channelName: `user_invites`,
+    table: 'campaign_invites',
+    filter: `user_id=eq.${user?.id}`,
+    onChange: (payload) => {
+      // If the event is an insert or delete, invalidate the query
+      if (
+        payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.INSERT ||
+        payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE
+      ) {
+        queryClient.invalidateQueries({ queryKey });
+      }
 
-    requestAnimationFrame(async () => {
-      supabase = createBrowserClient();
-      channel = supabase
-        .channel(`user_${user.id}_invites`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'campaign_invites' }, () => {
-          queryClient.invalidateQueries({ queryKey: ['invites'] });
-          queryClient.invalidateQueries({ queryKey: ['campaigns'] });
-        })
-        .subscribe();
-    });
+      // If the event is a delete, remove the item from the cache
+      if (payload.eventType === REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.DELETE) {
+        queryClient.setQueryData(queryKey, (data: { id: string }[]) => {
+          if (!data) return data;
+          return data.filter((item) => item.id !== payload.old.id);
+        });
 
-    return () => {
-      if (!supabase || !channel) return;
-      supabase.removeChannel(channel);
-    };
-  }, [user]);
+        // Also invalidate the campaigns query, as the user's campaigns may have changed
+        queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+      }
+    },
+  });
 
   return useQuery({
-    queryKey: ['invites'],
+    queryKey,
     queryFn: async () => {
       const response = await getUserInvites();
       if (response.error) {

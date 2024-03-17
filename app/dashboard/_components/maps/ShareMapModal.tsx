@@ -15,7 +15,8 @@ import {
 import { useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { Map, updateMap } from '@/actions/maps';
+import { updateMap } from '@/actions/maps';
+import { useGetMap } from '@/hooks/data/maps/useGetMap';
 import { useOptimistic } from '@/hooks/useOptimistic';
 import { config } from '@/lib/config';
 import { AppNavigation } from '@/lib/navigation';
@@ -23,10 +24,12 @@ import { AppNavigation } from '@/lib/navigation';
 interface ShareMapModalProps {
   open: boolean;
   onClose: () => void;
-  map: Map | undefined;
+  mapId: string;
 }
 
-export function ShareMapModal({ open, onClose, map }: ShareMapModalProps) {
+export function ShareMapModal({ open, onClose, mapId }: ShareMapModalProps) {
+  const { data: map } = useGetMap(mapId);
+
   const [optimisticVisible, setOptimisticVisible] = useOptimistic(
     map?.visible ?? false,
     (current, payload: boolean) => payload,
