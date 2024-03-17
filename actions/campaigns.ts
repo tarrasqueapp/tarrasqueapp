@@ -2,10 +2,10 @@
 
 import { z } from 'zod';
 
-import { Color } from '@/lib/colors';
-import { validation } from '@/lib/validation';
+import { Color } from '@/utils/colors';
 import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
+import { validation } from '@/utils/validation';
 
 import { getUser } from './auth';
 

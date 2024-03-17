@@ -2,9 +2,9 @@
 
 import { z } from 'zod';
 
-import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
 import { Enums } from '@/utils/supabase/types.gen';
+import { validation } from '@/utils/validation';
 
 import { getProfile } from './profiles';
 

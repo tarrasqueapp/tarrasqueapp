@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { Grid, updateGrid } from '@/actions/grids';
-import { validation } from '@/lib/validation';
+import { validation } from '@/utils/validation';
 
 /**
  * Update a map's grid

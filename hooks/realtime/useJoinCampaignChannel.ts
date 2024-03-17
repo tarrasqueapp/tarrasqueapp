@@ -1,7 +1,7 @@
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
-import { useChannelStore } from '@/store/channel';
+import { useChannelStore } from '@/store/useChannelStore';
 
 /**
  * Join a campaign channel and track the user's presence

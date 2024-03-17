@@ -3,10 +3,10 @@
 import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
-import { config } from '@/lib/config';
-import { validation } from '@/lib/validation';
+import { config } from '@/utils/config';
 import { createAdminServerClient } from '@/utils/supabase/admin';
 import { createServerClient } from '@/utils/supabase/server';
+import { validation } from '@/utils/validation';
 
 import { sendCampaignInviteExistingUserEmail, sendCampaignInviteNewUserEmail } from './email';
 import { getProfile } from './profiles';

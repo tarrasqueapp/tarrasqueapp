@@ -1,7 +1,7 @@
 import { createBrowserClient as supabaseCreateBrowserClient } from '@supabase/ssr';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-import { config } from '@/lib/config';
+import { config } from '@/utils/config';
 
 import { Database } from './types.gen';
 

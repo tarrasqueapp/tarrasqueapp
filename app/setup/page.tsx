@@ -5,10 +5,9 @@ import React from 'react';
 
 import { Center } from '@/components/Center';
 import { Logo } from '@/components/Logo';
-import { AppNavigation } from '@/lib/navigation';
-import { SSRUtils } from '@/utils/SSRUtils';
-
-import { Setup } from './_components/Setup';
+import { Setup } from '@/components/setup/Setup';
+import { SSRUtils } from '@/utils/helpers/ssr';
+import { AppNavigation } from '@/utils/navigation';
 
 export default async function SetupPage() {
   const ssr = new SSRUtils();

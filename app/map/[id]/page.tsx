@@ -2,10 +2,9 @@ import { Box } from '@mui/material';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
-import { AppNavigation } from '@/lib/navigation';
-import { SSRUtils } from '@/utils/SSRUtils';
-
-import { MapId } from './MapId';
+import { MapId } from '@/components/map/MapId';
+import { SSRUtils } from '@/utils/helpers/ssr';
+import { AppNavigation } from '@/utils/navigation';
 
 export const metadata = {
   title: 'Tarrasque App',

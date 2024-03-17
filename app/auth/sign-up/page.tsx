@@ -5,11 +5,10 @@ import React from 'react';
 import { getInvite } from '@/actions/invites';
 import { Center } from '@/components/Center';
 import { Logo } from '@/components/Logo';
+import { SignUp } from '@/components/auth/SignUp';
 import { NextLink } from '@/components/navigation/NextLink';
-import { AppNavigation } from '@/lib/navigation';
-import { SSRUtils } from '@/utils/SSRUtils';
-
-import { SignUp } from './SignUp';
+import { SSRUtils } from '@/utils/helpers/ssr';
+import { AppNavigation } from '@/utils/navigation';
 
 export default async function SignUpPage({
   searchParams,

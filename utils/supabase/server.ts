@@ -1,7 +1,7 @@
 import { CookieOptions, createServerClient as supabaseCreateServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-import { config } from '@/lib/config';
+import { config } from '@/utils/config';
 
 import { Database } from './types.gen';
 

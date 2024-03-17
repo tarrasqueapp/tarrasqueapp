@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { ExternalNavigation } from '@/lib/navigation';
+import { ExternalNavigation } from '@/utils/navigation';
 
 /**
  * Send a request to get the live version of Tarrasque App

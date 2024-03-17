@@ -3,12 +3,12 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 
-import { Color } from '@/lib/colors';
-import { config } from '@/lib/config';
-import { theme } from '@/lib/theme';
+import { ReactQueryProvider } from '@/components/ReactQueryProvider';
+import { Color } from '@/utils/colors';
+import { config } from '@/utils/config';
+import { theme } from '@/utils/theme';
 
-import '../styles/globals.css';
-import { ReactQueryProvider } from './ReactQueryProvider';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Tarrasque App',

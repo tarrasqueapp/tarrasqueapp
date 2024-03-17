@@ -3,10 +3,9 @@ import { redirect } from 'next/navigation';
 
 import { Center } from '@/components/Center';
 import { Logo } from '@/components/Logo';
-import { AppNavigation } from '@/lib/navigation';
-import { SSRUtils } from '@/utils/SSRUtils';
-
-import { SignIn } from './SignIn';
+import { SignIn } from '@/components/auth/SignIn';
+import { SSRUtils } from '@/utils/helpers/ssr';
+import { AppNavigation } from '@/utils/navigation';
 
 export default async function SignInPage() {
   const ssr = new SSRUtils();

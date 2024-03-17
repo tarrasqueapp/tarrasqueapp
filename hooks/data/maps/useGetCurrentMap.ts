@@ -1,4 +1,4 @@
-import { usePixiStore } from '@/store/pixi';
+import { usePixiStore } from '@/store/usePixiStore';
 
 import { useGetMap } from './useGetMap';
 

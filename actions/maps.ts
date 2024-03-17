@@ -2,8 +2,8 @@
 
 import { z } from 'zod';
 
-import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
+import { validation } from '@/utils/validation';
 
 import { getUser } from './auth';
 import { createGrid } from './grids';

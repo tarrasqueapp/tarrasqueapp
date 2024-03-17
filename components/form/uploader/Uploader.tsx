@@ -1,5 +1,6 @@
 import { CloudUpload, Delete } from '@mui/icons-material';
 import { Box, BoxProps, Button, ButtonProps, CircularProgress, IconButton, Typography, alpha } from '@mui/material';
+import { logger } from '@tarrasque/sdk';
 import { FileProgress, SuccessResponse, UploadResult, Uppy } from '@uppy/core';
 import Tus from '@uppy/tus';
 import NextImage from 'next/image';
@@ -12,12 +13,11 @@ import { Media } from '@/actions/media';
 import { CircularProgressWithLabel } from '@/components/CircularProgressWithLabel';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
 import { useEffectAsync } from '@/hooks/useEffectAsync';
-import { Color } from '@/lib/colors';
-import { config } from '@/lib/config';
-import { logger } from '@/lib/logger';
-import { supabaseLoader } from '@/lib/supabaseLoader';
-import { MathUtils } from '@/utils/MathUtils';
-import { MediaUtils, UploadingFile } from '@/utils/MediaUtils';
+import { Color } from '@/utils/colors';
+import { config } from '@/utils/config';
+import { MathUtils } from '@/utils/helpers/math';
+import { MediaUtils, UploadingFile } from '@/utils/helpers/media';
+import { supabaseLoader } from '@/utils/supabase/loader';
 
 /**
  * Generate a string of file types that can be uploaded

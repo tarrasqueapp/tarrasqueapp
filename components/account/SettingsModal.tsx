@@ -25,8 +25,8 @@ import { updateProfile } from '@/actions/profiles';
 import { deleteStorageObject, getObjectId } from '@/actions/storage';
 import { useGetProfile } from '@/hooks/data/auth/useGetProfile';
 import { useGetUser } from '@/hooks/data/auth/useGetUser';
-import { validation } from '@/lib/validation';
-import { MediaUtils } from '@/utils/MediaUtils';
+import { MediaUtils } from '@/utils/helpers/media';
+import { validation } from '@/utils/validation';
 
 import { ControlledTextField } from '../form/ControlledTextField';
 import { ControlledAvatarUploader } from '../form/uploader/ControlledAvatarUploader';

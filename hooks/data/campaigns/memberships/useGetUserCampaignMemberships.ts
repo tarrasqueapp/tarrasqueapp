@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { getUserCampaignMemberships } from '@/actions/memberships';
-import { validation } from '@/lib/validation';
+import { validation } from '@/utils/validation';
 
 import { useGetUser } from '../../auth/useGetUser';
 import { useSupabaseSubscription } from '../../useSupabaseSubscription';

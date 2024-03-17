@@ -1,7 +1,7 @@
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
-import { useChannelStore } from '@/store/channel';
+import { useChannelStore } from '@/store/useChannelStore';
 
 /**
  * Check if a user is online in a channel by looking at the presence state

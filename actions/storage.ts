@@ -2,8 +2,8 @@
 
 import { z } from 'zod';
 
-import { validation } from '@/lib/validation';
 import { createServerClient } from '@/utils/supabase/server';
+import { validation } from '@/utils/validation';
 
 /**
  * Get a storage object's ID from the database

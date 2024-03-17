@@ -4,8 +4,8 @@ import { Portal } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useWindowSize } from '@/hooks/useWindowSize';
-import { Dimensions } from '@/lib/types';
-import { AnchorPoint, useDraggableStore } from '@/store/draggable';
+import { AnchorPoint, useDraggableStore } from '@/store/useDraggableStore';
+import { Dimensions } from '@/utils/types';
 
 import { DraggableContext } from './DraggableContext';
 

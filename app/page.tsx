@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { AppNavigation } from '@/lib/navigation';
-import { SSRUtils } from '@/utils/SSRUtils';
+import { SSRUtils } from '@/utils/helpers/ssr';
+import { AppNavigation } from '@/utils/navigation';
 
 export default async function IndexPage() {
   const ssr = new SSRUtils();

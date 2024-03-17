@@ -4,7 +4,7 @@ import React from 'react';
 import { Center } from '@/components/Center';
 import { Logo } from '@/components/Logo';
 import { NextButton } from '@/components/navigation/NextButton';
-import { AppNavigation } from '@/lib/navigation';
+import { AppNavigation } from '@/utils/navigation';
 
 export default function NotFound() {
   return (

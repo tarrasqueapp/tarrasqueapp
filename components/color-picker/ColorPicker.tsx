@@ -27,7 +27,7 @@ import { useMemo, useState } from 'react';
 import { RgbaStringColorPicker } from 'react-colorful';
 import { useDebouncyEffect } from 'use-debouncy';
 
-import { Color } from '@/lib/colors';
+import { Color } from '@/utils/colors';
 
 import { Swatch } from './Swatch';
 

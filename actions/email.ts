@@ -1,3 +1,4 @@
+import { logger } from '@tarrasque/sdk';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 import { readFile } from 'node:fs/promises';
@@ -6,9 +7,8 @@ import { resolve } from 'path';
 import { cache } from 'react';
 import { z } from 'zod';
 
-import { config } from '@/lib/config';
-import { logger } from '@/lib/logger';
-import { validation } from '@/lib/validation';
+import { config } from '@/utils/config';
+import { validation } from '@/utils/validation';
 
 const getTransporter = cache(async () => {
   // Use ethereal.email for development environment to avoid sending real emails
@@ -64,7 +64,7 @@ async function sendTransactionalEmail({
     attachments: [
       {
         filename: 'logo.png',
-        path: resolve('emails', 'logo.png'),
+        path: resolve('public', 'images', 'logo.png'),
         cid: 'logo',
       },
     ],

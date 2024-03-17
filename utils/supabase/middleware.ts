@@ -1,7 +1,7 @@
 import { type CookieOptions, createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { config } from '@/lib/config';
+import { config } from '@/utils/config';
 
 export async function updateSession(request: NextRequest) {
   // This `try/catch` block is only here for the interactive tutorial.

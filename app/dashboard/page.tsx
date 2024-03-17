@@ -1,10 +1,9 @@
 import { HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
-import { AppNavigation } from '@/lib/navigation';
-import { SSRUtils } from '@/utils/SSRUtils';
-
-import { Dashboard } from './_components/Dashboard';
+import { Dashboard } from '@/components/dashboard/Dashboard';
+import { SSRUtils } from '@/utils/helpers/ssr';
+import { AppNavigation } from '@/utils/navigation';
 
 export const metadata = {
   title: 'Dashboard · Tarrasque App',
