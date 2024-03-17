@@ -45,12 +45,12 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
     <QueryClientProvider client={queryClient}>
       {children}
 
-      <Box sx={{ position: 'fixed', bottom: pathname.startsWith(AppNavigation.Map) ? 78 : 10, right: 10 }}>
-        <ReactQueryDevtools initialIsOpen={false} position="right" buttonPosition="relative" />
+      <Box sx={{ position: 'fixed', bottom: pathname.startsWith(AppNavigation.Map) ? 78 : 10, left: 10 }}>
+        <ReactQueryDevtools initialIsOpen={false} position="left" buttonPosition="relative" />
 
         {showDevtools && (
           <Suspense fallback={null}>
-            <ReactQueryDevtoolsProduction position="right" buttonPosition="relative" />
+            <ReactQueryDevtoolsProduction position="left" buttonPosition="relative" />
           </Suspense>
         )}
       </Box>
