@@ -1,19 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-export interface ManifestUrl {
-  name: 'icon' | 'map_iframe' | 'compendium_iframe' | 'homepage';
-  url: string;
-  width?: number;
-  height?: number;
-}
-
-interface Manifest {
-  id: string;
-  name: string;
-  description: string;
-  author: string;
-  urls: ManifestUrl[];
-}
+import { getPlugin } from '@/actions/plugins';
 
 /**
  * Get all available plugins
@@ -23,9 +10,11 @@ export function useGetPlugin(manifestUrl: string) {
   return useQuery({
     queryKey: ['plugins', manifestUrl],
     queryFn: async () => {
-      const response = await fetch(manifestUrl);
-      const data = (await response.json()) as Manifest;
-      return data;
+      const response = await getPlugin({ manifestUrl });
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      return response.data;
     },
     enabled: Boolean(manifestUrl),
   });

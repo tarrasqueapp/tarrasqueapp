@@ -9,6 +9,19 @@ import { getUser } from './auth';
 
 export type Plugin = NonNullable<Awaited<ReturnType<typeof getUserPlugins>>['data']>[number];
 export type CampaignPlugin = NonNullable<Awaited<ReturnType<typeof getCampaignPlugins>>['data']>[number];
+export type ManifestUrl = {
+  name: 'icon' | 'map_iframe' | 'compendium_iframe' | 'homepage';
+  url: string;
+  width?: number;
+  height?: number;
+};
+export type Manifest = {
+  id: string;
+  name: string;
+  description: string;
+  author: string;
+  urls: ManifestUrl[];
+};
 
 /**
  * Get a user's installed plugins
@@ -32,6 +45,28 @@ export async function getUserPlugins() {
   }
 
   return { data };
+}
+
+/**
+ * Get a plugin's manifest
+ * @param manifestUrl - The plugin's manifest URL
+ * @returns The plugin's manifest
+ */
+export async function getPlugin({ manifestUrl }: { manifestUrl: string }) {
+  // Get the manifest
+  const response = await fetch(manifestUrl);
+
+  if (!response.ok) {
+    return { error: 'Failed to get plugin manifest' };
+  }
+
+  const manifest = (await response.json()) as Manifest;
+
+  if (!manifest) {
+    return { error: 'Failed to parse plugin manifest' };
+  }
+
+  return { data: manifest };
 }
 
 /**
