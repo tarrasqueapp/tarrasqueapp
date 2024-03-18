@@ -23,13 +23,11 @@ import {
   Tooltip,
   Typography,
   alpha,
-  debounce,
 } from '@mui/material';
 import { bindPopper, bindToggle } from 'material-ui-popup-state';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { ColorPicker } from '@/components/color-picker/ColorPicker';
@@ -77,32 +75,15 @@ export function GridSettings() {
     reset(grid);
   }, [grid, reset]);
 
-  // Debounce the grid update function
-  const debouncedUpdate = useCallback(
-    debounce((data: Schema) => {
-      try {
-        const isValid = validation.schemas.grids.updateGrid.safeParse(data).success;
-        console.log(data);
-        if (!isValid) return;
-        updateGrid.mutate(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
-      }
-    }, 500),
-    [],
-  );
-
   // Watch for changes to the form and update the grid
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name) {
-        debouncedUpdate(methods.getValues());
+        updateGrid.mutate(methods.getValues());
       }
     });
     return () => subscription.unsubscribe();
-  }, [watch, debouncedUpdate, methods]);
+  }, [watch, methods]);
 
   const isGameMaster = memberships?.some(
     (membership) => membership.user_id === user?.id && membership.role === 'GAME_MASTER',
