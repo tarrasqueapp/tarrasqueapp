@@ -5,7 +5,7 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
@@ -18,7 +18,6 @@ import { AppNavigation } from '@/utils/navigation';
 import { validation } from '@/utils/validation';
 
 export function SignUp({ invite }: { invite?: Invite | null }) {
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -30,11 +29,12 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
   const methods = useForm<Schema>({
     mode: 'onChange',
     resolver: zodResolver(validation.schemas.auth.signUp),
-    defaultValues: { name: '', email, inviteId, turnstileToken },
+    defaultValues: { email, inviteId },
   });
   const {
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = methods;
 
   /**
@@ -42,12 +42,12 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
    * @param values - The user values
    */
   async function handleSubmitForm(values: Schema) {
-    if (config.TURNSTILE_ENABLED && !turnstileToken) {
+    if (config.TURNSTILE_ENABLED && !values.turnstileToken) {
       toast.error('Please verify you are human.');
       return;
     }
 
-    const response = await signUp({ ...values, inviteId, turnstileToken });
+    const response = await signUp({ ...values, inviteId });
 
     if (response?.error) {
       toast.error(response.error);
@@ -76,14 +76,14 @@ export function SignUp({ invite }: { invite?: Invite | null }) {
               siteKey={config.TURNSTILE_SITE_KEY}
               style={{ margin: 'auto' }}
               onSuccess={(token) => {
-                setTurnstileToken(token);
+                setValue('turnstileToken', token);
               }}
               onError={() => {
                 toast.error('Failed to verify you are human. Please try again.');
-                setTurnstileToken(null);
+                setValue('turnstileToken', null);
               }}
               onExpire={() => {
-                setTurnstileToken(null);
+                setValue('turnstileToken', null);
               }}
             />
           )}
