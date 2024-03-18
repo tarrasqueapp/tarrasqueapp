@@ -42,9 +42,14 @@ export const validation = {
   // Form schemas
   schemas: {
     auth: {
-      signUp: z.object({ name: z.string().min(1), email: z.string().email(), token: z.string().uuid().optional() }),
-      signIn: z.object({ email: z.string().email() }),
-      updateUser: z.object({ email: z.string().email() }),
+      signUp: z.object({
+        name: z.string().min(1),
+        email: z.string().email().toLowerCase(),
+        inviteId: z.string().uuid().nullable(),
+        turnstileToken: z.string().nullable(),
+      }),
+      signIn: z.object({ email: z.string().email().toLowerCase() }),
+      updateUser: z.object({ email: z.string().email().toLowerCase() }),
     },
     campaigns: {
       createCampaign: z.object({ name: z.string().min(1) }),
@@ -110,7 +115,7 @@ export const validation = {
       }),
     },
     invites: {
-      createInvite: z.object({ campaign_id: z.string().uuid(), email: z.string().email() }),
+      createInvite: z.object({ campaign_id: z.string().uuid(), email: z.string().email().toLowerCase() }),
       deleteInvite: z.object({ id: z.string().uuid() }),
       acceptInvite: z.object({ id: z.string().uuid() }),
     },

@@ -202,7 +202,7 @@ export async function createInvite({ campaign_id, email }: z.infer<typeof valida
       hostName: profile.name,
       campaignName: data.campaign!.name,
       to: email,
-      signUpUrl: `${config.SITE_URL}/auth/sign-up?token=${data.id}`,
+      signUpUrl: `${config.SITE_URL}/auth/sign-up?invite=${data.id}`,
     });
   }
 

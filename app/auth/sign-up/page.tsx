@@ -29,9 +29,9 @@ export default async function SignUpPage({
     redirect(AppNavigation.Dashboard);
   }
 
-  // Get the invite token if it exists
-  const inviteToken = typeof searchParams.token === 'string' ? searchParams.token : undefined;
-  const { data: invite } = inviteToken ? await getInvite(inviteToken) : { data: undefined };
+  // Get the invite ID if it exists
+  const inviteId = typeof searchParams.invite === 'string' ? searchParams.invite : undefined;
+  const { data: invite } = inviteId ? await getInvite(inviteId) : { data: undefined };
 
   return (
     <Center>

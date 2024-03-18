@@ -1,5 +1,6 @@
 'use server';
 
+import { TurnstileServerValidationResponse } from '@marsidev/react-turnstile';
 import uniqolor from 'uniqolor';
 import { z } from 'zod';
 
@@ -54,14 +55,57 @@ export async function getSession() {
 }
 
 /**
+ * Verify Turnstile token
+ * @param turnstileToken - The Turnstile token
+ * @returns The Turnstile token verification
+ */
+export async function verifyTurnstileToken(turnstileToken: string | null) {
+  // Validate Turnstile token
+  if (!config.TURNSTILE_ENABLED) {
+    return;
+  }
+
+  if (!turnstileToken) {
+    return { error: 'Please verify you are human.' };
+  }
+
+  // Validate Turnstile token
+  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    body: `secret=${encodeURIComponent(config.TURNSTILE_SECRET_KEY)}&response=${encodeURIComponent(turnstileToken)}`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+
+  const data = (await response.json()) as TurnstileServerValidationResponse;
+  if (!data.success) {
+    return { error: data.messages?.join(', ') || 'Failed to verify Turnstile token' };
+  }
+
+  return { data };
+}
+
+/**
  * Sign up the user with an email
  * @param name - The user's name
  * @param email - The user's email
- * @param token - The invite token
+ * @param inviteId - The invite ID
  */
-export async function signUp({ name, email, token }: z.infer<typeof validation.schemas.auth.signUp>) {
+export async function signUp({
+  name,
+  email,
+  inviteId,
+  turnstileToken,
+}: z.infer<typeof validation.schemas.auth.signUp>) {
   // Validate inputs
-  validation.schemas.auth.signUp.parse({ name, email, token });
+  validation.schemas.auth.signUp.parse({ name, email, inviteId, turnstileToken });
+
+  // Verify Turnstile token
+  const turnstileResponse = await verifyTurnstileToken(turnstileToken);
+  if (turnstileResponse?.error) {
+    return { error: turnstileResponse.error };
+  }
 
   // Connect to Supabase
   const supabase = createServerClient();
@@ -97,14 +141,14 @@ export async function signUp({ name, email, token }: z.infer<typeof validation.s
   // Associate campaign invites for this email address with the new user
   supabase.from('campaign_invites').update({ user_id: data.user.id }).eq('email', email);
 
-  // If the user signed up with an invite token, add them to the campaign
-  if (token) {
+  // If the user signed up with a campaign invite ID, add them to the campaign
+  if (inviteId) {
     // Get the invite
-    const { data: invite } = await supabase.from('campaign_invites').select().eq('id', token).single();
+    const { data: invite } = await supabase.from('campaign_invites').select().eq('id', inviteId).single();
 
     if (invite) {
       // Delete the invite
-      supabase.from('campaign_invites').delete().eq('id', token);
+      supabase.from('campaign_invites').delete().eq('id', inviteId);
 
       // Create the user's campaign membership
       const uniqueUserColor = uniqolor(data.user.id, { format: 'hex' });
