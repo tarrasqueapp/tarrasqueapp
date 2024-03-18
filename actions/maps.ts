@@ -105,7 +105,7 @@ export async function createMap({ name, campaign_id, media_id }: z.infer<typeof 
     .order('order', { ascending: false })
     .limit(1);
 
-  const order = lastMap?.[0]?.order || 0;
+  const order = (lastMap?.[0]?.order || 0) + 1;
 
   // Create the map
   const { data, error } = await supabase
@@ -115,7 +115,7 @@ export async function createMap({ name, campaign_id, media_id }: z.infer<typeof 
       campaign_id,
       media_id: media_id,
       user_id: user.id,
-      order: order + 1,
+      order,
     })
     .select()
     .single();
@@ -170,14 +170,14 @@ export async function duplicateMap({ id }: z.infer<typeof validation.schemas.map
     .order('order', { ascending: false })
     .limit(1);
 
-  const order = lastMap?.[0]?.order || 0;
+  const order = (lastMap?.[0]?.order || 0) + 1;
 
   // Create the duplicated map with the same name and media, but a new ID and tokens
   const { data, error } = await supabase
     .from('maps')
     .insert({
       name: `Copy of ${map.name}`,
-      order: order + 1,
+      order,
       media_id: map.media_id,
       campaign_id: map.campaign_id,
       user_id: map.user_id,
@@ -223,8 +223,29 @@ export async function updateMap({
   // Connect to Supabase
   const supabase = createServerClient();
 
+  const { data: map } = await getMap(id);
+  if (!map) {
+    return { error: 'Map not found' };
+  }
+
+  // If the campaign ID is changing, update the map's order to be the last in the new campaign
+  let order = map.order;
+  if (campaign_id && campaign_id !== map.campaign_id) {
+    const { data: lastMap } = await supabase
+      .from('maps')
+      .select('order')
+      .eq('campaign_id', campaign_id)
+      .order('order', { ascending: false })
+      .limit(1);
+
+    order = (lastMap?.[0]?.order || 0) + 1;
+  }
+
   // Update the map
-  const { data, error } = await supabase.from('maps').update({ name, visible, campaign_id, media_id }).eq('id', id);
+  const { data, error } = await supabase
+    .from('maps')
+    .update({ name, visible, order, campaign_id, media_id })
+    .eq('id', id);
 
   if (error) {
     return { error: error.message };
