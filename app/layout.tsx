@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
+import { TarrasqueProvider } from '@/components/TarrasqueContext';
 import { Color } from '@/utils/colors';
 import { config } from '@/utils/config';
 import { theme } from '@/utils/theme';
@@ -220,7 +221,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <ReactQueryProvider>{children}</ReactQueryProvider>
+
+            <ReactQueryProvider>
+              <TarrasqueProvider>{children}</TarrasqueProvider>
+            </ReactQueryProvider>
 
             <Toaster />
           </ThemeProvider>

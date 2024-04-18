@@ -1,8 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
 
 import { Campaign } from '@/actions/campaigns';
 import { Map as MapEntity } from '@/actions/maps';
+import { useTarrasque } from '@/components/TarrasqueContext';
+import { usePixiStore } from '@/store/usePixiStore';
 import { Coordinates } from '@/utils/types';
 
 import { useEffectAsync } from '../useEffectAsync';
@@ -10,29 +11,15 @@ import { useEffectAsync } from '../useEffectAsync';
 export function useIframeDataSync() {
   const queryClient = useQueryClient();
 
-  const params = useParams();
-
-  /**
-   * Post a message to child windows
-   * @param event - The event to send
-   * @param data - The payload to send with the event
-   */
-  function broadcast(event: string, data?: unknown) {
-    // Get all iframes on the page
-    const iframes = document.querySelectorAll('iframe');
-
-    iframes.forEach((iframe) => {
-      // Send the message to the child window
-      iframe.contentWindow?.postMessage({ event: `${event}`, data }, '*');
-    });
-  }
+  const { tarrasque } = useTarrasque();
+  const mapId = usePixiStore((state) => state.mapId);
 
   /**
    * Listen for a message from child windows and respond
    * @param callback - The callback to run when a message is received
    */
   function setupMessageHandler(
-    callback: (message: { event: string; data?: unknown }) => (data?: unknown) => unknown,
+    callback: (message: { event: string; data?: unknown }) => ((data?: unknown) => unknown) | undefined,
   ): () => void {
     // Listen for messages from child windows
     const handleMessage = (event: MessageEvent) => {
@@ -75,27 +62,28 @@ export function useIframeDataSync() {
      * Register a listener for messages from child windows to respond to with data
      * @returns A function to unregister the listener
      */
-    // const unsubscribeFromWindowMessage = setupMessageHandler((message) => {
-    //   const eventHandlers: Record<string, (data?: any) => void> = {
-    //     // Get the current campaign from the cache
-    //     TARRASQUE_CAMPAIGN: () => {
-    //       const map = queryClient.getQueryData<MapEntity>(['maps', params?.mapId]);
-    //       return map?.campaign;
-    //     },
-    //     // Get the current map from the cache
-    //     TARRASQUE_MAP: () => queryClient.getQueryData<Campaign>(['maps', params?.mapId]),
-    //     TARRASQUE_PING_LOCATION: (position: Position) => {
-    //       // Emit the ping location event
-    //       socket.emit(SocketEvent.PING_LOCATION, {
-    //         position,
-    //         color: 'red',
-    //         mapId: params?.mapId as string,
-    //         userId: '',
-    //       });
-    //     },
-    //   };
-    //   return eventHandlers[message.event];
-    // });
+    const unsubscribeFromWindowMessage = setupMessageHandler((message) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const eventHandlers: Record<string, (data?: any) => void> = {
+        // Get the current campaign from the cache
+        campaign: () => {
+          const map = queryClient.getQueryData<MapEntity>(['maps', mapId]);
+          return map?.campaign_id;
+        },
+        // Get the current map from the cache
+        map: () => queryClient.getQueryData<Campaign>(['maps', mapId]),
+        'ping-location': (coordinates: Coordinates) => {
+          // Emit the ping location event
+          tarrasque.emit('ping-location', {
+            coordinates,
+            color: 'red',
+            mapId,
+            userId: '',
+          });
+        },
+      };
+      return eventHandlers[message.event];
+    });
 
     /**
      * Register a listener for changes to the query cache to broadcast to child windows
@@ -105,13 +93,15 @@ export function useIframeDataSync() {
       if (!event.query?.queryKey || (event.type !== 'added' && event.type !== 'updated')) return;
 
       // Get the current map from the cache
-      const map = queryClient.getQueryData<MapEntity>(['maps', params?.mapId]);
+      const map = queryClient.getQueryData<MapEntity>(['maps', mapId]);
       if (!map) return;
 
       // Create a map of query keys to event handlers
       const eventHandlers = new Map();
-      eventHandlers.set(['campaigns', map.campaign_id], () => broadcast('CAMPAIGN_CHANGED', event.query.state.data));
-      eventHandlers.set(['maps', map.id], () => broadcast('MAP_CHANGED', event.query.state.data));
+      eventHandlers.set(['campaigns', map.campaign_id], () =>
+        tarrasque.emit('campaign-changed', event.query.state.data),
+      );
+      eventHandlers.set(['maps', map.id], () => tarrasque.emit('map-changed', event.query.state.data));
 
       // Loop through all the event handlers and call them if the query key matches
       for (const [queryKey, handler] of eventHandlers.entries()) {
@@ -123,7 +113,7 @@ export function useIframeDataSync() {
 
     // Unsubscribe from the listeners when the component unmounts
     return () => {
-      // unsubscribeFromWindowMessage();
+      unsubscribeFromWindowMessage();
       unsubscribeFromQueryCache();
     };
   }, [queryClient]);

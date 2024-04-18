@@ -29,15 +29,6 @@ export function useDebouncedMutation<TData = unknown, TError = DefaultError, TVa
   return useMutation<TData, TError, TVariables, TContext>({
     ...options,
     mutationFn: debouncedMutationFn,
-    onMutate: async (variables) => {
-      return options.onMutate?.(variables);
-    },
-    onError: (err, variables, context) => {
-      options.onError?.(err, variables, context);
-    },
-    onSuccess: (data, variables, context) => {
-      options.onSuccess?.(data, variables, context);
-    },
     onSettled: (data, error, variables, context) => {
       debouncedOnSettled(data, error, variables, context);
     },

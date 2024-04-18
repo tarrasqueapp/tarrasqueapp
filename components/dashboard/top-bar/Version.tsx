@@ -3,7 +3,7 @@
 import { Badge, Tooltip, Typography, badgeClasses } from '@mui/material';
 
 import { ExternalLink } from '@/components/navigation/ExternalLink';
-import { useGetLiveVersion } from '@/hooks/useGetLiveVersion';
+import { useGetLiveVersion } from '@/hooks/data/useGetLiveVersion';
 import { config } from '@/utils/config';
 import { ExternalNavigation } from '@/utils/navigation';
 
