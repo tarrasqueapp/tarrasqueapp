@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://tarrasque.app">
-    <img src="public/images/logo.svg" width="150" />
+    <img src="https://tarrasque.app/images/logo.svg" width="150" />
   </a>
 
   <h1 align="center">Tarrasque App</h1>
@@ -8,7 +8,6 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/package-json/version/tarrasqueapp/tarrasqueapp" />
-  <img src="https://img.shields.io/github/actions/workflow/status/tarrasqueapp/tarrasqueapp/deploy-sandbox.yaml" />
   <img src="https://img.shields.io/github/license/tarrasqueapp/tarrasqueapp" />
 </p>
 
@@ -83,7 +82,7 @@ This will create a new empty migration file in the `migrations` directory. You c
 
 After making changes to the Supabase database schema, you can generate the TypeScript types for the schema by running:
 
-    supabase gen types typescript <--local|--linked> > utils/supabase/types.gen.ts
+    supabase gen types typescript <--local|--linked> > packages/common/src/types.gen.ts
 
 ### Resetting the database
 

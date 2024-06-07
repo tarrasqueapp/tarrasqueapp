@@ -1,0 +1,83 @@
+{
+  "name": "@tarrasque/sdk",
+  "version": "0.0.8",
+  "description": "Plugin SDK for Tarrasque App",
+  "keywords": [
+    "tarrasque",
+    "sdk",
+    "plugin"
+  ],
+  "homepage": "https://github.com/tarrasqueapp/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/tarrasqueapp/sdk/issues",
+    "email": "support@tarrasque.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarrasqueapp/sdk"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "Richard Solomou",
+    "email": "richard@tarrasque.app",
+    "url": "https://tarrasque.app"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "pnpm build --watch",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "tsc --noEmit && eslint .",
+    "release": "release-it",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@tarrasque/common": "workspace:*",
+    "emittery": "^1.0.3",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.5.25",
+    "@tronite/style-guide": "^0.0.13",
+    "@types/node": "^20.14.2",
+    "eslint": "^8.57.0",
+    "lint-staged": "^15.2.5",
+    "prettier": "^3.3.1",
+    "release-it": "^17.3.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release-it": {
+    "git": {
+      "requireBranch": "main",
+      "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+      "release": true,
+      "releaseName": "${version}"
+    },
+    "hooks": {
+      "before:init": [
+        "git pull",
+        "pnpm lint",
+        "pnpm format"
+      ],
+      "after:bump": "pnpm build"
+    }
+  }
+}

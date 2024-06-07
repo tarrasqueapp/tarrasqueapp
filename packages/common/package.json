@@ -1,0 +1,21 @@
+{
+  "name": "@tarrasque/common",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Common code and utils for Tarrasque App",
+  "main": "./src/index.ts",
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "devDependencies": {
+    "@tronite/style-guide": "^0.0.13",
+    "@types/node": "^20.14.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "consola": "^3.2.3"
+  }
+}

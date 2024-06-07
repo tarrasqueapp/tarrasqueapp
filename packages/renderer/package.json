@@ -1,0 +1,24 @@
+{
+  "name": "@tarrasque/renderer",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PixiJS Renderer for Tarrasque App",
+  "main": "./src/index.ts",
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "dependencies": {
+    "@tarrasque/common": "workspace:*",
+    "@tarrasque/pixi-viewport": "^5.1.2",
+    "@tarrasque/sdk": "workspace:*",
+    "pixi.js": "^8.1.6"
+  },
+  "devDependencies": {
+    "@tronite/style-guide": "^0.0.13",
+    "@types/node": "^20.14.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.1",
+    "typescript": "^5.4.5"
+  }
+}

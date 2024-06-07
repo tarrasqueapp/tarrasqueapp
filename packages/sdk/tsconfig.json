@@ -1,0 +1,11 @@
+{
+  "extends": "@tronite/style-guide/typescript/esm",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "incremental": false,
+    "strictPropertyInitialization": false,
+    "jsx": "preserve"
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
+  "exclude": ["node_modules", "dist", "examples"]
+}

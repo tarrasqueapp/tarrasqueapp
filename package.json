@@ -23,14 +23,24 @@
     "email": "richard@tarrasque.app",
     "url": "https://tarrasque.app"
   },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "build": "next build",
-    "dev": "next dev --turbo",
+    "app": "pnpm --filter @tarrasque/app",
+    "build": "turbo build",
+    "common": "pnpm --filter @tarrasque/common",
+    "dev": "dotenv -- turbo dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "tsc --noEmit && next lint",
+    "lint": "turbo lint",
     "lint-staged": "lint-staged",
     "prepare": "husky",
-    "start": "next start"
+    "renderer": "pnpm --filter @tarrasque/renderer",
+    "sdk": "pnpm --filter @tarrasque/sdk",
+    "start": "turbo start",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -38,73 +48,18 @@
       "prettier --write"
     ]
   },
-  "dependencies": {
-    "@dice-roller/rpg-dice-roller": "^5.5.0",
-    "@dnd-kit/core": "^6.1.0",
-    "@dnd-kit/modifiers": "^7.0.0",
-    "@dnd-kit/sortable": "^8.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "@emotion/cache": "^11.11.0",
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
-    "@hookform/resolvers": "^3.3.4",
-    "@marsidev/react-turnstile": "^0.5.3",
-    "@mui/icons-material": "^5.15.13",
-    "@mui/lab": "5.0.0-alpha.168",
-    "@mui/material": "^5.15.13",
-    "@mui/material-nextjs": "^5.15.11",
-    "@pixi/react": "^7.1.1",
-    "@supabase/ssr": "^0.1.0",
-    "@supabase/supabase-js": "^2.39.8",
-    "@tanstack/react-query": "^5.28.4",
-    "@tarrasque/sdk": "^0.0.8",
-    "@uppy/core": "^3.9.3",
-    "@uppy/tus": "^3.5.3",
-    "colord": "^2.9.3",
-    "consola": "^3.2.3",
-    "cookies-next": "^4.1.1",
-    "handlebars": "^4.7.8",
-    "material-ui-popup-state": "^5.0.10",
-    "mjml": "^4.15.3",
-    "next": "^14.1.3",
-    "nodemailer": "^6.9.12",
-    "pixi-viewport": "^5.0.2",
-    "pixi.js": "^7.4.0",
-    "react": "^18.2.0",
-    "react-colorful": "^5.6.1",
-    "react-dom": "^18.2.0",
-    "react-dropzone": "^14.2.3",
-    "react-hook-form": "^7.51.1",
-    "react-hot-toast": "^2.4.1",
-    "react-hotkeys-hook": "^4.5.0",
-    "uniqolor": "^1.1.1",
-    "use-debouncy": "^5.0.1",
-    "use-local-storage": "^3.0.0",
-    "uuid": "^9.0.1",
-    "zod": "^3.22.4",
-    "zustand": "^4.5.2"
-  },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^14.1.3",
-    "@svgr/webpack": "^8.1.0",
-    "@tanstack/react-query-devtools": "^5.28.4",
-    "@tronite/style-guide": "^0.0.11",
-    "@types/mjml": "^4.7.4",
-    "@types/node": "^20.11.28",
-    "@types/nodemailer": "^6.4.14",
-    "@types/react": "^18.2.66",
-    "@types/uuid": "^9.0.8",
+    "@tronite/style-guide": "^0.0.13",
+    "@types/node": "^20.14.2",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8.57.0",
+    "happy-dom": "^14.12.0",
     "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.2"
+    "lint-staged": "^15.2.5",
+    "prettier": "^3.3.1",
+    "turbo": "^1.13.3",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
   },
-  "packageManager": "pnpm@8.15.4+sha256.cea6d0bdf2de3a0549582da3983c70c92ffc577ff4410cbf190817ddc35137c2",
-  "pnpm": {
-    "patchedDependencies": {
-      "pixi-viewport@5.0.2": "patches/pixi-viewport@5.0.2.patch",
-      "next@14.1.3": "patches/next@14.1.3.patch"
-    }
-  }
+  "packageManager": "pnpm@8.15.4"
 }

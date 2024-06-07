@@ -47,7 +47,7 @@ VALUES
     uuid_generate_v4 (),
     'authenticated',
     'authenticated',
-    'rsolomou@gmail.com',
+    'richard@tarrasque.app',
     crypt ('password', gen_salt ('bf')),
     current_timestamp,
     current_timestamp,
